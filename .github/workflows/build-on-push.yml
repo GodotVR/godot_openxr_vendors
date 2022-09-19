@@ -1,0 +1,57 @@
+# Workflow to automatically create deliverables
+name: Build on push
+
+on:
+  [push, pull_request]
+
+jobs:
+  build:
+    name: Assembling artifacts
+    runs-on: ubuntu-20.04
+
+    # Note, to satisfy the asset library we need to make sure our zip files have a root folder
+    # this is why we checkout into aar
+    # and build asset
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          path: aar
+      - name: Setup java
+        uses: actions/setup-java@v2
+        with:
+          java-version: 11
+          distribution: 'adopt'
+      - name: Validate Gradle wrapper
+        uses: gradle/wrapper-validation-action@e6e38bacfdf1a337459f332974bb2327a31aaf4b
+      - name: Create Godot OpenXR Meta AAR
+        - run: |
+          cd aar
+          ./gradlew build
+          cd ..
+      - name: Create Godot OpenXR Meta Asset
+        run: |
+          mkdir asset
+          mkdir asset/android
+          mkdir asset/android/plugins
+          cp aar/GodotOpenXRMeta.gdap asset/android/plugins/
+          cp aar/godotopenxrmeta/build/outputs/*.aar asset/android/plugins/
+      - name: Create Godot OpenXR Meta asset artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: GodotOpenXRMeta
+          path: |
+            asset
+      - name: Zip asset
+        run: |
+          zip -qq -r godotopenxrmeta.zip asset
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
+      - name: Create and upload asset
+        uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: true
+          artifacts: "godotopenxrmeta.zip"
+          omitNameDuringUpdate: true
+          omitBodyDuringUpdate: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')

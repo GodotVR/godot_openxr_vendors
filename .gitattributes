@@ -1,0 +1,11 @@
+*.bat eol=crlf
+*.gitattributes eol=lf
+*.gitignore eol=lf
+*.gdap eol=lf
+*.gradle eol=lf
+*.java eol=lf
+*.pro eol=lf
+*.properties eol=lf
+*.xml eol=lf
+
+gradlew eol=lf
