@@ -11,7 +11,7 @@ jobs:
 
     # Note, to satisfy the asset library we need to make sure our zip files have a root folder
     # this is why we checkout into aar
-    # and build into output/asset
+    # and build into asset
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -31,22 +31,21 @@ jobs:
           cd ..
       - name: Create Godot OpenXR Meta Asset
         run: |
-          mkdir output
-          mkdir output/asset
-          mkdir output/asset/android
-          mkdir output/asset/android/plugins
-          cp aar/GodotOpenXRMeta.gdap output/asset/android/plugins/
-          cp aar/godotopenxrmeta/build/outputs/aar/godotopenxrmeta-debug.aar output/asset/android/plugins/
-          cp aar/godotopenxrmeta/build/outputs/aar/godotopenxrmeta-release.aar output/asset/android/plugins/
+          mkdir asset
+          mkdir asset/android
+          mkdir asset/android/plugins
+          cp aar/GodotOpenXRMeta.gdap asset/android/plugins/
+          cp aar/godotopenxrmeta/build/outputs/aar/godotopenxrmeta-debug.aar asset/android/plugins/
+          cp aar/godotopenxrmeta/build/outputs/aar/godotopenxrmeta-release.aar asset/android/plugins/
       - name: Create Godot OpenXR Meta asset artifact
         uses: actions/upload-artifact@v2
         with:
           name: GodotOpenXRMeta
           path: |
-            output/asset
+            asset
       - name: Zip asset
         run: |
-          zip -qq -r godotopenxrmeta.zip output
+          zip -qq -r godotopenxrmeta.zip asset
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
       - name: Create and upload asset
         uses: ncipollo/release-action@v1
