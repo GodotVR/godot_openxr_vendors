@@ -58,4 +58,4 @@ Note that the Meta OpenXR loader has its own license.
 
 ## About this repository
 
-This repository was created and maintained by Bastiaan "Mux213" Olij. The original setup for this plugin was created by Gergely Kis. 
+This repository was created and maintained by Bastiaan "Mux213" Olij. The original setup for this plugin was created by Gergely Kis and Gabor Pal Korom at [Migeran](https://migeran.com). 
