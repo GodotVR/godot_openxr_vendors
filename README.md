@@ -1,9 +1,6 @@
-# Godot OpenXR Meta AAR
+# Godot OpenXR Loaders
 
-This repository builds the AAR asset required for Godot 4 to export XR application to the Quest.
-It encapsulates Metas OpenXR loader in an asset that can be deployed into a Godot project.
-
-This requires Godot with [PR 65798](https://github.com/godotengine/godot/pull/65798) included. See the Godot documentation on how to build this for Android.
+This repository builds the AAR assets required for Godot 4 to export XR application to the Android devices.
 
 ## Building this asset
 
@@ -21,10 +18,10 @@ gradlew.bat build
 
 ## Downloading this asset
 
-It is possible to download compiled assets that have been released from [releases](https://github.com/BastiaanOlij/godot_openxr_meta/releases).
+It is possible to download compiled assets that have been released from [releases](https://github.com/GodotVR/godot_openxr_loaders/releases).
 The latest official release will be made available in Godots asset library.
 
-For work in progress builds you can check [actions](https://github.com/BastiaanOlij/godot_openxr_meta/actions) to download the 
+For work in progress builds you can check [actions](https://github.com/GodotVR/godot_openxr_loaders/actions) to download the 
 
 ## Using this asset
 
@@ -49,7 +46,9 @@ If you have build the asset from source, you need to create the `android/plugins
 Back in Godot open the `Project` menu and select `Export...`.
 If it doesn't already exist create an Android export configuration by pressing `Add...` and selecting `Android`.
 Tick the `Use Custom Build` tickbox.
-Make sure the Godot OpenXR Meta plugin is enabled.
+Now enable the loader you need to use. Do *not* select multiple loaders!
+
+You can create multiple export templates, one for each loader.
 
 ## License
 
