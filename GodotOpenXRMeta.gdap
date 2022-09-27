@@ -2,6 +2,6 @@
 
 name="GodotOpenXRMeta"
 binary_type="local"
-binary="godotopenxrmeta-debug.aar"
+binary="godotopenxrmeta/godotopenxrmeta-debug.aar"
 
 [dependencies]

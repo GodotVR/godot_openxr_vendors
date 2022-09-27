@@ -24,34 +24,37 @@ jobs:
           distribution: 'adopt'
       - name: Validate Gradle wrapper
         uses: gradle/wrapper-validation-action@v1
-      - name: Create Godot OpenXR Meta AAR
+      - name: Create Godot OpenXR loader AARs
         run: |
           cd aar
           ./gradlew build
           cd ..
-      - name: Create Godot OpenXR Meta Asset
+      - name: Create Godot OpenXR loader Asset
         run: |
           mkdir asset
           mkdir asset/android
           mkdir asset/android/plugins
+          mkdir asset/android/plugins/godotopenxrmeta
+          cp aar/CHANGES.md asset/android/plugins/GodotOpenXRLoaders_CHANGES.md
           cp aar/GodotOpenXRMeta.gdap asset/android/plugins/
-          cp aar/godotopenxrmeta/build/outputs/aar/godotopenxrmeta-debug.aar asset/android/plugins/
-          cp aar/godotopenxrmeta/build/outputs/aar/godotopenxrmeta-release.aar asset/android/plugins/
-      - name: Create Godot OpenXR Meta asset artifact
+          cp aar/godotopenxrmeta/LICENSE.txt asset/android/plugins/godotopenxrmeta/
+          cp aar/godotopenxrmeta/build/outputs/aar/godotopenxrmeta-debug.aar asset/android/plugins/godotopenxrmeta/
+          cp aar/godotopenxrmeta/build/outputs/aar/godotopenxrmeta-release.aar asset/android/plugins/godotopenxrmeta/
+      - name: Create Godot OpenXR loader asset artifact
         uses: actions/upload-artifact@v2
         with:
-          name: GodotOpenXRMeta
+          name: GodotOpenXRLoaders
           path: |
             asset
       - name: Zip asset
         run: |
-          zip -qq -r godotopenxrmeta.zip asset
+          zip -qq -r godotopenxrloaders.zip asset
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
       - name: Create and upload asset
         uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
-          artifacts: "godotopenxrmeta.zip"
+          artifacts: "godotopenxrloaders.zip"
           omitNameDuringUpdate: true
           omitBodyDuringUpdate: true
           token: ${{ secrets.GITHUB_TOKEN }}

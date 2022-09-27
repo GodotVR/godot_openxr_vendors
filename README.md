@@ -36,10 +36,10 @@ This should create an `android` folder in your project folder.
 When downloading this asset from Godots asset library it should place the required files into `android/plugins`.
 If you've downloaded the zip file from the releases page, copy the files in `aar/android/plugins` manually to `android/plugins` in your project. You may need to create the plugins folder.
 
-If you have build the asset from source, you need to create the `android/plugins` folder and then copy the following files into this folder:
-- `godotopenxrmeta.gdap`
-- `godotopenxrmeta\build\outputs\aar\godotopenxrmeta-release.aar`
-- `godotopenxrmeta\build\outputs\aar\godotopenxrmeta-debug.aar`
+If you have build the asset from source, you need to create the `android/plugins` folder and then copy the following files:
+- `godotopenxrmeta.gdap` into `android/plugins`
+- `godotopenxrmeta\build\outputs\aar\godotopenxrmeta-release.aar` into `android/plugins/godotopenxrmeta`
+- `godotopenxrmeta\build\outputs\aar\godotopenxrmeta-debug.aar` into `android/plugins/godotopenxrmeta`
 
 ### Configuring your export
 
@@ -58,3 +58,5 @@ Note that the Meta OpenXR loader has its own license.
 ## About this repository
 
 This repository was created and maintained by Bastiaan "Mux213" Olij. The original setup for this plugin was created by Gergely Kis and Gabor Pal Korom at [Migeran](https://migeran.com). 
+
+See CONTRIBUTORS.md for further contributions.
