@@ -7,4 +7,5 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "GodotOpenXRMeta"
-include ':godotopenxrmeta'
+include ':godotopenxrmeta', ':godotopenxrpico'
+

@@ -21,7 +21,7 @@ gradlew.bat build
 It is possible to download compiled assets that have been released from [releases](https://github.com/GodotVR/godot_openxr_loaders/releases).
 The latest official release will be made available in Godots asset library.
 
-For work in progress builds you can check [actions](https://github.com/GodotVR/godot_openxr_loaders/actions) to download the 
+Work in progress builds are available under [actions](https://github.com/GodotVR/godot_openxr_loaders/actions).
 
 ## Using this asset
 
@@ -37,9 +37,11 @@ When downloading this asset from Godots asset library it should place the requir
 If you've downloaded the zip file from the releases page, copy the files in `aar/android/plugins` manually to `android/plugins` in your project. You may need to create the plugins folder.
 
 If you have build the asset from source, you need to create the `android/plugins` folder and then copy the following files:
-- `godotopenxrmeta.gdap` into `android/plugins`
+- `GodotopenXRMeta.gdap` into `android/plugins`
 - `godotopenxrmeta\build\outputs\aar\godotopenxrmeta-release.aar` into `android/plugins/godotopenxrmeta`
 - `godotopenxrmeta\build\outputs\aar\godotopenxrmeta-debug.aar` into `android/plugins/godotopenxrmeta`
+- `GodotOpenXRPico.gdap` into `android/plugins`
+- `godotopenxrpico\build\outputs\aar\godotopenxrpico-release.aar` into `android/plugins/godotopenxrpico`
 
 ### Configuring your export
 
@@ -52,8 +54,9 @@ You can create multiple export templates, one for each loader.
 
 ## License
 
-The sources in this repository are licensed under MIT, see `LICENSE` for more information.
-Note that the Meta OpenXR loader has its own license.
+Unless specified otherwise, sources in this repository are licensed under MIT, see `LICENSE` for more information.
+
+Note that some vendor-specific components are licensed under separate license terms, which are listed in their corresponding folders.
 
 ## About this repository
 
