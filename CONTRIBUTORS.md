@@ -6,4 +6,5 @@ This plugin has been developed by or received contributions from:
 - [Gergely Kis](https://github.com/kisg)
 - Gabor Pal Korom
 - [Dirk Steinmetz](https://github.com/rsjtdrjgfuzkfg)
+- [Fredia Huya-Kouadio](https://github.com/m4gr3d)
 

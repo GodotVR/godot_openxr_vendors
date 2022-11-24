@@ -19,7 +19,7 @@ gradlew.bat build
 ## Downloading this asset
 
 It is possible to download compiled assets that have been released from [releases](https://github.com/GodotVR/godot_openxr_loaders/releases).
-The latest official release will be made available in Godots asset library.
+The latest official release will be made available in Godot's asset library.
 
 Work in progress builds are available under [actions](https://github.com/GodotVR/godot_openxr_loaders/actions).
 
@@ -33,7 +33,7 @@ This should create an `android` folder in your project folder.
 
 ### Copying the plugin into place
 
-When downloading this asset from Godots asset library it should place the required files into `android/plugins`.
+When downloading this asset from Godot's asset library it should place the required files into `android/plugins`.
 If you've downloaded the zip file from the releases page, copy the files in `aar/android/plugins` manually to `android/plugins` in your project. You may need to create the plugins folder.
 
 If you have build the asset from source, you need to create the `android/plugins` folder and then copy the following files:
