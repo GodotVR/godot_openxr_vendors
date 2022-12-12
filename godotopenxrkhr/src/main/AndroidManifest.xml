@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.godot.godotopenxrkhr">
+
+    <application>
+        <meta-data
+            android:name="org.godotengine.plugin.v1.GodotOpenXRKHR"
+            android:value="com.godot.godotopenxrkhr.GodotOpenXRKHR" />
+    </application>
+
+</manifest>
