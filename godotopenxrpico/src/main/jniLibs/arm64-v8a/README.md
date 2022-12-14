@@ -1,4 +1,4 @@
-The Pico OpenXR loader binary is part of the [Pico OpenXR SDK](https://developer-global.pico-interactive.com/sdk?deviceId=1&platformId=3&itemId=11) v2.0.1 licensed under the "PICO IMMERSIVE PTE. LTD – SDK LICENSE TERMS" printed below. In communication with Godot developers, Pico explicitly clarified that the redistribution of the loader binary as part of the Godot export plugin and its repositories is permitted under these terms.
+The Pico OpenXR loader binary is part of the [Pico OpenXR SDK](https://developer-global.pico-interactive.com/sdk?deviceId=1&platformId=3&itemId=11) v2.1.0 licensed under the "PICO IMMERSIVE PTE. LTD – SDK LICENSE TERMS" printed below. In communication with Godot developers, Pico explicitly clarified that the redistribution of the loader binary as part of the Godot export plugin and its repositories is permitted under these terms.
 
 ----
 
