@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.godot.godotopenxrmeta">
+    package="org.godotengine.openxrloaders.meta">
+
+    <uses-feature
+        android:name="android.hardware.vr.headtracking"
+        android:required="true"
+        android:version="1"/>
 
     <application>
         <meta-data
             android:name="org.godotengine.plugin.v1.GodotOpenXRMeta"
-            android:value="com.godot.godotopenxrmeta.GodotOpenXRMeta" />
+            android:value="org.godotengine.openxrloaders.meta.GodotOpenXRMeta" />
+
+        <meta-data
+            android:name="com.oculus.supportedDevices"
+            android:value="quest|quest2|questpro" />
     </application>
 
 </manifest>
