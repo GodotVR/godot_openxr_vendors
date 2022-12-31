@@ -1,3 +1,15 @@
+pluginManagement {
+    apply from: 'config.gradle'
+
+    plugins {
+        id 'io.github.gradle-nexus.publish-plugin' version versions.nexusPublishVersion
+    }
+    repositories {
+        gradlePluginPortal()
+        google()
+    }
+}
+
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {

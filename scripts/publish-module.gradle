@@ -1,0 +1,70 @@
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
+
+group = ossrhGroupId
+version = getReleaseVersion()
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+
+                // The coordinates of the library, being set from variables that we'll set up later
+                groupId ossrhGroupId
+                artifactId PUBLISH_ARTIFACT_ID
+                version getReleaseVersion()
+
+                // Mostly self-explanatory metadata
+                pom {
+                    name = PUBLISH_ARTIFACT_ID
+                    description = 'Godot OpenXR Loaders'
+                    url = 'https://github.com/GodotVR/godot_openxr_loaders#readme'
+                    licenses {
+                        license {
+                            name = 'MIT License'
+                            url = 'https://github.com/GodotVR/godot_openxr_loaders/blob/master/LICENSE'
+                        }
+                    }
+                    developers {
+                        developer {
+                            id = 'm4gr3d'
+                            name = 'Fredia Huya-Kouadio'
+                            email = 'fhuyakou@gmail.com'
+                        }
+                        developer {
+                            id = 'BastiaanOlij'
+                            name = 'Bastiaan Olij'
+                            email = 'mux213@gmail.com'
+                        }
+                        developer {
+                            id = 'kisg'
+                            name = 'Gergely Kis'
+                        }
+                        developer {
+                            id = 'rsjtdrjgfuzkfg'
+                            name = 'Dirk Steinmetz'
+                        }
+                        // Add all other devs here...
+                    }
+
+                    // Version control info - if you're using GitHub, follow the format as seen here
+                    scm {
+                        connection = 'scm:git:github.com/GodotVR/godot_openxr_loaders.git'
+                        developerConnection = 'scm:git:ssh://github.com/GodotVR/godot_openxr_loaders.git'
+                        url = 'https://github.com/GodotVR/godot_openxr_loaders/tree/master'
+                    }
+                }
+            }
+        }
+    }
+}
+
+signing {
+    useInMemoryPgpKeys(
+        rootProject.ext["signing.keyId"],
+        rootProject.ext["signing.key"],
+        rootProject.ext["signing.password"],
+    )
+    sign publishing.publications
+}
