@@ -44,6 +44,7 @@ If you have build the asset from source, you need to create the `android/plugins
 - `godotopenxrpico\build\outputs\aar\godotopenxrpico-release.aar` into `android/plugins/godotopenxrpico`
 - `GodotOpenXRKHR.gdap` into `android/plugins`
 - `godotopenxrkhr\build\outputs\aar\godotopenxrkhr-release.aar` into `android/plugins/godotopenxrkhr`
+- `godotopenxrkhr\build\outputs\aar\godotopenxrkhr-debug.aar` into `android/plugins/godotopenxrkhr`
 
 ### Configuring your export
 
