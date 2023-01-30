@@ -1,4 +1,4 @@
-package org.godotengine.openxrloaders.godotopenxrkhr;
+package org.godotengine.openxrloaders.khr;
 
 import org.godotengine.godot.Godot;
 import org.godotengine.godot.plugin.GodotPlugin;

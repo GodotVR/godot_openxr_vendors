@@ -16,7 +16,7 @@ android {
         }
     }
 
-    namespace = "org.godotengine.openxrloaders.godotopenxrkhr"
+    namespace = "org.godotengine.openxrloaders.khr"
 
     buildTypes {
         debug {

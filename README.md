@@ -42,6 +42,8 @@ If you have build the asset from source, you need to create the `android/plugins
 - `godotopenxrmeta\build\outputs\aar\godotopenxrmeta-debug.aar` into `android/plugins/godotopenxrmeta`
 - `GodotOpenXRPico.gdap` into `android/plugins`
 - `godotopenxrpico\build\outputs\aar\godotopenxrpico-release.aar` into `android/plugins/godotopenxrpico`
+- `GodotOpenXRKHR.gdap` into `android/plugins`
+- `godotopenxrkhr\build\outputs\aar\godotopenxrkhr-release.aar` into `android/plugins/godotopenxrkhr`
 
 ### Configuring your export
 
@@ -60,6 +62,6 @@ Note that some vendor-specific components are licensed under separate license te
 
 ## About this repository
 
-This repository was created and maintained by Bastiaan "Mux213" Olij. The original setup for this plugin was created by Gergely Kis and Gabor Pal Korom at [Migeran](https://migeran.com). 
+This repository was created and maintained by Bastiaan "Mux213" Olij. The original setup for this plugin was created by Gergely Kis and Gabor Pal Korom at [Migeran](https://migeran.com).
 
 See CONTRIBUTORS.md for further contributions.
