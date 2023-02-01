@@ -36,6 +36,7 @@ jobs:
           mkdir asset/android/plugins
           mkdir asset/android/plugins/godotopenxrmeta
           mkdir asset/android/plugins/godotopenxrpico
+          mkdir asset/android/plugins/godotopenxrkhr
           cp aar/CHANGES.md asset/android/plugins/GodotOpenXRLoaders_CHANGES.md
           cp aar/GodotOpenXRMeta.gdap asset/android/plugins/
           cp aar/godotopenxrmeta/LICENSE.txt asset/android/plugins/godotopenxrmeta/
@@ -44,6 +45,9 @@ jobs:
           cp aar/GodotOpenXRPico.gdap asset/android/plugins/
           cp aar/godotopenxrpico/src/main/jniLibs/arm64-v8a/README.md asset/android/plugins/godotopenxrpico/LICENSE.md
           cp aar/godotopenxrpico/build/outputs/aar/godotopenxrpico-release.aar asset/android/plugins/godotopenxrpico/
+          cp aar/GodotOpenXRKHR.gdap asset/android/plugins/
+          cp aar/godotopenxrkhr/LICENSE.md asset/android/plugins/godotopenxrkhr/LICENSE.md
+          cp aar/godotopenxrkhr/build/outputs/aar/godotopenxrkhr-release.aar asset/android/plugins/godotopenxrkhr/
       - name: Create Godot OpenXR loader asset artifact
         uses: actions/upload-artifact@v2
         with:

@@ -7,4 +7,5 @@ This plugin has been developed by or received contributions from:
 - Gabor Pal Korom
 - [Dirk Steinmetz](https://github.com/rsjtdrjgfuzkfg)
 - [Fredia Huya-Kouadio](https://github.com/m4gr3d)
+- [Ron Bessems](https://github.com/rbessems)
 
