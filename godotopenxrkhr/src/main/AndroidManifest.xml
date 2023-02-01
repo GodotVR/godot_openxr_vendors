@@ -9,15 +9,6 @@
         <meta-data
             android:name="org.godotengine.plugin.v1.GodotOpenXRKHR"
             android:value="org.godotengine.openxrloaders.khr.GodotOpenXRKHR" />
-
-        <activity android:name="com.godot.game.GodotApp" android:exported="true" tools:ignore="MissingClass">
-            <intent-filter>
-                <!-- Mark this activity as using OpenXR. -->
-                <!-- action tag is here to make sure this intent filter is loaded by AOSP. -->
-                <action android:name="org.khronos.openxr.action.MAIN" />
-                <category android:name="org.khronos.openxr.intent.category.IMMERSIVE_HMD" />
-            </intent-filter>
-        </activity>
     </application>
 
 </manifest>
