@@ -46,7 +46,7 @@ jobs:
           cp aar/godotopenxrpico/src/main/jniLibs/arm64-v8a/README.md asset/android/plugins/godotopenxrpico/LICENSE.md
           cp aar/godotopenxrpico/build/outputs/aar/godotopenxrpico-release.aar asset/android/plugins/godotopenxrpico/
           cp aar/GodotOpenXRKHR.gdap asset/android/plugins/
-          cp aar/godotopenxrkhr/LICENSE.md asset/android/plugins/godotopenxrkhr/LICENSE.md
+          cp aar/godotopenxrkhr/LICENSE asset/android/plugins/godotopenxrkhr/LICENSE
           cp aar/godotopenxrkhr/build/outputs/aar/godotopenxrkhr-release.aar asset/android/plugins/godotopenxrkhr/
       - name: Create Godot OpenXR loader asset artifact
         uses: actions/upload-artifact@v2
