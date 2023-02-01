@@ -1,0 +1,6 @@
+{
+    "abi": "armeabi-v7a",
+    "api": 1,
+    "ndk": 25,
+    "stl": "none"
+}

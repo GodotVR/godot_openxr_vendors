@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="org.godotengine.openxrloaders.khr"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="org.khronos.openxr.permission.OPENXR_SYSTEM" />
+
+    <application>
+        <meta-data
+            android:name="org.godotengine.plugin.v1.GodotOpenXRKHR"
+            android:value="org.godotengine.openxrloaders.khr.GodotOpenXRKHR" />
+
+        <activity android:name="com.godot.game.GodotApp" android:exported="true" tools:ignore="MissingClass">
+            <intent-filter>
+                <!-- Mark this activity as using OpenXR. -->
+                <!-- action tag is here to make sure this intent filter is loaded by AOSP. -->
+                <action android:name="org.khronos.openxr.action.MAIN" />
+                <category android:name="org.khronos.openxr.intent.category.IMMERSIVE_HMD" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
