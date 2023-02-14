@@ -6,4 +6,4 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "GodotOpenXRLoaders"
-include ':godotopenxrmeta', ':godotopenxrpico', ':godotopenxrkhr'
+include ':godotopenxrmeta', ':godotopenxrpico', ':godotopenxrkhr', ':godotopenxrlynx'
