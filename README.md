@@ -27,7 +27,7 @@ Work in progress builds are available under [actions](https://github.com/GodotVR
 
 ### Installing android build templates
 
-Due to the use of AARs you will need to use the custom build option in Godot.
+Due to the use of AARs you will need to use the gradle build option in Godot.
 Open your Godot XR project in Godot and open the `Project` menu and select `Install Android Build templates`.
 This should create an `android` folder in your project folder.
 
@@ -50,7 +50,7 @@ If you have build the asset from source, you need to create the `android/plugins
 
 Back in Godot open the `Project` menu and select `Export...`.
 If it doesn't already exist create an Android export configuration by pressing `Add...` and selecting `Android`.
-Tick the `Use Custom Build` tickbox.
+Tick the `Use Gradle Build` tickbox.
 Now enable the loader you need to use. Do *not* select multiple loaders!
 
 You can create multiple export templates, one for each loader.
