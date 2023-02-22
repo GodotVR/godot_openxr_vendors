@@ -34,20 +34,31 @@ jobs:
           mkdir asset
           mkdir asset/android
           mkdir asset/android/plugins
-          mkdir asset/android/plugins/godotopenxrmeta
-          mkdir asset/android/plugins/godotopenxrpico
-          mkdir asset/android/plugins/godotopenxrkhr
           cp aar/CHANGES.md asset/android/plugins/GodotOpenXRLoaders_CHANGES.md
+      - name: Adding Meta loader
+        run: |
+          mkdir asset/android/plugins/godotopenxrmeta
           cp aar/GodotOpenXRMeta.gdap asset/android/plugins/
           cp aar/godotopenxrmeta/LICENSE.txt asset/android/plugins/godotopenxrmeta/
           cp aar/godotopenxrmeta/build/outputs/aar/godotopenxrmeta-debug.aar asset/android/plugins/godotopenxrmeta/
           cp aar/godotopenxrmeta/build/outputs/aar/godotopenxrmeta-release.aar asset/android/plugins/godotopenxrmeta/
+      - name: Adding Pico loader
+        run: |
+          mkdir asset/android/plugins/godotopenxrpico
           cp aar/GodotOpenXRPico.gdap asset/android/plugins/
           cp aar/godotopenxrpico/src/main/jniLibs/arm64-v8a/README.md asset/android/plugins/godotopenxrpico/LICENSE.md
           cp aar/godotopenxrpico/build/outputs/aar/godotopenxrpico-release.aar asset/android/plugins/godotopenxrpico/
+      - name: Adding KHR loader
+        run: |
+          mkdir asset/android/plugins/godotopenxrkhr
           cp aar/GodotOpenXRKHR.gdap asset/android/plugins/
           cp aar/godotopenxrkhr/LICENSE asset/android/plugins/godotopenxrkhr/LICENSE
           cp aar/godotopenxrkhr/build/outputs/aar/godotopenxrkhr-release.aar asset/android/plugins/godotopenxrkhr/
+      - name: Adding Lynx loader
+        run: |
+          mkdir asset/android/plugins/godotopenxrlynx
+          cp aar/GodotOpenXRLynx.gdap asset/android/plugins/
+          cp aar/godotopenxrlynx/build/outputs/aar/godotopenxrlynx-release.aar asset/android/plugins/godotopenxrlynx/
       - name: Create Godot OpenXR loader asset artifact
         uses: actions/upload-artifact@v2
         with:
