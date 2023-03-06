@@ -6,3 +6,4 @@
 - Added support for Pico loader
 - Added support for Khronos loader (Magic Leap 2, HTC, etc.)
 - Added support for Lynx loader
+- Add logic to automatically publish the Godot OpenXR loaders libraries to mavencentral on release

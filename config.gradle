@@ -1,12 +1,27 @@
 ext {
     versions = [
-            gradlePluginVersion: '7.0.4',
+            gradlePluginVersion: '7.2.1',
             compileSdk         : 31,
             minSdk             : 19,
             targetSdk          : 31,
-            versionCode        : 10000,
-            versionName        : '1.0.0',
-            godotLibVersion       : '4.0.0.beta3',
+            godotLibVersion       : '4.0.0.stable',
             javaVersion           : JavaVersion.VERSION_11,
+            nexusPublishVersion   : '1.1.0'
     ]
+}
+
+// Parse the release version from the gradle project properties (e.g: -Prelease_version=<version>)
+ext.getReleaseVersion = { ->
+    final String defaultVersion = "1.0.0-SNAPSHOT"
+
+    String releaseVersion = project.hasProperty("release_version") ? project.property("release_version") : defaultVersion
+    if (releaseVersion == null || releaseVersion.isEmpty()) {
+        releaseVersion = defaultVersion
+    }
+
+    if (!releaseVersion.endsWithIgnoreCase("-stable") && !releaseVersion.endsWithIgnoreCase("-snapshot")) {
+        releaseVersion += "-SNAPSHOT"
+    }
+
+    return releaseVersion
 }
