@@ -10,3 +10,4 @@ This plugin has been developed by or received contributions from:
 - [Ron Bessems](https://github.com/rbessems)
 - [Daniel Castellanos](https://github.com/decacis)
 - [Rodolphe Houdas](https://github.com/rodolpheh)
+- [Tiago Zaccaro](https://github.com/tiagozaccaro)
