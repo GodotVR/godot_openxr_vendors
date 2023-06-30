@@ -3,6 +3,14 @@
     package="org.godotengine.openxrloaders.khr"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Tell the system this app works in either 3dof or 6dof mode -->
+    <uses-feature
+        android:name="android.hardware.vr.headtracking"
+        android:required="true"
+        android:version="1"/>
+
+    <!-- Permissions needed by OpenXR -->
+    <uses-permission android:name="org.khronos.openxr.permission.OPENXR" />
     <uses-permission android:name="org.khronos.openxr.permission.OPENXR_SYSTEM" />
 
     <queries>
