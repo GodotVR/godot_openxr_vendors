@@ -1,0 +1,57 @@
+[gd_scene load_steps=8 format=3 uid="uid://cqsodpswgup8w"]
+
+[ext_resource type="Script" path="res://main.gd" id="1_fsva1"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_0x6cv"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_dqyx0"]
+sky_material = SubResource("ProceduralSkyMaterial_0x6cv")
+
+[sub_resource type="Environment" id="Environment_m0xew"]
+background_mode = 2
+sky = SubResource("Sky_dqyx0")
+tonemap_mode = 2
+
+[sub_resource type="BoxMesh" id="BoxMesh_3kt6b"]
+size = Vector3(0.1, 0.1, 0.1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_ey3x4"]
+size = Vector3(0.1, 0.1, 0.1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_mjcgt"]
+size = Vector2(10, 10)
+
+[node name="Main" type="Node3D"]
+script = ExtResource("1_fsva1")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_m0xew")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
+shadow_enabled = true
+
+[node name="XROrigin3D" type="XROrigin3D" parent="."]
+
+[node name="XRCamera3D" type="XRCamera3D" parent="XROrigin3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.352791, 0)
+
+[node name="LeftHand" type="XRController3D" parent="XROrigin3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.460909, 0, -0.241118)
+tracker = &"left_hand"
+pose = &"aim"
+
+[node name="LeftHandMesh" type="MeshInstance3D" parent="XROrigin3D/LeftHand"]
+mesh = SubResource("BoxMesh_3kt6b")
+
+[node name="RightHand" type="XRController3D" parent="XROrigin3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.478861, 0, -0.241097)
+tracker = &"right_hand"
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/RightHand"]
+mesh = SubResource("BoxMesh_ey3x4")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("PlaneMesh_mjcgt")

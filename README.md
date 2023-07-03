@@ -1,6 +1,7 @@
 # Godot OpenXR Loaders
 
-This repository builds the AAR assets required for Godot 4 to export XR application to the Android devices.
+This repository builds the Android plugin addon required for Godot 4 to export XR applications to 
+the Android devices.
 
 ## Building this asset
 
@@ -27,34 +28,34 @@ Work in progress builds are available under [actions](https://github.com/GodotVR
 
 ### Installing android build templates
 
-Due to the use of AARs you will need to use the gradle build option in Godot.
-Open your Godot XR project in Godot and open the `Project` menu and select `Install Android Build templates`.
-This should create an `android` folder in your project folder.
+The use of a Godot Android plugin requires the use of the gradle build option in Godot:
+- Open your Godot XR project in Godot
+- Open the `Project` menu
+- Select `Install Android Build templates`
 
 ### Copying the plugin into place
 
-When downloading this asset from Godot's asset library it should place the required files into `android/plugins`.
-If you've downloaded the zip file from the releases page, copy the files in `aar/android/plugins` manually to `android/plugins` in your project. You may need to create the plugins folder.
+When downloading this asset from Godot's asset library it should place the required files into 
+the `addons`directory.
+If you've downloaded the zip file from the releases page, copy the files in `asset/addons` 
+manually to `addons` in your project. You may need to create the `addons` folder.
 
-If you have build the asset from source, you need to create the `android/plugins` folder and then copy the following files:
-- `GodotopenXRMeta.gdap` into `android/plugins`
-- `godotopenxrmeta\build\outputs\aar\godotopenxrmeta-release.aar` into `android/plugins/godotopenxrmeta`
-- `godotopenxrmeta\build\outputs\aar\godotopenxrmeta-debug.aar` into `android/plugins/godotopenxrmeta`
-- `GodotOpenXRPico.gdap` into `android/plugins`
-- `godotopenxrpico\build\outputs\aar\godotopenxrpico-release.aar` into `android/plugins/godotopenxrpico`
-- `GodotOpenXRKHR.gdap` into `android/plugins`
-- `godotopenxrkhr\build\outputs\aar\godotopenxrkhr-release.aar` into `android/plugins/godotopenxrkhr`
-- `GodotOpenXRLynx.gdap` into `android/plugins`
-- `godotopenxrlynx\build\outputs\aar\godotopenxrlynx-release.aar` into `android/plugins/godotopenxrlynx`
+If you have build the asset from source, you need to create the `addons` folder in your project 
+if it doesn't exist already, and then copy the content of the `demo/addons` folder to `addons` 
+in your project.
 
 ### Configuring your export
 
-Back in Godot open the `Project` menu and select `Export...`.
-If it doesn't already exist create an Android export configuration by pressing `Add...` and selecting `Android`.
-Tick the `Use Gradle Build` tickbox.
-Now enable the loader you need to use. Do *not* select multiple loaders!
+Back in Godot open the `Project` menu and select `Export...`:
+- If it doesn't already exist, create an Android export configuration by pressing `Add...` and 
+selecting `Android`
+- Tick the `Use Gradle Build` tickbox
+- Select `OpenXR` as the **XR Mode** under the **XR Features** section
+- Enable the loader you need to use
 
-You can create multiple export templates, one for each loader.
+**Note:**
+**Do not** select multiple loaders in the same export template!
+You can instead create multiple export templates, one for each loader.
 
 ## License
 

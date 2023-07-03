@@ -50,3 +50,18 @@ android {
 dependencies {
     compileOnly "org.godotengine:godot:$versions.godotLibVersion"
 }
+
+task copyDebugAARToAddons(type: Copy) {
+    from 'build/outputs/aar'
+    include 'godotopenxrlynx-debug.aar'
+    into '../demo/addons/godotopenxr/export/lynx'
+}
+
+task copyReleaseAARToAddons(type: Copy) {
+    from 'build/outputs/aar'
+    include 'godotopenxrlynx-release.aar'
+    into '../demo/addons/godotopenxr/export/lynx'
+}
+
+assemble.finalizedBy(copyDebugAARToAddons)
+assemble.finalizedBy(copyReleaseAARToAddons)

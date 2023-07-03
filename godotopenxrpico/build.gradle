@@ -43,3 +43,18 @@ android {
 dependencies {
     compileOnly "org.godotengine:godot:$versions.godotLibVersion"
 }
+
+task copyDebugAARToAddons(type: Copy) {
+    from 'build/outputs/aar'
+    include 'godotopenxrpico-debug.aar'
+    into '../demo/addons/godotopenxr/export/pico'
+}
+
+task copyReleaseAARToAddons(type: Copy) {
+    from 'build/outputs/aar'
+    include 'godotopenxrpico-release.aar'
+    into '../demo/addons/godotopenxr/export/pico'
+}
+
+assemble.finalizedBy(copyDebugAARToAddons)
+assemble.finalizedBy(copyReleaseAARToAddons)
