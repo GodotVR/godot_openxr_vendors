@@ -2,6 +2,7 @@
 
 ## 1.1.0
 - Update Meta OpenXR loader to version 54
+- Update PICO OpenXR loader to version 2.2.0
 - Bump dependencies versions to match the latest Godot 4.x stable version (v4.0.3)
 
 ## 1.0.0
