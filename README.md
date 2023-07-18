@@ -1,7 +1,13 @@
 # Godot OpenXR Loaders
 
-This repository builds the Android plugin addon required for Godot 4 to export XR applications to 
-the Android devices.
+This repository builds the Android plugin addon required for Godot 4.2 (and higher) to export XR 
+applications to the Android devices.
+
+**Note:** 
+
+Version `2.x` of this plugin requires **Godot 4.2**.
+Check the [`1.x` branch](https://github.com/GodotVR/godot_openxr_loaders/tree/1.x) and releases 
+for support on prior versions of Godot 4.
 
 ## Building this asset
 
