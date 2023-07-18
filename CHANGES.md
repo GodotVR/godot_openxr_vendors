@@ -1,5 +1,8 @@
 # Change history for the Godot OpenXR loaders asset
 
+## 2.0.0
+- Update to the new Godot 4.2 Android plugin packaging format
+
 ## 1.1.0
 - Update Meta OpenXR loader to version 54
 - Update PICO OpenXR loader to version 2.2.0
