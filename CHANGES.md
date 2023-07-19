@@ -9,6 +9,7 @@
 - Add the ability to customize supported Meta devices
 - Add support for Quest 3 devices
 - Update the directory structure for the v2 plugin
+- Add export options for the Meta scene capture API
 
 ## 1.1.0
 - Update Meta OpenXR loader to version 54
