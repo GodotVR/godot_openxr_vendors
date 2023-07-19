@@ -22,6 +22,12 @@ android {
             abiFilters "arm64-v8a"
         }
     }
+    externalNativeBuild {
+        cmake {
+            path file('CMakeLists.txt')
+            version versions.cmakeVersion
+        }
+    }
 
     namespace = "org.godotengine.openxr.vendors.meta"
 
@@ -44,9 +50,21 @@ android {
             withJavadocJar()
         }
     }
+
+    buildFeatures {
+        prefabPublishing true
+    }
+
+    prefab {
+        godotopenxrmeta {
+            headers "src/main/cpp/include"
+        }
+    }
 }
 
 dependencies {
+    implementation project(":common")
+
     implementation "androidx.core:core-ktx:$versions.coreKtxVersion"
     compileOnly libraries.godotAndroidLib
 }
@@ -63,5 +81,15 @@ task copyReleaseAARToAddons(type: Copy) {
     into '../demo/addons/godotopenxrvendors/meta/.bin/release'
 }
 
+task copyGdExtensionConfigToAssets(type: Copy) {
+    description 'Copy plugin.gdextension from the addons directory to the assets directory'
+
+    from '../demo/addons/godotopenxrvendors/meta/'
+    include 'plugin.gdextension'
+    into 'src/main/assets/addons/godotopenxrvendors/meta'
+}
+
+preBuild.dependsOn(copyGdExtensionConfigToAssets)
+assemble.dependsOn(copyGdExtensionConfigToAssets)
 assemble.finalizedBy(copyDebugAARToAddons)
 assemble.finalizedBy(copyReleaseAARToAddons)

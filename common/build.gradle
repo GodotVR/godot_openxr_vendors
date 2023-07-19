@@ -1,0 +1,36 @@
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+}
+
+android {
+    namespace 'org.godotengine.openxr.vendors.common'
+    compileSdk versions.compileSdk
+
+    defaultConfig {
+        minSdk versions.minSdk
+        targetSdk versions.targetSdk
+    }
+    externalNativeBuild {
+        cmake {
+            path file('CMakeLists.txt')
+            version versions.cmakeVersion
+        }
+    }
+
+    packagingOptions {
+        doNotStrip '**/*.so'
+    }
+
+    compileOptions {
+        sourceCompatibility versions.javaVersion
+        targetCompatibility versions.javaVersion
+    }
+    kotlinOptions {
+        jvmTarget = versions.javaVersion
+    }
+}
+
+dependencies {
+    implementation "androidx.core:core-ktx:$versions.coreKtxVersion"
+}

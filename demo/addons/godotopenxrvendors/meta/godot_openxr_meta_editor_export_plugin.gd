@@ -68,6 +68,19 @@ const PASSTHROUGH_OPTION = {
 	"update_visibility": false,
 }
 
+const USE_ANCHOR_API_OPTION = {
+	"option": {
+		"name": "meta_xr_features/use_anchor_api",
+		"class_name": "",
+		"type": TYPE_BOOL,
+		"hint": PROPERTY_HINT_NONE,
+		"hint_string": "",
+		"usage": PROPERTY_USAGE_DEFAULT,
+	},
+	"default_value": false,
+	"update_visibility": false,
+}
+
 const SUPPORT_QUEST_1_OPTION = {
 	"option": {
 		"name": "meta_xr_features/quest_1_support",
@@ -130,6 +143,7 @@ func _get_export_options(platform) -> Array[Dictionary]:
 		HAND_TRACKING_OPTION,
 		HAND_TRACKING_FREQUENCY_OPTION, 
 		PASSTHROUGH_OPTION,
+		USE_ANCHOR_API_OPTION,
 		SUPPORT_QUEST_1_OPTION,
 		SUPPORT_QUEST_2_OPTION,
 		SUPPORT_QUEST_3_OPTION,
@@ -195,6 +209,10 @@ func _get_export_option_warning(platform, option) -> String:
 			if not(openxr_enabled) and _get_int_option(option, PASSTHROUGH_NONE_VALUE) > PASSTHROUGH_NONE_VALUE:
 				warning = "\"Passthrough\" requires \"XR Mode\" to be \"OpenXR\".\n"
 				
+		"meta_xr_features/use_anchor_api":
+			if not(openxr_enabled) and _get_bool_option(option):
+				warning = "\"Use anchor API\" is only valid when \"XR Mode\" is \"OpenXR\"."
+
 		_:
 			warning = super._get_export_option_warning(platform, option)
 	
@@ -234,6 +252,11 @@ func _get_android_manifest_element_contents(platform, debug) -> String:
 	elif passthrough_mode == PASSTHROUGH_REQUIRED_VALUE:
 		contents += "    <uses-feature tools:node=\"replace\" android:name=\"com.oculus.feature.PASSTHROUGH\" android:required=\"true\" />\n"
 	
+	# Check for anchor api
+	var use_anchor_api = _get_bool_option("meta_xr_features/use_anchor_api")
+	if use_anchor_api:
+		contents += "    <uses-permission android:name=\"com.oculus.permission.USE_ANCHOR_API\" />\n"
+
 	return contents
 
 
