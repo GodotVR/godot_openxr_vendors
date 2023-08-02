@@ -13,11 +13,11 @@ jobs:
     # this is why we checkout into aar and build into asset
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: aar
       - name: Setup java
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
           java-version: 11
           distribution: 'adopt'
@@ -40,7 +40,7 @@ jobs:
           cp aar/godotopenxrpico/src/main/jniLibs/arm64-v8a/README.md asset/addons/godotopenxr/export/pico/LICENSE.md
           cp aar/godotopenxrkhr/LICENSE asset/addons/godotopenxr/export/khr/LICENSE
       - name: Create Godot OpenXR loader addon artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: GodotOpenXRLoadersAddon
           path: |
@@ -56,6 +56,8 @@ jobs:
           artifacts: "godotopenxrloadersaddon.zip"
           omitNameDuringUpdate: true
           omitBodyDuringUpdate: true
+          omitDraftDuringUpdate: true
+          omitPrereleaseDuringUpdate: true
           token: ${{ secrets.GITHUB_TOKEN }}
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
 
