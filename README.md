@@ -52,6 +52,7 @@ selecting `Android`
 - Tick the `Use Gradle Build` tickbox
 - Select `OpenXR` as the **XR Mode** under the **XR Features** section
 - Enable the loader you need to use
+- Scroll down to the bottom to see additional features for specific platforms.
 
 **Note:**
 **Do not** select multiple loaders in the same export template!
