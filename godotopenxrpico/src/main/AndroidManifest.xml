@@ -4,7 +4,7 @@
 
     <application>
         <!-- Godot plugin registration -->
-        <meta-data android:name="org.godotengine.plugin.v1.GodotOpenXRPico"
+        <meta-data android:name="org.godotengine.plugin.v2.GodotOpenXRPico"
             android:value="org.godotengine.openxrloaders.pico.GodotOpenXRPico" />
 
         <!-- Enable VR mode on Pico headsets -->

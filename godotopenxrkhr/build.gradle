@@ -49,19 +49,19 @@ android {
 }
 
 dependencies {
-    compileOnly "org.godotengine:godot:$versions.godotLibVersion"
+    compileOnly libraries.godotAndroidLib
 }
 
 task copyDebugAARToAddons(type: Copy) {
     from 'build/outputs/aar'
     include 'godotopenxrkhr-debug.aar'
-    into '../demo/addons/godotopenxr/export/khr'
+    into '../demo/addons/godotopenxr/.bin/khr'
 }
 
 task copyReleaseAARToAddons(type: Copy) {
     from 'build/outputs/aar'
     include 'godotopenxrkhr-release.aar'
-    into '../demo/addons/godotopenxr/export/khr'
+    into '../demo/addons/godotopenxr/.bin/khr'
 }
 
 assemble.finalizedBy(copyDebugAARToAddons)

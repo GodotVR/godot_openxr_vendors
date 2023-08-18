@@ -1,4 +1,4 @@
 # Godot 4+ specific ignores
 .godot/
-/addons/godotopenxr/export/*/*.aar
+/addons/godotopenxr/.bin/*/*.aar
 /android/

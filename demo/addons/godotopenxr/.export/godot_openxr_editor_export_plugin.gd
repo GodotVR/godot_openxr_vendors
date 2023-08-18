@@ -18,7 +18,7 @@ func _get_name() -> String:
 # Path to the Android library aar file
 # If this is not available, we fall back to the maven central dependency
 func _get_android_aar_file_path(debug: bool) -> String:
-	return "res://addons/godotopenxr/export/" + _vendor + "/godotopenxr" + _vendor + "-" + ("debug.aar" if debug else "release.aar")
+	return "res://addons/godotopenxr/.bin/" + _vendor + "/godotopenxr" + _vendor + "-" + ("debug.aar" if debug else "release.aar")
 
 
 # Maven central dependency used as fall back when the Android library aar file is not available
@@ -114,7 +114,7 @@ func _get_android_libraries(platform, debug) -> PackedStringArray:
 	if not _supports_platform(platform):
 		return PackedStringArray()
 		
-	if _is_vendor_plugin_enabled() and _is_android_aar_file_available(debug):	
+	if _is_vendor_plugin_enabled() and _is_android_aar_file_available(debug):
 		return PackedStringArray([_get_android_aar_file_path(debug)])
 		
 	return PackedStringArray()
