@@ -2,6 +2,8 @@
 
 ## 2.0.0
 - Update to the new Godot 4.2 Android plugin packaging format
+- Update the plugin to Godot v2 Android plugin
+- Update to the Godot 4.2 Android library
 
 ## 1.1.0
 - Update Meta OpenXR loader to version 54

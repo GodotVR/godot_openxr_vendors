@@ -36,9 +36,9 @@ jobs:
           cp aar/CHANGES.md asset/addons/godotopenxr/GodotOpenXRLoaders_CHANGES.md
       - name: Adding vendor licences
         run: |
-          cp aar/godotopenxrmeta/LICENSE.txt asset/addons/godotopenxr/export/meta/
-          cp aar/godotopenxrpico/src/main/jniLibs/arm64-v8a/README.md asset/addons/godotopenxr/export/pico/LICENSE.md
-          cp aar/godotopenxrkhr/LICENSE asset/addons/godotopenxr/export/khr/LICENSE
+          cp aar/godotopenxrmeta/LICENSE.txt asset/addons/godotopenxr/.export/meta/
+          cp aar/godotopenxrpico/src/main/jniLibs/arm64-v8a/README.md asset/addons/godotopenxr/.export/pico/LICENSE.md
+          cp aar/godotopenxrkhr/LICENSE asset/addons/godotopenxr/.export/khr/LICENSE
       - name: Create Godot OpenXR loader addon artifact
         uses: actions/upload-artifact@v3
         with:

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.godotengine.openxrloaders.lynx"
-    xmlns:tools="http://schemas.android.com/tools">
+    package="org.godotengine.openxrloaders.lynx">
 
     <uses-permission android:name="org.khronos.openxr.permission.OPENXR_SYSTEM" />
     
@@ -19,7 +18,7 @@
 
     <application>
         <meta-data
-            android:name="org.godotengine.plugin.v1.GodotOpenXRLynx"
+            android:name="org.godotengine.plugin.v2.GodotOpenXRLynx"
             android:value="org.godotengine.openxrloaders.khr.GodotOpenXRLynx" />
 
         <meta-data android:name="handtracking" android:value="1" />
