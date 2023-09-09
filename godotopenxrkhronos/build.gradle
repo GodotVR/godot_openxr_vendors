@@ -4,7 +4,7 @@ plugins {
 
 
 ext {
-    PUBLISH_ARTIFACT_ID = 'godot-openxr-loaders-khr'
+    PUBLISH_ARTIFACT_ID = 'godot-openxr-loaders-khronos'
 }
 
 apply from: "../scripts/publish-module.gradle"
@@ -22,7 +22,7 @@ android {
         }
     }
 
-    namespace = "org.godotengine.openxrloaders.khr"
+    namespace = "org.godotengine.openxrloaders.khronos"
 
     buildTypes {
         debug {
@@ -54,14 +54,14 @@ dependencies {
 
 task copyDebugAARToAddons(type: Copy) {
     from 'build/outputs/aar'
-    include 'godotopenxrkhr-debug.aar'
-    into '../demo/addons/godotopenxr/.bin/khr'
+    include 'godotopenxrkhronos-debug.aar'
+    into '../demo/addons/godotopenxr/.bin/khronos'
 }
 
 task copyReleaseAARToAddons(type: Copy) {
     from 'build/outputs/aar'
-    include 'godotopenxrkhr-release.aar'
-    into '../demo/addons/godotopenxr/.bin/khr'
+    include 'godotopenxrkhronos-release.aar'
+    into '../demo/addons/godotopenxr/.bin/khronos'
 }
 
 assemble.finalizedBy(copyDebugAARToAddons)

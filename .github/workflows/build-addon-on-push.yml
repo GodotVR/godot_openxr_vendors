@@ -38,7 +38,7 @@ jobs:
         run: |
           cp aar/godotopenxrmeta/LICENSE.txt asset/addons/godotopenxr/.export/meta/
           cp aar/godotopenxrpico/src/main/jniLibs/arm64-v8a/README.md asset/addons/godotopenxr/.export/pico/LICENSE.md
-          cp aar/godotopenxrkhr/LICENSE asset/addons/godotopenxr/.export/khr/LICENSE
+          cp aar/godotopenxrkhronos/LICENSE asset/addons/godotopenxr/.export/khronos/LICENSE
       - name: Create Godot OpenXR loader addon artifact
         uses: actions/upload-artifact@v3
         with:

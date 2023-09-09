@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.godotengine.openxrloaders.khr">
+    package="org.godotengine.openxrloaders.khronos">
 
     <!-- Tell the system this app works in either 3dof or 6dof mode -->
     <uses-feature
@@ -21,8 +21,8 @@
 
     <application>
         <meta-data
-            android:name="org.godotengine.plugin.v2.GodotOpenXRKHR"
-            android:value="org.godotengine.openxrloaders.khr.GodotOpenXRKHR" />
+            android:name="org.godotengine.plugin.v2.GodotOpenXRKhronos"
+            android:value="org.godotengine.openxrloaders.khronos.GodotOpenXRKhronos" />
     </application>
 
 </manifest>

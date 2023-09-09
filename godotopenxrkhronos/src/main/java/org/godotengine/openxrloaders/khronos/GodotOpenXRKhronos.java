@@ -1,10 +1,10 @@
-package org.godotengine.openxrloaders.khr;
+package org.godotengine.openxrloaders.khronos;
 
 import org.godotengine.godot.Godot;
 import org.godotengine.godot.plugin.GodotPlugin;
 
 /**
- * \brief GodotOpenXRKHR is the OpenXR KHR loader plugin for Godot.
+ * \brief GodotOpenXRKhronos is the OpenXR Khronos loader plugin for Godot.
  *
  * When using OpenXR for your application on Android make sure that
  * the IMMERSIVE_HMD category is added to your activities intent-filter.
@@ -19,14 +19,14 @@ import org.godotengine.godot.plugin.GodotPlugin;
  * https://registry.khronos.org/OpenXR/specs/1.0/html/xrspec.html#android-runtime-category
  *
  */
-public class GodotOpenXRKHR extends GodotPlugin {
+public class GodotOpenXRKhronos extends GodotPlugin {
 
-    public GodotOpenXRKHR(Godot godot) {
+    public GodotOpenXRKhronos(Godot godot) {
         super(godot);
     }
 
     @Override
     public String getPluginName() {
-        return "GodotOpenXRKHR";
+        return "GodotOpenXRKhronos";
     }
 }

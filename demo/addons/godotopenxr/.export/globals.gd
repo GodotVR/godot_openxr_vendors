@@ -4,7 +4,7 @@
 const META_VENDOR_NAME = "meta"
 const PICO_VENDOR_NAME = "pico"
 const LYNX_VENDOR_NAME = "lynx"
-const KHRONOS_VENDOR_NAME = "khr"
+const KHRONOS_VENDOR_NAME = "khronos"
 
 const VENDORS_LIST = [
 	META_VENDOR_NAME, 
