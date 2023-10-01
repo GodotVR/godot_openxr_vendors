@@ -1,0 +1,13 @@
+@tool
+
+const META_VENDOR_NAME = "meta"
+const PICO_VENDOR_NAME = "pico"
+const LYNX_VENDOR_NAME = "lynx"
+const KHRONOS_VENDOR_NAME = "khr"
+
+const VENDORS_LIST = [
+	META_VENDOR_NAME, 
+	PICO_VENDOR_NAME,
+	LYNX_VENDOR_NAME,
+	KHRONOS_VENDOR_NAME,
+	]

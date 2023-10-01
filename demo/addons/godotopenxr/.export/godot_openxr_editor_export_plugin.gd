@@ -1,6 +1,8 @@
 @tool
 class_name GodotOpenXREditorExportPlugin extends EditorExportPlugin
 
+var globals = preload("globals.gd")
+
 const OPENXR_MODE_VALUE = 1
 	
 var _vendor: String
@@ -26,14 +28,14 @@ func _get_android_maven_central_dependency() -> String:
 	return "org.godotengine:godot-openxr-loaders-" + _vendor + ":" + _plugin_version
 
 
-func _get_vendor_toggle_option_name() -> String:
-	return "xr_features/enable_" + _vendor + "_plugin"
+func _get_vendor_toggle_option_name(vendor_name: String = _vendor) -> String:
+	return "xr_features/enable_" + vendor_name + "_plugin"
 
 
-func _get_vendor_toggle_option() -> Dictionary:
+func _get_vendor_toggle_option(vendor_name: String = _vendor) -> Dictionary:
 	var toggle_option = {
 		"option": {
-			"name": _get_vendor_toggle_option_name(),
+			"name": _get_vendor_toggle_option_name(vendor_name),
 			"class_name": "",
 			"type": TYPE_BOOL,
 			"hint": PROPERTY_HINT_NONE,
@@ -69,7 +71,12 @@ func _get_export_option_warning(platform, option) -> String:
 	if not(_is_openxr_enabled()) and _get_bool_option(option):
 		return "\"Enable " + _vendor.capitalize() + " Plugin\" requires \"XR Mode\" to be \"OpenXR\".\n"
 	
-	return ""		
+	if _is_vendor_plugin_enabled():
+		for vendor_name in globals.VENDORS_LIST:
+			if (vendor_name != _vendor) and _is_vendor_plugin_enabled(vendor_name):
+				return "\"Disable " + _vendor.capitalize() + " Plugin before enabling another. Multiple plugins are not supported!\""
+	
+	return ""
 
 
 func _supports_platform(platform) -> bool:
@@ -92,8 +99,8 @@ func _get_int_option(option: String, default_value: int) -> int:
 	return default_value
 
 
-func _is_vendor_plugin_enabled() -> bool:
-	return _get_bool_option(_get_vendor_toggle_option_name())
+func _is_vendor_plugin_enabled(vendor_name: String = _vendor) -> bool:
+	return _get_bool_option(_get_vendor_toggle_option_name(vendor_name))
 	
 
 func _is_android_aar_file_available(debug: bool) -> bool:
