@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://cqsodpswgup8w"]
+[gd_scene load_steps=10 format=3 uid="uid://cqsodpswgup8w"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_fsva1"]
 
@@ -20,7 +20,14 @@ size = Vector3(0.1, 0.1, 0.1)
 [sub_resource type="BoxMesh" id="BoxMesh_ey3x4"]
 size = Vector3(0.1, 0.1, 0.1)
 
+[sub_resource type="SphereMesh" id="SphereMesh_5gcab"]
+radius = 0.025
+height = 0.05
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_k604q"]
+
 [sub_resource type="PlaneMesh" id="PlaneMesh_mjcgt"]
+material = SubResource("StandardMaterial3D_k604q")
 size = Vector2(10, 10)
 
 [node name="Main" type="Node3D"]
@@ -39,7 +46,7 @@ shadow_enabled = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.352791, 0)
 
 [node name="LeftHand" type="XRController3D" parent="XROrigin3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.460909, 0, -0.241118)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.460909, 0.388594, -0.241118)
 tracker = &"left_hand"
 pose = &"aim"
 
@@ -47,11 +54,19 @@ pose = &"aim"
 mesh = SubResource("BoxMesh_3kt6b")
 
 [node name="RightHand" type="XRController3D" parent="XROrigin3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.478861, 0, -0.241097)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.478861, 0.468292, -0.241097)
 tracker = &"right_hand"
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/RightHand"]
+[node name="RightHandMesh" type="MeshInstance3D" parent="XROrigin3D/RightHand"]
 mesh = SubResource("BoxMesh_ey3x4")
+
+[node name="EyeGaze" type="XRController3D" parent="XROrigin3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.977669, 0)
+tracker = &"/user/eyes_ext"
+
+[node name="EyeGazeMesh" type="MeshInstance3D" parent="XROrigin3D/EyeGaze"]
+transform = Transform3D(1, 0, 0, 0, -0.0133513, 0.999911, 0, -0.999911, -0.0133513, 0, 0, -1.18886)
+mesh = SubResource("SphereMesh_5gcab")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 mesh = SubResource("PlaneMesh_mjcgt")

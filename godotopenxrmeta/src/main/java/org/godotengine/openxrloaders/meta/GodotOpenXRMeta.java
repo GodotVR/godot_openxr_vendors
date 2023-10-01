@@ -17,4 +17,19 @@ public class GodotOpenXRMeta extends GodotPlugin {
         return "GodotOpenXRMeta";
     }
 
+    @Override
+    public boolean supportsFeature(String featureTag) {
+        if ("PERMISSION_XR_EXT_eye_gaze_interaction".equals(featureTag)) {
+            String[] grantedPermissions = getGodot().getGrantedPermissions();
+            if (grantedPermissions != null) {
+                for (String permission : grantedPermissions) {
+                    if ("com.oculus.permission.EYE_TRACKING".equals(permission)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
 }
