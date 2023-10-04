@@ -1,6 +1,10 @@
 @tool
 extends "../godot_openxr_editor_export_plugin.gd"
 
+const EYE_TRACKING_NONE_VALUE = 0
+const EYE_TRACKING_OPTIONAL_VALUE = 1
+const EYE_TRACKING_REQUIRED_VALUE = 2
+
 const PASSTHROUGH_NONE_VALUE = 0
 const PASSTHROUGH_OPTIONAL_VALUE = 1
 const PASSTHROUGH_REQUIRED_VALUE = 2
@@ -11,7 +15,20 @@ const HAND_TRACKING_REQUIRED_VALUE = 2
 
 const HAND_TRACKING_FREQUENCY_LOW_VALUE = 0
 const HAND_TRACKING_FREQUENCY_HIGH_VALUE = 1
-	
+
+const EYE_TRACKING_OPTION = {
+	"option": {
+		"name": "meta_xr_features/eye_tracking",
+		"class_name": "",
+		"type": TYPE_INT,
+		"hint": PROPERTY_HINT_ENUM,
+		"hint_string": "None,Optional,Required",
+		"usage": PROPERTY_USAGE_DEFAULT,
+	},
+	"default_value": EYE_TRACKING_NONE_VALUE,
+	"update_visibility": false,
+}
+
 const HAND_TRACKING_OPTION = {
 	"option": {
 		"name": "meta_xr_features/hand_tracking",
@@ -57,12 +74,35 @@ func _get_export_options(platform) -> Array[Dictionary]:
 		return []
 	
 	return [
-		_get_vendor_toggle_option(), 
+		_get_vendor_toggle_option(),
+		EYE_TRACKING_OPTION,
 		HAND_TRACKING_OPTION,
 		HAND_TRACKING_FREQUENCY_OPTION, 
 		PASSTHROUGH_OPTION,
 	]
-	
+
+
+func _is_eye_tracking_enabled() -> bool:
+	var eye_tracking_project_setting_enabled = ProjectSettings.get_setting_with_override("xr/openxr/extensions/eye_gaze_interaction")
+	if not(eye_tracking_project_setting_enabled):
+		return false
+
+	var eye_tracking_option_value = _get_int_option("meta_xr_features/eye_tracking", EYE_TRACKING_NONE_VALUE)
+	return eye_tracking_option_value > EYE_TRACKING_NONE_VALUE
+
+
+func _get_export_features(platform, debug) -> PackedStringArray:
+	var features = PackedStringArray()
+
+	if not _supports_platform(platform):
+		return features
+
+	# Add the eye tracking feature if necessary
+	if _is_eye_tracking_enabled():
+		features.append(globals.EYE_GAZE_INTERACTION_FEATURE)
+
+	return features
+
 
 func _get_export_option_warning(platform, option) -> String:
 	if not _supports_platform(platform):
@@ -71,6 +111,12 @@ func _get_export_option_warning(platform, option) -> String:
 	var warning = ""
 	var openxr_enabled = _is_openxr_enabled()
 	match (option):				
+		"meta_xr_features/eye_tracking":
+			var eye_tracking_project_setting_enabled = ProjectSettings.get_setting_with_override("xr/openxr/extensions/eye_gaze_interaction")
+			var eye_tracking_option_value = _get_int_option("meta_xr_features/eye_tracking", EYE_TRACKING_NONE_VALUE)
+			if eye_tracking_option_value > EYE_TRACKING_NONE_VALUE and not(eye_tracking_project_setting_enabled):
+				warning = "\"Eye Tracking\" project setting must be enabled!\n"
+
 		"meta_xr_features/hand_tracking":
 			if not(openxr_enabled) and _get_int_option(option, HAND_TRACKING_NONE_VALUE) > HAND_TRACKING_NONE_VALUE:
 				warning = "\"Hand Tracking\" requires \"XR Mode\" to be \"OpenXR\".\n"
@@ -91,6 +137,17 @@ func _get_android_manifest_element_contents(platform, debug) -> String:
 	
 	var contents = ""
 	
+	# Check for eye tracking
+	if _is_eye_tracking_enabled():
+		contents += "    <uses-permission android:name=\"com.oculus.permission.EYE_TRACKING\" />\n"
+
+		var eye_tracking_value = _get_int_option("meta_xr_features/eye_tracking", EYE_TRACKING_NONE_VALUE)
+		if eye_tracking_value == EYE_TRACKING_OPTIONAL_VALUE:
+			contents += "    <uses-feature android:name=\"oculus.software.eye_tracking\" android:required=\"false\" />\n"
+		elif eye_tracking_value == EYE_TRACKING_REQUIRED_VALUE:
+			contents += "    <uses-feature android:name=\"oculus.software.eye_tracking\" android:required=\"true\" />\n"
+
+
 	# Check for hand tracking
 	var hand_tracking_value = _get_int_option("meta_xr_features/hand_tracking", HAND_TRACKING_NONE_VALUE)
 	if hand_tracking_value > HAND_TRACKING_NONE_VALUE:

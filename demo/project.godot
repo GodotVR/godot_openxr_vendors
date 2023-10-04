@@ -28,4 +28,5 @@ textures/vram_compression/import_etc2_astc=true
 [xr]
 
 openxr/enabled=true
+openxr/extensions/eye_gaze_interaction=true
 shaders/enabled=true

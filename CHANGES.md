@@ -4,6 +4,8 @@
 - Update to the new Godot 4.2 Android plugin packaging format
 - Update the plugin to Godot v2 Android plugin
 - Update to the Godot 4.2 Android library
+- Add warning when multiple loaders are selected
+- Add configs for the OpenXR Eye gaze interaction extension
 
 ## 1.1.0
 - Update Meta OpenXR loader to version 54

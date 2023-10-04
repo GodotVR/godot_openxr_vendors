@@ -1,4 +1,4 @@
-[gd_resource type="OpenXRActionMap" load_steps=197 format=3 uid="uid://b1wdu77pwks8y"]
+[gd_resource type="OpenXRActionMap" load_steps=199 format=3 uid="uid://b1wdu77pwks8y"]
 
 [sub_resource type="OpenXRAction" id="OpenXRAction_6v1ja"]
 resource_name = "trigger"
@@ -115,7 +115,7 @@ toplevel_paths = PackedStringArray("/user/hand/left", "/user/hand/right")
 resource_name = "default_pose"
 localized_name = "Default pose"
 action_type = 3
-toplevel_paths = PackedStringArray("/user/hand/left", "/user/hand/right", "/user/vive_tracker_htcx/role/left_foot", "/user/vive_tracker_htcx/role/right_foot", "/user/vive_tracker_htcx/role/left_shoulder", "/user/vive_tracker_htcx/role/right_shoulder", "/user/vive_tracker_htcx/role/left_elbow", "/user/vive_tracker_htcx/role/right_elbow", "/user/vive_tracker_htcx/role/left_knee", "/user/vive_tracker_htcx/role/right_knee", "/user/vive_tracker_htcx/role/waist", "/user/vive_tracker_htcx/role/chest", "/user/vive_tracker_htcx/role/camera", "/user/vive_tracker_htcx/role/keyboard")
+toplevel_paths = PackedStringArray("/user/hand/left", "/user/hand/right", "/user/vive_tracker_htcx/role/left_foot", "/user/vive_tracker_htcx/role/right_foot", "/user/vive_tracker_htcx/role/left_shoulder", "/user/vive_tracker_htcx/role/right_shoulder", "/user/vive_tracker_htcx/role/left_elbow", "/user/vive_tracker_htcx/role/right_elbow", "/user/vive_tracker_htcx/role/left_knee", "/user/vive_tracker_htcx/role/right_knee", "/user/vive_tracker_htcx/role/waist", "/user/vive_tracker_htcx/role/chest", "/user/vive_tracker_htcx/role/camera", "/user/vive_tracker_htcx/role/keyboard", "/user/eyes_ext")
 
 [sub_resource type="OpenXRAction" id="OpenXRAction_1vol5"]
 resource_name = "aim_pose"
@@ -455,7 +455,7 @@ action = SubResource("OpenXRAction_0kk6l")
 paths = PackedStringArray("/user/hand/left/output/haptic", "/user/hand/right/output/haptic")
 
 [sub_resource type="OpenXRInteractionProfile" id="OpenXRInteractionProfile_ert82"]
-interaction_profile_path = "/interaction_profiles/pico/neo3_controller"
+interaction_profile_path = "/interaction_profiles/bytedance/pico_neo3_controller"
 bindings = [SubResource("OpenXRIPBinding_jwljs"), SubResource("OpenXRIPBinding_ajdja"), SubResource("OpenXRIPBinding_tla6d"), SubResource("OpenXRIPBinding_377i1"), SubResource("OpenXRIPBinding_xa4wm"), SubResource("OpenXRIPBinding_7xuhj"), SubResource("OpenXRIPBinding_03t7v"), SubResource("OpenXRIPBinding_b08bq"), SubResource("OpenXRIPBinding_fxhob"), SubResource("OpenXRIPBinding_661oy"), SubResource("OpenXRIPBinding_vsv5g"), SubResource("OpenXRIPBinding_bxu5n"), SubResource("OpenXRIPBinding_xer3x"), SubResource("OpenXRIPBinding_urrdv"), SubResource("OpenXRIPBinding_e1sbn"), SubResource("OpenXRIPBinding_vmo5c"), SubResource("OpenXRIPBinding_lytd7"), SubResource("OpenXRIPBinding_feotl"), SubResource("OpenXRIPBinding_fxu5d")]
 
 [sub_resource type="OpenXRIPBinding" id="OpenXRIPBinding_w77tt"]
@@ -830,6 +830,14 @@ paths = PackedStringArray("/user/vive_tracker_htcx/role/left_foot/output/haptic"
 interaction_profile_path = "/interaction_profiles/htc/vive_tracker_htcx"
 bindings = [SubResource("OpenXRIPBinding_vke8d"), SubResource("OpenXRIPBinding_3o4hq")]
 
+[sub_resource type="OpenXRIPBinding" id="OpenXRIPBinding_73bb6"]
+action = SubResource("OpenXRAction_vk7pf")
+paths = PackedStringArray("/user/eyes_ext/input/gaze_ext/pose")
+
+[sub_resource type="OpenXRInteractionProfile" id="OpenXRInteractionProfile_07fna"]
+interaction_profile_path = "/interaction_profiles/ext/eye_gaze_interaction"
+bindings = [SubResource("OpenXRIPBinding_73bb6")]
+
 [resource]
 action_sets = [SubResource("OpenXRActionSet_kd2ms")]
-interaction_profiles = [SubResource("OpenXRInteractionProfile_kitsa"), SubResource("OpenXRInteractionProfile_uoohe"), SubResource("OpenXRInteractionProfile_k2llo"), SubResource("OpenXRInteractionProfile_2masb"), SubResource("OpenXRInteractionProfile_ert82"), SubResource("OpenXRInteractionProfile_aq5p3"), SubResource("OpenXRInteractionProfile_4petf"), SubResource("OpenXRInteractionProfile_sd46l"), SubResource("OpenXRInteractionProfile_prh4s"), SubResource("OpenXRInteractionProfile_kk5vf"), SubResource("OpenXRInteractionProfile_wxdsn")]
+interaction_profiles = [SubResource("OpenXRInteractionProfile_kitsa"), SubResource("OpenXRInteractionProfile_uoohe"), SubResource("OpenXRInteractionProfile_k2llo"), SubResource("OpenXRInteractionProfile_2masb"), SubResource("OpenXRInteractionProfile_ert82"), SubResource("OpenXRInteractionProfile_aq5p3"), SubResource("OpenXRInteractionProfile_4petf"), SubResource("OpenXRInteractionProfile_sd46l"), SubResource("OpenXRInteractionProfile_prh4s"), SubResource("OpenXRInteractionProfile_kk5vf"), SubResource("OpenXRInteractionProfile_wxdsn"), SubResource("OpenXRInteractionProfile_07fna")]
