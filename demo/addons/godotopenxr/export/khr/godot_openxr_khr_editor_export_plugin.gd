@@ -1,5 +1,5 @@
 @tool
-extends "../godot_openxr_editor_export_plugin.gd"
+extends "../godot_openxr_export_plugin.gd".GodotOpenXREditorExportPlugin
 
 
 func _get_android_manifest_activity_element_contents(platform, debug) -> String:

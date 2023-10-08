@@ -55,13 +55,13 @@ dependencies {
 task copyDebugAARToAddons(type: Copy) {
     from 'build/outputs/aar'
     include 'godotopenxrkhr-debug.aar'
-    into '../demo/addons/godotopenxr/.bin/khr'
+    into '../demo/addons/godotopenxr/.bin/khr/debug'
 }
 
 task copyReleaseAARToAddons(type: Copy) {
     from 'build/outputs/aar'
     include 'godotopenxrkhr-release.aar'
-    into '../demo/addons/godotopenxr/.bin/khr'
+    into '../demo/addons/godotopenxr/.bin/khr/release'
 }
 
 assemble.finalizedBy(copyDebugAARToAddons)

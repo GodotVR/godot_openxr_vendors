@@ -17,6 +17,7 @@ android {
         versionName getReleaseVersion()
 
         ndk {
+            //noinspection ChromeOsAbiSupport
             abiFilters "arm64-v8a"
         }
     }
@@ -47,13 +48,13 @@ dependencies {
 task copyDebugAARToAddons(type: Copy) {
     from 'build/outputs/aar'
     include 'godotopenxrpico-debug.aar'
-    into '../demo/addons/godotopenxr/.bin/pico'
+    into '../demo/addons/godotopenxr/.bin/pico/debug'
 }
 
 task copyReleaseAARToAddons(type: Copy) {
     from 'build/outputs/aar'
     include 'godotopenxrpico-release.aar'
-    into '../demo/addons/godotopenxr/.bin/pico'
+    into '../demo/addons/godotopenxr/.bin/pico/release'
 }
 
 assemble.finalizedBy(copyDebugAARToAddons)

@@ -15,3 +15,5 @@ const VENDORS_LIST = [
 
 # Set of custom feature tags supported by the plugin
 const EYE_GAZE_INTERACTION_FEATURE = "XR_EXT_eye_gaze_interaction"
+
+const OPENXR_MODE_VALUE = 1

@@ -17,6 +17,7 @@ android {
         versionName getReleaseVersion()
 
         ndk {
+            //noinspection ChromeOsAbiSupport
             abiFilters "arm64-v8a"
         }
     }
@@ -54,13 +55,13 @@ dependencies {
 task copyDebugAARToAddons(type: Copy) {
     from 'build/outputs/aar'
     include 'godotopenxrmeta-debug.aar'
-    into '../demo/addons/godotopenxr/.bin/meta'
+    into '../demo/addons/godotopenxr/.bin/meta/debug'
 }
 
 task copyReleaseAARToAddons(type: Copy) {
     from 'build/outputs/aar'
     include 'godotopenxrmeta-release.aar'
-    into '../demo/addons/godotopenxr/.bin/meta'
+    into '../demo/addons/godotopenxr/.bin/meta/release'
 }
 
 assemble.finalizedBy(copyDebugAARToAddons)
