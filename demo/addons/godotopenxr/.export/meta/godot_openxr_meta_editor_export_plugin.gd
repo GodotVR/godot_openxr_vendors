@@ -56,19 +56,70 @@ const HAND_TRACKING_FREQUENCY_OPTION = {
 }
 
 const PASSTHROUGH_OPTION = {
-		"option": {
-			"name": "meta_xr_features/passthrough",
-			"class_name": "",
-			"type": TYPE_INT,
-			"hint": PROPERTY_HINT_ENUM,
-			"hint_string": "None,Optional,Required",
-			"usage": PROPERTY_USAGE_DEFAULT,
-		}, 
-		"default_value": PASSTHROUGH_NONE_VALUE,
-		"update_visibility": false,
-	}
-	
-	
+	"option": {
+		"name": "meta_xr_features/passthrough",
+		"class_name": "",
+		"type": TYPE_INT,
+		"hint": PROPERTY_HINT_ENUM,
+		"hint_string": "None,Optional,Required",
+		"usage": PROPERTY_USAGE_DEFAULT,
+	},
+	"default_value": PASSTHROUGH_NONE_VALUE,
+	"update_visibility": false,
+}
+
+const SUPPORT_QUEST_1_OPTION = {
+	"option": {
+		"name": "meta_xr_features/quest_1_support",
+		"class_name": "",
+		"type": TYPE_BOOL,
+		"hint": PROPERTY_HINT_NONE,
+		"hint_string": "",
+		"usage": PROPERTY_USAGE_DEFAULT,
+	},
+	"default_value": false,
+	"update_visibility": false,
+}
+
+const SUPPORT_QUEST_2_OPTION = {
+	"option": {
+		"name": "meta_xr_features/quest_2_support",
+		"class_name": "",
+		"type": TYPE_BOOL,
+		"hint": PROPERTY_HINT_NONE,
+		"hint_string": "",
+		"usage": PROPERTY_USAGE_DEFAULT,
+	},
+	"default_value": true,
+	"update_visibility": false,
+}
+
+const SUPPORT_QUEST_3_OPTION = {
+	"option": {
+		"name": "meta_xr_features/quest_3_support",
+		"class_name": "",
+		"type": TYPE_BOOL,
+		"hint": PROPERTY_HINT_NONE,
+		"hint_string": "",
+		"usage": PROPERTY_USAGE_DEFAULT,
+	},
+	"default_value": true,
+	"update_visibility": false,
+}
+
+const SUPPORT_QUEST_PRO_OPTION = {
+	"option": {
+		"name": "meta_xr_features/quest_pro_support",
+		"class_name": "",
+		"type": TYPE_BOOL,
+		"hint": PROPERTY_HINT_NONE,
+		"hint_string": "",
+		"usage": PROPERTY_USAGE_DEFAULT,
+	},
+	"default_value": true,
+	"update_visibility": false,
+}
+
 func _get_export_options(platform) -> Array[Dictionary]:
 	if not _supports_platform(platform):
 		return []
@@ -79,7 +130,26 @@ func _get_export_options(platform) -> Array[Dictionary]:
 		HAND_TRACKING_OPTION,
 		HAND_TRACKING_FREQUENCY_OPTION, 
 		PASSTHROUGH_OPTION,
+		SUPPORT_QUEST_1_OPTION,
+		SUPPORT_QUEST_2_OPTION,
+		SUPPORT_QUEST_3_OPTION,
+		SUPPORT_QUEST_PRO_OPTION,
 	]
+
+
+func _get_supported_devices() -> PackedStringArray:
+	var supported_devices = PackedStringArray()
+
+	if _get_bool_option("meta_xr_features/quest_1_support"):
+		supported_devices.append("quest")
+	if _get_bool_option("meta_xr_features/quest_2_support"):
+		supported_devices.append("quest2")
+	if _get_bool_option("meta_xr_features/quest_3_support"):
+		supported_devices.append("quest3")
+	if _get_bool_option("meta_xr_features/quest_pro_support"):
+		supported_devices.append("questpro")
+
+	return supported_devices
 
 
 func _is_eye_tracking_enabled() -> bool:
@@ -172,7 +242,10 @@ func _get_android_manifest_application_element_contents(platform, debug) -> Stri
 		return ""
 	
 	var contents = ""
-	
+
+	var supported_devices = "|".join(_get_supported_devices())
+	contents += "        <meta-data tools:node=\"replace\" android:name=\"com.oculus.supportedDevices\" android:value=\"%s\" />\n" % supported_devices
+
 	var hand_tracking_enabled = _get_int_option("meta_xr_features/hand_tracking", HAND_TRACKING_NONE_VALUE) > HAND_TRACKING_NONE_VALUE
 	if hand_tracking_enabled:
 		var hand_tracking_frequency = _get_int_option("meta_xr_features/hand_tracking_frequency", HAND_TRACKING_FREQUENCY_LOW_VALUE)
