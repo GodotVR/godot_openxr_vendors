@@ -1,5 +1,5 @@
 @tool
-extends "../godot_openxr_editor_export_plugin.gd"
+extends "../godot_openxr_export_plugin.gd".GodotOpenXREditorExportPlugin
 
 const EYE_TRACKING_NONE_VALUE = 0
 const EYE_TRACKING_OPTIONAL_VALUE = 1
@@ -180,7 +180,7 @@ func _get_export_option_warning(platform, option) -> String:
 	
 	var warning = ""
 	var openxr_enabled = _is_openxr_enabled()
-	match (option):				
+	match (option):
 		"meta_xr_features/eye_tracking":
 			var eye_tracking_project_setting_enabled = ProjectSettings.get_setting_with_override("xr/openxr/extensions/eye_gaze_interaction")
 			var eye_tracking_option_value = _get_int_option("meta_xr_features/eye_tracking", EYE_TRACKING_NONE_VALUE)
