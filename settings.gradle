@@ -3,6 +3,8 @@ pluginManagement {
 
     plugins {
         id 'io.github.gradle-nexus.publish-plugin' version versions.nexusPublishVersion
+        id 'com.android.library' version versions.gradlePluginVersion
+        id 'org.jetbrains.kotlin.android' version versions.kotlinVersion
     }
     repositories {
         gradlePluginPortal()
@@ -19,5 +21,5 @@ dependencyResolutionManagement {
         maven { url "https://s01.oss.sonatype.org/content/repositories/snapshots/"}
     }
 }
-rootProject.name = "GodotOpenXRLoaders"
-include ':godotopenxrmeta', ':godotopenxrpico', ':godotopenxrkhr', ':godotopenxrlynx'
+rootProject.name = "GodotOpenXRVendors"
+include ':godotopenxrmeta', ':godotopenxrpico', ':godotopenxrkhronos', ':godotopenxrlynx'

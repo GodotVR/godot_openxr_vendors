@@ -1,9 +1,10 @@
 plugins {
     id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
 }
 
 ext {
-    PUBLISH_ARTIFACT_ID = 'godot-openxr-loaders-pico'
+    PUBLISH_ARTIFACT_ID = 'godot-openxr-vendors-pico'
 }
 
 apply from: "../scripts/publish-module.gradle"
@@ -22,7 +23,7 @@ android {
         }
     }
 
-    namespace = "org.godotengine.openxrloaders.pico"
+    namespace = "org.godotengine.openxr.vendors.pico"
 
     packagingOptions {
         doNotStrip '**/*.so'
@@ -31,6 +32,10 @@ android {
     compileOptions {
         sourceCompatibility versions.javaVersion
         targetCompatibility versions.javaVersion
+    }
+
+    kotlinOptions {
+        jvmTarget = versions.javaVersion
     }
 
     publishing {
@@ -42,19 +47,20 @@ android {
 }
 
 dependencies {
+    implementation "androidx.core:core-ktx:$versions.coreKtxVersion"
     compileOnly libraries.godotAndroidLib
 }
 
 task copyDebugAARToAddons(type: Copy) {
     from 'build/outputs/aar'
     include 'godotopenxrpico-debug.aar'
-    into '../demo/addons/godotopenxr/.bin/pico/debug'
+    into '../demo/addons/godotopenxrvendors/pico/.bin/debug'
 }
 
 task copyReleaseAARToAddons(type: Copy) {
     from 'build/outputs/aar'
     include 'godotopenxrpico-release.aar'
-    into '../demo/addons/godotopenxr/.bin/pico/release'
+    into '../demo/addons/godotopenxrvendors/pico/.bin/release'
 }
 
 assemble.finalizedBy(copyDebugAARToAddons)

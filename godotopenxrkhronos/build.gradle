@@ -1,10 +1,11 @@
 plugins {
     id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
 }
 
 
 ext {
-    PUBLISH_ARTIFACT_ID = 'godot-openxr-loaders-khr'
+    PUBLISH_ARTIFACT_ID = 'godot-openxr-vendors-khronos'
 }
 
 apply from: "../scripts/publish-module.gradle"
@@ -22,14 +23,7 @@ android {
         }
     }
 
-    namespace = "org.godotengine.openxrloaders.khr"
-
-    buildTypes {
-        debug {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
+    namespace = "org.godotengine.openxr.vendors.khronos"
 
     packagingOptions {
         doNotStrip '**/*.so'
@@ -38,6 +32,10 @@ android {
     compileOptions {
         sourceCompatibility versions.javaVersion
         targetCompatibility versions.javaVersion
+    }
+
+    kotlinOptions {
+        jvmTarget = versions.javaVersion
     }
 
     publishing {
@@ -49,19 +47,20 @@ android {
 }
 
 dependencies {
+    implementation "androidx.core:core-ktx:$versions.coreKtxVersion"
     compileOnly libraries.godotAndroidLib
 }
 
 task copyDebugAARToAddons(type: Copy) {
     from 'build/outputs/aar'
-    include 'godotopenxrkhr-debug.aar'
-    into '../demo/addons/godotopenxr/.bin/khr/debug'
+    include 'godotopenxrkhronos-debug.aar'
+    into '../demo/addons/godotopenxrvendors/khronos/.bin/debug'
 }
 
 task copyReleaseAARToAddons(type: Copy) {
     from 'build/outputs/aar'
-    include 'godotopenxrkhr-release.aar'
-    into '../demo/addons/godotopenxr/.bin/khr/release'
+    include 'godotopenxrkhronos-release.aar'
+    into '../demo/addons/godotopenxrvendors/khronos/.bin/release'
 }
 
 assemble.finalizedBy(copyDebugAARToAddons)

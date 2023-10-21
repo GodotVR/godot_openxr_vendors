@@ -7,7 +7,7 @@ var globals = preload("globals.gd")
 var meta_export_plugin : GodotOpenXREditorExportPlugin
 var pico_export_plugin : GodotOpenXREditorExportPlugin
 var lynx_export_plugin : GodotOpenXREditorExportPlugin
-var khr_export_plugin : GodotOpenXREditorExportPlugin
+var khronos_export_plugin : GodotOpenXREditorExportPlugin
 
 
 func _enter_tree():
@@ -23,13 +23,13 @@ func _enter_tree():
 	lynx_export_plugin = preload("lynx/godot_openxr_lynx_editor_export_plugin.gd").new()
 	lynx_export_plugin._setup(globals.LYNX_VENDOR_NAME, plugin_version)
 	
-	khr_export_plugin = preload("khr/godot_openxr_khr_editor_export_plugin.gd").new()
-	khr_export_plugin._setup(globals.KHRONOS_VENDOR_NAME, plugin_version)
+	khronos_export_plugin = preload("khronos/godot_openxr_khronos_editor_export_plugin.gd").new()
+	khronos_export_plugin._setup(globals.KHRONOS_VENDOR_NAME, plugin_version)
 	
 	add_export_plugin(meta_export_plugin)
 	add_export_plugin(pico_export_plugin)
 	add_export_plugin(lynx_export_plugin)
-	add_export_plugin(khr_export_plugin)
+	add_export_plugin(khronos_export_plugin)
 
 
 func _exit_tree():
@@ -37,12 +37,12 @@ func _exit_tree():
 	remove_export_plugin(meta_export_plugin)
 	remove_export_plugin(pico_export_plugin)
 	remove_export_plugin(lynx_export_plugin)
-	remove_export_plugin(khr_export_plugin)
+	remove_export_plugin(khronos_export_plugin)
 	
 	meta_export_plugin = null
 	pico_export_plugin = null
 	lynx_export_plugin = null
-	khr_export_plugin = null
+	khronos_export_plugin = null
 
 
 class GodotOpenXREditorExportPlugin extends EditorExportPlugin:
@@ -67,12 +67,12 @@ class GodotOpenXREditorExportPlugin extends EditorExportPlugin:
 	# If this is not available, we fall back to the maven central dependency
 	func _get_android_aar_file_path(debug: bool) -> String:
 		var debug_label = "debug" if debug else "release"
-		return "res://addons/godotopenxr/.bin/" + _vendor + "/" + debug_label + "/godotopenxr" + _vendor + "-" + debug_label + ".aar"
+		return "res://addons/godotopenxrvendors/" + _vendor + "/.bin/" + debug_label + "/godotopenxr" + _vendor + "-" + debug_label + ".aar"
 
 
 	# Maven central dependency used as fall back when the Android library aar file is not available
 	func _get_android_maven_central_dependency() -> String:
-		return "org.godotengine:godot-openxr-loaders-" + _vendor + ":" + _plugin_version
+		return "org.godotengine:godot-openxr-vendors-" + _vendor + ":" + _plugin_version
 
 
 	func _get_vendor_toggle_option_name(vendor_name: String = _vendor) -> String:

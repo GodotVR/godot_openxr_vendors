@@ -1,4 +1,4 @@
-# Godot OpenXR Lynx Android loader
+# Godot OpenXR Lynx Android plugin
 
 Binaries taken from Lynx at:
 https://portal.lynx-r.com/downloads/item/1/download/latest

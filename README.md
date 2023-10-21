@@ -1,7 +1,7 @@
-# Godot OpenXR Loaders
+# Godot OpenXR Vendors plugin
 
-This repository builds the Android plugin addon required for Godot 4.2 (and higher) to export XR 
-applications to the Android devices.
+This plugin provides the functionality to support vendor-specific XR 
+devices (e.g: Meta, Pico devices) and access vendor-specific OpenXR extensions
 
 **Note:** 
 
@@ -50,6 +50,9 @@ If you have build the asset from source, you need to create the `addons` folder 
 if it doesn't exist already, and then copy the content of the `demo/addons` folder to `addons` 
 in your project.
 
+Once the asset is added to your project, navigate to `Project` -> `Project Settings...` -> `Plugins` 
+and enable the plugin. 
+
 ### Configuring your export
 
 Back in Godot open the `Project` menu and select `Export...`:
@@ -57,12 +60,12 @@ Back in Godot open the `Project` menu and select `Export...`:
 selecting `Android`
 - Tick the `Use Gradle Build` tickbox
 - Select `OpenXR` as the **XR Mode** under the **XR Features** section
-- Enable the loader you need to use
+- Enable the XR vendor you need to use
 - Scroll down to the bottom to see additional features for specific platforms.
 
 **Note:**
-**Do not** select multiple loaders in the same export template!
-You can instead create multiple export templates, one for each loader.
+**Do not** select multiple vendors in the same export template!
+You can instead create multiple export templates, one for each vendor.
 
 ## License
 
