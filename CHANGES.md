@@ -11,6 +11,7 @@
 - Update the directory structure for the v2 plugin
 - Update Meta OpenXR mobile SDK to version 57
 - Update the java version to 17
+- Rename the plugin to 'Godot OpenXR Vendors'
 
 ## 1.1.0
 - Update Meta OpenXR loader to version 54

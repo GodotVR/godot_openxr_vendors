@@ -23,37 +23,37 @@ jobs:
           distribution: 'adopt'
       - name: Validate Gradle wrapper
         uses: gradle/wrapper-validation-action@v1
-      - name: Create Godot OpenXR loader AARs
+      - name: Create Godot OpenXR Vendors AARs
         run: |
           cd aar
           ./gradlew build
           cd ..
       # GODOT 4.2 ADDON GENERATION SECTION
-      - name: Create Godot OpenXR loader Addon
+      - name: Create Godot OpenXR Vendors Addon
         run: |
           mkdir asset
           cp -r aar/demo/addons asset
-          cp aar/CHANGES.md asset/addons/godotopenxr/GodotOpenXRLoaders_CHANGES.md
+          cp aar/CHANGES.md asset/addons/godotopenxrvendors/GodotOpenXRVendors_CHANGES.md
       - name: Adding vendor licences
         run: |
-          cp aar/godotopenxrmeta/LICENSE.txt asset/addons/godotopenxr/export/meta/
-          cp aar/godotopenxrpico/src/main/jniLibs/arm64-v8a/README.md asset/addons/godotopenxr/export/pico/LICENSE.md
-          cp aar/godotopenxrkhr/LICENSE asset/addons/godotopenxr/export/khr/LICENSE
-      - name: Create Godot OpenXR loader addon artifact
+          cp aar/godotopenxrmeta/LICENSE.txt asset/addons/godotopenxrvendors/meta/
+          cp aar/godotopenxrpico/src/main/jniLibs/arm64-v8a/README.md asset/addons/godotopenxrvendors/pico/LICENSE.md
+          cp aar/godotopenxrkhronos/LICENSE asset/addons/godotopenxrvendors/khronos/LICENSE
+      - name: Create Godot OpenXR Vendor addon artifact
         uses: actions/upload-artifact@v3
         with:
-          name: GodotOpenXRLoadersAddon
+          name: GodotOpenXRVendorsAddon
           path: |
             asset
       - name: Zip addon
         run: |
-          zip -qq -r godotopenxrloadersaddon.zip asset
+          zip -qq -r godotopenxrvendorsaddon.zip asset
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
       - name: Create and upload asset
         uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
-          artifacts: "godotopenxrloadersaddon.zip"
+          artifacts: "godotopenxrvendorsaddon.zip"
           omitNameDuringUpdate: true
           omitBodyDuringUpdate: true
           omitDraftDuringUpdate: true

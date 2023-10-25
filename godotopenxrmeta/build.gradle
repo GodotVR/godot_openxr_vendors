@@ -1,9 +1,10 @@
 plugins {
     id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
 }
 
 ext {
-    PUBLISH_ARTIFACT_ID = 'godot-openxr-loaders-meta'
+    PUBLISH_ARTIFACT_ID = 'godot-openxr-vendors-meta'
 }
 
 apply from: "../scripts/publish-module.gradle"
@@ -22,14 +23,7 @@ android {
         }
     }
 
-    namespace = "org.godotengine.openxrloaders.meta"
-
-    buildTypes {
-        debug {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
+    namespace = "org.godotengine.openxr.vendors.meta"
 
     packagingOptions {
         doNotStrip '**/*.so'
@@ -38,6 +32,10 @@ android {
     compileOptions {
         sourceCompatibility versions.javaVersion
         targetCompatibility versions.javaVersion
+    }
+
+    kotlinOptions {
+        jvmTarget = versions.javaVersion
     }
 
     publishing {
@@ -49,19 +47,20 @@ android {
 }
 
 dependencies {
+    implementation "androidx.core:core-ktx:$versions.coreKtxVersion"
     compileOnly libraries.godotAndroidLib
 }
 
 task copyDebugAARToAddons(type: Copy) {
     from 'build/outputs/aar'
     include 'godotopenxrmeta-debug.aar'
-    into '../demo/addons/godotopenxr/.bin/meta/debug'
+    into '../demo/addons/godotopenxrvendors/meta/.bin/debug'
 }
 
 task copyReleaseAARToAddons(type: Copy) {
     from 'build/outputs/aar'
     include 'godotopenxrmeta-release.aar'
-    into '../demo/addons/godotopenxr/.bin/meta/release'
+    into '../demo/addons/godotopenxrvendors/meta/.bin/release'
 }
 
 assemble.finalizedBy(copyDebugAARToAddons)

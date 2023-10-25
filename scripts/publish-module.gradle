@@ -18,7 +18,7 @@ afterEvaluate {
                 // Mostly self-explanatory metadata
                 pom {
                     name = PUBLISH_ARTIFACT_ID
-                    description = 'Godot OpenXR Loaders'
+                    description = 'Godot OpenXR Vendors'
                     url = 'https://github.com/GodotVR/godot_openxr_loaders#readme'
                     licenses {
                         license {
