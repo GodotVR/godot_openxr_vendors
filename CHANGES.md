@@ -14,7 +14,7 @@
 - Rename the plugin to 'Godot OpenXR Vendors'
 - Add godot-cpp dependency
 - Add OpenXR 1.0.30 headers
-- Add support for the Meta scene capture API
+- Add support for the Meta scene capture API (Donated by [Migeran](https://migeran.com))
 
 ## 1.1.0
 - Update Meta OpenXR loader to version 54

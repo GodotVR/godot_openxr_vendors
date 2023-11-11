@@ -3,8 +3,7 @@ Contributors
 
 This plugin has been developed by or received contributions from:
 - [Bastiaan Olij](https://github.com/BastiaanOlij)
-- [Gergely Kis](https://github.com/kisg)
-- Gabor Pal Korom
+- [Migeran - Software Engineering and Consulting](https://migeran.com)
 - [Dirk Steinmetz](https://github.com/rsjtdrjgfuzkfg)
 - [Fredia Huya-Kouadio](https://github.com/m4gr3d)
 - [Ron Bessems](https://github.com/rbessems)
