@@ -1,11 +1,27 @@
+# Android Studio project files
 *.iml
 .gradle
 /local.properties
 /.idea
-.DS_Store
 /build
 /captures
 .externalNativeBuild
 .cxx
 local.properties
+
+# Visual Studio Code project files
 .vscode
+
+# Binaries
+*.o
+*.os
+*.so
+*.obj
+*.bc
+*.pyc
+*.dblite
+*.pdb
+*.lib
+
+# Misc
+.DS_Store

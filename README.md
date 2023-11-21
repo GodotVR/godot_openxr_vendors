@@ -11,15 +11,42 @@ for support on prior versions of Godot 4.
 
 ## Building this asset
 
-### Linux
-You can build this asset after cloning by simply running:
+After cloning this project, run the following command in the project root directory to initialize 
+the `godot-cpp` submodule:
 ```
+git submodule update --init
+```
+
+### Building the Godot-CPP bindings
+Build the Android C++ bindings using the following commands. To speed up compilation, add `-jN` at
+the end of the SCons command line where `N` is the number of CPU threads you have on your system.
+The example below uses 4 threads.
+```
+cd thirdparty/godot-cpp
+scons target=template_debug -j4
+scons target=template_release -j4
+scons platform=android target=template_debug -j4
+scons platform=android target=template_release -j4
+```
+
+When the command is completed, you should have static libraries stored in `thirdparty/godot-cpp/bin` 
+that will be used for compilation by the plugin.
+
+### Building the Plugin
+
+#### Linux / MacOS
+Run the following command from the root directory to build the plugin:
+```
+scons target=template_debug -j4
+scons target=template_release -j4
 ./gradlew build
 ```
 
-### Windows
-You can build this asset after cloning by simply running:
+#### Windows
+Run the following command from the root directory to build the plugin:
 ```
+scons target=template_debug -j4
+scons target=template_release -j4
 gradlew.bat build
 ```
 

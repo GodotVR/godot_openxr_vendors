@@ -22,4 +22,5 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "GodotOpenXRVendors"
+include ':common'
 include ':godotopenxrmeta', ':godotopenxrpico', ':godotopenxrkhronos', ':godotopenxrlynx'

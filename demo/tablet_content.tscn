@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://d4b4rllli6tqp"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_khfj1"]
+light_mode = 1
+
+[node name="TabletContent" type="Label"]
+material = SubResource("CanvasItemMaterial_khfj1")
+custom_minimum_size = Vector2(300, 200)
+size_flags_horizontal = 3
+text = "Press the 'Menu' button for room scanning!"
+autowrap_mode = 2

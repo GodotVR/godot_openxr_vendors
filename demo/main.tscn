@@ -1,6 +1,8 @@
-[gd_scene load_steps=10 format=3 uid="uid://cqsodpswgup8w"]
+[gd_scene load_steps=14 format=3 uid="uid://cqsodpswgup8w"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_fsva1"]
+[ext_resource type="PackedScene" uid="uid://c0uv4eu2yjm3b" path="res://viewport_2d_in_3d.tscn" id="2_7whgo"]
+[ext_resource type="PackedScene" uid="uid://d4b4rllli6tqp" path="res://tablet_content.tscn" id="3_45w5g"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_0x6cv"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -16,6 +18,13 @@ tonemap_mode = 2
 
 [sub_resource type="BoxMesh" id="BoxMesh_3kt6b"]
 size = Vector3(0.1, 0.1, 0.1)
+
+[sub_resource type="QuadMesh" id="QuadMesh_1oamj"]
+size = Vector2(0.4, 0.3)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pmc5p"]
+cull_mode = 2
+albedo_color = Color(0.203922, 0.203922, 0.203922, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_ey3x4"]
 size = Vector3(0.1, 0.1, 0.1)
@@ -52,6 +61,20 @@ pose = &"aim"
 [node name="LeftHandMesh" type="MeshInstance3D" parent="XROrigin3D/LeftHand"]
 mesh = SubResource("BoxMesh_3kt6b")
 
+[node name="HandTablet" type="MeshInstance3D" parent="XROrigin3D/LeftHand/LeftHandMesh"]
+transform = Transform3D(1, 0, 0, 0, 0.919876, 0.392209, 0, -0.392209, 0.919876, 0, 0.208883, -0.236189)
+mesh = SubResource("QuadMesh_1oamj")
+surface_material_override/0 = SubResource("StandardMaterial3D_pmc5p")
+
+[node name="Viewport2Din3D" parent="XROrigin3D/LeftHand/LeftHandMesh/HandTablet" instance=ExtResource("2_7whgo")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.005)
+screen_size = Vector2(0.35, 0.25)
+enabled = false
+scene = ExtResource("3_45w5g")
+alpha_scissor_threshold = 0.25
+unshaded = true
+filter = true
+
 [node name="RightHand" type="XRController3D" parent="XROrigin3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.478861, 0.468292, -0.241097)
 tracker = &"right_hand"
@@ -67,5 +90,7 @@ tracker = &"/user/eyes_ext"
 transform = Transform3D(1, 0, 0, 0, -0.0133513, 0.999911, 0, -0.999911, -0.0133513, 0, 0, -1.18886)
 mesh = SubResource("SphereMesh_5gcab")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+[node name="Floor" type="MeshInstance3D" parent="."]
 mesh = SubResource("PlaneMesh_mjcgt")
+
+[connection signal="button_pressed" from="XROrigin3D/LeftHand" to="." method="_on_left_hand_button_pressed"]
