@@ -38,15 +38,34 @@
 
 #include "include/openxr_fb_scene_capture_extension_wrapper.h"
 
+#include "export/export_plugin.h"
+#include "export/meta_export_plugin.h"
+
 using namespace godot;
 
 void initialize_plugin_module(ModuleInitializationLevel p_level)
 {
-	if (p_level == MODULE_INITIALIZATION_LEVEL_CORE)
-	{
-		ClassDB::register_class<OpenXRFbSceneCaptureExtensionWrapper>();
-		OpenXRFbSceneCaptureExtensionWrapper::get_singleton()->register_extension_wrapper();
+	switch(p_level) {
+		case MODULE_INITIALIZATION_LEVEL_CORE: {
+			ClassDB::register_class<OpenXRFbSceneCaptureExtensionWrapper>();
+			OpenXRFbSceneCaptureExtensionWrapper::get_singleton()->register_extension_wrapper();
+		} break;
+
+		case MODULE_INITIALIZATION_LEVEL_EDITOR: {
+			ClassDB::register_class<OpenXREditorExportPlugin>();
+			ClassDB::register_class<MetaEditorExportPlugin>();
+			ClassDB::register_class<MetaEditorPlugin>();
+
+			EditorPlugins::add_by_type<MetaEditorPlugin>();
+		} break;
+
+		case MODULE_INITIALIZATION_LEVEL_SERVERS:
+		case MODULE_INITIALIZATION_LEVEL_SCENE:
+		case MODULE_INITIALIZATION_LEVEL_MAX:
+			break;
 	}
+
+
 }
 
 void terminate_plugin_module(ModuleInitializationLevel p_level)

@@ -19,10 +19,6 @@ config/icon="res://icon.svg"
 
 settings/stdout/verbose_stdout=true
 
-[editor_plugins]
-
-enabled=PackedStringArray("res://addons/godotopenxrvendors/plugin.cfg")
-
 [rendering]
 
 renderer/rendering_method="gl_compatibility"

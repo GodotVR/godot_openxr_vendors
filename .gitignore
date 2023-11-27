@@ -15,7 +15,6 @@ local.properties
 # Binaries
 *.o
 *.os
-*.so
 *.obj
 *.bc
 *.pyc
