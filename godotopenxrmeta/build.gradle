@@ -63,9 +63,6 @@ android {
 }
 
 dependencies {
-    implementation project(":common")
-
-    implementation "androidx.core:core-ktx:$versions.coreKtxVersion"
     compileOnly libraries.godotAndroidLib
 }
 
