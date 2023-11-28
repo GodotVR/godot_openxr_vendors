@@ -6,19 +6,20 @@
 resource_local_to_scene = true
 size = Vector2(3, 2)
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_jkt4l"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_ytdr3"]
 viewport_path = NodePath("Viewport")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qvuhp"]
-resource_local_to_scene = true
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vi86x"]
 transparency = 1
 cull_mode = 2
-shading_mode = 0
-albedo_texture = SubResource("ViewportTexture_jkt4l")
+albedo_texture = SubResource("ViewportTexture_ytdr3")
 texture_filter = 1
 
 [node name="Viewport2Din3D" type="Node3D"]
 script = ExtResource("1_g46wu")
+alpha_scissor_threshold = 0.25
+unshaded = false
+filter = true
 
 [node name="Viewport" type="SubViewport" parent="."]
 disable_3d = true
@@ -29,4 +30,4 @@ render_target_update_mode = 1
 
 [node name="Screen" type="MeshInstance3D" parent="."]
 mesh = SubResource("QuadMesh_o4aht")
-surface_material_override/0 = SubResource("StandardMaterial3D_qvuhp")
+surface_material_override/0 = SubResource("StandardMaterial3D_vi86x")

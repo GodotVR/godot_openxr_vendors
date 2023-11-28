@@ -71,9 +71,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.005)
 screen_size = Vector2(0.35, 0.25)
 enabled = false
 scene = ExtResource("3_45w5g")
-alpha_scissor_threshold = 0.25
 unshaded = true
-filter = true
 
 [node name="RightHand" type="XRController3D" parent="XROrigin3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.478861, 0.468292, -0.241097)

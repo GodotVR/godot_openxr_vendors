@@ -6,7 +6,7 @@ devices (e.g: Meta, Pico devices) and access vendor-specific OpenXR extensions
 **Note:** 
 
 Version `2.x` of this plugin requires **Godot 4.2**.
-Check the [`1.x` branch](https://github.com/GodotVR/godot_openxr_loaders/tree/1.x) and releases 
+Check the [`1.x` branch](https://github.com/GodotVR/godot_openxr_vendors/tree/1.x) and releases 
 for support on prior versions of Godot 4.
 
 ## Building this asset
@@ -52,10 +52,10 @@ gradlew.bat build
 
 ## Downloading this asset
 
-It is possible to download compiled assets that have been released from [releases](https://github.com/GodotVR/godot_openxr_loaders/releases).
+It is possible to download compiled assets that have been released from [releases](https://github.com/GodotVR/godot_openxr_vendors/releases).
 The latest official release will be made available in Godot's asset library.
 
-Work in progress builds are available under [actions](https://github.com/GodotVR/godot_openxr_loaders/actions).
+Work in progress builds are available under [actions](https://github.com/GodotVR/godot_openxr_vendors/actions).
 
 ## Using this asset
 

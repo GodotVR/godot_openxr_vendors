@@ -19,11 +19,11 @@ afterEvaluate {
                 pom {
                     name = PUBLISH_ARTIFACT_ID
                     description = 'Godot OpenXR Vendors'
-                    url = 'https://github.com/GodotVR/godot_openxr_loaders#readme'
+                    url = 'https://github.com/GodotVR/godot_openxr_vendors#readme'
                     licenses {
                         license {
                             name = 'MIT License'
-                            url = 'https://github.com/GodotVR/godot_openxr_loaders/blob/master/LICENSE'
+                            url = 'https://github.com/GodotVR/godot_openxr_vendors/blob/master/LICENSE'
                         }
                     }
                     developers {
@@ -50,9 +50,9 @@ afterEvaluate {
 
                     // Version control info - if you're using GitHub, follow the format as seen here
                     scm {
-                        connection = 'scm:git:github.com/GodotVR/godot_openxr_loaders.git'
-                        developerConnection = 'scm:git:ssh://github.com/GodotVR/godot_openxr_loaders.git'
-                        url = 'https://github.com/GodotVR/godot_openxr_loaders/tree/master'
+                        connection = 'scm:git:github.com/GodotVR/godot_openxr_vendors.git'
+                        developerConnection = 'scm:git:ssh://github.com/GodotVR/godot_openxr_vendors.git'
+                        url = 'https://github.com/GodotVR/godot_openxr_vendors/tree/master'
                     }
                 }
             }
