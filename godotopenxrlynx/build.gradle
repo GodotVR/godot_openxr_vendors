@@ -22,6 +22,12 @@ android {
             abiFilters 'arm64-v8a'
         }
     }
+    externalNativeBuild {
+        cmake {
+            path file('CMakeLists.txt')
+            version versions.cmakeVersion
+        }
+    }
 
     namespace = "org.godotengine.openxr.vendors.lynx"
 

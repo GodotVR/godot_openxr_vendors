@@ -1,0 +1,48 @@
+#!/usr/bin/env python
+from glob import glob
+from pathlib import Path
+
+Import("env", "common_objects")
+
+env_lynx = env.Clone()
+
+env_lynx.Append(CPPPATH=[
+    "src/main/cpp",
+    ])
+
+# Source files
+sources = common_objects.copy()
+sources += Glob("src/main/cpp/*.cpp")
+sources += Glob("src/main/cpp/export/*.cpp")
+
+binary_path = '#demo/addons/godotopenxrvendors/lynx/.bin'
+project_name = 'godotopenxrlynx'
+
+# Create the library target
+if env_lynx["platform"] == "android":
+    print("Use gradle to generate the Android binaries")
+    Exit(255)
+elif env_lynx["platform"] == "macos":
+    library = env_lynx.SharedLibrary(
+        "{0}/lib{1}.{2}.{3}.framework/{1}.{2}.{3}".format(
+            binary_path,
+            project_name,
+            env_lynx["platform"],
+            env_lynx["target"],
+        ),
+        source=sources,
+    )
+else:
+    library = env_lynx.SharedLibrary(
+        "{}/lib{}.{}.{}.{}{}".format(
+            binary_path,
+            project_name,
+            env_lynx["platform"],
+            env_lynx["target"],
+            env_lynx["arch"],
+            env_lynx["SHLIBSUFFIX"],
+        ),
+        source=sources,
+    )
+
+Default(library)

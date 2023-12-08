@@ -1,5 +1,8 @@
 # Change history for the Godot OpenXR loaders asset
 
+## 2.1.0
+- Migrate the export scripts from gdscript to C++ via gdextension
+
 ## 2.0.0
 - Update to the new Godot 4.2 Android plugin packaging format
 - Update the plugin to Godot v2 Android plugin

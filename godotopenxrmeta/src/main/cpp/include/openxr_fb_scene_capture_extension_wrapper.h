@@ -38,7 +38,7 @@
 #include <openxr/fb_scene_capture.h>
 #include <godot_cpp/variant/utility_functions.hpp>
 
-#include "../util.h"
+#include "util.h"
 
 #include <map>
 

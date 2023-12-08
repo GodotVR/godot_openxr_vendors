@@ -23,10 +23,14 @@ the end of the SCons command line where `N` is the number of CPU threads you hav
 The example below uses 4 threads.
 ```
 cd thirdparty/godot-cpp
-scons target=template_debug -j4
-scons target=template_release -j4
-scons platform=android target=template_debug -j4
-scons platform=android target=template_release -j4
+scons platform=android target=template_debug arch=arm64 -j4
+scons platform=android target=template_debug arch=arm32 -j4
+scons platform=android target=template_debug arch=x86_64 -j4
+scons platform=android target=template_debug arch=x86_32 -j4
+scons platform=android target=template_release arch=arm64 -j4
+scons platform=android target=template_release arch=arm32 -j4
+scons platform=android target=template_release arch=x86_64 -j4
+scons platform=android target=template_release arch=x86_32 -j4
 ```
 
 When the command is completed, you should have static libraries stored in `thirdparty/godot-cpp/bin` 
@@ -76,9 +80,6 @@ manually to `addons` in your project. You may need to create the `addons` folder
 If you have build the asset from source, you need to create the `addons` folder in your project 
 if it doesn't exist already, and then copy the content of the `demo/addons` folder to `addons` 
 in your project.
-
-Once the asset is added to your project, navigate to `Project` -> `Project Settings...` -> `Plugins` 
-and enable the plugin. 
 
 ### Configuring your export
 
