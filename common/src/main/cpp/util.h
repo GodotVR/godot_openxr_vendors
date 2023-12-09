@@ -118,4 +118,6 @@
 		return (*func_name##_ptr)(p_##arg1, p_##arg2, p_##arg3, p_##arg4, p_##arg5, p_##arg6);                                                                                                                         \
 	}
 
+#define SESSION  (XrSession) get_openxr_api()->get_session()
+
 #endif // UTIL_H
