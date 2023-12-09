@@ -39,6 +39,7 @@
 
 #include "include/openxr_fb_scene_capture_extension_wrapper.h"
 #include "include/openxr_fb_spatial_entity_extension_wrapper.h"
+#include "include/openxr_fb_spatial_entity_container_extension_wrapper.h"
 #include "include/openxr_fb_spatial_entity_query_extension_wrapper.h"
 
 #include "export/export_plugin.h"
@@ -58,6 +59,9 @@ void initialize_plugin_module(ModuleInitializationLevel p_level)
 
 			ClassDB::register_class<OpenXRFbSpatialEntityQueryExtensionWrapper>();
 			OpenXRFbSpatialEntityQueryExtensionWrapper::get_singleton()->register_extension_wrapper();
+
+			ClassDB::register_class<OpenXRFbSpatialEntityContainerExtensionWrapper>();
+			OpenXRFbSpatialEntityContainerExtensionWrapper::get_singleton()->register_extension_wrapper();
 		} break;
 
 		case MODULE_INITIALIZATION_LEVEL_SERVERS:
@@ -67,6 +71,7 @@ void initialize_plugin_module(ModuleInitializationLevel p_level)
 			Engine::get_singleton()->register_singleton("OpenXRFbSceneCaptureExtensionWrapper", OpenXRFbSceneCaptureExtensionWrapper::get_singleton());
 			Engine::get_singleton()->register_singleton("OpenXRFbSpatialEntityExtensionWrapper", OpenXRFbSpatialEntityExtensionWrapper::get_singleton());
 			Engine::get_singleton()->register_singleton("OpenXRFbSpatialEntityQueryExtensionWrapper", OpenXRFbSpatialEntityQueryExtensionWrapper::get_singleton());
+			Engine::get_singleton()->register_singleton("OpenXRFbSpatialEntityContainerExtensionWrapper", OpenXRFbSpatialEntityContainerExtensionWrapper::get_singleton());
 		} break;
 
 		case MODULE_INITIALIZATION_LEVEL_EDITOR: {
