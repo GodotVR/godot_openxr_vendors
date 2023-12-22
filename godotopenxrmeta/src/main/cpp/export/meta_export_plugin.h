@@ -52,6 +52,10 @@ static const int HAND_TRACKING_REQUIRED_VALUE = 2;
 static const int HAND_TRACKING_FREQUENCY_LOW_VALUE = 0;
 static const int HAND_TRACKING_FREQUENCY_HIGH_VALUE = 1;
 
+static const int BOUNDARY_ENABLED_VALUE = 0;
+static const int BOUNDARY_DISABLED_VALUE = 1;
+static const int BOUNDARY_CONTEXTUAL_VALUE = 2;
+
 } // namespace
 
 class MetaEditorExportPlugin : public OpenXREditorExportPlugin {
@@ -83,6 +87,10 @@ private:
 	Dictionary _hand_tracking_frequency_option;
 	Dictionary _passthrough_option;
 	Dictionary _use_anchor_api_option;
+	Dictionary _use_scene_api_option;
+	Dictionary _use_overlay_keyboard_option;
+	Dictionary _use_experimental_features_option;
+	Dictionary _boundary_mode_option;
 	Dictionary _support_quest_1_option;
 	Dictionary _support_quest_2_option;
 	Dictionary _support_quest_3_option;
