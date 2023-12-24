@@ -104,6 +104,16 @@ MetaEditorExportPlugin::MetaEditorExportPlugin() {
 			false,
 			false
 	);
+	_use_scene_api_option = _generate_export_option(
+			"meta_xr_features/use_scene_api",
+			"",
+			Variant::Type::BOOL,
+			PROPERTY_HINT_NONE,
+			"",
+			PROPERTY_USAGE_DEFAULT,
+			false,
+			false
+	);
 	_support_quest_1_option = _generate_export_option(
 			"meta_xr_features/quest_1_support",
 			"",
@@ -160,6 +170,7 @@ TypedArray<Dictionary> MetaEditorExportPlugin::_get_export_options(const Ref<Edi
 	export_options.append(_hand_tracking_frequency_option);
 	export_options.append(_passthrough_option);
 	export_options.append(_use_anchor_api_option);
+	export_options.append(_use_scene_api_option);
 	export_options.append(_support_quest_1_option);
 	export_options.append(_support_quest_2_option);
 	export_options.append(_support_quest_3_option);
@@ -238,6 +249,10 @@ String MetaEditorExportPlugin::_get_export_option_warning(const Ref<EditorExport
 		if (!openxr_enabled && _get_bool_option(option)) {
 			return "\"Use anchor API\" is only valid when \"XR Mode\" is \"OpenXR\".\n";
 		}
+	} else if (option == "meta_xr_features/use_scene_api") {
+		if (!openxr_enabled && _get_bool_option(option)) {
+			return "\"Use scene API\" is only valid when \"XR Mode\" is \"OpenXR\".\n";
+		}
 	}
 
 	return OpenXREditorExportPlugin::_get_export_option_warning(platform, option);
@@ -285,6 +300,12 @@ String MetaEditorExportPlugin::_get_android_manifest_element_contents(const Ref<
 	bool use_anchor_api = _get_bool_option("meta_xr_features/use_anchor_api");
 	if (use_anchor_api) {
 		contents += "    <uses-permission android:name=\"com.oculus.permission.USE_ANCHOR_API\" />\n";
+	}
+
+	// Check for scene api
+	bool use_scene_api = _get_bool_option("meta_xr_features/use_scene_api");
+	if (use_scene_api) {
+		contents += "    <uses-permission android:name=\"com.oculus.permission.USE_SCENE\" />\n";
 	}
 
 	return contents;
