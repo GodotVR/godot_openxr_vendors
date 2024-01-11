@@ -29,16 +29,21 @@
 
 package org.godotengine.openxr.vendors.meta
 
+import android.app.Activity
 import android.util.Log
+import android.view.View
 import org.godotengine.godot.Godot
 import org.godotengine.godot.plugin.GodotPlugin
+import org.godotengine.godot.utils.PermissionsUtil
 
 /**
  * Godot plugin for the Meta OpenXR loader.
  */
 class GodotOpenXRMeta(godot: Godot?) : GodotPlugin(godot) {
     companion object {
-        val TAG = GodotOpenXRMeta::class.java.simpleName
+        private val TAG = GodotOpenXRMeta::class.java.simpleName
+
+        private const val EYE_TRACKING_PERMISSION = "com.oculus.permission.EYE_TRACKING"
 
         init {
             try {
@@ -56,12 +61,21 @@ class GodotOpenXRMeta(godot: Godot?) : GodotPlugin(godot) {
 
     override fun getPluginGDExtensionLibrariesPaths() = setOf("res://addons/godotopenxrvendors/meta/plugin.gdextension")
 
+    override fun onMainCreate(activity: Activity): View? {
+        // Request the eye tracking permission if it's included in the manifest
+        if (PermissionsUtil.hasManifestPermission(activity, EYE_TRACKING_PERMISSION)) {
+            Log.d(TAG, "Requesting permission '${EYE_TRACKING_PERMISSION}'")
+            PermissionsUtil.requestPermission(EYE_TRACKING_PERMISSION, activity)
+        }
+        return null
+    }
+
     override fun supportsFeature(featureTag: String): Boolean {
         if ("PERMISSION_XR_EXT_eye_gaze_interaction" == featureTag) {
             val grantedPermissions = godot?.getGrantedPermissions()
             if (grantedPermissions != null) {
                 for (permission in grantedPermissions) {
-                    if ("com.oculus.permission.EYE_TRACKING" == permission) {
+                    if (EYE_TRACKING_PERMISSION == permission) {
                         return true
                     }
                 }
