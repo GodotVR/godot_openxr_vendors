@@ -31,6 +31,7 @@
 
 #include <gdextension_interface.h>
 
+#include <godot_cpp/classes/engine.hpp>
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/core/defs.hpp>
 #include <godot_cpp/godot.hpp>
@@ -51,6 +52,13 @@ void initialize_plugin_module(ModuleInitializationLevel p_level)
 			OpenXRFbSceneCaptureExtensionWrapper::get_singleton()->register_extension_wrapper();
 		} break;
 
+		case MODULE_INITIALIZATION_LEVEL_SERVERS:
+			break;
+
+		case MODULE_INITIALIZATION_LEVEL_SCENE: {
+			Engine::get_singleton()->register_singleton("OpenXRFbSceneCaptureExtensionWrapper", OpenXRFbSceneCaptureExtensionWrapper::get_singleton());
+		} break;
+
 		case MODULE_INITIALIZATION_LEVEL_EDITOR: {
 			ClassDB::register_class<OpenXREditorExportPlugin>();
 			ClassDB::register_class<MetaEditorExportPlugin>();
@@ -59,8 +67,6 @@ void initialize_plugin_module(ModuleInitializationLevel p_level)
 			EditorPlugins::add_by_type<MetaEditorPlugin>();
 		} break;
 
-		case MODULE_INITIALIZATION_LEVEL_SERVERS:
-		case MODULE_INITIALIZATION_LEVEL_SCENE:
 		case MODULE_INITIALIZATION_LEVEL_MAX:
 			break;
 	}
@@ -80,7 +86,7 @@ extern "C"
 
         init_obj.register_initializer(initialize_plugin_module);
         init_obj.register_terminator(terminate_plugin_module);
-		init_obj.set_minimum_library_initialization_level(MODULE_INITIALIZATION_LEVEL_CORE);
+		init_obj.set_minimum_library_initialization_level(MODULE_INITIALIZATION_LEVEL_SCENE);
 
 		return init_obj.init();
 	}
