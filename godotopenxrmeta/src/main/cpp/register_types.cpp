@@ -31,6 +31,7 @@
 
 #include <gdextension_interface.h>
 
+#include <godot_cpp/classes/engine.hpp>
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/core/defs.hpp>
 #include <godot_cpp/godot.hpp>
@@ -49,6 +50,7 @@ void initialize_plugin_module(ModuleInitializationLevel p_level)
 		case MODULE_INITIALIZATION_LEVEL_CORE: {
 			ClassDB::register_class<OpenXRFbSceneCaptureExtensionWrapper>();
 			OpenXRFbSceneCaptureExtensionWrapper::get_singleton()->register_extension_wrapper();
+			Engine::get_singleton()->register_singleton("OpenXRFbSceneCaptureExtensionWrapper", OpenXRFbSceneCaptureExtensionWrapper::get_singleton());
 		} break;
 
 		case MODULE_INITIALIZATION_LEVEL_EDITOR: {
