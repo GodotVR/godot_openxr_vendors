@@ -62,7 +62,6 @@ OpenXRFbSceneCaptureExtensionWrapper::~OpenXRFbSceneCaptureExtensionWrapper() {
 
 void OpenXRFbSceneCaptureExtensionWrapper::_bind_methods() {
 
-	ClassDB::bind_static_method("OpenXRFbSceneCaptureExtensionWrapper", D_METHOD("get_singleton"), &OpenXRFbSceneCaptureExtensionWrapper::get_singleton);
 	ClassDB::bind_method(D_METHOD("is_scene_capture_supported"), &OpenXRFbSceneCaptureExtensionWrapper::is_scene_capture_supported);
 	ClassDB::bind_method(D_METHOD("is_scene_capture_enabled"), &OpenXRFbSceneCaptureExtensionWrapper::is_scene_capture_enabled);
 	ClassDB::bind_method(D_METHOD("request_scene_capture"), &OpenXRFbSceneCaptureExtensionWrapper::request_scene_capture);

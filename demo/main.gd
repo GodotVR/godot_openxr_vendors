@@ -9,8 +9,8 @@ func _ready():
 	if xr_interface and xr_interface.is_initialized():
 		var vp: Viewport = get_viewport()
 		vp.use_xr = true
-		
-	scene_capture = OpenXRFbSceneCaptureExtensionWrapper.get_singleton()
+
+	scene_capture = Engine.get_singleton("OpenXRFbSceneCaptureExtensionWrapper")
 	scene_capture.connect("scene_capture_completed", _on_scene_capture_completed)
 
 
