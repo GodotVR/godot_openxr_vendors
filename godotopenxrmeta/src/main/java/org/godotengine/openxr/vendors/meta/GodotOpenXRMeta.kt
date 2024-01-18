@@ -44,6 +44,7 @@ class GodotOpenXRMeta(godot: Godot?) : GodotPlugin(godot) {
         private val TAG = GodotOpenXRMeta::class.java.simpleName
 
         private const val EYE_TRACKING_PERMISSION = "com.oculus.permission.EYE_TRACKING"
+        private const val SCENE_PERMISSION = "com.oculus.permission.USE_SCENE"
 
         init {
             try {
@@ -66,6 +67,10 @@ class GodotOpenXRMeta(godot: Godot?) : GodotPlugin(godot) {
         if (PermissionsUtil.hasManifestPermission(activity, EYE_TRACKING_PERMISSION)) {
             Log.d(TAG, "Requesting permission '${EYE_TRACKING_PERMISSION}'")
             PermissionsUtil.requestPermission(EYE_TRACKING_PERMISSION, activity)
+        }
+        // Request the scene API permission if it's included in the manifest
+        if (PermissionsUtil.hasManifestPermission(activity, SCENE_PERMISSION)) {
+            PermissionsUtil.requestPermission(SCENE_PERMISSION, activity)
         }
         return null
     }

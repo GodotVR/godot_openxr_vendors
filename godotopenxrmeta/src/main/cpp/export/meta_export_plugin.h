@@ -83,6 +83,7 @@ private:
 	Dictionary _hand_tracking_frequency_option;
 	Dictionary _passthrough_option;
 	Dictionary _use_anchor_api_option;
+	Dictionary _use_scene_api_option;
 	Dictionary _support_quest_1_option;
 	Dictionary _support_quest_2_option;
 	Dictionary _support_quest_3_option;
