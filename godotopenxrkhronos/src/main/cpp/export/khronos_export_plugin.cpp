@@ -36,8 +36,6 @@ void KhronosEditorPlugin::_bind_methods() {}
 void KhronosEditorPlugin::_enter_tree() {
 	// Initialize the editor export plugin
 	khronos_export_plugin = memnew(KhronosEditorExportPlugin);
-	khronos_export_plugin->set_plugin_version(get_plugin_version());
-
 	add_export_plugin(khronos_export_plugin);
 }
 

@@ -37,8 +37,6 @@ void LynxEditorPlugin::_enter_tree() {
 	// Initialize the editor export plugin
 	lynx_export_plugin = memnew(OpenXREditorExportPlugin);
 	lynx_export_plugin->set_vendor_name(LYNX_VENDOR_NAME);
-	lynx_export_plugin->set_plugin_version(get_plugin_version());
-
 	add_export_plugin(lynx_export_plugin);
 }
 

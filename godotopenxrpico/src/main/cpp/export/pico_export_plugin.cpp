@@ -37,8 +37,6 @@ void PicoEditorPlugin::_enter_tree() {
 	// Initialize the editor export plugin
 	pico_export_plugin = memnew(OpenXREditorExportPlugin);
 	pico_export_plugin->set_vendor_name(PICO_VENDOR_NAME);
-	pico_export_plugin->set_plugin_version(get_plugin_version());
-
 	add_export_plugin(pico_export_plugin);
 }
 

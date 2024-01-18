@@ -33,7 +33,7 @@
 
 using namespace godot;
 
-OpenXREditorExportPlugin::OpenXREditorExportPlugin() {}
+OpenXREditorExportPlugin::OpenXREditorExportPlugin() : _plugin_version(PLUGIN_VERSION) {}
 
 void OpenXREditorExportPlugin::_bind_methods() {}
 
