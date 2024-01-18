@@ -38,8 +38,6 @@ void MetaEditorPlugin::_bind_methods() {}
 void MetaEditorPlugin::_enter_tree() {
 	// Initialize the editor export plugin
 	meta_export_plugin = memnew(MetaEditorExportPlugin);
-	meta_export_plugin->set_plugin_version(get_plugin_version());
-
 	add_export_plugin(meta_export_plugin);
 }
 

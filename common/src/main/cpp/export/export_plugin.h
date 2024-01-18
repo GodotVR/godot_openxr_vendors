@@ -37,6 +37,8 @@
 
 using namespace godot;
 
+static const char *PLUGIN_VERSION = "2.0.2-stable";
+
 // Set of supported vendors
 static const char *META_VENDOR_NAME = "meta";
 static const char *PICO_VENDOR_NAME = "pico";
@@ -79,10 +81,6 @@ public:
 
 	void set_vendor_name(const String &vendor_name) {
 		_vendor = vendor_name;
-	}
-
-	void set_plugin_version(const String &plugin_version) {
-		_plugin_version = plugin_version;
 	}
 
 protected:
@@ -137,5 +135,5 @@ private:
 
 
 	String _vendor;
-	String _plugin_version;
+	const String _plugin_version;
 };
