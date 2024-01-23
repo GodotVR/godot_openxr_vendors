@@ -60,17 +60,19 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.352791, 0)
 [node name="LeftHand" type="XRController3D" parent="XROrigin3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.460909, 0.388594, -0.241118)
 tracker = &"left_hand"
-pose = &"aim"
+pose = &"grip"
 
 [node name="LeftHandMesh" type="MeshInstance3D" parent="XROrigin3D/LeftHand"]
 mesh = SubResource("BoxMesh_3kt6b")
 
-[node name="HandTablet" type="MeshInstance3D" parent="XROrigin3D/LeftHand/LeftHandMesh"]
-transform = Transform3D(1, 0, 0, 0, 0.919876, 0.392209, 0, -0.392209, 0.919876, 0, 0.208883, -0.236189)
+[node name="LeftControllerFbRenderModel" type="OpenXRFbRenderModel" parent="XROrigin3D/LeftHand"]
+
+[node name="HandTablet" type="MeshInstance3D" parent="XROrigin3D/LeftHand"]
+transform = Transform3D(1, 0, 0, 0, -0.392209, 0.919876, 0, -0.919876, -0.392209, 0, -0.236189, -0.208883)
 mesh = SubResource("QuadMesh_1oamj")
 surface_material_override/0 = SubResource("StandardMaterial3D_pmc5p")
 
-[node name="Viewport2Din3D" parent="XROrigin3D/LeftHand/LeftHandMesh/HandTablet" instance=ExtResource("2_7whgo")]
+[node name="Viewport2Din3D" parent="XROrigin3D/LeftHand/HandTablet" instance=ExtResource("2_7whgo")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.005)
 screen_size = Vector2(0.35, 0.25)
 enabled = false
@@ -80,9 +82,13 @@ unshaded = true
 [node name="RightHand" type="XRController3D" parent="XROrigin3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.478861, 0.468292, -0.241097)
 tracker = &"right_hand"
+pose = &"grip"
 
 [node name="RightHandMesh" type="MeshInstance3D" parent="XROrigin3D/RightHand"]
 mesh = SubResource("BoxMesh_ey3x4")
+
+[node name="RightControllerFbRenderModel" type="OpenXRFbRenderModel" parent="XROrigin3D/RightHand"]
+render_model_type = 1
 
 [node name="EyeGaze" type="XRController3D" parent="XROrigin3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.977669, 0)
@@ -102,5 +108,7 @@ script = ExtResource("4_fsql8")
 [node name="Face" parent="Floor/TrackedFace" instance=ExtResource("4_wrwst")]
 
 [connection signal="button_pressed" from="XROrigin3D/LeftHand" to="." method="_on_left_hand_button_pressed"]
+[connection signal="openxr_fb_render_model_loaded" from="XROrigin3D/LeftHand/LeftControllerFbRenderModel" to="." method="_on_left_controller_fb_render_model_render_model_loaded"]
+[connection signal="openxr_fb_render_model_loaded" from="XROrigin3D/RightHand/RightControllerFbRenderModel" to="." method="_on_right_controller_fb_render_model_render_model_loaded"]
 
 [editable path="Floor/TrackedFace/Face"]

@@ -5,6 +5,7 @@
 - Upgrade Android, Gradle, Godot and Kotlin dependencies
 - Add XR_FB_face_tracking support
 - Update to OpenXR 1.0.34 headers
+- Add XR_FB_render_model extension wrapper and OpenXRFBRenderModel node
 
 ## 2.0.3
 - Migrate the export scripts from gdscript to C++ via gdextension

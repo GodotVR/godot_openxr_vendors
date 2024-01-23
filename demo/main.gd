@@ -1,5 +1,8 @@
 extends Node3D
 
+@onready var left_hand_mesh: MeshInstance3D = $XROrigin3D/LeftHand/LeftHandMesh
+@onready var right_hand_mesh: MeshInstance3D = $XROrigin3D/RightHand/RightHandMesh
+
 var xr_interface : XRInterface = null
 
 # Called when the node enters the scene tree for the first time.
@@ -23,3 +26,12 @@ func _on_left_hand_button_pressed(name):
 	if name == "menu_button" and scene_capture:
 		print("Triggering scene capture")
 		scene_capture.request_scene_capture()
+
+
+func _on_left_controller_fb_render_model_render_model_loaded() -> void:
+	left_hand_mesh.hide()
+
+
+func _on_right_controller_fb_render_model_render_model_loaded() -> void:
+	right_hand_mesh.hide()
+
