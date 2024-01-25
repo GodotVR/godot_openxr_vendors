@@ -44,6 +44,7 @@
 #include "export/pico_export_plugin.h"
 
 #include "extensions/openxr_fb_face_tracking_extension_wrapper.h"
+#include "extensions/openxr_fb_passthrough_extension_wrapper.h"
 #include "extensions/openxr_fb_render_model_extension_wrapper.h"
 #include "extensions/openxr_fb_scene_capture_extension_wrapper.h"
 #include "extensions/openxr_fb_scene_extension_wrapper.h"
@@ -58,6 +59,9 @@ using namespace godot;
 void initialize_plugin_module(ModuleInitializationLevel p_level) {
 	switch (p_level) {
 		case MODULE_INITIALIZATION_LEVEL_CORE: {
+			ClassDB::register_class<OpenXRFbPassthroughExtensionWrapper>();
+			OpenXRFbPassthroughExtensionWrapper::get_singleton()->register_extension_wrapper();
+
 			ClassDB::register_class<OpenXRFbRenderModelExtensionWrapper>();
 			OpenXRFbRenderModelExtensionWrapper::get_singleton()->register_extension_wrapper();
 
@@ -84,6 +88,7 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			break;
 
 		case MODULE_INITIALIZATION_LEVEL_SCENE: {
+			Engine::get_singleton()->register_singleton("OpenXRFbPassthroughExtensionWrapper", OpenXRFbPassthroughExtensionWrapper::get_singleton());
 			Engine::get_singleton()->register_singleton("OpenXRFbRenderModelExtensionWrapper", OpenXRFbRenderModelExtensionWrapper::get_singleton());
 			Engine::get_singleton()->register_singleton("OpenXRFbSceneCaptureExtensionWrapper", OpenXRFbSceneCaptureExtensionWrapper::get_singleton());
 			Engine::get_singleton()->register_singleton("OpenXRFbSpatialEntityExtensionWrapper", OpenXRFbSpatialEntityExtensionWrapper::get_singleton());
