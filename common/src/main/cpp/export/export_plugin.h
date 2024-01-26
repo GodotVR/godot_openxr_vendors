@@ -37,7 +37,7 @@
 
 using namespace godot;
 
-static const char *PLUGIN_VERSION = "2.0.2-stable";
+static const char *PLUGIN_VERSION = "2.0.3-stable";
 
 // Set of supported vendors
 static const char *META_VENDOR_NAME = "meta";
