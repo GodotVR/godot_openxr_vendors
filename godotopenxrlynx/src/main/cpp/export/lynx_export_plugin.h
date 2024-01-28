@@ -46,5 +46,5 @@ protected:
 	static void _bind_methods();
 
 private:
-	OpenXREditorExportPlugin *lynx_export_plugin = nullptr;
+	Ref<OpenXREditorExportPlugin> lynx_export_plugin;
 };
