@@ -35,7 +35,7 @@ void KhronosEditorPlugin::_bind_methods() {}
 
 void KhronosEditorPlugin::_enter_tree() {
 	// Initialize the editor export plugin
-	khronos_export_plugin = memnew(KhronosEditorExportPlugin);
+	khronos_export_plugin.instantiate();
 	add_export_plugin(khronos_export_plugin);
 }
 
@@ -43,8 +43,7 @@ void KhronosEditorPlugin::_exit_tree() {
 	// Clean up the editor export plugin
 	remove_export_plugin(khronos_export_plugin);
 
-	memfree(khronos_export_plugin);
-	khronos_export_plugin = nullptr;
+	khronos_export_plugin.unref();
 }
 
 KhronosEditorExportPlugin::KhronosEditorExportPlugin() {

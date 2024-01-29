@@ -35,7 +35,7 @@ void PicoEditorPlugin::_bind_methods() {}
 
 void PicoEditorPlugin::_enter_tree() {
 	// Initialize the editor export plugin
-	pico_export_plugin = memnew(OpenXREditorExportPlugin);
+	pico_export_plugin.instantiate();
 	pico_export_plugin->set_vendor_name(PICO_VENDOR_NAME);
 	add_export_plugin(pico_export_plugin);
 }
@@ -44,6 +44,5 @@ void PicoEditorPlugin::_exit_tree() {
 	// Clean up the editor export plugin
 	remove_export_plugin(pico_export_plugin);
 
-	memfree(pico_export_plugin);
-	pico_export_plugin = nullptr;
+	pico_export_plugin.unref();
 }
