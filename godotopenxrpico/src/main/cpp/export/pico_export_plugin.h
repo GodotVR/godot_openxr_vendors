@@ -46,5 +46,5 @@ protected:
 	static void _bind_methods();
 
 private:
-	OpenXREditorExportPlugin *pico_export_plugin = nullptr;
+	Ref<OpenXREditorExportPlugin> pico_export_plugin;
 };
