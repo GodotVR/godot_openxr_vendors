@@ -1,5 +1,7 @@
 extends Node3D
 
+@onready var left_hand: XRController3D = $XROrigin3D/LeftHand
+@onready var right_hand: XRController3D = $XROrigin3D/RightHand
 @onready var left_hand_mesh: MeshInstance3D = $XROrigin3D/LeftHand/LeftHandMesh
 @onready var right_hand_mesh: MeshInstance3D = $XROrigin3D/RightHand/RightHandMesh
 @onready var left_controller_model: OpenXRFbRenderModel = $XROrigin3D/LeftHand/LeftControllerFbRenderModel
@@ -32,6 +34,22 @@ func _physics_process(_delta: float) -> void:
 
 		var controller = left_controller_model if (hand == OpenXRInterface.HAND_LEFT) else right_controller_model
 		controller.visible = (source == OpenXRInterface.HAND_TRACKED_SOURCE_CONTROLLER)
+
+		if source == OpenXRInterface.HAND_TRACKED_SOURCE_UNOBSTRUCTED:
+			match hand:
+				OpenXRInterface.HAND_LEFT:
+					left_hand.tracker = "/user/fbhandaim/left"
+				OpenXRInterface.HAND_RIGHT:
+					right_hand.tracker = "/user/fbhandaim/right"
+		else:
+			match hand:
+				OpenXRInterface.HAND_LEFT:
+					left_hand.tracker = "left_hand"
+					left_hand.pose = "grip"
+				OpenXRInterface.HAND_RIGHT:
+					right_hand.tracker = "right_hand"
+					right_hand.pose = "grip"
+
 		hand_tracking_source[hand] = source
 
 
