@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://cqsodpswgup8w"]
+[gd_scene load_steps=19 format=3 uid="uid://cqsodpswgup8w"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_fsva1"]
 [ext_resource type="PackedScene" uid="uid://c0uv4eu2yjm3b" path="res://viewport_2d_in_3d.tscn" id="2_7whgo"]
@@ -42,6 +42,16 @@ height = 0.05
 material = SubResource("StandardMaterial3D_k604q")
 size = Vector2(10, 10)
 
+[sub_resource type="BoxMesh" id="BoxMesh_0ryw0"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ylnrd"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_ejify"]
+size = Vector3(0.05, 0.05, 0.05)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_fkhux"]
+size = Vector3(0.05, 0.05, 0.05)
+
 [node name="Main" type="Node3D"]
 script = ExtResource("1_fsva1")
 
@@ -62,12 +72,12 @@ tracker = &"left_hand"
 pose = &"grip"
 
 [node name="LeftHandMesh" type="MeshInstance3D" parent="XROrigin3D/LeftHand"]
+visible = false
 mesh = SubResource("BoxMesh_3kt6b")
-
-[node name="LeftControllerFbRenderModel" type="OpenXRFbRenderModel" parent="XROrigin3D/LeftHand"]
 
 [node name="HandTablet" type="MeshInstance3D" parent="XROrigin3D/LeftHand"]
 transform = Transform3D(1, 0, 0, 0, -0.392209, 0.919876, 0, -0.919876, -0.392209, 0, -0.236189, -0.208883)
+visible = false
 mesh = SubResource("QuadMesh_1oamj")
 surface_material_override/0 = SubResource("StandardMaterial3D_pmc5p")
 
@@ -84,10 +94,8 @@ tracker = &"right_hand"
 pose = &"grip"
 
 [node name="RightHandMesh" type="MeshInstance3D" parent="XROrigin3D/RightHand"]
+visible = false
 mesh = SubResource("BoxMesh_ey3x4")
-
-[node name="RightControllerFbRenderModel" type="OpenXRFbRenderModel" parent="XROrigin3D/RightHand"]
-render_model_type = 1
 
 [node name="EyeGaze" type="XRController3D" parent="XROrigin3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.977669, 0)
@@ -97,6 +105,11 @@ tracker = &"/user/eyes_ext"
 transform = Transform3D(1, 0, 0, 0, -0.0133513, 0.999911, 0, -0.999911, -0.0133513, 0, 0, -1.18886)
 mesh = SubResource("SphereMesh_5gcab")
 
+[node name="LeftHandTrackingCapsules" type="OpenXRFbHandTrackingCapsules" parent="XROrigin3D"]
+
+[node name="RightHandTrackingCapsules" type="OpenXRFbHandTrackingCapsules" parent="XROrigin3D"]
+hand = 1
+
 [node name="Floor" type="MeshInstance3D" parent="."]
 mesh = SubResource("PlaneMesh_mjcgt")
 
@@ -105,11 +118,48 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4, -1)
 
 [node name="Face" parent="Floor/TrackedFace" instance=ExtResource("4_wrwst")]
 
-[node name="XRFaceModifier3D" type="XRFaceModifier3D" parent="Floor/TrackedFace/Face/Face" index="0"]
-target = NodePath("..")
+[node name="Table" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.315725, 0.0703861)
+metadata/_edit_group_ = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Table"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.569652)
+mesh = SubResource("BoxMesh_0ryw0")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Table"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.569652)
+shape = SubResource("BoxShape3D_ylnrd")
+
+[node name="Cube" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0535374, 0.963021, -0.166552)
+metadata/_edit_group_ = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Cube"]
+mesh = SubResource("BoxMesh_ejify")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Cube"]
+shape = SubResource("BoxShape3D_fkhux")
+
+[node name="Cube2" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.19755, 0.963021, -0.155983)
+metadata/_edit_group_ = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Cube2"]
+mesh = SubResource("BoxMesh_ejify")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Cube2"]
+shape = SubResource("BoxShape3D_fkhux")
+
+[node name="Cube3" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0700642, 0.963021, -0.216307)
+metadata/_edit_group_ = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Cube3"]
+mesh = SubResource("BoxMesh_ejify")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Cube3"]
+shape = SubResource("BoxShape3D_fkhux")
 
 [connection signal="button_pressed" from="XROrigin3D/LeftHand" to="." method="_on_left_hand_button_pressed"]
-[connection signal="openxr_fb_render_model_loaded" from="XROrigin3D/LeftHand/LeftControllerFbRenderModel" to="." method="_on_left_controller_fb_render_model_render_model_loaded"]
-[connection signal="openxr_fb_render_model_loaded" from="XROrigin3D/RightHand/RightControllerFbRenderModel" to="." method="_on_right_controller_fb_render_model_render_model_loaded"]
 
 [editable path="Floor/TrackedFace/Face"]
