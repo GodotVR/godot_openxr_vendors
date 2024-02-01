@@ -29,6 +29,7 @@
 
 package org.godotengine.openxr.vendors.pico
 
+import android.util.Log
 import org.godotengine.godot.Godot
 import org.godotengine.godot.plugin.GodotPlugin
 
@@ -36,6 +37,21 @@ import org.godotengine.godot.plugin.GodotPlugin
  * Godot plugin for the Pico OpenXR loader.
  */
 class GodotOpenXRPico(godot: Godot?) : GodotPlugin(godot) {
+    companion object {
+        private val TAG = GodotOpenXRPico::class.java.simpleName
+
+        init {
+            try {
+                Log.v(TAG, "Loading godotopenxrvendors library")
+                System.loadLibrary("godotopenxrvendors")
+            } catch (e: UnsatisfiedLinkError) {
+                Log.e(TAG, "Unable to load godotopenxrvendors shared library")
+            }
+        }
+    }
+
+    override fun getPluginGDExtensionLibrariesPaths() = setOf("res://addons/godotopenxrvendors/plugin.gdextension")
+
     override fun getPluginName(): String {
         return "GodotOpenXRPico"
     }

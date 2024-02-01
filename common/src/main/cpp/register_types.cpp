@@ -37,15 +37,18 @@
 #include <godot_cpp/godot.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
 
-#include "include/openxr_fb_scene_extension_wrapper.h"
-#include "include/openxr_fb_scene_capture_extension_wrapper.h"
-#include "include/openxr_fb_spatial_entity_extension_wrapper.h"
-#include "include/openxr_fb_spatial_entity_container_extension_wrapper.h"
-#include "include/openxr_fb_spatial_entity_query_extension_wrapper.h"
-#include "include/openxr_fb_face_tracking_extension_wrapper.h"
-
 #include "export/export_plugin.h"
+#include "export/khronos_export_plugin.h"
+#include "export/lynx_export_plugin.h"
 #include "export/meta_export_plugin.h"
+#include "export/pico_export_plugin.h"
+
+#include "extensions/include/openxr_fb_face_tracking_extension_wrapper.h"
+#include "extensions/include/openxr_fb_scene_extension_wrapper.h"
+#include "extensions/include/openxr_fb_scene_capture_extension_wrapper.h"
+#include "extensions/include/openxr_fb_spatial_entity_extension_wrapper.h"
+#include "extensions/include/openxr_fb_spatial_entity_container_extension_wrapper.h"
+#include "extensions/include/openxr_fb_spatial_entity_query_extension_wrapper.h"
 
 using namespace godot;
 
@@ -86,10 +89,20 @@ void initialize_plugin_module(ModuleInitializationLevel p_level)
 
 		case MODULE_INITIALIZATION_LEVEL_EDITOR: {
 			ClassDB::register_class<OpenXREditorExportPlugin>();
+
+			ClassDB::register_class<KhronosEditorExportPlugin>();
+			ClassDB::register_class<KhronosEditorPlugin>();
+			EditorPlugins::add_by_type<KhronosEditorPlugin>();
+
+			ClassDB::register_class<LynxEditorPlugin>();
+			EditorPlugins::add_by_type<LynxEditorPlugin>();
+
 			ClassDB::register_class<MetaEditorExportPlugin>();
 			ClassDB::register_class<MetaEditorPlugin>();
-
 			EditorPlugins::add_by_type<MetaEditorPlugin>();
+
+			ClassDB::register_class<PicoEditorPlugin>();
+			EditorPlugins::add_by_type<PicoEditorPlugin>();
 		} break;
 
 		case MODULE_INITIALIZATION_LEVEL_MAX:

@@ -3,7 +3,6 @@ plugins {
     id 'org.jetbrains.kotlin.android'
 }
 
-
 ext {
     PUBLISH_ARTIFACT_ID = 'godot-openxr-vendors-khronos'
 }
@@ -12,6 +11,7 @@ apply from: "../scripts/publish-module.gradle"
 
 android {
     compileSdk versions.compileSdk
+    ndkVersion versions.ndkVersion
 
     defaultConfig {
         minSdk versions.minSdk
@@ -51,6 +51,16 @@ android {
             withJavadocJar()
         }
     }
+
+    buildFeatures {
+        prefabPublishing true
+    }
+
+    prefab {
+        godotopenxrvendors {
+            headers "../common/src/main/cpp/extensions/include"
+        }
+    }
 }
 
 dependencies {
@@ -60,14 +70,24 @@ dependencies {
 task copyDebugAARToAddons(type: Copy) {
     from 'build/outputs/aar'
     include 'godotopenxrkhronos-debug.aar'
-    into '../demo/addons/godotopenxrvendors/khronos/.bin/debug'
+    into '../demo/addons/godotopenxrvendors/.bin/android/debug'
 }
 
 task copyReleaseAARToAddons(type: Copy) {
     from 'build/outputs/aar'
     include 'godotopenxrkhronos-release.aar'
-    into '../demo/addons/godotopenxrvendors/khronos/.bin/release'
+    into '../demo/addons/godotopenxrvendors/.bin/android/release'
 }
 
+task copyGdExtensionConfigToAssets(type: Copy) {
+    description 'Copy plugin.gdextension from the addons directory to the assets directory'
+
+    from '../demo/addons/godotopenxrvendors/'
+    include 'plugin.gdextension'
+    into 'src/main/assets/addons/godotopenxrvendors/'
+}
+
+preBuild.dependsOn(copyGdExtensionConfigToAssets)
+assemble.dependsOn(copyGdExtensionConfigToAssets)
 assemble.finalizedBy(copyDebugAARToAddons)
 assemble.finalizedBy(copyReleaseAARToAddons)
