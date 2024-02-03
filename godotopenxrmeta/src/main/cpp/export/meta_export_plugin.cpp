@@ -61,6 +61,16 @@ MetaEditorExportPlugin::MetaEditorExportPlugin() {
 			EYE_TRACKING_NONE_VALUE,
 			false
 	);
+	_face_tracking_option = _generate_export_option(
+			"meta_xr_features/face_tracking",
+			"",
+			Variant::Type::INT,
+			PROPERTY_HINT_ENUM,
+			"None,Optional,Required",
+			PROPERTY_USAGE_DEFAULT,
+			FACE_TRACKING_NONE_VALUE,
+			false
+	);
 	_hand_tracking_option = _generate_export_option(
 			"meta_xr_features/hand_tracking",
 			"",
@@ -193,6 +203,7 @@ TypedArray<Dictionary> MetaEditorExportPlugin::_get_export_options(const Ref<Edi
 
 	export_options.append(_get_vendor_toggle_option());
 	export_options.append(_eye_tracking_option);
+	export_options.append(_face_tracking_option);
 	export_options.append(_hand_tracking_option);
 	export_options.append(_hand_tracking_frequency_option);
 	export_options.append(_passthrough_option);
@@ -267,6 +278,10 @@ String MetaEditorExportPlugin::_get_export_option_warning(const Ref<EditorExport
 		if (eye_tracking_option_value > EYE_TRACKING_NONE_VALUE && !eye_tracking_project_setting_enabled) {
 			return "\"Eye Tracking\" project setting must be enabled!\n";
 		}
+	} else if (option == "meta_xr_features/face_tracking") {
+		if (!openxr_enabled && _get_int_option(option, FACE_TRACKING_NONE_VALUE) > FACE_TRACKING_NONE_VALUE) {
+			return "\"Face Tracking\" requires \"XR Mode\" to be \"OpenXR\".\n";
+		}
 	} else if (option == "meta_xr_features/hand_tracking") {
 		if (!openxr_enabled && _get_int_option(option, HAND_TRACKING_NONE_VALUE) > HAND_TRACKING_NONE_VALUE) {
 			return "\"Hand Tracking\" requires \"XR Mode\" to be \"OpenXR\".\n";
@@ -311,6 +326,18 @@ String MetaEditorExportPlugin::_get_android_manifest_element_contents(const Ref<
 			contents += "    <uses-feature android:name=\"oculus.software.eye_tracking\" android:required=\"false\" />\n";
 		} else if (eye_tracking_value == EYE_TRACKING_REQUIRED_VALUE) {
 			contents += "    <uses-feature android:name=\"oculus.software.eye_tracking\" android:required=\"true\" />\n";
+		}
+	}
+
+	// Check for face tracking
+	int face_tracking_value = _get_int_option("meta_xr_features/face_tracking", FACE_TRACKING_NONE_VALUE);
+	if (face_tracking_value > FACE_TRACKING_NONE_VALUE) {
+		contents += "    <uses-permission android:name=\"com.oculus.permission.FACE_TRACKING\" />\n";
+
+		if (face_tracking_value == FACE_TRACKING_OPTIONAL_VALUE) {
+			contents += "    <uses-feature tools:node=\"replace\" android:name=\"oculus.software.face_tracking\" android:required=\"false\" />\n";
+		} else if (face_tracking_value == FACE_TRACKING_REQUIRED_VALUE) {
+			contents += "    <uses-feature tools:node=\"replace\" android:name=\"oculus.software.face_tracking\" android:required=\"true\" />\n";
 		}
 	}
 
