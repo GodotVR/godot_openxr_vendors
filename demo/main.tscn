@@ -1,8 +1,10 @@
-[gd_scene load_steps=14 format=3 uid="uid://cqsodpswgup8w"]
+[gd_scene load_steps=16 format=3 uid="uid://cqsodpswgup8w"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_fsva1"]
 [ext_resource type="PackedScene" uid="uid://c0uv4eu2yjm3b" path="res://viewport_2d_in_3d.tscn" id="2_7whgo"]
 [ext_resource type="PackedScene" uid="uid://d4b4rllli6tqp" path="res://tablet_content.tscn" id="3_45w5g"]
+[ext_resource type="Script" path="res://tracked_face.gd" id="4_fsql8"]
+[ext_resource type="PackedScene" uid="uid://ikxieb2fyavg" path="res://assets/face/Face.gltf" id="4_wrwst"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_0x6cv"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -14,6 +16,8 @@ sky_material = SubResource("ProceduralSkyMaterial_0x6cv")
 [sub_resource type="Environment" id="Environment_m0xew"]
 background_mode = 2
 sky = SubResource("Sky_dqyx0")
+ambient_light_source = 2
+ambient_light_color = Color(0.270588, 0.270588, 0.270588, 1)
 tonemap_mode = 2
 
 [sub_resource type="BoxMesh" id="BoxMesh_3kt6b"]
@@ -46,7 +50,7 @@ script = ExtResource("1_fsva1")
 environment = SubResource("Environment_m0xew")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
+transform = Transform3D(0.5, -0.75, 0.433012, -9.8385e-09, 0.5, 0.866026, -0.866025, -0.433013, 0.25, 0, 0, 0)
 
 [node name="XROrigin3D" type="XROrigin3D" parent="."]
 
@@ -91,4 +95,12 @@ mesh = SubResource("SphereMesh_5gcab")
 [node name="Floor" type="MeshInstance3D" parent="."]
 mesh = SubResource("PlaneMesh_mjcgt")
 
+[node name="TrackedFace" type="Node3D" parent="Floor"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4, -1)
+script = ExtResource("4_fsql8")
+
+[node name="Face" parent="Floor/TrackedFace" instance=ExtResource("4_wrwst")]
+
 [connection signal="button_pressed" from="XROrigin3D/LeftHand" to="." method="_on_left_hand_button_pressed"]
+
+[editable path="Floor/TrackedFace/Face"]
