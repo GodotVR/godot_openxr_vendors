@@ -70,6 +70,7 @@ class GodotOpenXRMeta(godot: Godot?) : GodotPlugin(godot) {
         }
         // Request the scene API permission if it's included in the manifest
         if (PermissionsUtil.hasManifestPermission(activity, SCENE_PERMISSION)) {
+            Log.d(TAG, "Requesting permission '${SCENE_PERMISSION}'")
             PermissionsUtil.requestPermission(SCENE_PERMISSION, activity)
         }
         return null

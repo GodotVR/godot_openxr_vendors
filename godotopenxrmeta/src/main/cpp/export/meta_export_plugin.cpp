@@ -111,6 +111,36 @@ MetaEditorExportPlugin::MetaEditorExportPlugin() {
 			false,
 			false
 	);
+	_use_overlay_keyboard_option = _generate_export_option(
+			"meta_xr_features/use_overlay_keyboard",
+			"",
+			Variant::Type::BOOL,
+			PROPERTY_HINT_NONE,
+			"",
+			PROPERTY_USAGE_DEFAULT,
+			false,
+			false
+	);
+	_use_experimental_features_option = _generate_export_option(
+			"meta_xr_features/use_experimental_features",
+			"",
+			Variant::Type::BOOL,
+			PROPERTY_HINT_NONE,
+			"",
+			PROPERTY_USAGE_DEFAULT,
+			false,
+			false
+	);
+	_boundary_mode_option = _generate_export_option(
+			"meta_xr_features/boundary_mode",
+			"",
+			Variant::Type::INT,
+			PROPERTY_HINT_ENUM,
+			"Enabled,Disabled,Contextual",
+			PROPERTY_USAGE_DEFAULT,
+			BOUNDARY_ENABLED_VALUE,
+			false
+	);
 	_support_quest_1_option = _generate_export_option(
 			"meta_xr_features/quest_1_support",
 			"",
@@ -168,6 +198,9 @@ TypedArray<Dictionary> MetaEditorExportPlugin::_get_export_options(const Ref<Edi
 	export_options.append(_passthrough_option);
 	export_options.append(_use_anchor_api_option);
 	export_options.append(_use_scene_api_option);
+	export_options.append(_use_overlay_keyboard_option);
+	export_options.append(_use_experimental_features_option);
+	export_options.append(_boundary_mode_option);
 	export_options.append(_support_quest_1_option);
 	export_options.append(_support_quest_2_option);
 	export_options.append(_support_quest_3_option);
@@ -250,6 +283,14 @@ String MetaEditorExportPlugin::_get_export_option_warning(const Ref<EditorExport
 		if (!openxr_enabled && _get_bool_option(option)) {
 			return "\"Use scene API\" is only valid when \"XR Mode\" is \"OpenXR\".\n";
 		}
+	} else if (option == "meta_xr_features/use_experimental_features") {
+		if (!openxr_enabled && _get_bool_option(option)) {
+			return "\"Use experimental features\" is only valid when \"XR Mode\" is \"OpenXR\".\n";
+		}
+	} else if (option == "meta_xr_features/boundary_mode") {
+		if (!openxr_enabled && _get_int_option(option, BOUNDARY_ENABLED_VALUE) > BOUNDARY_ENABLED_VALUE) {
+			return "Boundary mode changes require \"XR Mode\" to be \"OpenXR\".\n";
+		}
 	}
 
 	return OpenXREditorExportPlugin::_get_export_option_warning(platform, option);
@@ -303,6 +344,26 @@ String MetaEditorExportPlugin::_get_android_manifest_element_contents(const Ref<
 	bool use_scene_api = _get_bool_option("meta_xr_features/use_scene_api");
 	if (use_scene_api) {
 		contents += "    <uses-permission android:name=\"com.oculus.permission.USE_SCENE\" />\n";
+	}
+
+	// Check for overlay keyboard
+	bool use_overlay_keyboard_option = _get_bool_option("meta_xr_features/use_overlay_keyboard");
+	if (use_overlay_keyboard_option) {
+		contents += "    <uses-feature android:name=\"oculus.software.overlay_keyboard\" android:required=\"true\" />\n";
+	}
+
+	// Check for experimental features
+	bool use_experimental_features = _get_bool_option("meta_xr_features/use_experimental_features");
+	if (use_experimental_features) {
+		contents += "    <uses-feature android:name=\"com.oculus.experimental.enabled\" />\n";
+	}
+
+	// Check for boundary mode
+	int boundary_mode = _get_int_option("meta_xr_features/boundary_mode", BOUNDARY_ENABLED_VALUE);
+	if (boundary_mode == BOUNDARY_DISABLED_VALUE) {
+		contents += "    <uses-feature tools:node=\"replace\" android:name=\"com.oculus.feature.BOUNDARYLESS_APP\" android:required=\"true\" />\n";
+	} else if (boundary_mode == BOUNDARY_CONTEXTUAL_VALUE) {
+		contents += "    <uses-feature tools:node=\"replace\" android:name=\"com.oculus.feature.CONTEXTUAL_BOUNDARYLESS_APP\" android:required=\"true\" />\n";
 	}
 
 	return contents;
