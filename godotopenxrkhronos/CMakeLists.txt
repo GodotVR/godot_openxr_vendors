@@ -5,7 +5,7 @@ include(${CMAKE_SOURCE_DIR}/../common/CMakeLists.txt)
 
 
 ## Project definition
-project(godotopenxrkhronos LANGUAGES CXX)
+project(godotopenxrvendors LANGUAGES CXX)
 
 ## khronos OpenXR loader library
 set(KHRONOS_OPENXR_LIB_PATH "${CMAKE_SOURCE_DIR}/libs/khronos_openxr_sdk/${ANDROID_ABI}/libopenxr_loader.so")
@@ -44,3 +44,5 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
 # Add the compile flags
 set_property(TARGET ${CMAKE_PROJECT_NAME} APPEND_STRING PROPERTY COMPILE_FLAGS ${GODOT_COMPILE_FLAGS})
 set_property(TARGET ${CMAKE_PROJECT_NAME} APPEND_STRING PROPERTY LINK_FLAGS ${GODOT_LINKER_FLAGS})
+
+add_definitions(-DKHRONOS_VENDOR_ENABLED)

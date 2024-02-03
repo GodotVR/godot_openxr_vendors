@@ -31,7 +31,6 @@
 
 #include <godot_cpp/classes/open_xr_extension_wrapper_extension.hpp>
 #include <openxr/openxr.h>
-#include <openxr/fb_spatial_entity.h>
 #include <godot_cpp/templates/hash_map.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
 

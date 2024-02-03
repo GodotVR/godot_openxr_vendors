@@ -1,11 +1,14 @@
 /**************************************************************************/
-/*  register_types.cpp                                                    */
+/*  openxr_fb_scene_capture_extension_wrapper.h                           */
 /**************************************************************************/
 /*                       This file is part of:                            */
 /*                              GODOT XR                                  */
 /*                      https://godotengine.org                           */
 /**************************************************************************/
 /* Copyright (c) 2022-present Godot XR contributors (see CONTRIBUTORS.md) */
+/*                                                                        */
+/* Original contributed implementation:                                   */
+/*   Copyright (c) 2022-2023 MattaKis Consulting Kft. (Migeran)           */
 /*                                                                        */
 /* Permission is hereby granted, free of charge, to any person obtaining  */
 /* a copy of this software and associated documentation files (the        */
@@ -27,46 +30,64 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "register_types.h"
+#ifndef OPENXR_FB_SCENE_CAPTURE_EXTENSION_WRAPPER_H
+#define OPENXR_FB_SCENE_CAPTURE_EXTENSION_WRAPPER_H
 
-#include <gdextension_interface.h>
-
-#include <godot_cpp/core/class_db.hpp>
-#include <godot_cpp/core/defs.hpp>
-#include <godot_cpp/godot.hpp>
+#include <godot_cpp/classes/open_xr_extension_wrapper_extension.hpp>
+#include <openxr/openxr.h>
 #include <godot_cpp/variant/utility_functions.hpp>
 
-#include "export/export_plugin.h"
-#include "export/khronos_export_plugin.h"
+#include "util.h"
+
+#include <map>
 
 using namespace godot;
 
-void initialize_plugin_module(ModuleInitializationLevel p_level) {
-	switch (p_level) {
-		case MODULE_INITIALIZATION_LEVEL_EDITOR: {
-			ClassDB::register_class<OpenXREditorExportPlugin>();
-			ClassDB::register_class<KhronosEditorExportPlugin>();
-			ClassDB::register_class<KhronosEditorPlugin>();
+// Wrapper for the set of Facebook XR scene capture extension.
+class OpenXRFbSceneCaptureExtensionWrapper : public OpenXRExtensionWrapperExtension {
+	GDCLASS(OpenXRFbSceneCaptureExtensionWrapper, OpenXRExtensionWrapperExtension);
 
-			EditorPlugins::add_by_type<KhronosEditorPlugin>();
-		} break;
+public:
+	godot::Dictionary _get_requested_extensions() override;
+
+	void _on_instance_created(uint64_t instance) override;
+
+	void _on_instance_destroyed() override;
+
+	bool is_scene_capture_supported() {
+		return fb_scene_capture_ext;
 	}
-}
 
-void terminate_plugin_module(ModuleInitializationLevel p_level)
-{
-}
+	bool request_scene_capture();
+	bool is_scene_capture_enabled();
 
-extern "C"
-{
-GDExtensionBool GDE_EXPORT plugin_library_init(GDExtensionInterfaceGetProcAddress p_get_proc_address, GDExtensionClassLibraryPtr p_library, GDExtensionInitialization *r_initialization)
-{
-	godot::GDExtensionBinding::InitObject init_obj(p_get_proc_address, p_library, r_initialization);
+	virtual bool _on_event_polled(const void *event) override;
 
-	init_obj.register_initializer(initialize_plugin_module);
-	init_obj.register_terminator(terminate_plugin_module);
-	init_obj.set_minimum_library_initialization_level(MODULE_INITIALIZATION_LEVEL_EDITOR);
+	static OpenXRFbSceneCaptureExtensionWrapper *get_singleton();
 
-	return init_obj.init();
-}
-}
+	OpenXRFbSceneCaptureExtensionWrapper();
+	~OpenXRFbSceneCaptureExtensionWrapper();
+
+protected:
+	static void _bind_methods();
+
+private:
+	EXT_PROTO_XRRESULT_FUNC3(xrRequestSceneCaptureFB,
+			(XrSession), session,
+			(const XrSceneCaptureRequestInfoFB *), request,
+			(XrAsyncRequestIdFB *), requestId)
+
+	bool initialize_fb_scene_capture_extension(const XrInstance instance);
+
+	std::map<godot::String, bool *> request_extensions;
+
+	void cleanup();
+
+	static OpenXRFbSceneCaptureExtensionWrapper *singleton;
+
+	bool fb_scene_capture_ext = false;
+
+	bool scene_capture_enabled = false;
+};
+
+#endif // OPENXR_FB_SCENE_CAPTURE_EXTENSION_WRAPPER_H

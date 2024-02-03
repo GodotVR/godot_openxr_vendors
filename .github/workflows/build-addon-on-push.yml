@@ -17,37 +17,43 @@ jobs:
             platform: linux
             flags: arch=x86_64
             artifact_name: build-files-linux-x86_64
-            artifact_path: aar/demo/addons/godotopenxrvendors/*/.bin/*.so
+            artifact_path: aar/demo/addons/godotopenxrvendors/.bin/linux/*/*/*.so
           # Not sure how to cross compile these
           # - name: Linux (arm64)
           #   os: ubuntu-20.04
           #   platform: linux
           #   flags: arch=arm64
           #  artifact_name: build-files-linux-arm64
-          #   artifact_path: aar/demo/addons/godotopenxrvendors/*/.bin/*.so
+          #   artifact_path: aar/demo/addons/godotopenxrvendors/.bin/linux/*/*/*.so
           # - name: Linux (rv64)
           #  os: ubuntu-20.04
           #  platform: linux
           #  flags: arch=rv64
           #  artifact_name: build-files-linux-rv64
-          #  artifact_path: aar/demo/addons/godotopenxrvendors/*/.bin/*.so
+          #  artifact_path: aar/demo/addons/godotopenxrvendors/.bin/linux/*/*/*.so
           - name: Windows
             os: windows-latest
             platform: windows
             artifact_name: build-files-windows
-            artifact_path: aar/demo/addons/godotopenxrvendors/*/.bin/*.dll
+            artifact_path: aar/demo/addons/godotopenxrvendors/.bin/windows/*/*/*.dll
           - name: MacOS
             os: macos-11
             platform: macos
             flags: arch=universal
             artifact_name: build-files-macos
-            artifact_path: aar/demo/addons/godotopenxrvendors/*/.bin/*.framework
-          - name: Android
+            artifact_path: aar/demo/addons/godotopenxrvendors/.bin/macos/*/*.framework
+          - name: Android AAR
             os: ubuntu-20.04
             platform: android
             flags: arch=arm64
-            artifact_name: build-files-android
-            artifact_path: aar/demo/addons/godotopenxrvendors/*/.bin/*/*.aar
+            artifact_name: build-files-android-aar
+            artifact_path: aar/demo/addons/godotopenxrvendors/.bin/android/*/*.aar
+          - name: Android SO
+            os: ubuntu-20.04
+            platform: android
+            flags: arch=arm64
+            artifact_name: build-files-android-so
+            artifact_path: aar/demo/addons/godotopenxrvendors/.bin/android/*/*/*.so
 
     # Note, to satisfy the asset library we need to make sure our zip files have a root folder
     # this is why we checkout into aar and build into asset
@@ -75,7 +81,6 @@ jobs:
           scons platform=${{ matrix.platform }} target=template_debug ${{ matrix.flags }}
           scons platform=${{ matrix.platform }} target=template_release ${{ matrix.flags }}
           cd ..
-        if: matrix.platform != 'android'
 
       # On Android we build our loaders and build our extension with gradlew
       - name: Setup java
@@ -131,31 +136,29 @@ jobs:
           cp aar/CHANGES.md asset/addons/godotopenxrvendors/GodotOpenXRVendors_CHANGES.md
       - name: Adding vendor licences
         run: |
+          mkdir -p asset/addons/godotopenxrvendors/meta/
           cp aar/godotopenxrmeta/LICENSE.txt asset/addons/godotopenxrvendors/meta/
+          
+          mkdir -p asset/addons/godotopenxrvendors/pico/
           cp aar/godotopenxrpico/libs/pico_openxr_sdk/arm64-v8a/README.md asset/addons/godotopenxrvendors/pico/LICENSE.md
+          
+          mkdir -p asset/addons/godotopenxrvendors/khronos/
           cp aar/godotopenxrkhronos/LICENSE asset/addons/godotopenxrvendors/khronos/LICENSE
 
       - name: Copying artifacts
         run: |
-          cp -r build-files-android/khronos/.bin asset/addons/godotopenxrvendors/khronos/
-          cp -r build-files-android/lynx/.bin asset/addons/godotopenxrvendors/lynx/
-          cp -r build-files-android/meta/.bin asset/addons/godotopenxrvendors/meta/
-          cp -r build-files-android/pico/.bin asset/addons/godotopenxrvendors/pico/
-
-          cp build-files-linux-x86_64/khronos/.bin/*.so asset/addons/godotopenxrvendors/khronos/.bin/
-          cp build-files-linux-x86_64/lynx/.bin/*.so asset/addons/godotopenxrvendors/lynx/.bin/
-          cp build-files-linux-x86_64/meta/.bin/*.so asset/addons/godotopenxrvendors/meta/.bin/
-          cp build-files-linux-x86_64/pico/.bin/*.so asset/addons/godotopenxrvendors/pico/.bin/
+          mkdir -p asset/addons/godotopenxrvendors/.bin/android/
+          cp -r build-files-android-aar/* asset/addons/godotopenxrvendors/.bin/android/
+          cp -r build-files-android-so/* asset/addons/godotopenxrvendors/.bin/android/
           
-          cp build-files-windows/khronos/.bin/*.dll asset/addons/godotopenxrvendors/khronos/.bin/
-          cp build-files-windows/lynx/.bin/*.dll asset/addons/godotopenxrvendors/lynx/.bin/
-          cp build-files-windows/meta/.bin/*.dll asset/addons/godotopenxrvendors/meta/.bin/
-          cp build-files-windows/pico/.bin/*.dll asset/addons/godotopenxrvendors/pico/.bin/
+          mkdir -p asset/addons/godotopenxrvendors/.bin/linux/
+          cp -r build-files-linux-x86_64/* asset/addons/godotopenxrvendors/.bin/linux/
           
-          cp -r build-files-macos/khronos/.bin/*.framework asset/addons/godotopenxrvendors/khronos/.bin/
-          cp -r build-files-macos/lynx/.bin/*.framework asset/addons/godotopenxrvendors/lynx/.bin/
-          cp -r build-files-macos/meta/.bin/*.framework asset/addons/godotopenxrvendors/meta/.bin/
-          cp -r build-files-macos/pico/.bin/*.framework asset/addons/godotopenxrvendors/pico/.bin/
+          mkdir -p asset/addons/godotopenxrvendors/.bin/windows/
+          cp -r build-files-windows/* asset/addons/godotopenxrvendors/.bin/windows/
+          
+          mkdir -p asset/addons/godotopenxrvendors/.bin/macos/
+          cp -r build-files-macos/* asset/addons/godotopenxrvendors/.bin/macos/
 
       - name: Create Godot OpenXR Vendor addon artifact
         uses: actions/upload-artifact@v3

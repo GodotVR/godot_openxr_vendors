@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  openxr_fb_spatial_entity_container_extension_wrapper.h                */
+/*  openxr_fb_scene_extension_wrapper.h                                   */
 /**************************************************************************/
 /*                       This file is part of:                            */
 /*                              GODOT XR                                  */
@@ -31,21 +31,34 @@
 
 #include <godot_cpp/classes/open_xr_extension_wrapper_extension.hpp>
 #include <openxr/openxr.h>
-#include <openxr/fb_spatial_entity_container.h>
 #include <godot_cpp/templates/hash_map.hpp>
 #include <godot_cpp/templates/vector.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
 
 #include "util.h"
 
-#include <functional>
+#include <optional>
 #include <map>
 
 using namespace godot;
 
-// Wrapper for the set of Facebook XR spatial entity container extension.
-class OpenXRFbSpatialEntityContainerExtensionWrapper : public OpenXRExtensionWrapperExtension {
-	GDCLASS(OpenXRFbSpatialEntityContainerExtensionWrapper, OpenXRExtensionWrapperExtension);
+struct XrSceneObjectInternal {
+	XrUuidEXT uuid;
+	XrSpace space;
+	std::optional<String> label;
+
+	// Vertices and lines on a plane, probably use this for a floor / ceiling as they are irregularly shaped
+	// We store a std::vector instead of XrBoundary2DFB to own the vertex memory
+	std::optional<Vector<XrVector2f>> boundary2D;
+	// A rectangle containing the whole thing, perfect for desks / tables / play surfaces
+	std::optional<XrRect2Df> boundingBox2D;
+	// 3D box for the whole thing, better for obstacles and other objects not used as a surface
+	std::optional<XrRect3DfFB> boundingBox3D;
+};
+
+// Wrapper for the set of Facebook XR scene extension.
+class OpenXRFbSceneExtensionWrapper : public OpenXRExtensionWrapperExtension {
+	GDCLASS(OpenXRFbSceneExtensionWrapper, OpenXRExtensionWrapperExtension);
 
 public:
 	Dictionary _get_requested_extensions() override;
@@ -54,33 +67,54 @@ public:
 
 	void _on_instance_destroyed() override;
 
-	bool is_spatial_entity_container_supported() {
-		return fb_spatial_entity_container_ext;
+	bool is_scene_supported() {
+		return fb_scene_ext;
 	}
 
-	static OpenXRFbSpatialEntityContainerExtensionWrapper *get_singleton();
+	static OpenXRFbSceneExtensionWrapper *get_singleton();
 
-	Vector<XrUuidEXT> get_contained_uuids(const XrSpace& space);
+	OpenXRFbSceneExtensionWrapper();
+	~OpenXRFbSceneExtensionWrapper();
 
-	OpenXRFbSpatialEntityContainerExtensionWrapper();
-	~OpenXRFbSpatialEntityContainerExtensionWrapper();
+	std::optional<String> get_semantic_labels(const XrSpace& space);
+	void get_shapes(const XrSpace& space, XrSceneObjectInternal& object);
 
 protected:
 	static void _bind_methods();
 
 private:
-	EXT_PROTO_XRRESULT_FUNC3(xrGetSpaceContainerFB,
+	EXT_PROTO_XRRESULT_FUNC3(xrGetSpaceBoundingBox2DFB,
 			(XrSession), session,
 			(XrSpace), space,
-			(XrSpaceContainerFB *), spaceContainerOutput)
+			(XrRect2Df *), boundingBox2DOutput)
 
-	bool initialize_fb_spatial_entity_container_extension(const XrInstance& instance);
+	EXT_PROTO_XRRESULT_FUNC3(xrGetSpaceBoundingBox3DFB,
+			(XrSession), session,
+			(XrSpace), space,
+			(XrRect3DfFB *), boundingBox3DOutput)
+
+	EXT_PROTO_XRRESULT_FUNC3(xrGetSpaceSemanticLabelsFB,
+			(XrSession), session,
+			(XrSpace), space,
+			(XrSemanticLabelsFB *), semanticLabelsOutput)
+
+	EXT_PROTO_XRRESULT_FUNC3(xrGetSpaceBoundary2DFB,
+			(XrSession), session,
+			(XrSpace), space,
+			(XrBoundary2DFB *), boundary2DOutput)
+
+	EXT_PROTO_XRRESULT_FUNC3(xrGetSpaceRoomLayoutFB,
+			(XrSession), session,
+			(XrSpace), space,
+			(XrRoomLayoutFB *), roomLayoutOutput)
+
+	bool initialize_fb_scene_extension(const XrInstance instance);
 
 	HashMap<String, bool *> request_extensions;
 
 	void cleanup();
 
-	static OpenXRFbSpatialEntityContainerExtensionWrapper *singleton;
+	static OpenXRFbSceneExtensionWrapper *singleton;
 
-	bool fb_spatial_entity_container_ext = false;
+	bool fb_scene_ext = false;
 };

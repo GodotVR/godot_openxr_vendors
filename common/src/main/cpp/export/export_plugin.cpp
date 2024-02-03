@@ -66,7 +66,7 @@ String OpenXREditorExportPlugin::_get_name() const {
 
 String OpenXREditorExportPlugin::_get_android_aar_file_path(bool debug) const {
 	const String debug_label = debug ? "debug" : "release";
-	return "res://addons/godotopenxrvendors/" + _vendor + "/.bin/" + debug_label + "/godotopenxr" + _vendor + "-" + debug_label + ".aar";
+	return "res://addons/godotopenxrvendors/.bin/android/" + debug_label + "/godotopenxr" + _vendor + "-" + debug_label + ".aar";
 }
 
 String OpenXREditorExportPlugin::_get_android_maven_central_dependency() const {

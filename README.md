@@ -5,7 +5,7 @@ devices (e.g: Meta, Pico devices) and access vendor-specific OpenXR extensions
 
 **Note:** 
 
-Version `2.x` of this plugin requires **Godot 4.2**.
+Version `2.x` and higher of this plugin requires **Godot 4.2**.
 Check the [`1.x` branch](https://github.com/GodotVR/godot_openxr_vendors/tree/1.x) and releases 
 for support on prior versions of Godot 4.
 
@@ -18,39 +18,36 @@ git submodule update --init
 ```
 
 ### Building the Godot-CPP bindings
-Build the Android C++ bindings using the following commands. To speed up compilation, add `-jN` at
-the end of the SCons command line where `N` is the number of CPU threads you have on your system.
-The example below uses 4 threads.
+Build the Android C++ bindings using the following commands. 
 ```
 cd thirdparty/godot-cpp
-scons platform=android target=template_debug arch=arm64 -j4
-scons platform=android target=template_debug arch=arm32 -j4
-scons platform=android target=template_debug arch=x86_64 -j4
-scons platform=android target=template_debug arch=x86_32 -j4
-scons platform=android target=template_release arch=arm64 -j4
-scons platform=android target=template_release arch=arm32 -j4
-scons platform=android target=template_release arch=x86_64 -j4
-scons platform=android target=template_release arch=x86_32 -j4
+scons platform=android target=template_debug arch=arm64
+scons platform=android target=template_release arch=arm64
+scons platform=android target=template_debug arch=x86_64
+scons platform=android target=template_release arch=x86_64
 ```
 
 When the command is completed, you should have static libraries stored in `thirdparty/godot-cpp/bin` 
 that will be used for compilation by the plugin.
 
 ### Building the Plugin
+Run the following command from the root directory to generate the editor gdextension plugin:
+```
+scons target=template_debug
+scons target=template_release
+scons target=template_debug platform=android
+scons target=template_release platform=android
+```
 
 #### Linux / MacOS
-Run the following command from the root directory to build the plugin:
+Run the following command from the root directory to build the vendors `AAR` Android binaries:
 ```
-scons target=template_debug -j4
-scons target=template_release -j4
 ./gradlew build
 ```
 
 #### Windows
-Run the following command from the root directory to build the plugin:
+Run the following command from the root directory to build the vendors `AAR` Android binaries:
 ```
-scons target=template_debug -j4
-scons target=template_release -j4
 gradlew.bat build
 ```
 

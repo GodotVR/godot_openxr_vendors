@@ -5,7 +5,7 @@ include(${CMAKE_SOURCE_DIR}/../common/CMakeLists.txt)
 
 
 ## Project definition
-project(godotopenxrmeta LANGUAGES CXX)
+project(godotopenxrvendors LANGUAGES CXX)
 
 ## OpenXR Mobile loader library
 # Sets the path to the OpenXR mobile library directory.
@@ -50,3 +50,5 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
 # Add the compile flags
 set_property(TARGET ${CMAKE_PROJECT_NAME} APPEND_STRING PROPERTY COMPILE_FLAGS ${GODOT_COMPILE_FLAGS})
 set_property(TARGET ${CMAKE_PROJECT_NAME} APPEND_STRING PROPERTY LINK_FLAGS ${GODOT_LINKER_FLAGS})
+
+add_definitions(-DMETA_VENDOR_ENABLED)

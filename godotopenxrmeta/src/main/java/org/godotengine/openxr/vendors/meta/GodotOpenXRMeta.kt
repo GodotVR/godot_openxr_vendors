@@ -49,10 +49,10 @@ class GodotOpenXRMeta(godot: Godot?) : GodotPlugin(godot) {
 
         init {
             try {
-                Log.v(TAG, "Loading godotopenxrmeta library")
-                System.loadLibrary("godotopenxrmeta")
+                Log.v(TAG, "Loading godotopenxrvendors library")
+                System.loadLibrary("godotopenxrvendors")
             } catch (e: UnsatisfiedLinkError) {
-                Log.e(TAG, "Unable to load godotopenxrmeta shared library")
+                Log.e(TAG, "Unable to load godotopenxrvendors shared library")
             }
         }
     }
@@ -61,7 +61,7 @@ class GodotOpenXRMeta(godot: Godot?) : GodotPlugin(godot) {
         return "GodotOpenXRMeta"
     }
 
-    override fun getPluginGDExtensionLibrariesPaths() = setOf("res://addons/godotopenxrvendors/meta/plugin.gdextension")
+    override fun getPluginGDExtensionLibrariesPaths() = setOf("res://addons/godotopenxrvendors/plugin.gdextension")
 
     override fun onMainCreate(activity: Activity): View? {
         // Request the eye tracking permission if it's included in the manifest

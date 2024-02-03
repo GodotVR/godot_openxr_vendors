@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  openxr_fb_scene_extension_wrapper.h                                   */
+/*  openxr_fb_spatial_entity_query_extension_wrapper.h                    */
 /**************************************************************************/
 /*                       This file is part of:                            */
 /*                              GODOT XR                                  */
@@ -31,35 +31,22 @@
 
 #include <godot_cpp/classes/open_xr_extension_wrapper_extension.hpp>
 #include <openxr/openxr.h>
-#include <openxr/fb_scene.h>
 #include <godot_cpp/templates/hash_map.hpp>
 #include <godot_cpp/templates/vector.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
 
 #include "util.h"
 
-#include <optional>
+#include <functional>
 #include <map>
 
 using namespace godot;
 
-struct XrSceneObjectInternal {
-	XrUuidEXT uuid;
-	XrSpace space;
-	std::optional<String> label;
+typedef std::function<void(Vector<XrSpaceQueryResultFB>)> SpaceQueryCompleteCallback_t;
 
-	// Vertices and lines on a plane, probably use this for a floor / ceiling as they are irregularly shaped
-	// We store a std::vector instead of XrBoundary2DFB to own the vertex memory
-	std::optional<Vector<XrVector2f>> boundary2D;
-	// A rectangle containing the whole thing, perfect for desks / tables / play surfaces
-	std::optional<XrRect2Df> boundingBox2D;
-	// 3D box for the whole thing, better for obstacles and other objects not used as a surface
-	std::optional<XrRect3DfFB> boundingBox3D;
-};
-
-// Wrapper for the set of Facebook XR scene extension.
-class OpenXRFbSceneExtensionWrapper : public OpenXRExtensionWrapperExtension {
-	GDCLASS(OpenXRFbSceneExtensionWrapper, OpenXRExtensionWrapperExtension);
+// Wrapper for the set of Facebook XR spatial entity query extension.
+class OpenXRFbSpatialEntityQueryExtensionWrapper : public OpenXRExtensionWrapperExtension {
+	GDCLASS(OpenXRFbSpatialEntityQueryExtensionWrapper, OpenXRExtensionWrapperExtension);
 
 public:
 	Dictionary _get_requested_extensions() override;
@@ -68,54 +55,46 @@ public:
 
 	void _on_instance_destroyed() override;
 
-	bool is_scene_supported() {
-		return fb_scene_ext;
+	bool is_spatial_entity_query_supported() {
+		return fb_spatial_entity_query_ext;
 	}
 
-	static OpenXRFbSceneExtensionWrapper *get_singleton();
+	virtual bool _on_event_polled(const void *event) override;
 
-	OpenXRFbSceneExtensionWrapper();
-	~OpenXRFbSceneExtensionWrapper();
+	static OpenXRFbSpatialEntityQueryExtensionWrapper *get_singleton();
 
-	std::optional<String> get_semantic_labels(const XrSpace& space);
-	void get_shapes(const XrSpace& space, XrSceneObjectInternal& object);
+	// Attempts to query spatial entities given an XrSpaceQueryInfoFB. The callback will run to
+	// deliver results when they are available.
+	void query_spatial_entities(const XrSpaceQueryInfoBaseHeaderFB* info, SpaceQueryCompleteCallback_t callback);
+
+	OpenXRFbSpatialEntityQueryExtensionWrapper();
+	~OpenXRFbSpatialEntityQueryExtensionWrapper();
 
 protected:
 	static void _bind_methods();
 
 private:
-	EXT_PROTO_XRRESULT_FUNC3(xrGetSpaceBoundingBox2DFB,
+	EXT_PROTO_XRRESULT_FUNC3(xrQuerySpacesFB,
 			(XrSession), session,
-			(XrSpace), space,
-			(XrRect2Df *), boundingBox2DOutput)
+			(const XrSpaceQueryInfoBaseHeaderFB *), info,
+			(XrAsyncRequestIdFB *), requestId)
 
-	EXT_PROTO_XRRESULT_FUNC3(xrGetSpaceBoundingBox3DFB,
+	EXT_PROTO_XRRESULT_FUNC3(xrRetrieveSpaceQueryResultsFB,
 			(XrSession), session,
-			(XrSpace), space,
-			(XrRect3DfFB *), boundingBox3DOutput)
+			(XrAsyncRequestIdFB), requestId,
+			(XrSpaceQueryResultsFB *), results)
 
-	EXT_PROTO_XRRESULT_FUNC3(xrGetSpaceSemanticLabelsFB,
-			(XrSession), session,
-			(XrSpace), space,
-			(XrSemanticLabelsFB *), semanticLabelsOutput)
+	bool initialize_fb_spatial_entity_query_extension(const XrInstance& instance);
+	void on_space_query_results(const XrEventDataSpaceQueryResultsAvailableFB* event);
+	void on_space_query_complete(const XrEventDataSpaceQueryCompleteFB* event);
 
-	EXT_PROTO_XRRESULT_FUNC3(xrGetSpaceBoundary2DFB,
-			(XrSession), session,
-			(XrSpace), space,
-			(XrBoundary2DFB *), boundary2DOutput)
-
-	EXT_PROTO_XRRESULT_FUNC3(xrGetSpaceRoomLayoutFB,
-			(XrSession), session,
-			(XrSpace), space,
-			(XrRoomLayoutFB *), roomLayoutOutput)
-
-	bool initialize_fb_scene_extension(const XrInstance instance);
-
+	HashMap<XrAsyncRequestIdFB, Vector<XrSpaceQueryResultFB>> query_results;
 	HashMap<String, bool *> request_extensions;
+	HashMap<XrAsyncRequestIdFB, SpaceQueryCompleteCallback_t> query_complete_callbacks;
 
 	void cleanup();
 
-	static OpenXRFbSceneExtensionWrapper *singleton;
+	static OpenXRFbSpatialEntityQueryExtensionWrapper *singleton;
 
-	bool fb_scene_ext = false;
+	bool fb_spatial_entity_query_ext = false;
 };

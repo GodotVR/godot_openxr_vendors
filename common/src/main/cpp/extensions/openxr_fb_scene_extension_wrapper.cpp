@@ -33,6 +33,10 @@
 #include <godot_cpp/classes/open_xrapi_extension.hpp>
 #include <godot_cpp/classes/object.hpp>
 
+#ifdef META_VENDOR_ENABLED
+#include <openxr/fb_scene.h>
+#endif
+
 #include "include/openxr_fb_spatial_entity_extension_wrapper.h"
 
 using namespace godot;
@@ -97,11 +101,14 @@ std::optional<String> OpenXRFbSceneExtensionWrapper::get_semantic_labels(const X
 	// List from https://developer.oculus.com/documentation/native/android/mobile-scene-api-ref/
 	static const CharString recognizedLabels =
 			"CEILING,DOOR_FRAME,FLOOR,INVISIBLE_WALL_FACE,WALL_ART,WALL_FACE,WINDOW_FRAME,COUCH,TABLE,BED,LAMP,PLANT,SCREEN,STORAGE,GLOBAL_MESH,OTHER";
+	XrSemanticLabelsSupportFlagsFB flags = XR_SEMANTIC_LABELS_SUPPORT_MULTIPLE_SEMANTIC_LABELS_BIT_FB | XR_SEMANTIC_LABELS_SUPPORT_ACCEPT_DESK_TO_TABLE_MIGRATION_BIT_FB;
+#ifdef META_VENDOR_ENABLED
+	flags |= XR_SEMANTIC_LABELS_SUPPORT_ACCEPT_INVISIBLE_WALL_FACE_BIT_FB;
+#endif
 	const XrSemanticLabelsSupportInfoFB semanticLabelsSupportInfo = {
 		XR_TYPE_SEMANTIC_LABELS_SUPPORT_INFO_FB,
 		nullptr,
-		XR_SEMANTIC_LABELS_SUPPORT_MULTIPLE_SEMANTIC_LABELS_BIT_FB | XR_SEMANTIC_LABELS_SUPPORT_ACCEPT_DESK_TO_TABLE_MIGRATION_BIT_FB |
-		XR_SEMANTIC_LABELS_SUPPORT_ACCEPT_INVISIBLE_WALL_FACE_BIT_FB,
+		flags,
 		recognizedLabels.ptr(),
 	};
 

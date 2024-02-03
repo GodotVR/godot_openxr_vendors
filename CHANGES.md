@@ -1,5 +1,10 @@
 # Change history for the Godot OpenXR loaders asset
 
+## 3.0.0
+- Merge GDExtension into a single implementation
+- Upgrade Android, Gradle, Godot and Kotlin dependencies
+- Add XR_FB_face_tracking support
+
 ## 2.0.3
 - Migrate the export scripts from gdscript to C++ via gdextension
 - Manually request eye tracking permission if it's included in the app manifest
