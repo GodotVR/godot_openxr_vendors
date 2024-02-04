@@ -175,6 +175,7 @@ void OpenXRFbFaceTrackingExtensionWrapper::_on_session_created(uint64_t instance
 	}
 
 	// Configure the weights struct
+	face_expression_weights.type = XR_TYPE_FACE_EXPRESSION_WEIGHTS_FB;
 	face_expression_weights.weightCount = XR_FACE_EXPRESSION_COUNT_FB;
 	face_expression_weights.weights = weights;
 	face_expression_weights.confidenceCount  = XR_FACE_CONFIDENCE_COUNT_FB;
@@ -185,7 +186,7 @@ void OpenXRFbFaceTrackingExtensionWrapper::_on_session_created(uint64_t instance
 	createInfo.faceExpressionSet = XR_FACE_EXPRESSION_SET_DEFAULT_FB;
 	XrResult result = xrCreateFaceTrackerFB(SESSION, &createInfo, &face_tracker);
 	if (XR_FAILED(result)) {
-		UtilityFunctions::print("Failed to create face-tracker handle");
+		UtilityFunctions::print("Failed to create face-tracker handle: ", result);
 	}
 }
 
@@ -198,7 +199,7 @@ void OpenXRFbFaceTrackingExtensionWrapper::_on_session_destroyed() {
 	// Destroy the face-tracker handle
 	XrResult result = xrDestroyFaceTrackerFB(face_tracker);
 	if (XR_FAILED(result)) {
-		UtilityFunctions::print("Failed to destroy face-tracker handle");
+		UtilityFunctions::print("Failed to destroy face-tracker handle: ", result);
 	}
 	face_tracker = XR_NULL_HANDLE;
 
@@ -223,7 +224,7 @@ void OpenXRFbFaceTrackingExtensionWrapper::_on_process() {
 	expression_info.time = next_frame_time;
 	XrResult result = xrGetFaceExpressionWeightsFB(face_tracker, &expression_info, &face_expression_weights);
 	if (XR_FAILED(result)) {
-		UtilityFunctions::print("Failed to get face expression weights");
+		UtilityFunctions::print("Failed to get face expression weights: ", result);
 	}
 }
 
