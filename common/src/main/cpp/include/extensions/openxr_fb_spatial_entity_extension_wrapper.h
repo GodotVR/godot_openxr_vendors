@@ -29,8 +29,8 @@
 
 #pragma once
 
-#include <godot_cpp/classes/open_xr_extension_wrapper_extension.hpp>
 #include <openxr/openxr.h>
+#include <godot_cpp/classes/open_xr_extension_wrapper_extension.hpp>
 #include <godot_cpp/templates/hash_map.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
 
@@ -42,7 +42,7 @@
 
 using namespace godot;
 
-typedef std::function<void(const XrEventDataSpaceSetStatusCompleteFB* eventData)> SetSpaceComponentStatusCallback_t;
+typedef std::function<void(const XrEventDataSpaceSetStatusCompleteFB *eventData)> SetSpaceComponentStatusCallback_t;
 
 // Wrapper for the set of Facebook XR spatial entity extension.
 class OpenXRFbSpatialEntityExtensionWrapper : public OpenXRExtensionWrapperExtension {
@@ -59,8 +59,8 @@ public:
 		return fb_spatial_entity_ext;
 	}
 
-	bool is_component_supported(const XrSpace& space, XrSpaceComponentTypeFB type);
-	bool is_component_enabled(const XrSpace& space, XrSpaceComponentTypeFB type);
+	bool is_component_supported(const XrSpace &space, XrSpaceComponentTypeFB type);
+	bool is_component_enabled(const XrSpace &space, XrSpaceComponentTypeFB type);
 
 	// Attempts to set the enabled status for the given component of an XrSpace. The callback will
 	// run to deliver results, with an arg of either:
@@ -69,10 +69,10 @@ public:
 	// Both cases should be handled, and the second may still indicate an error depending on the
 	// contained XrResult.
 	void set_component_enabled(
-		const XrSpace& space,
-		XrSpaceComponentTypeFB type,
-		bool status,
-		std::optional<SetSpaceComponentStatusCallback_t> callback = std::nullopt);
+			const XrSpace &space,
+			XrSpaceComponentTypeFB type,
+			bool status,
+			std::optional<SetSpaceComponentStatusCallback_t> callback = std::nullopt);
 
 	virtual bool _on_event_polled(const void *event) override;
 
@@ -110,7 +110,7 @@ private:
 			(XrSpaceComponentTypeFB), componentType,
 			(XrSpaceComponentStatusFB *), status)
 
-	bool initialize_fb_spatial_entity_extension(const XrInstance& instance);
+	bool initialize_fb_spatial_entity_extension(const XrInstance &instance);
 
 	HashMap<String, bool *> request_extensions;
 	HashMap<XrAsyncRequestIdFB, SetSpaceComponentStatusCallback_t> set_status_callbacks;

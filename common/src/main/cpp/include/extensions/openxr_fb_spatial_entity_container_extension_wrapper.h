@@ -29,8 +29,8 @@
 
 #pragma once
 
-#include <godot_cpp/classes/open_xr_extension_wrapper_extension.hpp>
 #include <openxr/openxr.h>
+#include <godot_cpp/classes/open_xr_extension_wrapper_extension.hpp>
 #include <godot_cpp/templates/hash_map.hpp>
 #include <godot_cpp/templates/vector.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
@@ -59,7 +59,7 @@ public:
 
 	static OpenXRFbSpatialEntityContainerExtensionWrapper *get_singleton();
 
-	Vector<XrUuidEXT> get_contained_uuids(const XrSpace& space);
+	Vector<XrUuidEXT> get_contained_uuids(const XrSpace &space);
 
 	OpenXRFbSpatialEntityContainerExtensionWrapper();
 	~OpenXRFbSpatialEntityContainerExtensionWrapper();
@@ -73,7 +73,7 @@ private:
 			(XrSpace), space,
 			(XrSpaceContainerFB *), spaceContainerOutput)
 
-	bool initialize_fb_spatial_entity_container_extension(const XrInstance& instance);
+	bool initialize_fb_spatial_entity_container_extension(const XrInstance &instance);
 
 	HashMap<String, bool *> request_extensions;
 

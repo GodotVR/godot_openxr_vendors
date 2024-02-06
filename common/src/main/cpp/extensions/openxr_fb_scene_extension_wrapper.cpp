@@ -29,9 +29,9 @@
 
 #include "extensions/openxr_fb_scene_extension_wrapper.h"
 
-#include <godot_cpp/variant/utility_functions.hpp>
-#include <godot_cpp/classes/open_xrapi_extension.hpp>
 #include <godot_cpp/classes/object.hpp>
+#include <godot_cpp/classes/open_xrapi_extension.hpp>
+#include <godot_cpp/variant/utility_functions.hpp>
 
 #ifdef META_VENDOR_ENABLED
 #include <openxr/fb_scene.h>
@@ -72,7 +72,7 @@ void OpenXRFbSceneExtensionWrapper::cleanup() {
 
 Dictionary OpenXRFbSceneExtensionWrapper::_get_requested_extensions() {
 	Dictionary result;
-	for (auto ext: request_extensions) {
+	for (auto ext : request_extensions) {
 		uint64_t value = reinterpret_cast<uint64_t>(ext.value);
 		result[ext.key] = (Variant)value;
 	}
@@ -93,7 +93,7 @@ void OpenXRFbSceneExtensionWrapper::_on_instance_destroyed() {
 	cleanup();
 }
 
-std::optional<String> OpenXRFbSceneExtensionWrapper::get_semantic_labels(const XrSpace& space) {
+std::optional<String> OpenXRFbSceneExtensionWrapper::get_semantic_labels(const XrSpace &space) {
 	if (!OpenXRFbSpatialEntityExtensionWrapper::get_singleton()->is_component_enabled(space, XR_SPACE_COMPONENT_TYPE_SEMANTIC_LABELS_FB)) {
 		return std::nullopt;
 	}
@@ -112,7 +112,7 @@ std::optional<String> OpenXRFbSceneExtensionWrapper::get_semantic_labels(const X
 		recognizedLabels.ptr(),
 	};
 
-	XrSemanticLabelsFB labels = {XR_TYPE_SEMANTIC_LABELS_FB, &semanticLabelsSupportInfo, 0};
+	XrSemanticLabelsFB labels = { XR_TYPE_SEMANTIC_LABELS_FB, &semanticLabelsSupportInfo, 0 };
 
 	// First call.
 	xrGetSpaceSemanticLabelsFB(SESSION, space, &labels);
@@ -127,7 +127,7 @@ std::optional<String> OpenXRFbSceneExtensionWrapper::get_semantic_labels(const X
 	return String(std::string(labels.buffer, labels.bufferCountOutput).c_str());
 }
 
-void OpenXRFbSceneExtensionWrapper::get_shapes(const XrSpace& space, XrSceneObjectInternal& object) {
+void OpenXRFbSceneExtensionWrapper::get_shapes(const XrSpace &space, XrSceneObjectInternal &object) {
 	if (OpenXRFbSpatialEntityExtensionWrapper::get_singleton()->is_component_enabled(space, XR_SPACE_COMPONENT_TYPE_BOUNDED_2D_FB)) {
 		//  Grab both the bounding box 2D and the boundary
 		XrRect2Df boundingBox2D;
@@ -135,7 +135,7 @@ void OpenXRFbSceneExtensionWrapper::get_shapes(const XrSpace& space, XrSceneObje
 			object.boundingBox2D = boundingBox2D;
 		}
 
-		XrBoundary2DFB boundary2D = {XR_TYPE_BOUNDARY_2D_FB, nullptr, 0};
+		XrBoundary2DFB boundary2D = { XR_TYPE_BOUNDARY_2D_FB, nullptr, 0 };
 		if (XR_SUCCEEDED(xrGetSpaceBoundary2DFB(SESSION, space, &boundary2D))) {
 			Vector<XrVector2f> vertices;
 			vertices.resize(boundary2D.vertexCountOutput);

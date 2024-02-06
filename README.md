@@ -1,24 +1,24 @@
 # Godot OpenXR Vendors plugin
 
-This plugin provides the functionality to support vendor-specific XR 
+This plugin provides the functionality to support vendor-specific XR
 devices (e.g: Meta, Pico devices) and access vendor-specific OpenXR extensions
 
-**Note:** 
+**Note:**
 
 Version `2.x` and higher of this plugin requires **Godot 4.2**.
-Check the [`1.x` branch](https://github.com/GodotVR/godot_openxr_vendors/tree/1.x) and releases 
+Check the [`1.x` branch](https://github.com/GodotVR/godot_openxr_vendors/tree/1.x) and releases
 for support on prior versions of Godot 4.
 
 ## Building this asset
 
-After cloning this project, run the following command in the project root directory to initialize 
+After cloning this project, run the following command in the project root directory to initialize
 the `godot-cpp` submodule:
 ```
 git submodule update --init
 ```
 
 ### Building the Godot-CPP bindings
-Build the Android C++ bindings using the following commands. 
+Build the Android C++ bindings using the following commands.
 ```
 cd thirdparty/godot-cpp
 scons platform=android target=template_debug arch=arm64
@@ -27,7 +27,7 @@ scons platform=android target=template_debug arch=x86_64
 scons platform=android target=template_release arch=x86_64
 ```
 
-When the command is completed, you should have static libraries stored in `thirdparty/godot-cpp/bin` 
+When the command is completed, you should have static libraries stored in `thirdparty/godot-cpp/bin`
 that will be used for compilation by the plugin.
 
 ### Building the Plugin
@@ -69,19 +69,19 @@ The use of a Godot Android plugin requires the use of the gradle build option in
 
 ### Copying the plugin into place
 
-When downloading this asset from Godot's asset library it should place the required files into 
+When downloading this asset from Godot's asset library it should place the required files into
 the `addons`directory.
-If you've downloaded the zip file from the releases page, copy the files in `asset/addons` 
+If you've downloaded the zip file from the releases page, copy the files in `asset/addons`
 manually to `addons` in your project. You may need to create the `addons` folder.
 
-If you have build the asset from source, you need to create the `addons` folder in your project 
-if it doesn't exist already, and then copy the content of the `demo/addons` folder to `addons` 
+If you have build the asset from source, you need to create the `addons` folder in your project
+if it doesn't exist already, and then copy the content of the `demo/addons` folder to `addons`
 in your project.
 
 ### Configuring your export
 
 Back in Godot open the `Project` menu and select `Export...`:
-- If it doesn't already exist, create an Android export configuration by pressing `Add...` and 
+- If it doesn't already exist, create an Android export configuration by pressing `Add...` and
 selecting `Android`
 - Tick the `Use Gradle Build` tickbox
 - Select `OpenXR` as the **XR Mode** under the **XR Features** section
@@ -91,6 +91,11 @@ selecting `Android`
 **Note:**
 **Do not** select multiple vendors in the same export template!
 You can instead create multiple export templates, one for each vendor.
+
+## Hooks
+
+When contributing to the source code for the plugin, we highly recommend you install clang-format and copy the contents of the `hooks` folder into the folder `.git/hooks/`.
+This will ensure clang-format is run on any changed files before commiting the changes to github and prevent disappointment when formatting issues prevent changes from being merged.
 
 ## License
 

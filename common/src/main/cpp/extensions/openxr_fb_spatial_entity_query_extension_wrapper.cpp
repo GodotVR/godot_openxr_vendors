@@ -29,9 +29,9 @@
 
 #include "extensions/openxr_fb_spatial_entity_query_extension_wrapper.h"
 
-#include <godot_cpp/variant/utility_functions.hpp>
-#include <godot_cpp/classes/open_xrapi_extension.hpp>
 #include <godot_cpp/classes/object.hpp>
+#include <godot_cpp/classes/open_xrapi_extension.hpp>
+#include <godot_cpp/variant/utility_functions.hpp>
 
 using namespace godot;
 
@@ -66,7 +66,7 @@ void OpenXRFbSpatialEntityQueryExtensionWrapper::cleanup() {
 
 Dictionary OpenXRFbSpatialEntityQueryExtensionWrapper::_get_requested_extensions() {
 	Dictionary result;
-	for (auto ext: request_extensions) {
+	for (auto ext : request_extensions) {
 		uint64_t value = reinterpret_cast<uint64_t>(ext.value);
 		result[ext.key] = (Variant)value;
 	}
@@ -87,7 +87,7 @@ void OpenXRFbSpatialEntityQueryExtensionWrapper::_on_instance_destroyed() {
 	cleanup();
 }
 
-bool OpenXRFbSpatialEntityQueryExtensionWrapper::initialize_fb_spatial_entity_query_extension(const XrInstance& p_instance) {
+bool OpenXRFbSpatialEntityQueryExtensionWrapper::initialize_fb_spatial_entity_query_extension(const XrInstance &p_instance) {
 	GDEXTENSION_INIT_XR_FUNC_V(xrQuerySpacesFB);
 	GDEXTENSION_INIT_XR_FUNC_V(xrRetrieveSpaceQueryResultsFB);
 
@@ -95,20 +95,20 @@ bool OpenXRFbSpatialEntityQueryExtensionWrapper::initialize_fb_spatial_entity_qu
 }
 
 bool OpenXRFbSpatialEntityQueryExtensionWrapper::_on_event_polled(const void *event) {
-	if (static_cast<const XrEventDataBuffer*>(event)->type == XR_TYPE_EVENT_DATA_SPACE_QUERY_RESULTS_AVAILABLE_FB) {
-		on_space_query_results((const XrEventDataSpaceQueryResultsAvailableFB*) event);
+	if (static_cast<const XrEventDataBuffer *>(event)->type == XR_TYPE_EVENT_DATA_SPACE_QUERY_RESULTS_AVAILABLE_FB) {
+		on_space_query_results((const XrEventDataSpaceQueryResultsAvailableFB *)event);
 		return true;
 	}
 
-	if (static_cast<const XrEventDataBuffer*>(event)->type == XR_TYPE_EVENT_DATA_SPACE_QUERY_COMPLETE_FB) {
-		on_space_query_complete((const XrEventDataSpaceQueryCompleteFB*) event);
+	if (static_cast<const XrEventDataBuffer *>(event)->type == XR_TYPE_EVENT_DATA_SPACE_QUERY_COMPLETE_FB) {
+		on_space_query_complete((const XrEventDataSpaceQueryCompleteFB *)event);
 		return true;
 	}
 
 	return false;
 }
 
-void OpenXRFbSpatialEntityQueryExtensionWrapper::query_spatial_entities(const XrSpaceQueryInfoBaseHeaderFB* info, SpaceQueryCompleteCallback_t callback) {
+void OpenXRFbSpatialEntityQueryExtensionWrapper::query_spatial_entities(const XrSpaceQueryInfoBaseHeaderFB *info, SpaceQueryCompleteCallback_t callback) {
 	XrAsyncRequestIdFB requestId;
 	const XrResult result = xrQuerySpacesFB(SESSION, info, &requestId);
 	if (!XR_SUCCEEDED(result)) {
@@ -120,7 +120,7 @@ void OpenXRFbSpatialEntityQueryExtensionWrapper::query_spatial_entities(const Xr
 	query_complete_callbacks[requestId] = callback;
 }
 
-void OpenXRFbSpatialEntityQueryExtensionWrapper::on_space_query_results(const XrEventDataSpaceQueryResultsAvailableFB* event) {
+void OpenXRFbSpatialEntityQueryExtensionWrapper::on_space_query_results(const XrEventDataSpaceQueryResultsAvailableFB *event) {
 	// Query the results that are now available using two-call idiom
 	XrSpaceQueryResultsFB queryResults{
 		XR_TYPE_SPACE_QUERY_RESULTS_FB, // type
@@ -153,7 +153,7 @@ void OpenXRFbSpatialEntityQueryExtensionWrapper::on_space_query_results(const Xr
 	query_results[event->requestId].append_array(results);
 }
 
-void OpenXRFbSpatialEntityQueryExtensionWrapper::on_space_query_complete(const XrEventDataSpaceQueryCompleteFB* event) {
+void OpenXRFbSpatialEntityQueryExtensionWrapper::on_space_query_complete(const XrEventDataSpaceQueryCompleteFB *event) {
 	if (query_complete_callbacks.has(event->requestId)) {
 		WARN_PRINT("Received unexpected XR_TYPE_EVENT_DATA_SPACE_QUERY_RESULTS_AVAILABLE_FB");
 		return;

@@ -32,10 +32,10 @@
 
 #include "extensions/openxr_fb_scene_capture_extension_wrapper.h"
 
-#include <godot_cpp/variant/utility_functions.hpp>
-#include <godot_cpp/classes/open_xrapi_extension.hpp>
-#include <godot_cpp/classes/object.hpp>
 #include <godot_cpp/classes/image.hpp>
+#include <godot_cpp/classes/object.hpp>
+#include <godot_cpp/classes/open_xrapi_extension.hpp>
+#include <godot_cpp/variant/utility_functions.hpp>
 
 using namespace godot;
 
@@ -50,7 +50,6 @@ OpenXRFbSceneCaptureExtensionWrapper *OpenXRFbSceneCaptureExtensionWrapper::get_
 
 OpenXRFbSceneCaptureExtensionWrapper::OpenXRFbSceneCaptureExtensionWrapper() :
 		OpenXRExtensionWrapperExtension() {
-
 	ERR_FAIL_COND_MSG(singleton != nullptr, "An OpenXRFbSceneCaptureExtensionWrapper singleton already exists.");
 
 	request_extensions[XR_FB_SCENE_CAPTURE_EXTENSION_NAME] = &fb_scene_capture_ext;
@@ -62,13 +61,11 @@ OpenXRFbSceneCaptureExtensionWrapper::~OpenXRFbSceneCaptureExtensionWrapper() {
 }
 
 void OpenXRFbSceneCaptureExtensionWrapper::_bind_methods() {
-
 	ClassDB::bind_method(D_METHOD("is_scene_capture_supported"), &OpenXRFbSceneCaptureExtensionWrapper::is_scene_capture_supported);
 	ClassDB::bind_method(D_METHOD("is_scene_capture_enabled"), &OpenXRFbSceneCaptureExtensionWrapper::is_scene_capture_enabled);
 	ClassDB::bind_method(D_METHOD("request_scene_capture"), &OpenXRFbSceneCaptureExtensionWrapper::request_scene_capture);
 
 	ADD_SIGNAL(MethodInfo("scene_capture_completed"));
-
 }
 
 void OpenXRFbSceneCaptureExtensionWrapper::cleanup() {
@@ -77,7 +74,7 @@ void OpenXRFbSceneCaptureExtensionWrapper::cleanup() {
 
 godot::Dictionary OpenXRFbSceneCaptureExtensionWrapper::_get_requested_extensions() {
 	godot::Dictionary result;
-	for (auto ext: request_extensions) {
+	for (auto ext : request_extensions) {
 		godot::String key = ext.first;
 		uint64_t value = reinterpret_cast<uint64_t>(ext.second);
 		result[key] = (godot::Variant)value;
@@ -122,8 +119,7 @@ bool OpenXRFbSceneCaptureExtensionWrapper::initialize_fb_scene_capture_extension
 }
 
 bool OpenXRFbSceneCaptureExtensionWrapper::_on_event_polled(const void *event) {
-
-	if (static_cast<const XrEventDataBuffer*>(event)->type == XR_TYPE_EVENT_DATA_SCENE_CAPTURE_COMPLETE_FB) {
+	if (static_cast<const XrEventDataBuffer *>(event)->type == XR_TYPE_EVENT_DATA_SCENE_CAPTURE_COMPLETE_FB) {
 		scene_capture_enabled = false;
 		Object::emit_signal("scene_capture_completed");
 		return true;
