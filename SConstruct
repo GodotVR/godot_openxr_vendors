@@ -11,6 +11,7 @@ opts.Update(env)
 env.Append(CPPPATH=[
     "#common/src/main/cpp",
     "#thirdparty/openxr/include/",
+    "#thirdparty/openxr-meta-ext/include/",
     ])
 
 sources = []

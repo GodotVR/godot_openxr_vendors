@@ -117,9 +117,9 @@ add_library(${GODOT-CPP}
 set_target_properties(${GODOT-CPP} PROPERTIES IMPORTED_LOCATION ${GODOT_CPP_STATIC_LIB})
 
 
-## OpenXR headers
-set(OPENXR_HEADERS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../thirdparty/openxr/include")
-
+## OpenXR and extension headers
+list(APPEND OPENXR_HEADERS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../thirdparty/openxr/include")
+list(APPEND OPENXR_HEADERS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../thirdparty/openxr-meta-ext/include")
 
 # Common lib
 set(COMMON_LIB_HEADERS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../common/src/main/cpp)

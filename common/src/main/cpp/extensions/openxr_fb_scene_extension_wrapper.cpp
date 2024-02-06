@@ -33,9 +33,7 @@
 #include <godot_cpp/classes/open_xrapi_extension.hpp>
 #include <godot_cpp/classes/object.hpp>
 
-#ifdef META_VENDOR_ENABLED
 #include <openxr/fb_scene.h>
-#endif
 
 #include "include/openxr_fb_spatial_entity_extension_wrapper.h"
 
