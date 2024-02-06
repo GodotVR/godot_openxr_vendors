@@ -43,6 +43,7 @@
 using namespace godot;
 
 typedef std::function<void(const XrEventDataSpaceSetStatusCompleteFB *eventData)> SetSpaceComponentStatusCallback_t;
+typedef std::function<void(const XrEventDataSpatialAnchorCreateCompleteFB *eventData)> CreateSpatialAnchorCallback_t;
 
 // Wrapper for the set of Facebook XR spatial entity extension.
 class OpenXRFbSpatialEntityExtensionWrapper : public OpenXRExtensionWrapperExtension {
@@ -59,6 +60,13 @@ public:
 		return fb_spatial_entity_ext;
 	}
 
+	void create_spatial_anchor(
+		const XrSpace &playSpace,
+		const XrTime &frameTime,
+		const XrPosef &poseInSpace,
+		CreateSpatialAnchorCallback_t callback);
+
+	void print_supported_components(const XrSpace &space);
 	bool is_component_supported(const XrSpace &space, XrSpaceComponentTypeFB type);
 	bool is_component_enabled(const XrSpace &space, XrSpaceComponentTypeFB type);
 
@@ -114,6 +122,7 @@ private:
 
 	HashMap<String, bool *> request_extensions;
 	HashMap<XrAsyncRequestIdFB, SetSpaceComponentStatusCallback_t> set_status_callbacks;
+	HashMap<XrAsyncRequestIdFB, CreateSpatialAnchorCallback_t> create_anchor_callbacks;
 
 	void cleanup();
 

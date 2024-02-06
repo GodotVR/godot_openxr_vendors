@@ -28,12 +28,19 @@
 /**************************************************************************/
 
 #include "extensions/openxr_fb_spatial_entity_query_extension_wrapper.h"
+#include "extensions/openxr_fb_spatial_entity_extension_wrapper.h"
 
+#include <godot_cpp/variant/utility_functions.hpp>
+#include <godot_cpp/classes/open_xrapi_extension.hpp>
 #include <godot_cpp/classes/object.hpp>
 #include <godot_cpp/classes/open_xrapi_extension.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
 
+#include "utils/xr_godot_utils.h"
+
 using namespace godot;
+
+static const uint32_t MAX_PERSISTENT_SPACES = 100;
 
 OpenXRFbSpatialEntityQueryExtensionWrapper *OpenXRFbSpatialEntityQueryExtensionWrapper::singleton = nullptr;
 
@@ -58,6 +65,8 @@ OpenXRFbSpatialEntityQueryExtensionWrapper::~OpenXRFbSpatialEntityQueryExtension
 
 void OpenXRFbSpatialEntityQueryExtensionWrapper::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("is_spatial_entity_query_supported"), &OpenXRFbSpatialEntityQueryExtensionWrapper::is_spatial_entity_query_supported);
+	ClassDB::bind_method(D_METHOD("query_persisted_anchors"), &OpenXRFbSpatialEntityQueryExtensionWrapper::query_persisted_anchors);
+	ADD_SIGNAL(MethodInfo("persisted_anchors_found", PropertyInfo(Variant::PACKED_STRING_ARRAY, "name")));
 }
 
 void OpenXRFbSpatialEntityQueryExtensionWrapper::cleanup() {
@@ -108,6 +117,56 @@ bool OpenXRFbSpatialEntityQueryExtensionWrapper::_on_event_polled(const void *ev
 	return false;
 }
 
+void OpenXRFbSpatialEntityQueryExtensionWrapper::query_persisted_anchors() {
+	XrSpaceQueryInfoFB queryInfo = {
+			XR_TYPE_SPACE_QUERY_INFO_FB,
+			nullptr,
+			XR_SPACE_QUERY_ACTION_LOAD_FB,
+			MAX_PERSISTENT_SPACES,
+			0,
+			nullptr,
+			nullptr};
+	query_spatial_entities((XrSpaceQueryInfoBaseHeaderFB*) &queryInfo, [=](Vector<XrSpaceQueryResultFB> results) {
+		PackedStringArray found_anchor_uuids;
+		for (const auto& result : results) {
+			// TODO: Filter for the persisted anchors only, ignore the room itself
+			OpenXRFbSpatialEntityExtensionWrapper::get_singleton()->print_supported_components(result.space);
+			found_anchor_uuids.push_back(String(XrGodotUtils::uuidToString(result.uuid).c_str()));
+		}
+
+		emit_signal("persisted_anchors_found", found_anchor_uuids);
+	});
+}
+
+void OpenXRFbSpatialEntityQueryExtensionWrapper::query_spatial_entities_by_uuid(const String& uuid, SpaceQueryCompleteCallback_t callback) {
+	std::vector<XrUuidEXT> uuids = {XrGodotUtils::uuidFromString(std::string(uuid.ascii()))};
+
+	XrSpaceStorageLocationFilterInfoFB storageLocationFilterInfo = {
+		XR_TYPE_SPACE_STORAGE_LOCATION_FILTER_INFO_FB,
+		nullptr,
+		XR_SPACE_STORAGE_LOCATION_LOCAL_FB
+	};
+
+	// First query the anchor by UUID
+	XrSpaceUuidFilterInfoFB uuidFilter = {
+		XR_TYPE_SPACE_UUID_FILTER_INFO_FB,
+		&storageLocationFilterInfo,
+		1,
+		&uuids[0],
+	};
+
+	XrSpaceQueryInfoFB queryInfo = {
+			XR_TYPE_SPACE_QUERY_INFO_FB,
+			nullptr,
+			XR_SPACE_QUERY_ACTION_LOAD_FB,
+			MAX_PERSISTENT_SPACES,
+			0,
+			(XrSpaceFilterInfoBaseHeaderFB*)&uuidFilter,
+			nullptr};
+
+		OpenXRFbSpatialEntityQueryExtensionWrapper::get_singleton()->query_spatial_entities((XrSpaceQueryInfoBaseHeaderFB*) &queryInfo, callback);
+}
+
 void OpenXRFbSpatialEntityQueryExtensionWrapper::query_spatial_entities(const XrSpaceQueryInfoBaseHeaderFB *info, SpaceQueryCompleteCallback_t callback) {
 	XrAsyncRequestIdFB requestId;
 	const XrResult result = xrQuerySpacesFB(SESSION, info, &requestId);
@@ -154,7 +213,7 @@ void OpenXRFbSpatialEntityQueryExtensionWrapper::on_space_query_results(const Xr
 }
 
 void OpenXRFbSpatialEntityQueryExtensionWrapper::on_space_query_complete(const XrEventDataSpaceQueryCompleteFB *event) {
-	if (query_complete_callbacks.has(event->requestId)) {
+	if (!query_complete_callbacks.has(event->requestId)) {
 		WARN_PRINT("Received unexpected XR_TYPE_EVENT_DATA_SPACE_QUERY_RESULTS_AVAILABLE_FB");
 		return;
 	}
