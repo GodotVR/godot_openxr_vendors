@@ -27,7 +27,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "export_plugin.h"
+#include "export/export_plugin.h"
 
 #include <godot_cpp/classes/editor_export_platform_android.hpp>
 

@@ -9,7 +9,7 @@ opts.Update(env)
 
 # Add common includes
 env.Append(CPPPATH=[
-    "#common/src/main/cpp",
+    "#common/src/main/cpp/include/",
     "#thirdparty/openxr/include/",
     ])
 

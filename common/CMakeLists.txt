@@ -122,7 +122,7 @@ set(OPENXR_HEADERS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../thirdparty/openxr/include
 
 
 # Common lib
-set(COMMON_LIB_HEADERS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../common/src/main/cpp)
+set(COMMON_LIB_HEADERS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../common/src/main/cpp/include)
 
 file(GLOB_RECURSE COMMON_LIB_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/../common/src/main/cpp/*.c**)
 file(GLOB_RECURSE COMMON_LIB_HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/../common/src/main/cpp/*.h**)

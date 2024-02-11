@@ -27,7 +27,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "khronos_export_plugin.h"
+#include "export/khronos_export_plugin.h"
 
 using namespace godot;
 
