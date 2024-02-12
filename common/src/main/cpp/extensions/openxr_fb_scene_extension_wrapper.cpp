@@ -27,7 +27,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "include/openxr_fb_scene_extension_wrapper.h"
+#include "extensions/openxr_fb_scene_extension_wrapper.h"
 
 #include <godot_cpp/variant/utility_functions.hpp>
 #include <godot_cpp/classes/open_xrapi_extension.hpp>
@@ -37,7 +37,7 @@
 #include <openxr/fb_scene.h>
 #endif
 
-#include "include/openxr_fb_spatial_entity_extension_wrapper.h"
+#include "extensions/openxr_fb_spatial_entity_extension_wrapper.h"
 
 using namespace godot;
 

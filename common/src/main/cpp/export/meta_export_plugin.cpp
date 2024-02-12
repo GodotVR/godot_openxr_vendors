@@ -27,7 +27,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "meta_export_plugin.h"
+#include "export/meta_export_plugin.h"
 
 #include <godot_cpp/classes/project_settings.hpp>
 

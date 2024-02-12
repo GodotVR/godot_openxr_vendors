@@ -43,12 +43,12 @@
 #include "export/meta_export_plugin.h"
 #include "export/pico_export_plugin.h"
 
-#include "extensions/include/openxr_fb_face_tracking_extension_wrapper.h"
-#include "extensions/include/openxr_fb_scene_extension_wrapper.h"
-#include "extensions/include/openxr_fb_scene_capture_extension_wrapper.h"
-#include "extensions/include/openxr_fb_spatial_entity_extension_wrapper.h"
-#include "extensions/include/openxr_fb_spatial_entity_container_extension_wrapper.h"
-#include "extensions/include/openxr_fb_spatial_entity_query_extension_wrapper.h"
+#include "extensions/openxr_fb_face_tracking_extension_wrapper.h"
+#include "extensions/openxr_fb_scene_extension_wrapper.h"
+#include "extensions/openxr_fb_scene_capture_extension_wrapper.h"
+#include "extensions/openxr_fb_spatial_entity_extension_wrapper.h"
+#include "extensions/openxr_fb_spatial_entity_container_extension_wrapper.h"
+#include "extensions/openxr_fb_spatial_entity_query_extension_wrapper.h"
 
 using namespace godot;
 

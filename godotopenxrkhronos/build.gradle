@@ -58,7 +58,7 @@ android {
 
     prefab {
         godotopenxrvendors {
-            headers "../common/src/main/cpp/extensions/include"
+            headers "../common/src/main/cpp/include"
         }
     }
 }

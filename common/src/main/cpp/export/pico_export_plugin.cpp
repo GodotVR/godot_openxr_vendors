@@ -27,7 +27,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "pico_export_plugin.h"
+#include "export/pico_export_plugin.h"
 
 using namespace godot;
 

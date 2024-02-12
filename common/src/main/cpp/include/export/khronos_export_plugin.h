@@ -31,7 +31,7 @@
 
 #include <godot_cpp/classes/editor_plugin.hpp>
 
-#include "export/export_plugin.h"
+#include "export_plugin.h"
 
 using namespace godot;
 
