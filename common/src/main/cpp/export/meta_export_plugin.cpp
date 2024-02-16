@@ -59,8 +59,7 @@ MetaEditorExportPlugin::MetaEditorExportPlugin() {
 			"None,Optional,Required",
 			PROPERTY_USAGE_DEFAULT,
 			EYE_TRACKING_NONE_VALUE,
-			false
-	);
+			false);
 	_face_tracking_option = _generate_export_option(
 			"meta_xr_features/face_tracking",
 			"",
@@ -69,8 +68,7 @@ MetaEditorExportPlugin::MetaEditorExportPlugin() {
 			"None,Optional,Required",
 			PROPERTY_USAGE_DEFAULT,
 			FACE_TRACKING_NONE_VALUE,
-			false
-	);
+			false);
 	_hand_tracking_option = _generate_export_option(
 			"meta_xr_features/hand_tracking",
 			"",
@@ -79,8 +77,7 @@ MetaEditorExportPlugin::MetaEditorExportPlugin() {
 			"None,Optional,Required",
 			PROPERTY_USAGE_DEFAULT,
 			HAND_TRACKING_NONE_VALUE,
-			false
-	);
+			false);
 	_hand_tracking_frequency_option = _generate_export_option(
 			"meta_xr_features/hand_tracking_frequency",
 			"",
@@ -89,8 +86,7 @@ MetaEditorExportPlugin::MetaEditorExportPlugin() {
 			"Low,High",
 			PROPERTY_USAGE_DEFAULT,
 			HAND_TRACKING_FREQUENCY_LOW_VALUE,
-			false
-	);
+			false);
 	_passthrough_option = _generate_export_option(
 			"meta_xr_features/passthrough",
 			"",
@@ -99,8 +95,7 @@ MetaEditorExportPlugin::MetaEditorExportPlugin() {
 			"None,Optional,Required",
 			PROPERTY_USAGE_DEFAULT,
 			PASSTHROUGH_NONE_VALUE,
-			false
-	);
+			false);
 	_use_anchor_api_option = _generate_export_option(
 			"meta_xr_features/use_anchor_api",
 			"",
@@ -109,8 +104,7 @@ MetaEditorExportPlugin::MetaEditorExportPlugin() {
 			"",
 			PROPERTY_USAGE_DEFAULT,
 			false,
-			false
-	);
+			false);
 	_use_scene_api_option = _generate_export_option(
 			"meta_xr_features/use_scene_api",
 			"",
@@ -119,8 +113,7 @@ MetaEditorExportPlugin::MetaEditorExportPlugin() {
 			"",
 			PROPERTY_USAGE_DEFAULT,
 			false,
-			false
-	);
+			false);
 	_use_overlay_keyboard_option = _generate_export_option(
 			"meta_xr_features/use_overlay_keyboard",
 			"",
@@ -129,8 +122,7 @@ MetaEditorExportPlugin::MetaEditorExportPlugin() {
 			"",
 			PROPERTY_USAGE_DEFAULT,
 			false,
-			false
-	);
+			false);
 	_use_experimental_features_option = _generate_export_option(
 			"meta_xr_features/use_experimental_features",
 			"",
@@ -139,8 +131,7 @@ MetaEditorExportPlugin::MetaEditorExportPlugin() {
 			"",
 			PROPERTY_USAGE_DEFAULT,
 			false,
-			false
-	);
+			false);
 	_boundary_mode_option = _generate_export_option(
 			"meta_xr_features/boundary_mode",
 			"",
@@ -149,8 +140,7 @@ MetaEditorExportPlugin::MetaEditorExportPlugin() {
 			"Enabled,Disabled,Contextual",
 			PROPERTY_USAGE_DEFAULT,
 			BOUNDARY_ENABLED_VALUE,
-			false
-	);
+			false);
 	_support_quest_1_option = _generate_export_option(
 			"meta_xr_features/quest_1_support",
 			"",
@@ -159,8 +149,7 @@ MetaEditorExportPlugin::MetaEditorExportPlugin() {
 			"",
 			PROPERTY_USAGE_DEFAULT,
 			false,
-			false
-	);
+			false);
 	_support_quest_2_option = _generate_export_option(
 			"meta_xr_features/quest_2_support",
 			"",
@@ -169,8 +158,7 @@ MetaEditorExportPlugin::MetaEditorExportPlugin() {
 			"",
 			PROPERTY_USAGE_DEFAULT,
 			true,
-			false
-	);
+			false);
 	_support_quest_3_option = _generate_export_option(
 			"meta_xr_features/quest_3_support",
 			"",
@@ -179,8 +167,7 @@ MetaEditorExportPlugin::MetaEditorExportPlugin() {
 			"",
 			PROPERTY_USAGE_DEFAULT,
 			true,
-			false
-	);
+			false);
 	_support_quest_pro_option = _generate_export_option(
 			"meta_xr_features/quest_pro_support",
 			"",
@@ -189,8 +176,7 @@ MetaEditorExportPlugin::MetaEditorExportPlugin() {
 			"",
 			PROPERTY_USAGE_DEFAULT,
 			true,
-			false
-	);
+			false);
 }
 
 void MetaEditorExportPlugin::_bind_methods() {}

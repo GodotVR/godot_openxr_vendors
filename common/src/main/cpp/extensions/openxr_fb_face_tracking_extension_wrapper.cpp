@@ -178,11 +178,11 @@ void OpenXRFbFaceTrackingExtensionWrapper::_on_session_created(uint64_t instance
 	face_expression_weights.type = XR_TYPE_FACE_EXPRESSION_WEIGHTS_FB;
 	face_expression_weights.weightCount = XR_FACE_EXPRESSION_COUNT_FB;
 	face_expression_weights.weights = weights;
-	face_expression_weights.confidenceCount  = XR_FACE_CONFIDENCE_COUNT_FB;
+	face_expression_weights.confidenceCount = XR_FACE_CONFIDENCE_COUNT_FB;
 	face_expression_weights.confidences = confidences;
 
 	// Create the face-tracker handle
-	XrFaceTrackerCreateInfoFB createInfo = {XR_TYPE_FACE_TRACKER_CREATE_INFO_FB};
+	XrFaceTrackerCreateInfoFB createInfo = { XR_TYPE_FACE_TRACKER_CREATE_INFO_FB };
 	createInfo.faceExpressionSet = XR_FACE_EXPRESSION_SET_DEFAULT_FB;
 	XrResult result = xrCreateFaceTrackerFB(SESSION, &createInfo, &face_tracker);
 	if (XR_FAILED(result)) {
@@ -220,7 +220,7 @@ void OpenXRFbFaceTrackingExtensionWrapper::_on_process() {
 	}
 
 	// Read the expression weights
-	XrFaceExpressionInfoFB expression_info = {XR_TYPE_FACE_EXPRESSION_INFO_FB};
+	XrFaceExpressionInfoFB expression_info = { XR_TYPE_FACE_EXPRESSION_INFO_FB };
 	expression_info.time = next_frame_time;
 	XrResult result = xrGetFaceExpressionWeightsFB(face_tracker, &expression_info, &face_expression_weights);
 	if (XR_FAILED(result)) {

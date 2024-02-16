@@ -36,7 +36,6 @@
 using namespace godot;
 
 namespace {
-
 static const int EYE_TRACKING_NONE_VALUE = 0;
 static const int EYE_TRACKING_OPTIONAL_VALUE = 1;
 static const int EYE_TRACKING_REQUIRED_VALUE = 2;
@@ -59,7 +58,6 @@ static const int HAND_TRACKING_FREQUENCY_HIGH_VALUE = 1;
 static const int BOUNDARY_ENABLED_VALUE = 0;
 static const int BOUNDARY_DISABLED_VALUE = 1;
 static const int BOUNDARY_CONTEXTUAL_VALUE = 2;
-
 } // namespace
 
 class MetaEditorExportPlugin : public OpenXREditorExportPlugin {

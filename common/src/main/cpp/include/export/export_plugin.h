@@ -29,9 +29,9 @@
 
 #pragma once
 
-#include <godot_cpp/classes/editor_plugin.hpp>
 #include <godot_cpp/classes/editor_export_platform.hpp>
 #include <godot_cpp/classes/editor_export_plugin.hpp>
+#include <godot_cpp/classes/editor_plugin.hpp>
 #include <godot_cpp/classes/file_access.hpp>
 #include <godot_cpp/classes/ref.hpp>
 
@@ -46,10 +46,10 @@ static const char *LYNX_VENDOR_NAME = "lynx";
 static const char *KHRONOS_VENDOR_NAME = "khronos";
 
 static const char *VENDORS_LIST[] = {
-		META_VENDOR_NAME,
-		PICO_VENDOR_NAME,
-		LYNX_VENDOR_NAME,
-		KHRONOS_VENDOR_NAME,
+	META_VENDOR_NAME,
+	PICO_VENDOR_NAME,
+	LYNX_VENDOR_NAME,
+	KHRONOS_VENDOR_NAME,
 };
 
 // Set of custom feature tags supported by the plugin
@@ -59,7 +59,7 @@ static const int REGULAR_MODE_VALUE = 0;
 static const int OPENXR_MODE_VALUE = 1;
 
 /// Base class for the vendor editor export plugin
-class OpenXREditorExportPlugin: public EditorExportPlugin {
+class OpenXREditorExportPlugin : public EditorExportPlugin {
 	GDCLASS(OpenXREditorExportPlugin, EditorExportPlugin)
 
 public:
@@ -87,12 +87,12 @@ protected:
 	static void _bind_methods();
 
 	static Dictionary _generate_export_option(const String &name, const String &class_name,
-											  Variant::Type type,
-											  PropertyHint property_hint,
-											  const String &hint_string,
-											  PropertyUsageFlags property_usage,
-											  const Variant &default_value,
-											  bool update_visibility);
+			Variant::Type type,
+			PropertyHint property_hint,
+			const String &hint_string,
+			PropertyUsageFlags property_usage,
+			const Variant &default_value,
+			bool update_visibility);
 
 	Dictionary _get_vendor_toggle_option() const {
 		return _get_vendor_toggle_option(_vendor);
@@ -132,7 +132,6 @@ private:
 	}
 
 	String _get_vendor_toggle_option_name(const String &vendor_name) const;
-
 
 	String _vendor;
 	const String _plugin_version;

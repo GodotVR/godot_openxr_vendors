@@ -33,8 +33,8 @@
 #ifndef OPENXR_FB_SCENE_CAPTURE_EXTENSION_WRAPPER_H
 #define OPENXR_FB_SCENE_CAPTURE_EXTENSION_WRAPPER_H
 
-#include <godot_cpp/classes/open_xr_extension_wrapper_extension.hpp>
 #include <openxr/openxr.h>
+#include <godot_cpp/classes/open_xr_extension_wrapper_extension.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
 
 #include "util.h"

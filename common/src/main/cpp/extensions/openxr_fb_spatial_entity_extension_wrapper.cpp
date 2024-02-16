@@ -29,8 +29,8 @@
 
 #include "extensions/openxr_fb_spatial_entity_extension_wrapper.h"
 
-#include <godot_cpp/classes/open_xrapi_extension.hpp>
 #include <godot_cpp/classes/object.hpp>
+#include <godot_cpp/classes/open_xrapi_extension.hpp>
 #include <godot_cpp/templates/vector.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
 
@@ -67,7 +67,7 @@ void OpenXRFbSpatialEntityExtensionWrapper::cleanup() {
 
 Dictionary OpenXRFbSpatialEntityExtensionWrapper::_get_requested_extensions() {
 	Dictionary result;
-	for (auto ext: request_extensions) {
+	for (auto ext : request_extensions) {
 		uint64_t value = reinterpret_cast<uint64_t>(ext.value);
 		result[ext.key] = (Variant)value;
 	}
@@ -88,7 +88,7 @@ void OpenXRFbSpatialEntityExtensionWrapper::_on_instance_destroyed() {
 	cleanup();
 }
 
-bool OpenXRFbSpatialEntityExtensionWrapper::initialize_fb_spatial_entity_extension(const XrInstance& p_instance) {
+bool OpenXRFbSpatialEntityExtensionWrapper::initialize_fb_spatial_entity_extension(const XrInstance &p_instance) {
 	GDEXTENSION_INIT_XR_FUNC_V(xrCreateSpatialAnchorFB);
 	GDEXTENSION_INIT_XR_FUNC_V(xrGetSpaceUuidFB);
 	GDEXTENSION_INIT_XR_FUNC_V(xrEnumerateSpaceSupportedComponentsFB);
@@ -99,8 +99,8 @@ bool OpenXRFbSpatialEntityExtensionWrapper::initialize_fb_spatial_entity_extensi
 }
 
 bool OpenXRFbSpatialEntityExtensionWrapper::_on_event_polled(const void *event) {
-	if (static_cast<const XrEventDataBuffer*>(event)->type == XR_TYPE_EVENT_DATA_SPACE_SET_STATUS_COMPLETE_FB) {
-		auto eventData = (const XrEventDataSpaceSetStatusCompleteFB*) event;
+	if (static_cast<const XrEventDataBuffer *>(event)->type == XR_TYPE_EVENT_DATA_SPACE_SET_STATUS_COMPLETE_FB) {
+		auto eventData = (const XrEventDataSpaceSetStatusCompleteFB *)event;
 		if (set_status_callbacks.has(eventData->requestId)) {
 			set_status_callbacks[eventData->requestId](eventData);
 			set_status_callbacks.erase(eventData->requestId);
@@ -111,7 +111,7 @@ bool OpenXRFbSpatialEntityExtensionWrapper::_on_event_polled(const void *event) 
 	return false;
 }
 
-bool OpenXRFbSpatialEntityExtensionWrapper::is_component_supported(const XrSpace& space, XrSpaceComponentTypeFB type) {
+bool OpenXRFbSpatialEntityExtensionWrapper::is_component_supported(const XrSpace &space, XrSpaceComponentTypeFB type) {
 	uint32_t numComponents = 0;
 	xrEnumerateSpaceSupportedComponentsFB(space, 0, &numComponents, nullptr);
 	Vector<XrSpaceComponentTypeFB> components;
@@ -128,14 +128,14 @@ bool OpenXRFbSpatialEntityExtensionWrapper::is_component_supported(const XrSpace
 	return supported;
 }
 
-bool OpenXRFbSpatialEntityExtensionWrapper::is_component_enabled(const XrSpace& space, XrSpaceComponentTypeFB type) {
-	XrSpaceComponentStatusFB status = {XR_TYPE_SPACE_COMPONENT_STATUS_FB, nullptr};
+bool OpenXRFbSpatialEntityExtensionWrapper::is_component_enabled(const XrSpace &space, XrSpaceComponentTypeFB type) {
+	XrSpaceComponentStatusFB status = { XR_TYPE_SPACE_COMPONENT_STATUS_FB, nullptr };
 	xrGetSpaceComponentStatusFB(space, type, &status);
 	return (status.enabled && !status.changePending);
 }
 
 void OpenXRFbSpatialEntityExtensionWrapper::set_component_enabled(
-		const XrSpace& space,
+		const XrSpace &space,
 		XrSpaceComponentTypeFB type,
 		bool status,
 		std::optional<SetSpaceComponentStatusCallback_t> callback) {
@@ -148,7 +148,7 @@ void OpenXRFbSpatialEntityExtensionWrapper::set_component_enabled(
 	};
 	XrAsyncRequestIdFB requestId;
 	if (!XR_SUCCEEDED(xrSetSpaceComponentStatusFB(space, &request, &requestId))) {
-		if (callback != std::nullopt){
+		if (callback != std::nullopt) {
 			(*callback)(nullptr);
 		}
 	}

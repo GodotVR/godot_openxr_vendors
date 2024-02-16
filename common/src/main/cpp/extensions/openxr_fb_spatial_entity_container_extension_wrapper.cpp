@@ -28,9 +28,9 @@
 /**************************************************************************/
 
 #include "extensions/openxr_fb_spatial_entity_container_extension_wrapper.h"
-#include <godot_cpp/variant/utility_functions.hpp>
-#include <godot_cpp/classes/open_xrapi_extension.hpp>
 #include <godot_cpp/classes/object.hpp>
+#include <godot_cpp/classes/open_xrapi_extension.hpp>
+#include <godot_cpp/variant/utility_functions.hpp>
 
 using namespace godot;
 
@@ -65,7 +65,7 @@ void OpenXRFbSpatialEntityContainerExtensionWrapper::cleanup() {
 
 Dictionary OpenXRFbSpatialEntityContainerExtensionWrapper::_get_requested_extensions() {
 	Dictionary result;
-	for (auto ext: request_extensions) {
+	for (auto ext : request_extensions) {
 		uint64_t value = reinterpret_cast<uint64_t>(ext.value);
 		result[ext.key] = (Variant)value;
 	}
@@ -86,13 +86,13 @@ void OpenXRFbSpatialEntityContainerExtensionWrapper::_on_instance_destroyed() {
 	cleanup();
 }
 
-bool OpenXRFbSpatialEntityContainerExtensionWrapper::initialize_fb_spatial_entity_container_extension(const XrInstance& p_instance) {
+bool OpenXRFbSpatialEntityContainerExtensionWrapper::initialize_fb_spatial_entity_container_extension(const XrInstance &p_instance) {
 	GDEXTENSION_INIT_XR_FUNC_V(xrGetSpaceContainerFB);
 	return true;
 }
 
-Vector<XrUuidEXT> OpenXRFbSpatialEntityContainerExtensionWrapper::get_contained_uuids(const XrSpace& space) {
-	XrSpaceContainerFB spaceContainer = {XR_TYPE_SPACE_CONTAINER_FB};
+Vector<XrUuidEXT> OpenXRFbSpatialEntityContainerExtensionWrapper::get_contained_uuids(const XrSpace &space) {
+	XrSpaceContainerFB spaceContainer = { XR_TYPE_SPACE_CONTAINER_FB };
 	xrGetSpaceContainerFB(SESSION, space, &spaceContainer);
 	Vector<XrUuidEXT> uuids;
 	uuids.resize(spaceContainer.uuidCountOutput);

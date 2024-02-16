@@ -29,16 +29,16 @@
 
 #pragma once
 
-#include <godot_cpp/classes/open_xr_extension_wrapper_extension.hpp>
 #include <openxr/openxr.h>
+#include <godot_cpp/classes/open_xr_extension_wrapper_extension.hpp>
 #include <godot_cpp/templates/hash_map.hpp>
 #include <godot_cpp/templates/vector.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
 
 #include "util.h"
 
-#include <optional>
 #include <map>
+#include <optional>
 
 using namespace godot;
 
@@ -76,8 +76,8 @@ public:
 	OpenXRFbSceneExtensionWrapper();
 	~OpenXRFbSceneExtensionWrapper();
 
-	std::optional<String> get_semantic_labels(const XrSpace& space);
-	void get_shapes(const XrSpace& space, XrSceneObjectInternal& object);
+	std::optional<String> get_semantic_labels(const XrSpace &space);
+	void get_shapes(const XrSpace &space, XrSceneObjectInternal &object);
 
 protected:
 	static void _bind_methods();

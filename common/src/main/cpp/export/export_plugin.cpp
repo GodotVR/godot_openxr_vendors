@@ -33,17 +33,18 @@
 
 using namespace godot;
 
-OpenXREditorExportPlugin::OpenXREditorExportPlugin() : _plugin_version(PLUGIN_VERSION) {}
+OpenXREditorExportPlugin::OpenXREditorExportPlugin() :
+		_plugin_version(PLUGIN_VERSION) {}
 
 void OpenXREditorExportPlugin::_bind_methods() {}
 
 Dictionary OpenXREditorExportPlugin::_generate_export_option(const String &name, const String &class_name,
-															 Variant::Type type,
-															 PropertyHint property_hint,
-															 const String &hint_string,
-															 PropertyUsageFlags property_usage,
-															 const Variant &default_value,
-															 bool update_visibility) {
+		Variant::Type type,
+		PropertyHint property_hint,
+		const String &hint_string,
+		PropertyUsageFlags property_usage,
+		const Variant &default_value,
+		bool update_visibility) {
 	Dictionary option_info;
 	option_info["name"] = name;
 	option_info["class_name"] = class_name;
@@ -86,8 +87,7 @@ Dictionary OpenXREditorExportPlugin::_get_vendor_toggle_option(const String &ven
 			"",
 			PROPERTY_USAGE_DEFAULT,
 			false,
-			false
-	);
+			false);
 }
 
 bool OpenXREditorExportPlugin::_is_openxr_enabled() const {

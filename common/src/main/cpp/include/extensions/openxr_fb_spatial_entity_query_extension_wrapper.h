@@ -29,8 +29,8 @@
 
 #pragma once
 
-#include <godot_cpp/classes/open_xr_extension_wrapper_extension.hpp>
 #include <openxr/openxr.h>
+#include <godot_cpp/classes/open_xr_extension_wrapper_extension.hpp>
 #include <godot_cpp/templates/hash_map.hpp>
 #include <godot_cpp/templates/vector.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
@@ -65,7 +65,7 @@ public:
 
 	// Attempts to query spatial entities given an XrSpaceQueryInfoFB. The callback will run to
 	// deliver results when they are available.
-	void query_spatial_entities(const XrSpaceQueryInfoBaseHeaderFB* info, SpaceQueryCompleteCallback_t callback);
+	void query_spatial_entities(const XrSpaceQueryInfoBaseHeaderFB *info, SpaceQueryCompleteCallback_t callback);
 
 	OpenXRFbSpatialEntityQueryExtensionWrapper();
 	~OpenXRFbSpatialEntityQueryExtensionWrapper();
@@ -84,9 +84,9 @@ private:
 			(XrAsyncRequestIdFB), requestId,
 			(XrSpaceQueryResultsFB *), results)
 
-	bool initialize_fb_spatial_entity_query_extension(const XrInstance& instance);
-	void on_space_query_results(const XrEventDataSpaceQueryResultsAvailableFB* event);
-	void on_space_query_complete(const XrEventDataSpaceQueryCompleteFB* event);
+	bool initialize_fb_spatial_entity_query_extension(const XrInstance &instance);
+	void on_space_query_results(const XrEventDataSpaceQueryResultsAvailableFB *event);
+	void on_space_query_complete(const XrEventDataSpaceQueryCompleteFB *event);
 
 	HashMap<XrAsyncRequestIdFB, Vector<XrSpaceQueryResultFB>> query_results;
 	HashMap<String, bool *> request_extensions;
