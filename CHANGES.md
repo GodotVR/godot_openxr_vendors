@@ -7,6 +7,7 @@
 - Update to OpenXR 1.0.34 headers
 - Add XR_FB_render_model extension wrapper and OpenXRFBRenderModel node
 - Add XR_FB_passthrough extension wrapper
+- Add XR_FB_hand_tracking_mesh extension wrapper and OpenXRFbHandTrackingMesh node
 
 ## 2.0.3
 - Migrate the export scripts from gdscript to C++ via gdextension
