@@ -34,9 +34,15 @@
 
 #include <godot_cpp/classes/object.hpp>
 #include <godot_cpp/classes/open_xrapi_extension.hpp>
+#include <godot_cpp/classes/xr_server.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
 
 using namespace godot;
+
+// Calculate the average of two floating point values
+static inline constexpr float average(float a, float b) {
+	return (a + b) * 0.5f;
+}
 
 OpenXRFbFaceTrackingExtensionWrapper *OpenXRFbFaceTrackingExtensionWrapper::singleton = nullptr;
 
@@ -51,7 +57,8 @@ OpenXRFbFaceTrackingExtensionWrapper::OpenXRFbFaceTrackingExtensionWrapper() :
 		OpenXRExtensionWrapperExtension() {
 	ERR_FAIL_COND_MSG(singleton != nullptr, "An OpenXRFbFaceTrackingExtensionWrapper singleton already exists.");
 
-	request_extensions[XR_FB_FACE_TRACKING_EXTENSION_NAME] = &fb_face_tracking_ext;
+	request_extensions[XR_FB_FACE_TRACKING2_EXTENSION_NAME] = &fb_face_tracking2_ext;
+
 	singleton = this;
 }
 
@@ -61,87 +68,18 @@ OpenXRFbFaceTrackingExtensionWrapper::~OpenXRFbFaceTrackingExtensionWrapper() {
 
 void OpenXRFbFaceTrackingExtensionWrapper::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("is_enabled"), &OpenXRFbFaceTrackingExtensionWrapper::is_enabled);
-	ClassDB::bind_method(D_METHOD("get_weights"), &OpenXRFbFaceTrackingExtensionWrapper::get_weights);
-	ClassDB::bind_method(D_METHOD("get_confidences"), &OpenXRFbFaceTrackingExtensionWrapper::get_confidences);
-
-	BIND_ENUM_CONSTANT(EXPRESSION_BROW_LOWERER_L);
-	BIND_ENUM_CONSTANT(EXPRESSION_BROW_LOWERER_R);
-	BIND_ENUM_CONSTANT(EXPRESSION_CHEEK_PUFF_L);
-	BIND_ENUM_CONSTANT(EXPRESSION_CHEEK_PUFF_R);
-	BIND_ENUM_CONSTANT(EXPRESSION_CHEEK_RAISER_L);
-	BIND_ENUM_CONSTANT(EXPRESSION_CHEEK_RAISER_R);
-	BIND_ENUM_CONSTANT(EXPRESSION_CHEEK_SUCK_L);
-	BIND_ENUM_CONSTANT(EXPRESSION_CHEEK_SUCK_R);
-	BIND_ENUM_CONSTANT(EXPRESSION_CHIN_RAISER_B);
-	BIND_ENUM_CONSTANT(EXPRESSION_CHIN_RAISER_T);
-	BIND_ENUM_CONSTANT(EXPRESSION_DIMPLER_L);
-	BIND_ENUM_CONSTANT(EXPRESSION_DIMPLER_R);
-	BIND_ENUM_CONSTANT(EXPRESSION_EYES_CLOSED_L);
-	BIND_ENUM_CONSTANT(EXPRESSION_EYES_CLOSED_R);
-	BIND_ENUM_CONSTANT(EXPRESSION_EYES_LOOK_DOWN_L);
-	BIND_ENUM_CONSTANT(EXPRESSION_EYES_LOOK_DOWN_R);
-	BIND_ENUM_CONSTANT(EXPRESSION_EYES_LOOK_LEFT_L);
-	BIND_ENUM_CONSTANT(EXPRESSION_EYES_LOOK_LEFT_R);
-	BIND_ENUM_CONSTANT(EXPRESSION_EYES_LOOK_RIGHT_L);
-	BIND_ENUM_CONSTANT(EXPRESSION_EYES_LOOK_RIGHT_R);
-	BIND_ENUM_CONSTANT(EXPRESSION_EYES_LOOK_UP_L);
-	BIND_ENUM_CONSTANT(EXPRESSION_EYES_LOOK_UP_R);
-	BIND_ENUM_CONSTANT(EXPRESSION_INNER_BROW_RAISER_L);
-	BIND_ENUM_CONSTANT(EXPRESSION_INNER_BROW_RAISER_R);
-	BIND_ENUM_CONSTANT(EXPRESSION_JAW_DROP);
-	BIND_ENUM_CONSTANT(EXPRESSION_JAW_SIDEWAYS_LEFT);
-	BIND_ENUM_CONSTANT(EXPRESSION_JAW_SIDEWAYS_RIGHT);
-	BIND_ENUM_CONSTANT(EXPRESSION_JAW_THRUST);
-	BIND_ENUM_CONSTANT(EXPRESSION_LID_TIGHTENER_L);
-	BIND_ENUM_CONSTANT(EXPRESSION_LID_TIGHTENER_R);
-	BIND_ENUM_CONSTANT(EXPRESSION_LIP_CORNER_DEPRESSOR_L);
-	BIND_ENUM_CONSTANT(EXPRESSION_LIP_CORNER_DEPRESSOR_R);
-	BIND_ENUM_CONSTANT(EXPRESSION_LIP_CORNER_PULLER_L);
-	BIND_ENUM_CONSTANT(EXPRESSION_LIP_CORNER_PULLER_R);
-	BIND_ENUM_CONSTANT(EXPRESSION_LIP_FUNNELER_LB);
-	BIND_ENUM_CONSTANT(EXPRESSION_LIP_FUNNELER_LT);
-	BIND_ENUM_CONSTANT(EXPRESSION_LIP_FUNNELER_RB);
-	BIND_ENUM_CONSTANT(EXPRESSION_LIP_FUNNELER_RT);
-	BIND_ENUM_CONSTANT(EXPRESSION_LIP_PRESSOR_L);
-	BIND_ENUM_CONSTANT(EXPRESSION_LIP_PRESSOR_R);
-	BIND_ENUM_CONSTANT(EXPRESSION_LIP_PUCKER_L);
-	BIND_ENUM_CONSTANT(EXPRESSION_LIP_PUCKER_R);
-	BIND_ENUM_CONSTANT(EXPRESSION_LIP_STRETCHER_L);
-	BIND_ENUM_CONSTANT(EXPRESSION_LIP_STRETCHER_R);
-	BIND_ENUM_CONSTANT(EXPRESSION_LIP_SUCK_LB);
-	BIND_ENUM_CONSTANT(EXPRESSION_LIP_SUCK_LT);
-	BIND_ENUM_CONSTANT(EXPRESSION_LIP_SUCK_RB);
-	BIND_ENUM_CONSTANT(EXPRESSION_LIP_SUCK_RT);
-	BIND_ENUM_CONSTANT(EXPRESSION_LIP_TIGHTENER_L);
-	BIND_ENUM_CONSTANT(EXPRESSION_LIP_TIGHTENER_R);
-	BIND_ENUM_CONSTANT(EXPRESSION_LIPS_TOWARD);
-	BIND_ENUM_CONSTANT(EXPRESSION_LOWER_LIP_DEPRESSOR_L);
-	BIND_ENUM_CONSTANT(EXPRESSION_LOWER_LIP_DEPRESSOR_R);
-	BIND_ENUM_CONSTANT(EXPRESSION_MOUTH_LEFT);
-	BIND_ENUM_CONSTANT(EXPRESSION_MOUTH_RIGHT);
-	BIND_ENUM_CONSTANT(EXPRESSION_NOSE_WRINKLER_L);
-	BIND_ENUM_CONSTANT(EXPRESSION_NOSE_WRINKLER_R);
-	BIND_ENUM_CONSTANT(EXPRESSION_OUTER_BROW_RAISER_L);
-	BIND_ENUM_CONSTANT(EXPRESSION_OUTER_BROW_RAISER_R);
-	BIND_ENUM_CONSTANT(EXPRESSION_UPPER_LID_RAISER_L);
-	BIND_ENUM_CONSTANT(EXPRESSION_UPPER_LID_RAISER_R);
-	BIND_ENUM_CONSTANT(EXPRESSION_UPPER_LIP_RAISER_L);
-	BIND_ENUM_CONSTANT(EXPRESSION_UPPER_LIP_RAISER_R);
-	BIND_ENUM_CONSTANT(EXPRESSION_COUNT);
-	BIND_ENUM_CONSTANT(CONFIDENCE_LOWER_FACE);
-	BIND_ENUM_CONSTANT(CONFIDENCE_UPPER_FACE);
-	BIND_ENUM_CONSTANT(CONFIDENCE_COUNT);
 }
 
 void OpenXRFbFaceTrackingExtensionWrapper::cleanup() {
-	fb_face_tracking_ext = false;
+	fb_face_tracking2_ext = false;
 }
 
 uint64_t OpenXRFbFaceTrackingExtensionWrapper::_set_system_properties_and_get_next_pointer(void *next_pointer) {
-	system_face_tracking_properties.type = XR_TYPE_SYSTEM_FACE_TRACKING_PROPERTIES_FB;
-	system_face_tracking_properties.next = next_pointer;
-	system_face_tracking_properties.supportsFaceTracking = false;
-	return reinterpret_cast<uint64_t>(&system_face_tracking_properties);
+	system_face_tracking_properties2.type = XR_TYPE_SYSTEM_FACE_TRACKING_PROPERTIES2_FB;
+	system_face_tracking_properties2.next = next_pointer;
+	system_face_tracking_properties2.supportsVisualFaceTracking = false;
+	system_face_tracking_properties2.supportsAudioFaceTracking = false;
+	return reinterpret_cast<uint64_t>(&system_face_tracking_properties2);
 }
 
 godot::Dictionary OpenXRFbFaceTrackingExtensionWrapper::_get_requested_extensions() {
@@ -155,11 +93,11 @@ godot::Dictionary OpenXRFbFaceTrackingExtensionWrapper::_get_requested_extension
 }
 
 void OpenXRFbFaceTrackingExtensionWrapper::_on_instance_created(uint64_t instance) {
-	if (fb_face_tracking_ext) {
-		bool result = initialize_fb_face_tracking_extension((XrInstance)instance);
+	if (fb_face_tracking2_ext) {
+		bool result = initialize_fb_face_tracking2_extension((XrInstance)instance);
 		if (!result) {
-			UtilityFunctions::print("Failed to initialize fb_face_tracking extension");
-			fb_face_tracking_ext = false;
+			UtilityFunctions::print("Failed to initialize fb_face_tracking2 extension");
+			fb_face_tracking2_ext = false;
 		}
 	}
 }
@@ -174,42 +112,53 @@ void OpenXRFbFaceTrackingExtensionWrapper::_on_session_created(uint64_t instance
 		return;
 	}
 
-	// Configure the weights struct
-	face_expression_weights.type = XR_TYPE_FACE_EXPRESSION_WEIGHTS_FB;
-	face_expression_weights.weightCount = XR_FACE_EXPRESSION_COUNT_FB;
-	face_expression_weights.weights = weights;
-	face_expression_weights.confidenceCount = XR_FACE_CONFIDENCE_COUNT_FB;
-	face_expression_weights.confidences = confidences;
-
 	// Create the face-tracker handle
-	XrFaceTrackerCreateInfoFB createInfo = { XR_TYPE_FACE_TRACKER_CREATE_INFO_FB };
-	createInfo.faceExpressionSet = XR_FACE_EXPRESSION_SET_DEFAULT_FB;
-	XrResult result = xrCreateFaceTrackerFB(SESSION, &createInfo, &face_tracker);
+    XrFaceTrackingDataSource2FB dataSources[2] = {
+        XR_FACE_TRACKING_DATA_SOURCE2_VISUAL_FB,
+        XR_FACE_TRACKING_DATA_SOURCE2_AUDIO_FB
+    };
+	XrFaceTrackerCreateInfo2FB createInfo2 = { XR_TYPE_FACE_TRACKER_CREATE_INFO2_FB };
+	createInfo2.faceExpressionSet = XR_FACE_EXPRESSION_SET2_DEFAULT_FB;
+    createInfo2.requestedDataSourceCount = 2;
+    createInfo2.requestedDataSources = dataSources;
+	XrResult result = xrCreateFaceTracker2FB(SESSION, &createInfo2, &face_tracker2);
 	if (XR_FAILED(result)) {
 		UtilityFunctions::print("Failed to create face-tracker handle: ", result);
+		return;
+	}
+
+	// Construct the XRFaceTracker if necessary
+	if (xr_face_tracker.is_null()) {
+		xr_face_tracker.instantiate();
 	}
 }
 
 void OpenXRFbFaceTrackingExtensionWrapper::_on_session_destroyed() {
 	// Skip if no face-tracker handle
-	if (!face_tracker) {
+	if (!face_tracker2) {
 		return;
 	}
 
 	// Destroy the face-tracker handle
-	XrResult result = xrDestroyFaceTrackerFB(face_tracker);
+	XrResult result = xrDestroyFaceTracker2FB(face_tracker2);
 	if (XR_FAILED(result)) {
 		UtilityFunctions::print("Failed to destroy face-tracker handle: ", result);
 	}
-	face_tracker = XR_NULL_HANDLE;
+	face_tracker2 = XR_NULL_HANDLE;
 
-	// Clear the weights
-	face_expression_weights.status.isValid = XR_FALSE;
+	// Unregister the face tracker.
+	if (xr_face_tracker_registered) {
+		XRServer *xr_server = XRServer::get_singleton();
+		if (xr_server) {
+			xr_server->remove_face_tracker("/user/head");
+		}
+	}
+	xr_face_tracker_registered = false;
 }
 
 void OpenXRFbFaceTrackingExtensionWrapper::_on_process() {
 	// Skip if not enabled, or no face-tracker handle
-	if (!is_enabled() || !face_tracker) {
+	if (!is_enabled() || !face_tracker2) {
 		return;
 	}
 
@@ -219,117 +168,199 @@ void OpenXRFbFaceTrackingExtensionWrapper::_on_process() {
 		return;
 	}
 
-	// Read the expression weights
-	XrFaceExpressionInfoFB expression_info = { XR_TYPE_FACE_EXPRESSION_INFO_FB };
-	expression_info.time = next_frame_time;
-	XrResult result = xrGetFaceExpressionWeightsFB(face_tracker, &expression_info, &face_expression_weights);
+	// Construct the expression info struct.
+	XrFaceExpressionInfo2FB expression_info2 = { XR_TYPE_FACE_EXPRESSION_INFO2_FB };
+	expression_info2.time = next_frame_time;
+
+	// Construct the weights struct.
+	float fb_weights[XR_FACE_EXPRESSION2_COUNT_FB] = {};
+	float fb_confidences[XR_FACE_CONFIDENCE2_COUNT_FB] = {};
+	XrFaceExpressionWeights2FB face_expression_weights2 = { XR_TYPE_FACE_EXPRESSION_WEIGHTS2_FB };
+	face_expression_weights2.weightCount = XR_FACE_EXPRESSION2_COUNT_FB;
+	face_expression_weights2.weights = fb_weights;
+	face_expression_weights2.confidenceCount = XR_FACE_CONFIDENCE2_COUNT_FB;
+	face_expression_weights2.confidences = fb_confidences;
+
+	// Read the weights
+	XrResult result = xrGetFaceExpressionWeights2FB(face_tracker2, &expression_info2, &face_expression_weights2);
 	if (XR_FAILED(result)) {
 		UtilityFunctions::print("Failed to get face expression weights: ", result);
+	}
+
+	// Map Meta weights to Godot weights.
+	float xr_weights[XRFaceTracker::FT_MAX] = {};
+
+	// Base Shapes
+	xr_weights[XRFaceTracker::FT_EYE_LOOK_OUT_RIGHT] = fb_weights[XR_FACE_EXPRESSION2_EYES_LOOK_RIGHT_R_FB];
+	xr_weights[XRFaceTracker::FT_EYE_LOOK_IN_RIGHT] = fb_weights[XR_FACE_EXPRESSION2_EYES_LOOK_LEFT_R_FB];
+	xr_weights[XRFaceTracker::FT_EYE_LOOK_UP_RIGHT] = fb_weights[XR_FACE_EXPRESSION2_EYES_LOOK_UP_R_FB];
+	xr_weights[XRFaceTracker::FT_EYE_LOOK_DOWN_RIGHT] = fb_weights[XR_FACE_EXPRESSION2_EYES_LOOK_DOWN_R_FB];
+	xr_weights[XRFaceTracker::FT_EYE_LOOK_OUT_LEFT] = fb_weights[XR_FACE_EXPRESSION2_EYES_LOOK_LEFT_L_FB];
+	xr_weights[XRFaceTracker::FT_EYE_LOOK_IN_LEFT] = fb_weights[XR_FACE_EXPRESSION2_EYES_LOOK_RIGHT_L_FB];
+	xr_weights[XRFaceTracker::FT_EYE_LOOK_UP_LEFT] = fb_weights[XR_FACE_EXPRESSION2_EYES_LOOK_UP_L_FB];
+	xr_weights[XRFaceTracker::FT_EYE_LOOK_DOWN_LEFT] = fb_weights[XR_FACE_EXPRESSION2_EYES_LOOK_DOWN_L_FB];
+	xr_weights[XRFaceTracker::FT_EYE_CLOSED_RIGHT] = fb_weights[XR_FACE_EXPRESSION2_EYES_CLOSED_R_FB];
+	xr_weights[XRFaceTracker::FT_EYE_CLOSED_LEFT] = fb_weights[XR_FACE_EXPRESSION2_EYES_CLOSED_L_FB];
+	xr_weights[XRFaceTracker::FT_EYE_SQUINT_RIGHT] = fb_weights[XR_FACE_EXPRESSION2_LID_TIGHTENER_R_FB];
+	xr_weights[XRFaceTracker::FT_EYE_SQUINT_LEFT] = fb_weights[XR_FACE_EXPRESSION2_LID_TIGHTENER_L_FB];
+	xr_weights[XRFaceTracker::FT_EYE_WIDE_RIGHT] = fb_weights[XR_FACE_EXPRESSION2_UPPER_LID_RAISER_R_FB];
+	xr_weights[XRFaceTracker::FT_EYE_WIDE_LEFT] = fb_weights[XR_FACE_EXPRESSION2_UPPER_LID_RAISER_L_FB];
+	xr_weights[XRFaceTracker::FT_EYE_DILATION_RIGHT] = 0.0f; // Not measured by XR_fb_face_tracking
+	xr_weights[XRFaceTracker::FT_EYE_DILATION_LEFT] = 0.0f; // Not measured by XR_fb_face_tracking
+	xr_weights[XRFaceTracker::FT_EYE_CONSTRICT_RIGHT] = 0.0f; // Not measured by XR_fb_face_tracking
+	xr_weights[XRFaceTracker::FT_EYE_CONSTRICT_LEFT] = 0.0f; // Not measured by XR_fb_face_tracking
+	xr_weights[XRFaceTracker::FT_BROW_PINCH_RIGHT] = 0.0f; // Not measured by XR_fb_face_tracking
+	xr_weights[XRFaceTracker::FT_BROW_PINCH_LEFT] = 0.0f; // Not measured by XR_fb_face_tracking
+	xr_weights[XRFaceTracker::FT_BROW_LOWERER_RIGHT] = fb_weights[XR_FACE_EXPRESSION2_BROW_LOWERER_R_FB];
+	xr_weights[XRFaceTracker::FT_BROW_LOWERER_LEFT] = fb_weights[XR_FACE_EXPRESSION2_BROW_LOWERER_L_FB];
+	xr_weights[XRFaceTracker::FT_BROW_INNER_UP_RIGHT] = fb_weights[XR_FACE_EXPRESSION2_INNER_BROW_RAISER_R_FB];
+	xr_weights[XRFaceTracker::FT_BROW_INNER_UP_LEFT] = fb_weights[XR_FACE_EXPRESSION2_INNER_BROW_RAISER_L_FB];
+	xr_weights[XRFaceTracker::FT_BROW_OUTER_UP_RIGHT] = fb_weights[XR_FACE_EXPRESSION2_OUTER_BROW_RAISER_R_FB];
+	xr_weights[XRFaceTracker::FT_BROW_OUTER_UP_LEFT] = fb_weights[XR_FACE_EXPRESSION2_OUTER_BROW_RAISER_L_FB];
+	xr_weights[XRFaceTracker::FT_NOSE_SNEER_RIGHT] = fb_weights[XR_FACE_EXPRESSION2_NOSE_WRINKLER_R_FB];
+	xr_weights[XRFaceTracker::FT_NOSE_SNEER_LEFT] = fb_weights[XR_FACE_EXPRESSION2_NOSE_WRINKLER_L_FB];
+	xr_weights[XRFaceTracker::FT_NASAL_DILATION_RIGHT] = 0.0f; // Not measured by XR_fb_face_tracking
+	xr_weights[XRFaceTracker::FT_NASAL_DILATION_LEFT] = 0.0f; // Not measured by XR_fb_face_tracking
+	xr_weights[XRFaceTracker::FT_NASAL_CONSTRICT_RIGHT] = 0.0f; // Not measured by XR_fb_face_tracking
+	xr_weights[XRFaceTracker::FT_NASAL_CONSTRICT_LEFT] = 0.0f; // Not measured by XR_fb_face_tracking
+	xr_weights[XRFaceTracker::FT_CHEEK_SQUINT_RIGHT] = fb_weights[XR_FACE_EXPRESSION2_CHEEK_RAISER_R_FB];
+	xr_weights[XRFaceTracker::FT_CHEEK_SQUINT_LEFT] = fb_weights[XR_FACE_EXPRESSION2_CHEEK_RAISER_L_FB];
+	xr_weights[XRFaceTracker::FT_CHEEK_PUFF_RIGHT] = fb_weights[XR_FACE_EXPRESSION2_CHEEK_PUFF_R_FB];
+	xr_weights[XRFaceTracker::FT_CHEEK_PUFF_LEFT] = fb_weights[XR_FACE_EXPRESSION2_CHEEK_PUFF_L_FB];
+	xr_weights[XRFaceTracker::FT_CHEEK_SUCK_RIGHT] = fb_weights[XR_FACE_EXPRESSION2_CHEEK_SUCK_R_FB];
+	xr_weights[XRFaceTracker::FT_CHEEK_SUCK_LEFT] = fb_weights[XR_FACE_EXPRESSION2_CHEEK_SUCK_L_FB];
+	xr_weights[XRFaceTracker::FT_JAW_OPEN] = fb_weights[XR_FACE_EXPRESSION2_JAW_DROP_FB];
+	xr_weights[XRFaceTracker::FT_MOUTH_CLOSED] = fb_weights[XR_FACE_EXPRESSION2_LIPS_TOWARD_FB];
+	xr_weights[XRFaceTracker::FT_JAW_RIGHT] = fb_weights[XR_FACE_EXPRESSION2_JAW_SIDEWAYS_RIGHT_FB];
+	xr_weights[XRFaceTracker::FT_JAW_LEFT] = fb_weights[XR_FACE_EXPRESSION2_JAW_SIDEWAYS_LEFT_FB];
+	xr_weights[XRFaceTracker::FT_JAW_FORWARD] = fb_weights[XR_FACE_EXPRESSION2_JAW_THRUST_FB];
+	xr_weights[XRFaceTracker::FT_JAW_BACKWARD] = 0.0f; // Not measured by XR_fb_face_tracking
+	xr_weights[XRFaceTracker::FT_JAW_CLENCH] = 0.0f; // Not measured by XR_fb_face_tracking
+	xr_weights[XRFaceTracker::FT_JAW_MANDIBLE_RAISE] = 0.0f; // Not measured by XR_fb_face_tracking
+	xr_weights[XRFaceTracker::FT_LIP_SUCK_UPPER_RIGHT] = fb_weights[XR_FACE_EXPRESSION2_LIP_SUCK_RT_FB];
+	xr_weights[XRFaceTracker::FT_LIP_SUCK_UPPER_LEFT] = fb_weights[XR_FACE_EXPRESSION2_LIP_SUCK_LT_FB];
+	xr_weights[XRFaceTracker::FT_LIP_SUCK_LOWER_RIGHT] = fb_weights[XR_FACE_EXPRESSION2_LIP_SUCK_RB_FB];
+	xr_weights[XRFaceTracker::FT_LIP_SUCK_LOWER_LEFT] = fb_weights[XR_FACE_EXPRESSION2_LIP_SUCK_LB_FB];
+	xr_weights[XRFaceTracker::FT_LIP_SUCK_CORNER_RIGHT] = 0.0f; // Not measured by XR_fb_face_tracking
+	xr_weights[XRFaceTracker::FT_LIP_SUCK_CORNER_LEFT] = 0.0f; // Not measured by XR_fb_face_tracking
+	xr_weights[XRFaceTracker::FT_LIP_FUNNEL_UPPER_RIGHT] = fb_weights[XR_FACE_EXPRESSION2_LIP_FUNNELER_RT_FB];
+	xr_weights[XRFaceTracker::FT_LIP_FUNNEL_UPPER_LEFT] = fb_weights[XR_FACE_EXPRESSION2_LIP_FUNNELER_LT_FB];
+	xr_weights[XRFaceTracker::FT_LIP_FUNNEL_LOWER_RIGHT] = fb_weights[XR_FACE_EXPRESSION2_LIP_FUNNELER_RB_FB];
+	xr_weights[XRFaceTracker::FT_LIP_FUNNEL_LOWER_LEFT] = fb_weights[XR_FACE_EXPRESSION2_LIP_FUNNELER_LB_FB];
+	xr_weights[XRFaceTracker::FT_LIP_PUCKER_UPPER_RIGHT] = fb_weights[XR_FACE_EXPRESSION2_LIP_PUCKER_R_FB];
+	xr_weights[XRFaceTracker::FT_LIP_PUCKER_UPPER_LEFT] = fb_weights[XR_FACE_EXPRESSION2_LIP_PUCKER_L_FB];
+	xr_weights[XRFaceTracker::FT_LIP_PUCKER_LOWER_RIGHT] = fb_weights[XR_FACE_EXPRESSION2_LIP_PUCKER_R_FB];
+	xr_weights[XRFaceTracker::FT_LIP_PUCKER_LOWER_LEFT] = fb_weights[XR_FACE_EXPRESSION2_LIP_PUCKER_L_FB];
+	xr_weights[XRFaceTracker::FT_MOUTH_UPPER_UP_RIGHT] = fb_weights[XR_FACE_EXPRESSION2_UPPER_LIP_RAISER_R_FB];
+	xr_weights[XRFaceTracker::FT_MOUTH_UPPER_UP_LEFT] = fb_weights[XR_FACE_EXPRESSION2_UPPER_LIP_RAISER_L_FB];
+	xr_weights[XRFaceTracker::FT_MOUTH_LOWER_DOWN_RIGHT] = fb_weights[XR_FACE_EXPRESSION2_LOWER_LIP_DEPRESSOR_R_FB];
+	xr_weights[XRFaceTracker::FT_MOUTH_LOWER_DOWN_LEFT] = fb_weights[XR_FACE_EXPRESSION2_LOWER_LIP_DEPRESSOR_L_FB];
+	xr_weights[XRFaceTracker::FT_MOUTH_UPPER_DEEPEN_RIGHT] = 0.0f; // Not measured by XR_fb_face_tracking
+	xr_weights[XRFaceTracker::FT_MOUTH_UPPER_DEEPEN_LEFT] = 0.0f; // Not measured by XR_fb_face_tracking
+	xr_weights[XRFaceTracker::FT_MOUTH_UPPER_RIGHT] = 0.0f; // Not measured by XR_fb_face_tracking
+	xr_weights[XRFaceTracker::FT_MOUTH_UPPER_LEFT] = 0.0f; // Not measured by XR_fb_face_tracking
+	xr_weights[XRFaceTracker::FT_MOUTH_LOWER_RIGHT] = 0.0f; // Not measured by XR_fb_face_tracking
+	xr_weights[XRFaceTracker::FT_MOUTH_LOWER_LEFT] = 0.0f; // Not measured by XR_fb_face_tracking
+	xr_weights[XRFaceTracker::FT_MOUTH_CORNER_PULL_RIGHT] = fb_weights[XR_FACE_EXPRESSION2_LIP_CORNER_PULLER_R_FB];
+	xr_weights[XRFaceTracker::FT_MOUTH_CORNER_PULL_LEFT] = fb_weights[XR_FACE_EXPRESSION2_LIP_CORNER_PULLER_L_FB];
+	xr_weights[XRFaceTracker::FT_MOUTH_CORNER_SLANT_RIGHT] = 0.0f;
+	xr_weights[XRFaceTracker::FT_MOUTH_CORNER_SLANT_LEFT] = 0.0f;
+	xr_weights[XRFaceTracker::FT_MOUTH_FROWN_RIGHT] = fb_weights[XR_FACE_EXPRESSION2_LIP_CORNER_DEPRESSOR_R_FB];
+	xr_weights[XRFaceTracker::FT_MOUTH_FROWN_LEFT] = fb_weights[XR_FACE_EXPRESSION2_LIP_CORNER_DEPRESSOR_L_FB];
+	xr_weights[XRFaceTracker::FT_MOUTH_STRETCH_RIGHT] = fb_weights[XR_FACE_EXPRESSION2_LIP_STRETCHER_R_FB];
+	xr_weights[XRFaceTracker::FT_MOUTH_STRETCH_LEFT] = fb_weights[XR_FACE_EXPRESSION2_LIP_STRETCHER_L_FB];
+	xr_weights[XRFaceTracker::FT_MOUTH_DIMPLE_RIGHT] = fb_weights[XR_FACE_EXPRESSION2_DIMPLER_R_FB];
+	xr_weights[XRFaceTracker::FT_MOUTH_DIMPLE_LEFT] = fb_weights[XR_FACE_EXPRESSION2_DIMPLER_L_FB];
+	xr_weights[XRFaceTracker::FT_MOUTH_RAISER_UPPER] = fb_weights[XR_FACE_EXPRESSION2_CHIN_RAISER_T_FB];
+	xr_weights[XRFaceTracker::FT_MOUTH_RAISER_LOWER] = fb_weights[XR_FACE_EXPRESSION2_CHIN_RAISER_B_FB];
+	xr_weights[XRFaceTracker::FT_MOUTH_PRESS_RIGHT] = fb_weights[XR_FACE_EXPRESSION2_LIP_PRESSOR_R_FB];
+	xr_weights[XRFaceTracker::FT_MOUTH_PRESS_LEFT] = fb_weights[XR_FACE_EXPRESSION2_LIP_PRESSOR_L_FB];
+	xr_weights[XRFaceTracker::FT_MOUTH_TIGHTENER_RIGHT] = fb_weights[XR_FACE_EXPRESSION2_LIP_TIGHTENER_R_FB];
+	xr_weights[XRFaceTracker::FT_MOUTH_TIGHTENER_LEFT] = fb_weights[XR_FACE_EXPRESSION2_LIP_TIGHTENER_L_FB];
+	xr_weights[XRFaceTracker::FT_TONGUE_OUT] = fb_weights[XR_FACE_EXPRESSION2_TONGUE_OUT_FB];
+	xr_weights[XRFaceTracker::FT_TONGUE_UP] = 0.0f;
+	xr_weights[XRFaceTracker::FT_TONGUE_DOWN] = 0.0f;
+	xr_weights[XRFaceTracker::FT_TONGUE_RIGHT] = 0.0f;
+	xr_weights[XRFaceTracker::FT_TONGUE_LEFT] = 0.0f;
+	xr_weights[XRFaceTracker::FT_TONGUE_ROLL] = 0.0f;
+	xr_weights[XRFaceTracker::FT_TONGUE_BLEND_DOWN] = 0.0f;
+	xr_weights[XRFaceTracker::FT_TONGUE_CURL_UP] = 0.0f;
+	xr_weights[XRFaceTracker::FT_TONGUE_SQUISH] = 0.0f;
+	xr_weights[XRFaceTracker::FT_TONGUE_FLAT] = fb_weights[XR_FACE_EXPRESSION2_TONGUE_RETREAT_FB];
+	xr_weights[XRFaceTracker::FT_TONGUE_TWIST_RIGHT] = 0.0f;
+	xr_weights[XRFaceTracker::FT_TONGUE_TWIST_LEFT] = 0.0f;
+	xr_weights[XRFaceTracker::FT_SOFT_PALATE_CLOSE] = 0.0f;
+	xr_weights[XRFaceTracker::FT_THROAT_SWALLOW] = 0.0f;
+	xr_weights[XRFaceTracker::FT_NECK_FLEX_RIGHT] = 0.0f;
+	xr_weights[XRFaceTracker::FT_NECK_FLEX_LEFT] = 0.0f;
+
+	// Blended Shapes
+	xr_weights[XRFaceTracker::FT_EYE_CLOSED] = average(xr_weights[XRFaceTracker::FT_EYE_CLOSED_RIGHT], xr_weights[XRFaceTracker::FT_EYE_CLOSED_LEFT]);
+	xr_weights[XRFaceTracker::FT_EYE_WIDE] = average(xr_weights[XRFaceTracker::FT_EYE_WIDE_RIGHT], xr_weights[XRFaceTracker::FT_EYE_WIDE_LEFT]);
+	xr_weights[XRFaceTracker::FT_EYE_SQUINT] = average(xr_weights[XRFaceTracker::FT_EYE_SQUINT_RIGHT], xr_weights[XRFaceTracker::FT_EYE_SQUINT_LEFT]);
+	xr_weights[XRFaceTracker::FT_EYE_DILATION] = 0.0f; // Not measured by XR_fb_face_tracking
+	xr_weights[XRFaceTracker::FT_EYE_CONSTRICT] = 0.0f; // Not measured by XR_fb_face_tracking
+	xr_weights[XRFaceTracker::FT_BROW_DOWN_RIGHT] = fb_weights[XR_FACE_EXPRESSION_BROW_LOWERER_R_FB];
+	xr_weights[XRFaceTracker::FT_BROW_DOWN_LEFT] = fb_weights[XR_FACE_EXPRESSION_BROW_LOWERER_L_FB];
+	xr_weights[XRFaceTracker::FT_BROW_DOWN] = average(xr_weights[XRFaceTracker::FT_BROW_DOWN_RIGHT], xr_weights[XRFaceTracker::FT_BROW_DOWN_LEFT]);
+	xr_weights[XRFaceTracker::FT_BROW_UP_RIGHT] = average(xr_weights[XRFaceTracker::FT_BROW_INNER_UP_RIGHT], xr_weights[XRFaceTracker::FT_BROW_OUTER_UP_RIGHT]);
+	xr_weights[XRFaceTracker::FT_BROW_UP_LEFT] = average(xr_weights[XRFaceTracker::FT_BROW_INNER_UP_LEFT], xr_weights[XRFaceTracker::FT_BROW_OUTER_UP_LEFT]);
+	xr_weights[XRFaceTracker::FT_BROW_UP] = average(xr_weights[XRFaceTracker::FT_BROW_UP_RIGHT], xr_weights[XRFaceTracker::FT_BROW_UP_LEFT]);
+	xr_weights[XRFaceTracker::FT_NOSE_SNEER] = average(xr_weights[XRFaceTracker::FT_NOSE_SNEER_RIGHT], xr_weights[XRFaceTracker::FT_NOSE_SNEER_LEFT]);
+	xr_weights[XRFaceTracker::FT_NASAL_DILATION] = 0.0f; // Not measured by XR_fb_face_tracking
+	xr_weights[XRFaceTracker::FT_NASAL_CONSTRICT] = 0.0f; // Not measured by XR_fb_face_tracking
+	xr_weights[XRFaceTracker::FT_CHEEK_PUFF] = average(xr_weights[XRFaceTracker::FT_CHEEK_PUFF_RIGHT], xr_weights[XRFaceTracker::FT_CHEEK_PUFF_LEFT]);
+	xr_weights[XRFaceTracker::FT_CHEEK_SUCK] = average(xr_weights[XRFaceTracker::FT_CHEEK_SUCK_RIGHT], xr_weights[XRFaceTracker::FT_CHEEK_SUCK_LEFT]);
+	xr_weights[XRFaceTracker::FT_CHEEK_SQUINT] = average(xr_weights[XRFaceTracker::FT_CHEEK_SQUINT_RIGHT], xr_weights[XRFaceTracker::FT_CHEEK_SQUINT_LEFT]);
+	xr_weights[XRFaceTracker::FT_LIP_SUCK_UPPER] = average(xr_weights[XRFaceTracker::FT_LIP_SUCK_UPPER_RIGHT], xr_weights[XRFaceTracker::FT_LIP_SUCK_UPPER_LEFT]);
+	xr_weights[XRFaceTracker::FT_LIP_SUCK_LOWER] = average(xr_weights[XRFaceTracker::FT_LIP_SUCK_LOWER_RIGHT], xr_weights[XRFaceTracker::FT_LIP_SUCK_LOWER_LEFT]);
+	xr_weights[XRFaceTracker::FT_LIP_SUCK] = average(xr_weights[XRFaceTracker::FT_LIP_SUCK_UPPER], xr_weights[XRFaceTracker::FT_LIP_SUCK_LOWER]);
+	xr_weights[XRFaceTracker::FT_LIP_FUNNEL_UPPER] = average(xr_weights[XRFaceTracker::FT_LIP_FUNNEL_UPPER_RIGHT], xr_weights[XRFaceTracker::FT_LIP_FUNNEL_UPPER_LEFT]);
+	xr_weights[XRFaceTracker::FT_LIP_FUNNEL_LOWER] = average(xr_weights[XRFaceTracker::FT_LIP_FUNNEL_LOWER_RIGHT], xr_weights[XRFaceTracker::FT_LIP_FUNNEL_LOWER_LEFT]);
+	xr_weights[XRFaceTracker::FT_LIP_FUNNEL] = average(xr_weights[XRFaceTracker::FT_LIP_FUNNEL_UPPER], xr_weights[XRFaceTracker::FT_LIP_FUNNEL_LOWER]);
+	xr_weights[XRFaceTracker::FT_LIP_PUCKER_UPPER] = average(xr_weights[XRFaceTracker::FT_LIP_PUCKER_UPPER_RIGHT], xr_weights[XRFaceTracker::FT_LIP_PUCKER_UPPER_LEFT]);
+	xr_weights[XRFaceTracker::FT_LIP_PUCKER_LOWER] = average(xr_weights[XRFaceTracker::FT_LIP_PUCKER_LOWER_RIGHT], xr_weights[XRFaceTracker::FT_LIP_PUCKER_LOWER_LEFT]);
+	xr_weights[XRFaceTracker::FT_LIP_PUCKER] = average(xr_weights[XRFaceTracker::FT_LIP_PUCKER_UPPER], xr_weights[XRFaceTracker::FT_LIP_PUCKER_LOWER]);
+	xr_weights[XRFaceTracker::FT_MOUTH_UPPER_UP] = average(xr_weights[XRFaceTracker::FT_MOUTH_UPPER_UP_RIGHT], xr_weights[XRFaceTracker::FT_MOUTH_UPPER_UP_LEFT]);
+	xr_weights[XRFaceTracker::FT_MOUTH_LOWER_DOWN] = average(xr_weights[XRFaceTracker::FT_MOUTH_LOWER_DOWN_RIGHT], xr_weights[XRFaceTracker::FT_MOUTH_LOWER_DOWN_LEFT]);
+	xr_weights[XRFaceTracker::FT_MOUTH_OPEN] = average(xr_weights[XRFaceTracker::FT_MOUTH_UPPER_UP], xr_weights[XRFaceTracker::FT_MOUTH_LOWER_DOWN]);
+	xr_weights[XRFaceTracker::FT_MOUTH_RIGHT] = fb_weights[XR_FACE_EXPRESSION_MOUTH_RIGHT_FB];
+	xr_weights[XRFaceTracker::FT_MOUTH_LEFT] = fb_weights[XR_FACE_EXPRESSION_MOUTH_LEFT_FB];
+	xr_weights[XRFaceTracker::FT_MOUTH_SMILE_RIGHT] = fb_weights[XR_FACE_EXPRESSION_LIP_CORNER_PULLER_R_FB];
+	xr_weights[XRFaceTracker::FT_MOUTH_SMILE_LEFT] = fb_weights[XR_FACE_EXPRESSION_LIP_CORNER_PULLER_L_FB];
+	xr_weights[XRFaceTracker::FT_MOUTH_SMILE] = average(xr_weights[XRFaceTracker::FT_MOUTH_SMILE_RIGHT], xr_weights[XRFaceTracker::FT_MOUTH_SMILE_LEFT]);
+	xr_weights[XRFaceTracker::FT_MOUTH_SAD_RIGHT] = 0.0f; // Not measured by XR_fb_face_tracking
+	xr_weights[XRFaceTracker::FT_MOUTH_SAD_LEFT] = 0.0f; // Not measured by XR_fb_face_tracking
+	xr_weights[XRFaceTracker::FT_MOUTH_SAD] = 0.0f; // Not measured by XR_fb_face_tracking
+	xr_weights[XRFaceTracker::FT_MOUTH_STRETCH] = average(xr_weights[XRFaceTracker::FT_MOUTH_STRETCH_RIGHT], xr_weights[XRFaceTracker::FT_MOUTH_STRETCH_LEFT]);
+	xr_weights[XRFaceTracker::FT_MOUTH_DIMPLE] = average(xr_weights[XRFaceTracker::FT_MOUTH_DIMPLE_RIGHT], xr_weights[XRFaceTracker::FT_MOUTH_DIMPLE_LEFT]);
+	xr_weights[XRFaceTracker::FT_MOUTH_TIGHTENER] = average(xr_weights[XRFaceTracker::FT_MOUTH_TIGHTENER_RIGHT], xr_weights[XRFaceTracker::FT_MOUTH_TIGHTENER_LEFT]);
+	xr_weights[XRFaceTracker::FT_MOUTH_PRESS] = average(xr_weights[XRFaceTracker::FT_MOUTH_PRESS_RIGHT], xr_weights[XRFaceTracker::FT_MOUTH_PRESS_LEFT]);
+
+	// Populate the XRFaceTracker
+	PackedFloat32Array xr_weights_array;
+	xr_weights_array.resize(XRFaceTracker::FT_MAX);
+	memcpy(xr_weights_array.ptrw(), xr_weights, sizeof(xr_weights));
+	xr_face_tracker->set_blend_shapes(xr_weights_array);
+
+	// Register the XRFaceTracker if necessary
+	if (!xr_face_tracker_registered) {
+		XRServer *xr_server = XRServer::get_singleton();
+		if (xr_server) {
+			xr_server->add_face_tracker("/user/head", xr_face_tracker);
+			xr_face_tracker_registered = true;
+		}
 	}
 }
 
 bool OpenXRFbFaceTrackingExtensionWrapper::is_enabled() const {
-	return fb_face_tracking_ext && system_face_tracking_properties.supportsFaceTracking;
+	return fb_face_tracking2_ext && (system_face_tracking_properties2.supportsVisualFaceTracking || system_face_tracking_properties2.supportsAudioFaceTracking);
 }
 
-PackedFloat32Array OpenXRFbFaceTrackingExtensionWrapper::get_weights() const {
-	PackedFloat32Array ret;
-
-	// If valid, populate the array with weights
-	if (face_expression_weights.status.isValid) {
-		// This might be done faster with a memcpy, but this approach ensures
-		// the size and order of the Godot array matches the Godot enum and
-		// should be immune from changes or additional weights in the OpenXR data.
-		ret.resize(EXPRESSION_COUNT);
-		ret[EXPRESSION_BROW_LOWERER_L] = weights[XR_FACE_EXPRESSION_BROW_LOWERER_L_FB];
-		ret[EXPRESSION_BROW_LOWERER_R] = weights[XR_FACE_EXPRESSION_BROW_LOWERER_R_FB];
-		ret[EXPRESSION_CHEEK_PUFF_L] = weights[XR_FACE_EXPRESSION_CHEEK_PUFF_L_FB];
-		ret[EXPRESSION_CHEEK_PUFF_R] = weights[XR_FACE_EXPRESSION_CHEEK_PUFF_R_FB];
-		ret[EXPRESSION_CHEEK_RAISER_L] = weights[XR_FACE_EXPRESSION_CHEEK_RAISER_L_FB];
-		ret[EXPRESSION_CHEEK_RAISER_R] = weights[XR_FACE_EXPRESSION_CHEEK_RAISER_R_FB];
-		ret[EXPRESSION_CHEEK_SUCK_L] = weights[XR_FACE_EXPRESSION_CHEEK_SUCK_L_FB];
-		ret[EXPRESSION_CHEEK_SUCK_R] = weights[XR_FACE_EXPRESSION_CHEEK_SUCK_R_FB];
-		ret[EXPRESSION_CHIN_RAISER_B] = weights[XR_FACE_EXPRESSION_CHIN_RAISER_B_FB];
-		ret[EXPRESSION_CHIN_RAISER_T] = weights[XR_FACE_EXPRESSION_CHIN_RAISER_T_FB];
-		ret[EXPRESSION_DIMPLER_L] = weights[XR_FACE_EXPRESSION_DIMPLER_L_FB];
-		ret[EXPRESSION_DIMPLER_R] = weights[XR_FACE_EXPRESSION_DIMPLER_R_FB];
-		ret[EXPRESSION_EYES_CLOSED_L] = weights[XR_FACE_EXPRESSION_EYES_CLOSED_L_FB];
-		ret[EXPRESSION_EYES_CLOSED_R] = weights[XR_FACE_EXPRESSION_EYES_CLOSED_R_FB];
-		ret[EXPRESSION_EYES_LOOK_DOWN_L] = weights[XR_FACE_EXPRESSION_EYES_LOOK_DOWN_L_FB];
-		ret[EXPRESSION_EYES_LOOK_DOWN_R] = weights[XR_FACE_EXPRESSION_EYES_LOOK_DOWN_R_FB];
-		ret[EXPRESSION_EYES_LOOK_LEFT_L] = weights[XR_FACE_EXPRESSION_EYES_LOOK_LEFT_L_FB];
-		ret[EXPRESSION_EYES_LOOK_LEFT_R] = weights[XR_FACE_EXPRESSION_EYES_LOOK_LEFT_R_FB];
-		ret[EXPRESSION_EYES_LOOK_RIGHT_L] = weights[XR_FACE_EXPRESSION_EYES_LOOK_RIGHT_L_FB];
-		ret[EXPRESSION_EYES_LOOK_RIGHT_R] = weights[XR_FACE_EXPRESSION_EYES_LOOK_RIGHT_R_FB];
-		ret[EXPRESSION_EYES_LOOK_UP_L] = weights[XR_FACE_EXPRESSION_EYES_LOOK_UP_L_FB];
-		ret[EXPRESSION_EYES_LOOK_UP_R] = weights[XR_FACE_EXPRESSION_EYES_LOOK_UP_R_FB];
-		ret[EXPRESSION_INNER_BROW_RAISER_L] = weights[XR_FACE_EXPRESSION_INNER_BROW_RAISER_L_FB];
-		ret[EXPRESSION_INNER_BROW_RAISER_R] = weights[XR_FACE_EXPRESSION_INNER_BROW_RAISER_R_FB];
-		ret[EXPRESSION_JAW_DROP] = weights[XR_FACE_EXPRESSION_JAW_DROP_FB];
-		ret[EXPRESSION_JAW_SIDEWAYS_LEFT] = weights[XR_FACE_EXPRESSION_JAW_SIDEWAYS_LEFT_FB];
-		ret[EXPRESSION_JAW_SIDEWAYS_RIGHT] = weights[XR_FACE_EXPRESSION_JAW_SIDEWAYS_RIGHT_FB];
-		ret[EXPRESSION_JAW_THRUST] = weights[XR_FACE_EXPRESSION_JAW_THRUST_FB];
-		ret[EXPRESSION_LID_TIGHTENER_L] = weights[XR_FACE_EXPRESSION_LID_TIGHTENER_L_FB];
-		ret[EXPRESSION_LID_TIGHTENER_R] = weights[XR_FACE_EXPRESSION_LID_TIGHTENER_R_FB];
-		ret[EXPRESSION_LIP_CORNER_DEPRESSOR_L] = weights[XR_FACE_EXPRESSION_LIP_CORNER_DEPRESSOR_L_FB];
-		ret[EXPRESSION_LIP_CORNER_DEPRESSOR_R] = weights[XR_FACE_EXPRESSION_LIP_CORNER_DEPRESSOR_R_FB];
-		ret[EXPRESSION_LIP_CORNER_PULLER_L] = weights[XR_FACE_EXPRESSION_LIP_CORNER_PULLER_L_FB];
-		ret[EXPRESSION_LIP_CORNER_PULLER_R] = weights[XR_FACE_EXPRESSION_LIP_CORNER_PULLER_R_FB];
-		ret[EXPRESSION_LIP_FUNNELER_LB] = weights[XR_FACE_EXPRESSION_LIP_FUNNELER_LB_FB];
-		ret[EXPRESSION_LIP_FUNNELER_LT] = weights[XR_FACE_EXPRESSION_LIP_FUNNELER_LT_FB];
-		ret[EXPRESSION_LIP_FUNNELER_RB] = weights[XR_FACE_EXPRESSION_LIP_FUNNELER_RB_FB];
-		ret[EXPRESSION_LIP_FUNNELER_RT] = weights[XR_FACE_EXPRESSION_LIP_FUNNELER_RT_FB];
-		ret[EXPRESSION_LIP_PRESSOR_L] = weights[XR_FACE_EXPRESSION_LIP_PRESSOR_L_FB];
-		ret[EXPRESSION_LIP_PRESSOR_R] = weights[XR_FACE_EXPRESSION_LIP_PRESSOR_R_FB];
-		ret[EXPRESSION_LIP_PUCKER_L] = weights[XR_FACE_EXPRESSION_LIP_PUCKER_L_FB];
-		ret[EXPRESSION_LIP_PUCKER_R] = weights[XR_FACE_EXPRESSION_LIP_PUCKER_R_FB];
-		ret[EXPRESSION_LIP_STRETCHER_L] = weights[XR_FACE_EXPRESSION_LIP_STRETCHER_L_FB];
-		ret[EXPRESSION_LIP_STRETCHER_R] = weights[XR_FACE_EXPRESSION_LIP_STRETCHER_R_FB];
-		ret[EXPRESSION_LIP_SUCK_LB] = weights[XR_FACE_EXPRESSION_LIP_SUCK_LB_FB];
-		ret[EXPRESSION_LIP_SUCK_LT] = weights[XR_FACE_EXPRESSION_LIP_SUCK_LT_FB];
-		ret[EXPRESSION_LIP_SUCK_RB] = weights[XR_FACE_EXPRESSION_LIP_SUCK_RB_FB];
-		ret[EXPRESSION_LIP_SUCK_RT] = weights[XR_FACE_EXPRESSION_LIP_SUCK_RT_FB];
-		ret[EXPRESSION_LIP_TIGHTENER_L] = weights[XR_FACE_EXPRESSION_LIP_TIGHTENER_L_FB];
-		ret[EXPRESSION_LIP_TIGHTENER_R] = weights[XR_FACE_EXPRESSION_LIP_TIGHTENER_R_FB];
-		ret[EXPRESSION_LIPS_TOWARD] = weights[XR_FACE_EXPRESSION_LIPS_TOWARD_FB];
-		ret[EXPRESSION_LOWER_LIP_DEPRESSOR_L] = weights[XR_FACE_EXPRESSION_LOWER_LIP_DEPRESSOR_L_FB];
-		ret[EXPRESSION_LOWER_LIP_DEPRESSOR_R] = weights[XR_FACE_EXPRESSION_LOWER_LIP_DEPRESSOR_R_FB];
-		ret[EXPRESSION_MOUTH_LEFT] = weights[XR_FACE_EXPRESSION_MOUTH_LEFT_FB];
-		ret[EXPRESSION_MOUTH_RIGHT] = weights[XR_FACE_EXPRESSION_MOUTH_RIGHT_FB];
-		ret[EXPRESSION_NOSE_WRINKLER_L] = weights[XR_FACE_EXPRESSION_NOSE_WRINKLER_L_FB];
-		ret[EXPRESSION_NOSE_WRINKLER_R] = weights[XR_FACE_EXPRESSION_NOSE_WRINKLER_R_FB];
-		ret[EXPRESSION_OUTER_BROW_RAISER_L] = weights[XR_FACE_EXPRESSION_OUTER_BROW_RAISER_L_FB];
-		ret[EXPRESSION_OUTER_BROW_RAISER_R] = weights[XR_FACE_EXPRESSION_OUTER_BROW_RAISER_R_FB];
-		ret[EXPRESSION_UPPER_LID_RAISER_L] = weights[XR_FACE_EXPRESSION_UPPER_LID_RAISER_L_FB];
-		ret[EXPRESSION_UPPER_LID_RAISER_R] = weights[XR_FACE_EXPRESSION_UPPER_LID_RAISER_R_FB];
-		ret[EXPRESSION_UPPER_LIP_RAISER_L] = weights[XR_FACE_EXPRESSION_UPPER_LIP_RAISER_L_FB];
-		ret[EXPRESSION_UPPER_LIP_RAISER_R] = weights[XR_FACE_EXPRESSION_UPPER_LIP_RAISER_R_FB];
-	}
-
-	return ret;
-}
-
-PackedFloat32Array OpenXRFbFaceTrackingExtensionWrapper::get_confidences() const {
-	PackedFloat32Array ret;
-
-	// If valid, populate the array with confidences
-	if (face_expression_weights.status.isValid) {
-		// This might be done faster with a memcpy, but this approach ensures
-		// the size and order of the Godot array matches the Godot enum and
-		// should be immune from changes or additional confidences in the OpenXR
-		// data.
-		ret.resize(CONFIDENCE_COUNT);
-		ret[CONFIDENCE_LOWER_FACE] = confidences[XR_FACE_CONFIDENCE_LOWER_FACE_FB];
-		ret[CONFIDENCE_UPPER_FACE] = confidences[XR_FACE_CONFIDENCE_UPPER_FACE_FB];
-	}
-
-	return ret;
-}
-
-bool OpenXRFbFaceTrackingExtensionWrapper::initialize_fb_face_tracking_extension(const XrInstance p_instance) {
-	GDEXTENSION_INIT_XR_FUNC_V(xrCreateFaceTrackerFB);
-	GDEXTENSION_INIT_XR_FUNC_V(xrDestroyFaceTrackerFB);
-	GDEXTENSION_INIT_XR_FUNC_V(xrGetFaceExpressionWeightsFB);
+bool OpenXRFbFaceTrackingExtensionWrapper::initialize_fb_face_tracking2_extension(const XrInstance p_instance) {
+	GDEXTENSION_INIT_XR_FUNC_V(xrCreateFaceTracker2FB);
+	GDEXTENSION_INIT_XR_FUNC_V(xrDestroyFaceTracker2FB);
+	GDEXTENSION_INIT_XR_FUNC_V(xrGetFaceExpressionWeights2FB);
 
 	return true;
 }
