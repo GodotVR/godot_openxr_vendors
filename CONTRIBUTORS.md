@@ -11,3 +11,6 @@ This plugin has been developed by or received contributions from:
 - [Rodolphe Houdas](https://github.com/rodolpheh)
 - [Tiago Zaccaro](https://github.com/tiagozaccaro)
 - [Mauricio Narvaez](https://github.com/maunvz)
+- [Malcolm A Nixon](https://github.com/Malcolmnixon)
+- [David Snopek](https://github.com/dsnopek)
+- [Logan Lang](https://github.com/devloglogan)
