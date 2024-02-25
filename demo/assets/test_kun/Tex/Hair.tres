@@ -1,0 +1,6 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://8yl3fpkwuucv"]
+
+[ext_resource type="Texture2D" uid="uid://cu8vsn3weqnfk" path="res://assets/test_kun/Tex/Hair.png" id="1_ml7ic"]
+
+[resource]
+albedo_texture = ExtResource("1_ml7ic")

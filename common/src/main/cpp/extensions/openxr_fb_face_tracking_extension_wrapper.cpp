@@ -7,9 +7,6 @@
 /**************************************************************************/
 /* Copyright (c) 2022-present Godot XR contributors (see CONTRIBUTORS.md) */
 /*                                                                        */
-/* Original contributed implementation:                                   */
-/*   Copyright (c) 2024 Malcolm Nixon                                     */
-/*                                                                        */
 /* Permission is hereby granted, free of charge, to any person obtaining  */
 /* a copy of this software and associated documentation files (the        */
 /* "Software"), to deal in the Software without restriction, including    */
@@ -67,7 +64,6 @@ OpenXRFbFaceTrackingExtensionWrapper::~OpenXRFbFaceTrackingExtensionWrapper() {
 }
 
 void OpenXRFbFaceTrackingExtensionWrapper::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("is_enabled"), &OpenXRFbFaceTrackingExtensionWrapper::is_enabled);
 }
 
 void OpenXRFbFaceTrackingExtensionWrapper::cleanup() {
@@ -117,10 +113,13 @@ void OpenXRFbFaceTrackingExtensionWrapper::_on_session_created(uint64_t instance
 		XR_FACE_TRACKING_DATA_SOURCE2_VISUAL_FB,
 		XR_FACE_TRACKING_DATA_SOURCE2_AUDIO_FB
 	};
-	XrFaceTrackerCreateInfo2FB createInfo2 = { XR_TYPE_FACE_TRACKER_CREATE_INFO2_FB };
-	createInfo2.faceExpressionSet = XR_FACE_EXPRESSION_SET2_DEFAULT_FB;
-	createInfo2.requestedDataSourceCount = 2;
-	createInfo2.requestedDataSources = dataSources;
+	XrFaceTrackerCreateInfo2FB createInfo2 = {
+		XR_TYPE_FACE_TRACKER_CREATE_INFO2_FB, // type
+		nullptr, // next
+		XR_FACE_EXPRESSION_SET2_DEFAULT_FB, // faceExpressionSet
+		2, // requestedDataSourceCount
+		dataSources // requestedDataSources
+	};
 	XrResult result = xrCreateFaceTracker2FB(SESSION, &createInfo2, &face_tracker2);
 	if (XR_FAILED(result)) {
 		UtilityFunctions::print("Failed to create face-tracker handle: ", result);
@@ -170,17 +169,23 @@ void OpenXRFbFaceTrackingExtensionWrapper::_on_process() {
 	}
 
 	// Construct the expression info struct.
-	XrFaceExpressionInfo2FB expression_info2 = { XR_TYPE_FACE_EXPRESSION_INFO2_FB };
-	expression_info2.time = next_frame_time;
+	XrFaceExpressionInfo2FB expression_info2 = {
+		XR_TYPE_FACE_EXPRESSION_INFO2_FB, // type
+		nullptr, // next
+		next_frame_time // time
+	};
 
 	// Construct the weights struct.
 	float fb_weights[XR_FACE_EXPRESSION2_COUNT_FB] = {};
 	float fb_confidences[XR_FACE_CONFIDENCE2_COUNT_FB] = {};
-	XrFaceExpressionWeights2FB face_expression_weights2 = { XR_TYPE_FACE_EXPRESSION_WEIGHTS2_FB };
-	face_expression_weights2.weightCount = XR_FACE_EXPRESSION2_COUNT_FB;
-	face_expression_weights2.weights = fb_weights;
-	face_expression_weights2.confidenceCount = XR_FACE_CONFIDENCE2_COUNT_FB;
-	face_expression_weights2.confidences = fb_confidences;
+	XrFaceExpressionWeights2FB face_expression_weights2 = {
+		XR_TYPE_FACE_EXPRESSION_WEIGHTS2_FB, // type
+		nullptr, // next
+		XR_FACE_EXPRESSION2_COUNT_FB, // weightCount
+		fb_weights, // weights
+		XR_FACE_CONFIDENCE2_COUNT_FB, // confidenceCount
+		fb_confidences // confidences
+	};
 
 	// Read the weights
 	XrResult result = xrGetFaceExpressionWeights2FB(face_tracker2, &expression_info2, &face_expression_weights2);
