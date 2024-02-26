@@ -48,6 +48,10 @@ static const int PASSTHROUGH_NONE_VALUE = 0;
 static const int PASSTHROUGH_OPTIONAL_VALUE = 1;
 static const int PASSTHROUGH_REQUIRED_VALUE = 2;
 
+static const int RENDER_MODEL_NONE_VALUE = 0;
+static const int RENDER_MODEL_OPTIONAL_VALUE = 1;
+static const int RENDER_MODEL_REQUIRED_VALUE = 2;
+
 static const int HAND_TRACKING_NONE_VALUE = 0;
 static const int HAND_TRACKING_OPTIONAL_VALUE = 1;
 static const int HAND_TRACKING_REQUIRED_VALUE = 2;
@@ -89,6 +93,7 @@ private:
 	Dictionary _hand_tracking_option;
 	Dictionary _hand_tracking_frequency_option;
 	Dictionary _passthrough_option;
+	Dictionary _render_model_option;
 	Dictionary _use_anchor_api_option;
 	Dictionary _use_scene_api_option;
 	Dictionary _use_overlay_keyboard_option;

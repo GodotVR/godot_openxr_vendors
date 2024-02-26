@@ -96,6 +96,15 @@ MetaEditorExportPlugin::MetaEditorExportPlugin() {
 			PROPERTY_USAGE_DEFAULT,
 			PASSTHROUGH_NONE_VALUE,
 			false);
+	_render_model_option = _generate_export_option(
+			"meta_xr_features/render_model",
+			"",
+			Variant::Type::INT,
+			PROPERTY_HINT_ENUM,
+			"None,Optional,Required",
+			PROPERTY_USAGE_DEFAULT,
+			RENDER_MODEL_NONE_VALUE,
+			false);
 	_use_anchor_api_option = _generate_export_option(
 			"meta_xr_features/use_anchor_api",
 			"",
@@ -193,6 +202,7 @@ TypedArray<Dictionary> MetaEditorExportPlugin::_get_export_options(const Ref<Edi
 	export_options.append(_hand_tracking_option);
 	export_options.append(_hand_tracking_frequency_option);
 	export_options.append(_passthrough_option);
+	export_options.append(_render_model_option);
 	export_options.append(_use_anchor_api_option);
 	export_options.append(_use_scene_api_option);
 	export_options.append(_use_overlay_keyboard_option);
@@ -276,6 +286,10 @@ String MetaEditorExportPlugin::_get_export_option_warning(const Ref<EditorExport
 		if (!openxr_enabled && _get_int_option(option, PASSTHROUGH_NONE_VALUE) > PASSTHROUGH_NONE_VALUE) {
 			return "\"Passthrough\" requires \"XR Mode\" to be \"OpenXR\".\n";
 		}
+	} else if (option == "meta_xr_features/render_model") {
+		if (!openxr_enabled && _get_int_option(option, RENDER_MODEL_NONE_VALUE) > RENDER_MODEL_NONE_VALUE) {
+			return "\"Render Model\" requires \"XR Mode\" to be \"OpenXR\".\n";
+		}
 	} else if (option == "meta_xr_features/use_anchor_api") {
 		if (!openxr_enabled && _get_bool_option(option)) {
 			return "\"Use anchor API\" is only valid when \"XR Mode\" is \"OpenXR\".\n";
@@ -345,6 +359,18 @@ String MetaEditorExportPlugin::_get_android_manifest_element_contents(const Ref<
 		contents += "    <uses-feature tools:node=\"replace\" android:name=\"com.oculus.feature.PASSTHROUGH\" android:required=\"false\" />\n";
 	} else if (passthrough_mode == PASSTHROUGH_REQUIRED_VALUE) {
 		contents += "    <uses-feature tools:node=\"replace\" android:name=\"com.oculus.feature.PASSTHROUGH\" android:required=\"true\" />\n";
+	}
+
+	// Check for render model
+	int render_model_value = _get_int_option("meta_xr_features/render_model", RENDER_MODEL_NONE_VALUE);
+	if (render_model_value > RENDER_MODEL_NONE_VALUE) {
+		contents += "    <uses-permission android:name=\"com.oculus.permission.RENDER_MODEL\" />\n";
+
+		if (render_model_value == RENDER_MODEL_OPTIONAL_VALUE) {
+			contents += "    <uses-feature tools:node=\"replace\" android:name=\"com.oculus.feature.RENDER_MODEL\" android:required=\"false\" />\n";
+		} else if (render_model_value == RENDER_MODEL_REQUIRED_VALUE) {
+			contents += "    <uses-feature tools:node=\"replace\" android:name=\"com.oculus.feature.RENDER_MODEL\" android:required=\"true\" />\n";
+		}
 	}
 
 	// Check for anchor api
