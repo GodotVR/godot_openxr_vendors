@@ -21,10 +21,10 @@ git submodule update --init
 Build the Android C++ bindings using the following commands.
 ```
 cd thirdparty/godot-cpp
-scons platform=android target=template_debug arch=arm64
-scons platform=android target=template_release arch=arm64
-scons platform=android target=template_debug arch=x86_64
-scons platform=android target=template_release arch=x86_64
+scons platform=android target=template_debug arch=arm64 custom_api_file=../godot_cpp_gdextension_api/extension_api.json
+scons platform=android target=template_release arch=arm64 custom_api_file=../godot_cpp_gdextension_api/extension_api.json
+scons platform=android target=template_debug arch=x86_64 custom_api_file=../godot_cpp_gdextension_api/extension_api.json
+scons platform=android target=template_release arch=x86_64 custom_api_file=../godot_cpp_gdextension_api/extension_api.json
 ```
 
 When the command is completed, you should have static libraries stored in `thirdparty/godot-cpp/bin`
@@ -33,10 +33,10 @@ that will be used for compilation by the plugin.
 ### Building the Plugin
 Run the following command from the root directory to generate the editor gdextension plugin:
 ```
-scons target=template_debug
-scons target=template_release
-scons target=template_debug platform=android
-scons target=template_release platform=android
+scons target=template_debug custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json
+scons target=template_release custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json
+scons target=template_debug platform=android custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json
+scons target=template_release platform=android custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json
 ```
 
 #### Linux / MacOS
