@@ -105,8 +105,14 @@ uint64_t OpenXRFbHandTrackingMeshExtensionWrapper::_set_hand_joint_locations_and
 		return reinterpret_cast<uint64_t>(p_next_pointer);
 	}
 
-	hand_tracking_scale[p_hand_index].type = XR_TYPE_HAND_TRACKING_SCALE_FB;
-	hand_tracking_scale[p_hand_index].next = p_next_pointer;
+	hand_tracking_scale[p_hand_index] = {
+		XR_TYPE_HAND_TRACKING_SCALE_FB, // type
+		p_next_pointer, // next
+		1.0, // sensorOutput
+		1.0, // currentOutput
+		false, // overrideHandScale
+		1.0, // overrideValueInput
+	};
 
 	return reinterpret_cast<uint64_t>(&hand_tracking_scale[p_hand_index]);
 }
