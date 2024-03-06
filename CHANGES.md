@@ -8,6 +8,7 @@
 - Add XR_FB_render_model extension wrapper and OpenXRFBRenderModel node
 - Add XR_FB_passthrough extension wrapper
 - Add XR_FB_hand_tracking_mesh extension wrapper and OpenXRFbHandTrackingMesh node
+- Add XR_FB_hand_tracking_aim support
 
 ## 2.0.3
 - Migrate the export scripts from gdscript to C++ via gdextension

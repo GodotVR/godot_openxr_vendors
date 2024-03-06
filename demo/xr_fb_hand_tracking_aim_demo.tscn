@@ -1,0 +1,178 @@
+[gd_scene load_steps=14 format=3 uid="uid://bwfyi8pgigune"]
+
+[ext_resource type="Script" path="res://xr_fb_hand_tracking_aim_demo.gd" id="1_uw1lv"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_w5hi3"]
+size = Vector2(2, 1)
+orientation = 2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_st2lk"]
+albedo_color = Color(1, 0.0803461, 0, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_7osyw"]
+top_radius = 0.075
+bottom_radius = 0.075
+height = 0.05
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lm06k"]
+albedo_color = Color(1, 0.0803461, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kqv6h"]
+albedo_color = Color(1, 0.0803461, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_c5c27"]
+albedo_color = Color(1, 0.0803461, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sis8y"]
+albedo_color = Color(1, 0.0784314, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qpvbn"]
+albedo_color = Color(1, 0.0784314, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_25a4t"]
+albedo_color = Color(1, 0.0803461, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sfj61"]
+albedo_color = Color(1, 0.0803461, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_k36l5"]
+albedo_color = Color(1, 0.0803461, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7hmop"]
+albedo_color = Color(1, 0.0784314, 0, 1)
+
+[node name="XRFbHandTrackingAimDemo" type="Node3D"]
+script = ExtResource("1_uw1lv")
+
+[node name="Back" type="MeshInstance3D" parent="."]
+mesh = SubResource("PlaneMesh_w5hi3")
+
+[node name="IndexLeft" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -0.2, 0.1, 0.0170253)
+material_override = SubResource("StandardMaterial3D_st2lk")
+mesh = SubResource("CylinderMesh_7osyw")
+skeleton = NodePath("../Back")
+metadata/_edit_group_ = true
+
+[node name="Label3D" type="Label3D" parent="IndexLeft"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 5.96046e-08, 0.00532681, -0.2)
+text = "Index
+Left"
+font_size = 12
+
+[node name="MiddleLeft" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -0.4, 0.1, 0.0170253)
+material_override = SubResource("StandardMaterial3D_lm06k")
+mesh = SubResource("CylinderMesh_7osyw")
+skeleton = NodePath("../Back")
+metadata/_edit_group_ = true
+
+[node name="Label3D" type="Label3D" parent="MiddleLeft"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 5.96046e-08, 0.00532681, -0.2)
+text = "Middle
+Left"
+font_size = 12
+
+[node name="RingLeft" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -0.6, 0.1, 0.0170253)
+material_override = SubResource("StandardMaterial3D_kqv6h")
+mesh = SubResource("CylinderMesh_7osyw")
+skeleton = NodePath("../Back")
+metadata/_edit_group_ = true
+
+[node name="Label3D" type="Label3D" parent="RingLeft"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 5.96046e-08, 0.00532681, -0.2)
+text = "Ring
+Left"
+font_size = 12
+
+[node name="LittleLeft" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -0.8, 0.1, 0.0170253)
+material_override = SubResource("StandardMaterial3D_c5c27")
+mesh = SubResource("CylinderMesh_7osyw")
+skeleton = NodePath("../Back")
+metadata/_edit_group_ = true
+
+[node name="Label3D" type="Label3D" parent="LittleLeft"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 5.96046e-08, 0.00532681, -0.2)
+text = "Little
+Left"
+font_size = 12
+
+[node name="SystemGestureLeft" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -0.5, -0.3, 0.0170253)
+material_override = SubResource("StandardMaterial3D_sis8y")
+mesh = SubResource("CylinderMesh_7osyw")
+skeleton = NodePath("../Back")
+metadata/_edit_group_ = true
+
+[node name="Label3D" type="Label3D" parent="SystemGestureLeft"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 5.96046e-08, 0.00532681, -0.2)
+text = "System Gesture
+Left"
+font_size = 12
+
+[node name="IndexRight" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0.2, 0.1, 0.0170253)
+material_override = SubResource("StandardMaterial3D_qpvbn")
+mesh = SubResource("CylinderMesh_7osyw")
+skeleton = NodePath("../Back")
+metadata/_edit_group_ = true
+
+[node name="Label3D" type="Label3D" parent="IndexRight"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 5.96046e-08, 0.00532681, -0.2)
+text = "Index
+Right"
+font_size = 12
+
+[node name="MiddleRight" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0.4, 0.1, 0.0170253)
+material_override = SubResource("StandardMaterial3D_25a4t")
+mesh = SubResource("CylinderMesh_7osyw")
+skeleton = NodePath("../Back")
+metadata/_edit_group_ = true
+
+[node name="Label3D" type="Label3D" parent="MiddleRight"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 5.96046e-08, 0.00532681, -0.2)
+text = "Middle
+Right"
+font_size = 12
+
+[node name="RingRight" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0.6, 0.1, 0.0170253)
+material_override = SubResource("StandardMaterial3D_sfj61")
+mesh = SubResource("CylinderMesh_7osyw")
+skeleton = NodePath("../Back")
+metadata/_edit_group_ = true
+
+[node name="Label3D" type="Label3D" parent="RingRight"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 5.96046e-08, 0.00532681, -0.2)
+text = "Ring
+Right"
+font_size = 12
+
+[node name="LittleRight" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0.8, 0.1, 0.0170253)
+material_override = SubResource("StandardMaterial3D_k36l5")
+mesh = SubResource("CylinderMesh_7osyw")
+skeleton = NodePath("../Back")
+metadata/_edit_group_ = true
+
+[node name="Label3D" type="Label3D" parent="LittleRight"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 5.96046e-08, 0.00532681, -0.2)
+text = "Little
+Right"
+font_size = 12
+
+[node name="SystemGestureRight" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0.5, -0.3, 0.0170253)
+material_override = SubResource("StandardMaterial3D_7hmop")
+mesh = SubResource("CylinderMesh_7osyw")
+skeleton = NodePath("../Back")
+metadata/_edit_group_ = true
+
+[node name="Label3D" type="Label3D" parent="SystemGestureRight"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 5.96046e-08, 0.00532681, -0.2)
+text = "System Gesture
+Right"
+font_size = 12
