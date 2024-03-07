@@ -1,5 +1,8 @@
 # Change history for the Godot OpenXR loaders asset
 
+## 2.0.4
+- Fix issue with only the first permission being requested
+
 ## 2.0.3
 - Migrate the export scripts from gdscript to C++ via gdextension
 - Manually request eye tracking permission if it's included in the app manifest
