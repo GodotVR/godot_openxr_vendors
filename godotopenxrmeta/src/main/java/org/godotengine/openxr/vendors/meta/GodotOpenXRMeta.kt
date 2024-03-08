@@ -29,7 +29,16 @@
 
 package org.godotengine.openxr.vendors.meta
 
+import android.Manifest
 import android.app.Activity
+import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.content.pm.PermissionInfo
+import android.net.Uri
+import android.os.Build
+import android.os.Environment
+import android.provider.Settings
 import android.util.Log
 import android.view.View
 import org.godotengine.godot.Godot
@@ -54,6 +63,73 @@ class GodotOpenXRMeta(godot: Godot?) : GodotPlugin(godot) {
                 Log.e(TAG, "Unable to load godotopenxrmeta shared library")
             }
         }
+
+        /**
+         * Returns the information of the desired permission.
+         * @param context the caller context for this method.
+         * @param permission the name of the permission.
+         * @return permission info object
+         * @throws PackageManager.NameNotFoundException the exception is thrown when a given package, application, or component name cannot be found.
+         */
+        @Throws(PackageManager.NameNotFoundException::class)
+        private fun getPermissionInfo(context: Context, permission: String): PermissionInfo {
+            val packageManager = context.packageManager
+            return packageManager.getPermissionInfo(permission, 0)
+        }
+
+        /**
+         * Request a list of dangerous permissions. The requested permissions must be included in the app's AndroidManifest
+         * @param permissions list of the permissions to request.
+         * @param activity the caller activity for this method.
+         * @return true/false. "true" if permissions are already granted, "false" if a permissions request was dispatched.
+         */
+        private fun requestPermissions(activity: Activity?, permissions: List<String>): Boolean {
+            if (activity == null) {
+                return false
+            }
+            if (permissions.isEmpty()) {
+                return true
+            }
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                // Not necessary, asked on install already
+                return true
+            }
+
+            val requestedPermissions: MutableSet<String> = HashSet()
+            for (permission in permissions) {
+                try {
+                    if (permission == Manifest.permission.MANAGE_EXTERNAL_STORAGE) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !Environment.isExternalStorageManager()) {
+                            Log.d(TAG, "Requesting permission $permission")
+                            try {
+                                val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
+                                intent.setData(Uri.parse(String.format("package:%s", activity.packageName)))
+                                activity.startActivityForResult(intent, PermissionsUtil.REQUEST_MANAGE_EXTERNAL_STORAGE_REQ_CODE)
+                            } catch (ignored: Exception) {
+                                val intent = Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION)
+                                activity.startActivityForResult(intent, PermissionsUtil.REQUEST_MANAGE_EXTERNAL_STORAGE_REQ_CODE)
+                            }
+                        }
+                    } else {
+                        val permissionInfo = getPermissionInfo(activity, permission)
+                        val protectionLevel = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) permissionInfo.protection else permissionInfo.protectionLevel
+                        if (protectionLevel == PermissionInfo.PROTECTION_DANGEROUS && activity.checkSelfPermission(permission) !== PackageManager.PERMISSION_GRANTED) {
+                            Log.d(TAG, "Requesting permission $permission")
+                            requestedPermissions.add(permission)
+                        }
+                    }
+                } catch (e: PackageManager.NameNotFoundException) {
+                    // Skip this permission and continue.
+                    Log.w(TAG, "Unable to identify permission $permission", e)
+                }
+            }
+            if (requestedPermissions.isEmpty()) {
+                // If list is empty, all of dangerous permissions were granted.
+                return true
+            }
+            activity.requestPermissions(requestedPermissions.toTypedArray<String>(), PermissionsUtil.REQUEST_ALL_PERMISSION_REQ_CODE)
+            return true
+        }
     }
 
     override fun getPluginName(): String {
@@ -63,14 +139,18 @@ class GodotOpenXRMeta(godot: Godot?) : GodotPlugin(godot) {
     override fun getPluginGDExtensionLibrariesPaths() = setOf("res://addons/godotopenxrvendors/meta/plugin.gdextension")
 
     override fun onMainCreate(activity: Activity): View? {
+        val permissionsToRequest = ArrayList<String>()
         // Request the eye tracking permission if it's included in the manifest
         if (PermissionsUtil.hasManifestPermission(activity, EYE_TRACKING_PERMISSION)) {
-            Log.d(TAG, "Requesting permission '${EYE_TRACKING_PERMISSION}'")
-            PermissionsUtil.requestPermission(EYE_TRACKING_PERMISSION, activity)
+            permissionsToRequest.add(EYE_TRACKING_PERMISSION)
         }
         // Request the scene API permission if it's included in the manifest
         if (PermissionsUtil.hasManifestPermission(activity, SCENE_PERMISSION)) {
-            PermissionsUtil.requestPermission(SCENE_PERMISSION, activity)
+            permissionsToRequest.add(SCENE_PERMISSION)
+        }
+
+        if (permissionsToRequest.isNotEmpty()) {
+            requestPermissions(activity, permissionsToRequest)
         }
         return null
     }
