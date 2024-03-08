@@ -185,6 +185,7 @@ void OpenXRFbHandTrackingAimExtensionWrapper::add_project_setting() {
 	}
 
 	ProjectSettings::get_singleton()->set_initial_value(p_name, false);
+	ProjectSettings::get_singleton()->set_as_basic(p_name, true);
 	Dictionary property_info;
 	property_info["name"] = p_name;
 	property_info["type"] = Variant::Type::BOOL;
