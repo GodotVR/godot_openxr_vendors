@@ -31,6 +31,7 @@
 
 #include <godot_cpp/classes/object.hpp>
 #include <godot_cpp/classes/open_xrapi_extension.hpp>
+#include <godot_cpp/templates/local_vector.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
 
 #ifdef META_VENDOR_ENABLED
@@ -40,6 +41,9 @@
 #include "extensions/openxr_fb_spatial_entity_extension_wrapper.h"
 
 using namespace godot;
+
+// List from https://developer.oculus.com/documentation/native/android/mobile-scene-api-ref/
+static const char *SUPPORTED_SEMANTIC_LABELS = "CEILING,DOOR_FRAME,FLOOR,INVISIBLE_WALL_FACE,WALL_ART,WALL_FACE,WINDOW_FRAME,COUCH,TABLE,BED,LAMP,PLANT,SCREEN,STORAGE,GLOBAL_MESH,OTHER";
 
 OpenXRFbSceneExtensionWrapper *OpenXRFbSceneExtensionWrapper::singleton = nullptr;
 
@@ -93,71 +97,165 @@ void OpenXRFbSceneExtensionWrapper::_on_instance_destroyed() {
 	cleanup();
 }
 
-std::optional<String> OpenXRFbSceneExtensionWrapper::get_semantic_labels(const XrSpace &space) {
-	if (!OpenXRFbSpatialEntityExtensionWrapper::get_singleton()->is_component_enabled(space, XR_SPACE_COMPONENT_TYPE_SEMANTIC_LABELS_FB)) {
-		return std::nullopt;
+const PackedStringArray &OpenXRFbSceneExtensionWrapper::get_supported_semantic_labels() {
+	static PackedStringArray semantic_labels = String(SUPPORTED_SEMANTIC_LABELS).split(",");
+	return semantic_labels;
+}
+
+PackedStringArray OpenXRFbSceneExtensionWrapper::get_semantic_labels(const XrSpace p_space) {
+	if (!OpenXRFbSpatialEntityExtensionWrapper::get_singleton()->is_component_enabled(p_space, XR_SPACE_COMPONENT_TYPE_SEMANTIC_LABELS_FB)) {
+		return PackedStringArray();
 	}
 
-	// List from https://developer.oculus.com/documentation/native/android/mobile-scene-api-ref/
-	static const CharString recognizedLabels =
-			"CEILING,DOOR_FRAME,FLOOR,INVISIBLE_WALL_FACE,WALL_ART,WALL_FACE,WINDOW_FRAME,COUCH,TABLE,BED,LAMP,PLANT,SCREEN,STORAGE,GLOBAL_MESH,OTHER";
 	XrSemanticLabelsSupportFlagsFB flags = XR_SEMANTIC_LABELS_SUPPORT_MULTIPLE_SEMANTIC_LABELS_BIT_FB | XR_SEMANTIC_LABELS_SUPPORT_ACCEPT_DESK_TO_TABLE_MIGRATION_BIT_FB;
 #ifdef META_VENDOR_ENABLED
 	flags |= XR_SEMANTIC_LABELS_SUPPORT_ACCEPT_INVISIBLE_WALL_FACE_BIT_FB;
 #endif
+
 	const XrSemanticLabelsSupportInfoFB semanticLabelsSupportInfo = {
 		XR_TYPE_SEMANTIC_LABELS_SUPPORT_INFO_FB,
 		nullptr,
 		flags,
-		recognizedLabels.ptr(),
+		SUPPORTED_SEMANTIC_LABELS,
 	};
 
 	XrSemanticLabelsFB labels = { XR_TYPE_SEMANTIC_LABELS_FB, &semanticLabelsSupportInfo, 0 };
 
 	// First call.
-	xrGetSpaceSemanticLabelsFB(SESSION, space, &labels);
-	// Second call
-	Vector<char> labelData;
-	labelData.resize(labels.bufferCountOutput);
-	labels.bufferCapacityInput = labelData.size();
-	labels.buffer = labelData.ptrw();
-	xrGetSpaceSemanticLabelsFB(SESSION, space, &labels);
+	xrGetSpaceSemanticLabelsFB(SESSION, p_space, &labels);
 
-	// std::string necessary since buffer may not be null terminated
-	return String(std::string(labels.buffer, labels.bufferCountOutput).c_str());
+	// Second call
+	CharString label_data;
+	label_data.resize(labels.bufferCountOutput + 1);
+	labels.bufferCapacityInput = labels.bufferCountOutput;
+	labels.buffer = label_data.ptrw();
+	xrGetSpaceSemanticLabelsFB(SESSION, p_space, &labels);
+
+	label_data[label_data.size() - 1] = '\0';
+	return String(label_data).split(",");
 }
 
-void OpenXRFbSceneExtensionWrapper::get_shapes(const XrSpace &space, XrSceneObjectInternal &object) {
-	if (OpenXRFbSpatialEntityExtensionWrapper::get_singleton()->is_component_enabled(space, XR_SPACE_COMPONENT_TYPE_BOUNDED_2D_FB)) {
-		//  Grab both the bounding box 2D and the boundary
-		XrRect2Df boundingBox2D;
-		if (XR_SUCCEEDED(xrGetSpaceBoundingBox2DFB(SESSION, space, &boundingBox2D))) {
-			object.boundingBox2D = boundingBox2D;
-		}
-
-		XrBoundary2DFB boundary2D = { XR_TYPE_BOUNDARY_2D_FB, nullptr, 0 };
-		if (XR_SUCCEEDED(xrGetSpaceBoundary2DFB(SESSION, space, &boundary2D))) {
-			Vector<XrVector2f> vertices;
-			vertices.resize(boundary2D.vertexCountOutput);
-			boundary2D.vertexCapacityInput = vertices.size();
-			boundary2D.vertices = vertices.ptrw();
-			if (XR_SUCCEEDED(xrGetSpaceBoundary2DFB(SESSION, space, &boundary2D))) {
-				object.boundary2D = vertices;
-			}
-		}
+bool OpenXRFbSceneExtensionWrapper::get_room_layout(const XrSpace p_space, RoomLayout &r_room_layout) {
+	if (!OpenXRFbSpatialEntityExtensionWrapper::get_singleton()->is_component_enabled(p_space, XR_SPACE_COMPONENT_TYPE_ROOM_LAYOUT_FB)) {
+		return false;
 	}
 
-	if (OpenXRFbSpatialEntityExtensionWrapper::get_singleton()->is_component_enabled(space, XR_SPACE_COMPONENT_TYPE_BOUNDED_3D_FB)) {
-		XrRect3DfFB boundingBox3D;
-		if (XR_SUCCEEDED(xrGetSpaceBoundingBox3DFB(SESSION, space, &boundingBox3D))) {
-			object.boundingBox3D = boundingBox3D;
-		}
+	XrResult result;
+
+	XrRoomLayoutFB room_layout = {
+		XR_TYPE_ROOM_LAYOUT_FB, // type
+		nullptr, // next
+		{}, // floorUuid
+		{}, // ceilingUuid
+		0, // wallUuidCapacityInput
+		0, // wallUuidCountOutput
+		nullptr, // wallUuids
+	};
+
+	result = xrGetSpaceRoomLayoutFB(SESSION, p_space, &room_layout);
+	if (XR_FAILED(result)) {
+		WARN_PRINT("xrGetSpaceRoomLayoutFB failed to get wall count!");
+		WARN_PRINT(get_openxr_api()->get_error_string(result));
+		return false;
 	}
 
-	// TODO: Need to enable the extension for this
-	// if (is_component_enabled(space, XR_SPACE_COMPONENT_TYPE_TRIANGLE_MESH_META)) {
-	// 	WARN_PRINT("Found component with XR_SPACE_COMPONENT_TYPE_TRIANGLE_MESH_META");
-	// }
+	r_room_layout.walls.resize(room_layout.wallUuidCountOutput);
+	room_layout.wallUuidCapacityInput = room_layout.wallUuidCountOutput;
+	room_layout.wallUuids = r_room_layout.walls.ptrw();
+
+	result = xrGetSpaceRoomLayoutFB(SESSION, p_space, &room_layout);
+	if (XR_FAILED(result)) {
+		WARN_PRINT("xrGetSpaceRoomLayoutFB failed to get room layout!");
+		WARN_PRINT(get_openxr_api()->get_error_string(result));
+		return false;
+	}
+
+	r_room_layout.ceiling = room_layout.ceilingUuid;
+	r_room_layout.floor = room_layout.floorUuid;
+
+	return true;
+}
+
+Rect2 OpenXRFbSceneExtensionWrapper::get_bounding_box_2d(const XrSpace p_space) {
+	if (!OpenXRFbSpatialEntityExtensionWrapper::get_singleton()->is_component_enabled(p_space, XR_SPACE_COMPONENT_TYPE_BOUNDED_2D_FB)) {
+		return Rect2();
+	}
+
+	XrRect2Df bounding_box;
+
+	XrResult result = xrGetSpaceBoundingBox2DFB(SESSION, p_space, &bounding_box);
+	if (XR_FAILED(result)) {
+		WARN_PRINT("xrGetSpaceBoundingBox2DFB failed to bounding box!");
+		WARN_PRINT(get_openxr_api()->get_error_string(result));
+		return Rect2();
+	}
+
+	return Rect2(
+		Vector2(bounding_box.offset.x, bounding_box.offset.y),
+		Vector2(bounding_box.extent.width, bounding_box.extent.height));
+}
+
+AABB OpenXRFbSceneExtensionWrapper::get_bounding_box_3d(const XrSpace p_space) {
+	if (!OpenXRFbSpatialEntityExtensionWrapper::get_singleton()->is_component_enabled(p_space, XR_SPACE_COMPONENT_TYPE_BOUNDED_3D_FB)) {
+		return AABB();
+	}
+
+	XrRect3DfFB bounding_box;
+
+	XrResult result = xrGetSpaceBoundingBox3DFB(SESSION, p_space, &bounding_box);
+	if (XR_FAILED(result)) {
+		WARN_PRINT("xrGetSpaceBoundingBox3DFB failed to bounding box!");
+		WARN_PRINT(get_openxr_api()->get_error_string(result));
+		return AABB();
+	}
+
+	return AABB(
+		Vector3(bounding_box.offset.x, bounding_box.offset.y, bounding_box.offset.z),
+		Vector3(bounding_box.extent.width, bounding_box.extent.height, bounding_box.extent.depth));
+}
+
+PackedVector2Array OpenXRFbSceneExtensionWrapper::get_boundary_2d(const XrSpace p_space) {
+	if (!OpenXRFbSpatialEntityExtensionWrapper::get_singleton()->is_component_enabled(p_space, XR_SPACE_COMPONENT_TYPE_BOUNDED_2D_FB)) {
+		return PackedVector2Array();
+	}
+
+	XrResult result;
+
+	XrBoundary2DFB boundary = {
+		XR_TYPE_BOUNDARY_2D_FB, // type
+		nullptr, // next
+		0, // vertexCapacityInput
+		0, // vertexCapacityOutput
+		nullptr, // vertices
+	};
+
+	result = xrGetSpaceBoundary2DFB(SESSION, p_space, &boundary);
+	if (XR_FAILED(result)) {
+		WARN_PRINT("xrGetSpaceBoundary2DFB failed to get vertex count!");
+		WARN_PRINT(get_openxr_api()->get_error_string(result));
+		return PackedVector2Array();
+	}
+
+	LocalVector<XrVector2f> vertices;
+	vertices.resize(boundary.vertexCountOutput);
+	boundary.vertexCapacityInput = vertices.size();
+	boundary.vertices = vertices.ptr();
+
+	result = xrGetSpaceBoundary2DFB(SESSION, p_space, &boundary);
+	if (XR_FAILED(result)) {
+		WARN_PRINT("xrGetSpaceBoundary2DFB failed to get boundary!");
+		WARN_PRINT(get_openxr_api()->get_error_string(result));
+		return PackedVector2Array();
+	}
+
+	PackedVector2Array ret;
+	ret.resize(boundary.vertexCountOutput);
+	for (int i = 0; i < boundary.vertexCountOutput; i++) {
+		XrVector2f vertex = vertices[i];
+		ret[i] = Vector2(vertex.x, vertex.y);
+	}
+
+	return ret;
 }
 
 bool OpenXRFbSceneExtensionWrapper::initialize_fb_scene_extension(const XrInstance p_instance) {

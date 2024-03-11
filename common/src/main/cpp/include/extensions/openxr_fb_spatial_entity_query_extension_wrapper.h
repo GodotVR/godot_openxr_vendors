@@ -37,12 +37,7 @@
 
 #include "util.h"
 
-#include <functional>
-#include <map>
-
 using namespace godot;
-
-typedef std::function<void(Vector<XrSpaceQueryResultFB>)> SpaceQueryCompleteCallback_t;
 
 // Wrapper for the set of Facebook XR spatial entity query extension.
 class OpenXRFbSpatialEntityQueryExtensionWrapper : public OpenXRExtensionWrapperExtension {
@@ -50,22 +45,21 @@ class OpenXRFbSpatialEntityQueryExtensionWrapper : public OpenXRExtensionWrapper
 
 public:
 	Dictionary _get_requested_extensions() override;
-
 	void _on_instance_created(uint64_t instance) override;
-
 	void _on_instance_destroyed() override;
+	virtual bool _on_event_polled(const void *event) override;
 
 	bool is_spatial_entity_query_supported() {
 		return fb_spatial_entity_query_ext;
 	}
 
-	virtual bool _on_event_polled(const void *event) override;
-
 	static OpenXRFbSpatialEntityQueryExtensionWrapper *get_singleton();
+
+	typedef void (*QueryCompleteCallback)(const Vector<XrSpaceQueryResultFB> &p_results, void *p_userdata);
 
 	// Attempts to query spatial entities given an XrSpaceQueryInfoFB. The callback will run to
 	// deliver results when they are available.
-	void query_spatial_entities(const XrSpaceQueryInfoBaseHeaderFB *info, SpaceQueryCompleteCallback_t callback);
+	bool query_spatial_entities(const XrSpaceQueryInfoBaseHeaderFB *p_info, QueryCompleteCallback p_callback, void *p_userdata);
 
 	OpenXRFbSpatialEntityQueryExtensionWrapper();
 	~OpenXRFbSpatialEntityQueryExtensionWrapper();
@@ -88,9 +82,22 @@ private:
 	void on_space_query_results(const XrEventDataSpaceQueryResultsAvailableFB *event);
 	void on_space_query_complete(const XrEventDataSpaceQueryCompleteFB *event);
 
-	HashMap<XrAsyncRequestIdFB, Vector<XrSpaceQueryResultFB>> query_results;
 	HashMap<String, bool *> request_extensions;
-	HashMap<XrAsyncRequestIdFB, SpaceQueryCompleteCallback_t> query_complete_callbacks;
+
+	struct QueryInfo {
+		QueryCompleteCallback callback = nullptr;
+		void *userdata = nullptr;
+		Vector<XrSpaceQueryResultFB> results;
+
+		QueryInfo() { }
+
+		QueryInfo(QueryCompleteCallback p_callback, void *p_userdata) {
+			callback = p_callback;
+			userdata = p_userdata;
+		}
+	};
+
+	HashMap<XrAsyncRequestIdFB, QueryInfo> queries;
 
 	void cleanup();
 

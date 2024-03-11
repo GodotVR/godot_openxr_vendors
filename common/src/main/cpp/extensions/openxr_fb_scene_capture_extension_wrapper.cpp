@@ -63,7 +63,7 @@ OpenXRFbSceneCaptureExtensionWrapper::~OpenXRFbSceneCaptureExtensionWrapper() {
 void OpenXRFbSceneCaptureExtensionWrapper::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("is_scene_capture_supported"), &OpenXRFbSceneCaptureExtensionWrapper::is_scene_capture_supported);
 	ClassDB::bind_method(D_METHOD("is_scene_capture_enabled"), &OpenXRFbSceneCaptureExtensionWrapper::is_scene_capture_enabled);
-	ClassDB::bind_method(D_METHOD("request_scene_capture"), &OpenXRFbSceneCaptureExtensionWrapper::request_scene_capture);
+	ClassDB::bind_method(D_METHOD("request_scene_capture"), &OpenXRFbSceneCaptureExtensionWrapper::_request_scene_capture_bind);
 
 	ADD_SIGNAL(MethodInfo("scene_capture_completed"));
 }
@@ -96,16 +96,39 @@ void OpenXRFbSceneCaptureExtensionWrapper::_on_instance_destroyed() {
 	cleanup();
 }
 
-bool OpenXRFbSceneCaptureExtensionWrapper::request_scene_capture() {
-	XrAsyncRequestIdFB requestId;
-	XrSceneCaptureRequestInfoFB request;
-	request.type = XR_TYPE_SCENE_CAPTURE_REQUEST_INFO_FB;
-	request.next = nullptr;
-	request.requestByteCount = 0;
-	request.request = nullptr;
-	XrResult result = xrRequestSceneCaptureFB((XrSession)get_openxr_api()->get_session(), &request, &requestId);
-	scene_capture_enabled = (result == XR_SUCCESS);
-	return scene_capture_enabled;
+bool OpenXRFbSceneCaptureExtensionWrapper::request_scene_capture(String p_request, SceneCaptureCompleteCallback p_callback, void *p_userdata) {
+	if (scene_capture_enabled) {
+		ERR_PRINT("Already running scene capture");
+		p_callback(XR_ERROR_VALIDATION_FAILURE, p_userdata);
+		return false;
+	}
+
+	XrAsyncRequestIdFB request_id;
+
+	CharString cstr = p_request.ascii();
+
+	XrSceneCaptureRequestInfoFB request = {
+		XR_TYPE_SCENE_CAPTURE_REQUEST_INFO_FB, // type
+		nullptr, // next
+		(uint32_t)cstr.size(), // requestByteCount
+		cstr.ptr(), // request
+	};
+
+	XrResult result = xrRequestSceneCaptureFB((XrSession)get_openxr_api()->get_session(), &request, &request_id);
+	if (!XR_SUCCEEDED(result)) {
+		WARN_PRINT("xrRequestSceneCaptureFB failed!");
+		WARN_PRINT(get_openxr_api()->get_error_string(result));
+		p_callback(result, p_userdata);
+		return false;
+	}
+
+	scene_capture_enabled = true;
+	requests[request_id] = RequestInfo(p_callback, p_userdata);
+	return true;
+}
+
+bool OpenXRFbSceneCaptureExtensionWrapper::_request_scene_capture_bind() {
+	return request_scene_capture("", nullptr, nullptr);
 }
 
 bool OpenXRFbSceneCaptureExtensionWrapper::is_scene_capture_enabled() {
@@ -120,9 +143,24 @@ bool OpenXRFbSceneCaptureExtensionWrapper::initialize_fb_scene_capture_extension
 
 bool OpenXRFbSceneCaptureExtensionWrapper::_on_event_polled(const void *event) {
 	if (static_cast<const XrEventDataBuffer *>(event)->type == XR_TYPE_EVENT_DATA_SCENE_CAPTURE_COMPLETE_FB) {
-		scene_capture_enabled = false;
-		Object::emit_signal("scene_capture_completed");
+		on_scene_capture_complete((const XrEventDataSceneCaptureCompleteFB *)event);
 		return true;
 	}
 	return false;
+}
+
+void OpenXRFbSceneCaptureExtensionWrapper::on_scene_capture_complete(const XrEventDataSceneCaptureCompleteFB *p_event) {
+	if (!requests.has(p_event->requestId)) {
+		WARN_PRINT("Received unexpected XR_TYPE_EVENT_DATA_SCENE_CAPTURE_COMPLETE_FB");
+		return;
+	}
+
+	scene_capture_enabled = false;
+	emit_signal("scene_capture_completed");
+
+	RequestInfo *request = requests.getptr(p_event->requestId);
+	if (request->callback) {
+		request->callback(p_event->result, request->userdata);
+	}
+	requests.erase(p_event->requestId);
 }

@@ -30,6 +30,10 @@
 #ifndef UTIL_H
 #define UTIL_H
 
+#include <godot_cpp/variant/string_name.hpp>
+
+struct XrUuidEXT;
+
 #define UNPACK(...) __VA_ARGS__
 
 #define INIT_XR_FUNC_V(openxr_api, name)                                                                              \
@@ -119,5 +123,9 @@
 	}
 
 #define SESSION (XrSession) get_openxr_api()->get_session()
+
+namespace OpenXRUtilities {
+godot::StringName uuid_to_string_name(const XrUuidEXT &p_uuid);
+};
 
 #endif // UTIL_H
