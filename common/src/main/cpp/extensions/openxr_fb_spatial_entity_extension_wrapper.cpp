@@ -31,6 +31,7 @@
 
 #include <godot_cpp/classes/object.hpp>
 #include <godot_cpp/classes/open_xrapi_extension.hpp>
+#include <godot_cpp/classes/xr_positional_tracker.hpp>
 #include <godot_cpp/templates/vector.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
 
@@ -88,44 +89,81 @@ void OpenXRFbSpatialEntityExtensionWrapper::_on_instance_destroyed() {
 	cleanup();
 }
 
+void OpenXRFbSpatialEntityExtensionWrapper::_on_process() {
+	for (KeyValue<StringName, TrackedEntity> &E : tracked_entities) {
+		if (E.value.tracker.is_null()) {
+			E.value.tracker.instantiate();
+			E.value.tracker->set_tracker_name(E.key);
+			E.value.tracker->set_tracker_desc(String("Anchor ") + E.key);
+			E.value.tracker->set_tracker_type(XRServer::TRACKER_ANCHOR);
+			XRServer::get_singleton()->add_tracker(E.value.tracker);
+		}
+
+		XrSpaceLocation location = {
+			XR_TYPE_SPACE_LOCATION, // type
+			nullptr, // next
+			0, // locationFlags
+			{
+					{ 0.0, 0.0, 0.0, 0.0 }, // orientation
+					{ 0.0, 0.0, 0.0 } // position
+			} // pose
+		};
+
+		XrResult result = xrLocateSpace(E.value.space, reinterpret_cast<XrSpace>(get_openxr_api()->get_play_space()), get_openxr_api()->get_next_frame_time(), &location);
+		if (XR_FAILED(result)) {
+			WARN_PRINT("OpenXR: failed to locate anchor " + E.key);
+			WARN_PRINT(get_openxr_api()->get_error_string(result));
+			continue;
+		}
+
+		if ((location.locationFlags & XR_SPACE_LOCATION_POSITION_VALID_BIT) && (location.locationFlags & XR_SPACE_LOCATION_ORIENTATION_VALID_BIT)) {
+			Transform3D transform(
+				Basis(Quaternion(location.pose.orientation.x, location.pose.orientation.y, location.pose.orientation.z, location.pose.orientation.w)),
+				Vector3(location.pose.position.x, location.pose.position.y, location.pose.position.z));
+
+			E.value.tracker->set_pose("default", transform, Vector3(), Vector3(), XRPose::XR_TRACKING_CONFIDENCE_HIGH);
+		}
+		else {
+			Ref<XRPose> default_pose = E.value.tracker->get_pose("default");
+			if (default_pose.is_valid()) {
+				// Set the tracking confidence to none, while maintaining the existing transform.
+				default_pose->set_tracking_confidence(XRPose::XR_TRACKING_CONFIDENCE_NONE);
+			} else {
+				E.value.tracker->set_pose("default", Transform3D(), Vector3(), Vector3(), XRPose::XR_TRACKING_CONFIDENCE_NONE);
+			}
+		}
+	}
+}
+
 bool OpenXRFbSpatialEntityExtensionWrapper::initialize_fb_spatial_entity_extension(const XrInstance &p_instance) {
 	GDEXTENSION_INIT_XR_FUNC_V(xrCreateSpatialAnchorFB);
 	GDEXTENSION_INIT_XR_FUNC_V(xrGetSpaceUuidFB);
 	GDEXTENSION_INIT_XR_FUNC_V(xrEnumerateSpaceSupportedComponentsFB);
 	GDEXTENSION_INIT_XR_FUNC_V(xrSetSpaceComponentStatusFB);
 	GDEXTENSION_INIT_XR_FUNC_V(xrGetSpaceComponentStatusFB);
+	GDEXTENSION_INIT_XR_FUNC_V(xrLocateSpace);
 
 	return true;
 }
 
 bool OpenXRFbSpatialEntityExtensionWrapper::_on_event_polled(const void *event) {
 	if (static_cast<const XrEventDataBuffer *>(event)->type == XR_TYPE_EVENT_DATA_SPACE_SET_STATUS_COMPLETE_FB) {
-		auto eventData = (const XrEventDataSpaceSetStatusCompleteFB *)event;
-		if (set_status_callbacks.has(eventData->requestId)) {
-			set_status_callbacks[eventData->requestId](eventData);
-			set_status_callbacks.erase(eventData->requestId);
-		}
+		on_set_component_enabled_complete((const XrEventDataSpaceSetStatusCompleteFB *)event);
 		return true;
 	}
 
 	return false;
 }
 
-bool OpenXRFbSpatialEntityExtensionWrapper::is_component_supported(const XrSpace &space, XrSpaceComponentTypeFB type) {
+Vector<XrSpaceComponentTypeFB> OpenXRFbSpatialEntityExtensionWrapper::get_support_components(const XrSpace &space) {
+	Vector<XrSpaceComponentTypeFB> components;
+
 	uint32_t numComponents = 0;
 	xrEnumerateSpaceSupportedComponentsFB(space, 0, &numComponents, nullptr);
-	Vector<XrSpaceComponentTypeFB> components;
 	components.resize(numComponents);
 	xrEnumerateSpaceSupportedComponentsFB(space, numComponents, &numComponents, components.ptrw());
 
-	bool supported = false;
-	for (uint32_t c = 0; c < numComponents; ++c) {
-		if (components[c] == type) {
-			supported = true;
-			break;
-		}
-	}
-	return supported;
+	return components;
 }
 
 bool OpenXRFbSpatialEntityExtensionWrapper::is_component_enabled(const XrSpace &space, XrSpaceComponentTypeFB type) {
@@ -134,25 +172,52 @@ bool OpenXRFbSpatialEntityExtensionWrapper::is_component_enabled(const XrSpace &
 	return (status.enabled && !status.changePending);
 }
 
-void OpenXRFbSpatialEntityExtensionWrapper::set_component_enabled(
-		const XrSpace &space,
-		XrSpaceComponentTypeFB type,
-		bool status,
-		std::optional<SetSpaceComponentStatusCallback_t> callback) {
+bool OpenXRFbSpatialEntityExtensionWrapper::set_component_enabled(const XrSpace &p_space, XrSpaceComponentTypeFB p_component, bool p_enabled, SetComponentEnabledCallback p_callback, void *p_userdata) {
 	XrSpaceComponentStatusSetInfoFB request = {
 		XR_TYPE_SPACE_COMPONENT_STATUS_SET_INFO_FB,
 		nullptr,
-		type,
-		status,
+		p_component,
+		p_enabled,
 		0,
 	};
-	XrAsyncRequestIdFB requestId;
-	if (!XR_SUCCEEDED(xrSetSpaceComponentStatusFB(space, &request, &requestId))) {
-		if (callback != std::nullopt) {
-			(*callback)(nullptr);
+	XrAsyncRequestIdFB request_id = 0;
+	XrResult result = xrSetSpaceComponentStatusFB(p_space, &request, &request_id);
+	if (!XR_SUCCEEDED(result)) {
+		p_callback(result, p_component, p_enabled, p_userdata);
+		return false;
+	}
+
+	set_component_enabled_info[request_id] = SetComponentEnabledInfo(p_callback, p_userdata);
+
+	return true;
+}
+
+void OpenXRFbSpatialEntityExtensionWrapper::on_set_component_enabled_complete(const XrEventDataSpaceSetStatusCompleteFB *event) {
+	if (!set_component_enabled_info.has(event->requestId)) {
+		WARN_PRINT("Received unexpected XR_TYPE_EVENT_DATA_SPACE_SET_STATUS_COMPLETE_FB");
+		return;
+	}
+
+	SetComponentEnabledInfo *info = set_component_enabled_info.getptr(event->requestId);
+	info->callback(event->result, event->componentType, event->enabled, info->userdata);
+	set_component_enabled_info.erase(event->requestId);
+}
+
+void OpenXRFbSpatialEntityExtensionWrapper::track_entity(const StringName &p_name, const XrSpace &p_space) {
+	tracked_entities[p_name] = TrackedEntity(p_space);
+}
+
+void OpenXRFbSpatialEntityExtensionWrapper::untrack_entity(const StringName &p_name) {
+	TrackedEntity *entity = tracked_entities.getptr(p_name);
+	if (entity) {
+		if (entity->tracker.is_valid()) {
+			XRServer::get_singleton()->remove_tracker(entity->tracker);
+			entity->tracker.unref();
 		}
+		tracked_entities.erase(p_name);
 	}
-	if (callback != std::nullopt) {
-		set_status_callbacks[requestId] = *callback;
-	}
+}
+
+bool OpenXRFbSpatialEntityExtensionWrapper::is_entity_tracked(const StringName &p_name) const {
+	return tracked_entities.has(p_name);
 }
