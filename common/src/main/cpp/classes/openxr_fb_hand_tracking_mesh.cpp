@@ -37,18 +37,20 @@
 using namespace godot;
 
 void OpenXRFbHandTrackingMesh::setup_hand_mesh(Hand p_hand) {
+	if (p_hand != hand) {
+		return;
+	}
+
 	ERR_FAIL_COND_MSG(skeleton != nullptr, "OpenXRFbHandTrackingMesh skeleton has already been set up");
 
-	if (p_hand == hand) {
-		skeleton = memnew(Skeleton3D);
-		OpenXRFbHandTrackingMeshExtensionWrapper::get_singleton()->construct_skeleton(p_hand, skeleton);
-		add_child(skeleton);
+	skeleton = memnew(Skeleton3D);
+	OpenXRFbHandTrackingMeshExtensionWrapper::get_singleton()->construct_skeleton(p_hand, skeleton);
+	add_child(skeleton);
 
-		mesh_instance = memnew(MeshInstance3D);
-		mesh_instance->set_mesh(OpenXRFbHandTrackingMeshExtensionWrapper::get_singleton()->get_mesh(p_hand));
-		mesh_instance->set_material_override(material);
-		skeleton->add_child(mesh_instance);
-	}
+	mesh_instance = memnew(MeshInstance3D);
+	mesh_instance->set_mesh(OpenXRFbHandTrackingMeshExtensionWrapper::get_singleton()->get_mesh(p_hand));
+	mesh_instance->set_material_override(material);
+	skeleton->add_child(mesh_instance);
 
 	XRHandModifier3D *parent = Object::cast_to<XRHandModifier3D>(get_parent());
 	if (parent) {
