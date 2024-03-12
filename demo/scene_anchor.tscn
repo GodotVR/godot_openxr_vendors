@@ -1,4 +1,4 @@
-[gd_scene load_steps=2 format=4 uid="uid://bcjp8kcgde4cs"]
+[gd_scene load_steps=2 format=3 uid="uid://bcjp8kcgde4cs"]
 
 [ext_resource type="Script" path="res://scene_anchor.gd" id="1_l6xwj"]
 
@@ -10,3 +10,4 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.01)
 text = "Label"
 
 [node name="StaticBody3D" type="StaticBody3D" parent="."]
+collision_layer = 2

@@ -54,10 +54,10 @@ public:
 
 	static OpenXRFbSpatialEntityStorageExtensionWrapper *get_singleton();
 
-	typedef void (*StorageRequestCompleteCallback)(XrResult p_result, void *p_userdata);
+	typedef void (*StorageRequestCompleteCallback)(XrResult p_result, XrSpaceStorageLocationFB p_location, void *p_userdata);
 
-	XrAsyncRequestIdFB save_space(const XrSpaceSaveInfoFB *p_info, StorageRequestCompleteCallback p_callback, void *p_userdata);
-	XrAsyncRequestIdFB erase_space(const XrSpaceEraseInfoFB *p_info, StorageRequestCompleteCallback p_callback, void *p_userdata);
+	bool save_space(const XrSpaceSaveInfoFB *p_info, StorageRequestCompleteCallback p_callback, void *p_userdata);
+	bool erase_space(const XrSpaceEraseInfoFB *p_info, StorageRequestCompleteCallback p_callback, void *p_userdata);
 
 	OpenXRFbSpatialEntityStorageExtensionWrapper();
 	~OpenXRFbSpatialEntityStorageExtensionWrapper();

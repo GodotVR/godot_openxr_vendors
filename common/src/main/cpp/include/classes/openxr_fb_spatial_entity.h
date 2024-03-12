@@ -50,6 +50,7 @@ public:
 	};
 
 	enum ComponentType {
+		COMPONENT_TYPE_UNKNOWN = -1,
 		COMPONENT_TYPE_LOCATABLE,
 		COMPONENT_TYPE_STORABLE,
 		COMPONENT_TYPE_SHARABLE,
@@ -64,16 +65,23 @@ public:
 private:
 	XrSpace space = XR_NULL_HANDLE;
 	StringName uuid;
+	Dictionary custom_data;
 
 protected:
 	static void _bind_methods();
 
-	static void _on_set_component_enabled_completed(XrResult p_result, XrSpaceComponentTypeFB p_component, bool p_enabled, void *userdata);
+	static void _on_spatial_anchor_created(XrResult p_result, XrSpace p_space, const XrUuidEXT *p_uuid, void *p_userdata);
+	static void _on_set_component_enabled_completed(XrResult p_result, XrSpaceComponentTypeFB p_component, bool p_enabled, void *p_userdata);
+	static void _on_save_to_storage(XrResult p_result, XrSpaceStorageLocationFB p_location, void *p_userdata);
+	static void _on_erase_from_storage(XrResult p_result, XrSpaceStorageLocationFB p_location, void *p_userdata);
 
 	String _to_string() const;
 
 public:
 	StringName get_uuid() const;
+
+	void set_custom_data(const Dictionary &p_custom_data);
+	Dictionary get_custom_data() const;
 
 	Array get_supported_components() const;
 	bool is_component_supported(ComponentType p_component) const;
@@ -95,7 +103,14 @@ public:
 	MeshInstance3D *create_mesh_instance() const;
 	Node3D *create_collision_shape() const;
 
+	static Ref<OpenXRFbSpatialEntity> create_spatial_anchor(const Transform3D &p_transform);
+
+	void save_to_storage(StorageLocation p_location = STORAGE_LOCAL);
+	void erase_from_storage(StorageLocation p_location = STORAGE_LOCAL);
+	void destroy();
+
 	static XrSpaceStorageLocationFB to_openxr_storage_location(StorageLocation p_location);
+	static StorageLocation from_openxr_storage_location(XrSpaceStorageLocationFB p_location);
 	static XrSpaceComponentTypeFB to_openxr_component_type(ComponentType p_component);
 	static ComponentType from_openxr_component_type(XrSpaceComponentTypeFB p_component);
 

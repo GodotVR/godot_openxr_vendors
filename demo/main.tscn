@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://cqsodpswgup8w"]
+[gd_scene load_steps=28 format=3 uid="uid://cqsodpswgup8w"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_fsva1"]
 [ext_resource type="PackedScene" uid="uid://c0uv4eu2yjm3b" path="res://viewport_2d_in_3d.tscn" id="2_7whgo"]
@@ -8,6 +8,8 @@
 [ext_resource type="PackedScene" uid="uid://cay8oh2ll7yxi" path="res://assets/test_kun/Test-Kun.fbx" id="4_b317s"]
 [ext_resource type="Image" uid="uid://dqxb16d1fqtrw" path="res://assets/color-lut-inverted-32.png" id="4_pv7hh"]
 [ext_resource type="PackedScene" uid="uid://bwfyi8pgigune" path="res://xr_fb_hand_tracking_aim_demo.tscn" id="5_6bxyh"]
+[ext_resource type="PackedScene" uid="uid://bwo5nq0clfe3c" path="res://scene_global_mesh.tscn" id="5_7ikgf"]
+[ext_resource type="PackedScene" uid="uid://dsfd7xrm6o50p" path="res://spatial_anchor.tscn" id="5_g7mio"]
 [ext_resource type="Material" uid="uid://bdwh0vc86hsdb" path="res://assets/hand_silhouette_outline_mat.tres" id="7_tpkib"]
 
 [sub_resource type="Gradient" id="Gradient_yvg3n"]
@@ -54,6 +56,13 @@ size = Vector3(0.1, 0.1, 0.1)
 [sub_resource type="SphereMesh" id="SphereMesh_5gcab"]
 radius = 0.025
 height = 0.05
+
+[sub_resource type="BoxMesh" id="BoxMesh_d27jm"]
+size = Vector3(0.01, 0.01, 5)
+
+[sub_resource type="SphereMesh" id="SphereMesh_kdpqm"]
+radius = 0.01
+height = 0.02
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_k604q"]
 
@@ -144,10 +153,23 @@ tracker = &"/user/eyes_ext"
 transform = Transform3D(1, 0, 0, 0, -0.0133513, 0.999911, 0, -0.999911, -0.0133513, 0, 0, -1.18886)
 mesh = SubResource("SphereMesh_5gcab")
 
-[node name="OpenXRFbSceneManager" type="OpenXRFbSceneManager" parent="XROrigin3D"]
-default_scene = ExtResource("4_3u3ah")
-auto_create = false
+[node name="LeftHandPointer" type="XRController3D" parent="XROrigin3D"]
 visible = false
+tracker = &"left_hand"
+pose = &"aim"
+
+[node name="ScenePointerMesh" type="MeshInstance3D" parent="XROrigin3D/LeftHandPointer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2.5)
+mesh = SubResource("BoxMesh_d27jm")
+
+[node name="SceneCollidingMesh" type="MeshInstance3D" parent="XROrigin3D/LeftHandPointer"]
+mesh = SubResource("SphereMesh_kdpqm")
+
+[node name="RayCast3D" type="RayCast3D" parent="XROrigin3D/LeftHandPointer"]
+enabled = false
+target_position = Vector3(0, 0, -10)
+collision_mask = 6
+collide_with_areas = true
 
 [node name="LeftHandTracker" type="XRNode3D" parent="XROrigin3D"]
 tracker = &"/user/hand_tracker/left"
@@ -162,6 +184,8 @@ tracker = &"/user/hand_tracker/right"
 
 [node name="RightHandModel" type="OpenXRFbHandTrackingMesh" parent="XROrigin3D/RightHandTracker"]
 hand = 1
+material = ExtResource("7_tpkib")
+use_scale_override = false
 bones/0/name = "RightPalm"
 bones/1/name = "RightHand"
 bones/2/name = "RightThumbMetacarpal"
@@ -188,10 +212,19 @@ bones/22/name = "RightLittleProximal"
 bones/23/name = "RightLittleIntermediate"
 bones/24/name = "RightLittleDistal"
 bones/25/name = "RightLittleTip"
-material = ExtResource("7_tpkib")
 
 [node name="RightXRHandModifier3D" type="XRHandModifier3D" parent="XROrigin3D/RightHandTracker/RightHandModel"]
 hand_tracker = &"/user/hand_tracker/right"
+
+[node name="OpenXRFbSceneManager" type="OpenXRFbSceneManager" parent="XROrigin3D"]
+default_scene = ExtResource("4_3u3ah")
+auto_create = false
+visible = false
+scenes/global_mesh = ExtResource("5_7ikgf")
+
+[node name="OpenXRFbSpatialAnchorManager" type="OpenXRFbSpatialAnchorManager" parent="XROrigin3D"]
+scene = ExtResource("5_g7mio")
+visible = false
 
 [node name="Floor" type="MeshInstance3D" parent="."]
 mesh = SubResource("PlaneMesh_mjcgt")
@@ -205,7 +238,7 @@ tracker = &"/user/body_tracker"
 [node name="Test-Kun" parent="Floor/AvatarOffset/Avatar" instance=ExtResource("4_b317s")]
 transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0, 0)
 
-[node name="XRBodyModifier3D" type="XRBodyModifier3D" parent="Floor/AvatarOffset/Avatar/Test-Kun/Armature/GeneralSkeleton" index="3"]
+[node name="XRBodyModifier3D" type="XRBodyModifier3D" parent="Floor/AvatarOffset/Avatar/Test-Kun/Armature/GeneralSkeleton" index="2"]
 transform = Transform3D(1, 0, 1.74846e-07, 0, 1, 0, -1.74846e-07, 0, 1, -8.74228e-08, 0, -1)
 bone_update = 1
 
@@ -225,5 +258,7 @@ transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 
 [connection signal="openxr_fb_render_model_loaded" from="XROrigin3D/RightHand/RightControllerFbRenderModel" to="." method="_on_right_controller_fb_render_model_render_model_loaded"]
 [connection signal="openxr_fb_scene_capture_completed" from="XROrigin3D/OpenXRFbSceneManager" to="." method="_on_scene_manager_scene_capture_completed"]
 [connection signal="openxr_fb_scene_data_missing" from="XROrigin3D/OpenXRFbSceneManager" to="." method="_on_scene_manager_scene_data_missing"]
+[connection signal="openxr_fb_spatial_anchor_tracked" from="XROrigin3D/OpenXRFbSpatialAnchorManager" to="." method="_on_spatial_anchor_tracked"]
+[connection signal="openxr_fb_spatial_anchor_untracked" from="XROrigin3D/OpenXRFbSpatialAnchorManager" to="." method="_on_spatial_anchor_untracked"]
 
 [editable path="Floor/AvatarOffset/Avatar/Test-Kun"]
