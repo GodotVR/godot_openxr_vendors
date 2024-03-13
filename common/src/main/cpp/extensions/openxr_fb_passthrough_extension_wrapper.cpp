@@ -210,13 +210,22 @@ bool OpenXRFbPassthroughExtensionWrapper::start_passthrough() {
 	return true;
 }
 
-uint64_t OpenXRFbPassthroughExtensionWrapper::_get_composition_layer() {
-	if (is_passthrough_enabled()) {
+int OpenXRFbPassthroughExtensionWrapper::_get_composition_layer_count() {
+	return is_passthrough_enabled() ? 1 : 0;
+}
+
+uint64_t OpenXRFbPassthroughExtensionWrapper::_get_composition_layer(int p_index) {
+	if (p_index == 0) {
 		composition_passthrough_layer.layerHandle = passthrough_layer;
 		return reinterpret_cast<uint64_t>(&composition_passthrough_layer);
 	} else {
 		return 0;
 	}
+}
+
+int OpenXRFbPassthroughExtensionWrapper::_get_composition_layer_order(int p_index) {
+	// Ensure the passthrough layer will be behind the projection layer.
+	return -100;
 }
 
 void OpenXRFbPassthroughExtensionWrapper::stop_passthrough() {
