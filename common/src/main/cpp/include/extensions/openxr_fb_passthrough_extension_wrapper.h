@@ -60,7 +60,9 @@ public:
 	void _on_state_ready() override;
 	void _on_process() override;
 
-	uint64_t _get_composition_layer() override;
+	int _get_composition_layer_count() override;
+	uint64_t _get_composition_layer(int p_index) override;
+	int _get_composition_layer_order(int p_index) override;
 
 	bool is_passthrough_supported() {
 		return fb_passthrough_ext;
