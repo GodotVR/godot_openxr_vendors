@@ -9,6 +9,7 @@
 - Add XR_FB_passthrough extension wrapper
 - Add XR_FB_hand_tracking_mesh extension wrapper and OpenXRFbHandTrackingMesh node
 - Add XR_FB_hand_tracking_aim support
+- Update Meta OpenXR mobile SDK to version 62
 
 ## 2.0.3
 - Migrate the export scripts from gdscript to C++ via gdextension
