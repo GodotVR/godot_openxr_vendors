@@ -29,10 +29,10 @@ typedef struct XrRecommendedLayerResolutionMETA {
 } XrRecommendedLayerResolutionMETA;
 
 typedef struct XrRecommendedLayerResolutionGetInfoMETA {
-    XrStructureType                  type;
-    const void* XR_MAY_ALIAS         next;
-    XrCompositionLayerBaseHeader*    layer;
-    XrTime                           predictedDisplayTime;
+    XrStructureType                        type;
+    const void* XR_MAY_ALIAS               next;
+    const XrCompositionLayerBaseHeader*    layer;
+    XrTime                                 predictedDisplayTime;
 } XrRecommendedLayerResolutionGetInfoMETA;
 
 typedef XrResult (XRAPI_PTR *PFN_xrGetRecommendedLayerResolutionMETA)(XrSession session, const XrRecommendedLayerResolutionGetInfoMETA* layerResolutionRecommendationGetInfo, XrRecommendedLayerResolutionMETA* layerResolutionRecommendation);
