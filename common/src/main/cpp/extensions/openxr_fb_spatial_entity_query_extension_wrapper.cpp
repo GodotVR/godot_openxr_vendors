@@ -108,19 +108,27 @@ bool OpenXRFbSpatialEntityQueryExtensionWrapper::_on_event_polled(const void *ev
 	return false;
 }
 
-void OpenXRFbSpatialEntityQueryExtensionWrapper::query_spatial_entities(const XrSpaceQueryInfoBaseHeaderFB *info, SpaceQueryCompleteCallback_t callback) {
-	XrAsyncRequestIdFB requestId;
-	const XrResult result = xrQuerySpacesFB(SESSION, info, &requestId);
+bool OpenXRFbSpatialEntityQueryExtensionWrapper::query_spatial_entities(const XrSpaceQueryInfoBaseHeaderFB *p_info, QueryCompleteCallback p_callback, void *p_userdata) {
+	XrAsyncRequestIdFB request_id = 0;
+
+	const XrResult result = xrQuerySpacesFB(SESSION, p_info, &request_id);
 	if (!XR_SUCCEEDED(result)) {
 		WARN_PRINT("xrQuerySpacesFB failed!");
 		WARN_PRINT(get_openxr_api()->get_error_string(result));
-		callback({});
-		return;
+		p_callback({}, p_userdata);
+		return false;
 	}
-	query_complete_callbacks[requestId] = callback;
+
+	queries[request_id] = QueryInfo(p_callback, p_userdata);
+	return true;
 }
 
 void OpenXRFbSpatialEntityQueryExtensionWrapper::on_space_query_results(const XrEventDataSpaceQueryResultsAvailableFB *event) {
+	if (!queries.has(event->requestId)) {
+		WARN_PRINT("Received unexpected XR_TYPE_EVENT_DATA_SPACE_QUERY_RESULTS_AVAILABLE_FB");
+		return;
+	}
+
 	// Query the results that are now available using two-call idiom
 	XrSpaceQueryResultsFB queryResults{
 		XR_TYPE_SPACE_QUERY_RESULTS_FB, // type
@@ -131,34 +139,33 @@ void OpenXRFbSpatialEntityQueryExtensionWrapper::on_space_query_results(const Xr
 	};
 	XrResult result = xrRetrieveSpaceQueryResultsFB(SESSION, event->requestId, &queryResults);
 	if (!XR_SUCCEEDED(result)) {
-		WARN_PRINT("xrRetrieveSpaceQueryResultsFB (first call) failed!");
+		WARN_PRINT("xrRetrieveSpaceQueryResultsFB failed to get result count!");
 		WARN_PRINT(get_openxr_api()->get_error_string(result));
 		return;
 	}
 
+	QueryInfo *query = queries.getptr(event->requestId);
+
 	Vector<XrSpaceQueryResultFB> results;
-	results.resize(queryResults.resultCountOutput);
-	queryResults.resultCapacityInput = results.size();
+	query->results.resize(queryResults.resultCountOutput);
+	queryResults.resultCapacityInput = query->results.size();
 	queryResults.resultCountOutput = 0;
-	queryResults.results = results.ptrw();
+	queryResults.results = query->results.ptrw();
 
 	result = xrRetrieveSpaceQueryResultsFB(SESSION, event->requestId, &queryResults);
 	if (!XR_SUCCEEDED(result)) {
-		WARN_PRINT("xrRetrieveSpaceQueryResultsFB 2 failed!");
+		WARN_PRINT("xrRetrieveSpaceQueryResultsFB failed to get results!");
 		WARN_PRINT(get_openxr_api()->get_error_string(result));
 		return;
 	}
-
-	// Store the results to send via callback later
-	query_results[event->requestId].append_array(results);
 }
 
 void OpenXRFbSpatialEntityQueryExtensionWrapper::on_space_query_complete(const XrEventDataSpaceQueryCompleteFB *event) {
-	if (query_complete_callbacks.has(event->requestId)) {
-		WARN_PRINT("Received unexpected XR_TYPE_EVENT_DATA_SPACE_QUERY_RESULTS_AVAILABLE_FB");
+	if (!queries.has(event->requestId)) {
+		WARN_PRINT("Received unexpected XR_TYPE_EVENT_DATA_SPACE_QUERY_COMPLETE_FB");
 		return;
 	}
-	query_complete_callbacks[event->requestId](query_results[event->requestId]);
-	query_complete_callbacks.erase(event->requestId);
-	query_results.erase(event->requestId);
+	QueryInfo *query = queries.getptr(event->requestId);
+	query->callback(query->results, query->userdata);
+	queries.erase(event->requestId);
 }

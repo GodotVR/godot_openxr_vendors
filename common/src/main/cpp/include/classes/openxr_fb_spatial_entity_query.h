@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  openxr_fb_scene_extension_wrapper.h                                   */
+/*  openxr_fb_spatial_entity_query.h                                      */
 /**************************************************************************/
 /*                       This file is part of:                            */
 /*                              GODOT XR                                  */
@@ -27,88 +27,66 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#pragma once
+#ifndef OPENXR_FB_SPATIAL_ENTITY_QUERY_H
+#define OPENXR_FB_SPATIAL_ENTITY_QUERY_H
 
 #include <openxr/openxr.h>
-#include <godot_cpp/classes/open_xr_extension_wrapper_extension.hpp>
+#include <godot_cpp/classes/ref_counted.hpp>
 #include <godot_cpp/templates/hash_map.hpp>
-#include <godot_cpp/templates/vector.hpp>
-#include <godot_cpp/variant/utility_functions.hpp>
 
-#include "util.h"
+#include "classes/openxr_fb_spatial_entity.h"
 
-using namespace godot;
-
-// Wrapper for the set of Facebook XR scene extension.
-class OpenXRFbSceneExtensionWrapper : public OpenXRExtensionWrapperExtension {
-	GDCLASS(OpenXRFbSceneExtensionWrapper, OpenXRExtensionWrapperExtension);
+namespace godot {
+class OpenXRFbSpatialEntityQuery : public RefCounted {
+	GDCLASS(OpenXRFbSpatialEntityQuery, RefCounted);
 
 public:
-	Dictionary _get_requested_extensions() override;
-
-	void _on_instance_created(uint64_t instance) override;
-
-	void _on_instance_destroyed() override;
-
-	bool is_scene_supported() {
-		return fb_scene_ext;
-	}
-
-	static OpenXRFbSceneExtensionWrapper *get_singleton();
-
-	OpenXRFbSceneExtensionWrapper();
-	~OpenXRFbSceneExtensionWrapper();
-
-	static const PackedStringArray &get_supported_semantic_labels();
-
-	struct RoomLayout {
-		XrUuidEXT floor;
-		XrUuidEXT ceiling;
-		Vector<XrUuidEXT> walls;
+	enum QueryType {
+		QUERY_ALL,
+		QUERY_BY_UUID,
+		QUERY_BY_COMPONENT,
 	};
 
-	PackedStringArray get_semantic_labels(const XrSpace p_space);
-	bool get_room_layout(const XrSpace p_space, RoomLayout &r_room_layout);
-	Rect2 get_bounding_box_2d(const XrSpace p_space);
-	AABB get_bounding_box_3d(const XrSpace p_space);
-	PackedVector2Array get_boundary_2d(const XrSpace p_space);
+private:
+	QueryType query_type = QUERY_ALL;
+	OpenXRFbSpatialEntity::StorageLocation location = OpenXRFbSpatialEntity::STORAGE_LOCAL;
+	OpenXRFbSpatialEntity::ComponentType component_type = OpenXRFbSpatialEntity::COMPONENT_TYPE_LOCATABLE;
+	uint32_t max_results = 25;
+	float timeout = 0.0f;
+	Array uuids;
+
+	bool executed = false;
 
 protected:
 	static void _bind_methods();
 
-private:
-	EXT_PROTO_XRRESULT_FUNC3(xrGetSpaceBoundingBox2DFB,
-			(XrSession), session,
-			(XrSpace), space,
-			(XrRect2Df *), boundingBox2DOutput)
+	bool _execute_query_all();
+	bool _execute_query_by_uuid();
+	bool _execute_query_by_component();
 
-	EXT_PROTO_XRRESULT_FUNC3(xrGetSpaceBoundingBox3DFB,
-			(XrSession), session,
-			(XrSpace), space,
-			(XrRect3DfFB *), boundingBox3DOutput)
+public:
+	void set_max_results(uint32_t p_max_results);
+	uint32_t get_max_results() const;
 
-	EXT_PROTO_XRRESULT_FUNC3(xrGetSpaceSemanticLabelsFB,
-			(XrSession), session,
-			(XrSpace), space,
-			(XrSemanticLabelsFB *), semanticLabelsOutput)
+	void set_timeout(float p_timeout);
+	float get_timeout() const;
 
-	EXT_PROTO_XRRESULT_FUNC3(xrGetSpaceBoundary2DFB,
-			(XrSession), session,
-			(XrSpace), space,
-			(XrBoundary2DFB *), boundary2DOutput)
+	void query_all();
+	void query_by_uuid(Array p_uuids, OpenXRFbSpatialEntity::StorageLocation p_location = OpenXRFbSpatialEntity::STORAGE_LOCAL);
+	void query_by_component(OpenXRFbSpatialEntity::ComponentType p_component_type, OpenXRFbSpatialEntity::StorageLocation p_location = OpenXRFbSpatialEntity::STORAGE_LOCAL);
 
-	EXT_PROTO_XRRESULT_FUNC3(xrGetSpaceRoomLayoutFB,
-			(XrSession), session,
-			(XrSpace), space,
-			(XrRoomLayoutFB *), roomLayoutOutput)
+	QueryType get_query_type() const;
+	OpenXRFbSpatialEntity::StorageLocation get_storage_location() const;
+	Array get_uuids() const;
+	OpenXRFbSpatialEntity::ComponentType get_component_type() const;
 
-	bool initialize_fb_scene_extension(const XrInstance instance);
+	Error execute();
+	bool is_executed() const;
 
-	HashMap<String, bool *> request_extensions;
-
-	void cleanup();
-
-	static OpenXRFbSceneExtensionWrapper *singleton;
-
-	bool fb_scene_ext = false;
+	static void _results_callback(const Vector<XrSpaceQueryResultFB> &p_results, void *p_userdata);
 };
+} // namespace godot
+
+VARIANT_ENUM_CAST(OpenXRFbSpatialEntityQuery::QueryType);
+
+#endif
