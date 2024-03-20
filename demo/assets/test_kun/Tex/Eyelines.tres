@@ -1,0 +1,8 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://dohkntr3ve3ts"]
+
+[ext_resource type="Texture2D" uid="uid://dfkp5tt7kmh2l" path="res://assets/test_kun/Tex/Eyelines.png" id="1_jyw45"]
+
+[resource]
+transparency = 1
+albedo_color = Color(1, 1, 1, 0)
+albedo_texture = ExtResource("1_jyw45")

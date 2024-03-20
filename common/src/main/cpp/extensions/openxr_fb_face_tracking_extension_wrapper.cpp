@@ -67,7 +67,6 @@ OpenXRFbFaceTrackingExtensionWrapper::~OpenXRFbFaceTrackingExtensionWrapper() {
 }
 
 void OpenXRFbFaceTrackingExtensionWrapper::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("is_enabled"), &OpenXRFbFaceTrackingExtensionWrapper::is_enabled);
 }
 
 void OpenXRFbFaceTrackingExtensionWrapper::cleanup() {
@@ -113,14 +112,14 @@ void OpenXRFbFaceTrackingExtensionWrapper::_on_session_created(uint64_t instance
 	}
 
 	// Create the face-tracker handle
-    XrFaceTrackingDataSource2FB dataSources[2] = {
-        XR_FACE_TRACKING_DATA_SOURCE2_VISUAL_FB,
-        XR_FACE_TRACKING_DATA_SOURCE2_AUDIO_FB
-    };
+	XrFaceTrackingDataSource2FB dataSources[2] = {
+		XR_FACE_TRACKING_DATA_SOURCE2_VISUAL_FB,
+		XR_FACE_TRACKING_DATA_SOURCE2_AUDIO_FB
+	};
 	XrFaceTrackerCreateInfo2FB createInfo2 = { XR_TYPE_FACE_TRACKER_CREATE_INFO2_FB };
 	createInfo2.faceExpressionSet = XR_FACE_EXPRESSION_SET2_DEFAULT_FB;
-    createInfo2.requestedDataSourceCount = 2;
-    createInfo2.requestedDataSources = dataSources;
+	createInfo2.requestedDataSourceCount = 2;
+	createInfo2.requestedDataSources = dataSources;
 	XrResult result = xrCreateFaceTracker2FB(SESSION, &createInfo2, &face_tracker2);
 	if (XR_FAILED(result)) {
 		UtilityFunctions::print("Failed to create face-tracker handle: ", result);

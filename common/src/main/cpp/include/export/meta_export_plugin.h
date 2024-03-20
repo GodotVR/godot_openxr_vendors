@@ -44,6 +44,10 @@ static const int FACE_TRACKING_NONE_VALUE = 0;
 static const int FACE_TRACKING_OPTIONAL_VALUE = 1;
 static const int FACE_TRACKING_REQUIRED_VALUE = 2;
 
+static const int BODY_TRACKING_NONE_VALUE = 0;
+static const int BODY_TRACKING_OPTIONAL_VALUE = 1;
+static const int BODY_TRACKING_REQUIRED_VALUE = 2;
+
 static const int PASSTHROUGH_NONE_VALUE = 0;
 static const int PASSTHROUGH_OPTIONAL_VALUE = 1;
 static const int PASSTHROUGH_REQUIRED_VALUE = 2;
@@ -90,6 +94,7 @@ private:
 
 	Dictionary _eye_tracking_option;
 	Dictionary _face_tracking_option;
+	Dictionary _body_tracking_option;
 	Dictionary _hand_tracking_option;
 	Dictionary _hand_tracking_frequency_option;
 	Dictionary _passthrough_option;
