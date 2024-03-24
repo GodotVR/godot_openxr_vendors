@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  openxr_fb_spatial_entity_query_extension_wrapper.h                    */
+/*  openxr_fb_spatial_entity_storage_extension_wrapper.h                  */
 /**************************************************************************/
 /*                       This file is part of:                            */
 /*                              GODOT XR                                  */
@@ -30,7 +30,9 @@
 #pragma once
 
 #include <openxr/openxr.h>
+
 #include <godot_cpp/classes/open_xr_extension_wrapper_extension.hpp>
+#include <godot_cpp/classes/xr_positional_tracker.hpp>
 #include <godot_cpp/templates/hash_map.hpp>
 #include <godot_cpp/templates/vector.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
@@ -42,11 +44,12 @@
 
 using namespace godot;
 
-typedef std::function<void(Vector<XrSpaceQueryResultFB>)> SpaceQueryCompleteCallback_t;
+typedef std::function<void(const XrEventDataSpaceSaveCompleteFB* eventData)> SaveCompleteCallback_t;
+typedef std::function<void(const XrEventDataSpaceEraseCompleteFB* eventData)> EraseCompleteCallback_t;
 
-// Wrapper for the set of Facebook XR spatial entity query extension.
-class OpenXRFbSpatialEntityQueryExtensionWrapper : public OpenXRExtensionWrapperExtension {
-	GDCLASS(OpenXRFbSpatialEntityQueryExtensionWrapper, OpenXRExtensionWrapperExtension);
+// Wrapper for the set of Facebook XR spatial entity storage extension.
+class OpenXRFbSpatialEntityStorageExtensionWrapper : public OpenXRExtensionWrapperExtension {
+	GDCLASS(OpenXRFbSpatialEntityStorageExtensionWrapper, OpenXRExtensionWrapperExtension);
 
 public:
 	Dictionary _get_requested_extensions() override;
@@ -55,52 +58,71 @@ public:
 
 	void _on_instance_destroyed() override;
 
-	bool is_spatial_entity_query_supported() {
-		return fb_spatial_entity_query_ext;
+	void _on_process() override;
+
+	bool is_spatial_entity_storage_supported() {
+		return fb_spatial_entity_storage_ext;
 	}
 
 	virtual bool _on_event_polled(const void *event) override;
 
-	static OpenXRFbSpatialEntityQueryExtensionWrapper *get_singleton();
+	static OpenXRFbSpatialEntityStorageExtensionWrapper *get_singleton();
 
-	// Performs a query of all persisted anchors, emits a signal upon completion
-	void query_persisted_anchors();
+	// Creates an XRPositionalTracker that represents the persistent anchor with the specified
+	// uuid and names it the passed tracker_name
+	void start_tracking_persistent_anchor(const String& uuid, const String& tracker_name);
 
-	// Wrapper around query_spatial_entities to get a single anchor by UUID
-	void query_spatial_entities_by_uuid(const String& uuid, SpaceQueryCompleteCallback_t callback);
+	// Releases the XRPositionalTracker that represents the persistent anchor with the specified uuid
+	void stop_tracking_persistent_anchor(const String& uuid);
 
-	// Attempts to query spatial entities given an XrSpaceQueryInfoFB. The callback will run to
-	// deliver results when they are available.
-	void query_spatial_entities(const XrSpaceQueryInfoBaseHeaderFB *info, SpaceQueryCompleteCallback_t callback);
+	// Creates an anchor with the given transform relative to play_space. When ready, this gets
+	// expressed as an XRPositionalTracker, whose name will be tracker_name.
+	void create_persistent_anchor(const Transform3D &transform, const String& tracker_name);
 
-	OpenXRFbSpatialEntityQueryExtensionWrapper();
-	~OpenXRFbSpatialEntityQueryExtensionWrapper();
+	// Deletes a persistent anchor with the specified UUID. If there is an XRPositionalTracker
+	// that represents it, that will be deleted too
+	void delete_persistent_anchor(const String& uuid);
+
+	OpenXRFbSpatialEntityStorageExtensionWrapper();
+	~OpenXRFbSpatialEntityStorageExtensionWrapper();
 
 protected:
 	static void _bind_methods();
 
 private:
-	EXT_PROTO_XRRESULT_FUNC3(xrQuerySpacesFB,
+	EXT_PROTO_XRRESULT_FUNC3(xrSaveSpaceFB,
 			(XrSession), session,
-			(const XrSpaceQueryInfoBaseHeaderFB *), info,
+			(const XrSpaceSaveInfoFB *), info,
 			(XrAsyncRequestIdFB *), requestId)
 
-	EXT_PROTO_XRRESULT_FUNC3(xrRetrieveSpaceQueryResultsFB,
+	EXT_PROTO_XRRESULT_FUNC3(xrEraseSpaceFB,
 			(XrSession), session,
-			(XrAsyncRequestIdFB), requestId,
-			(XrSpaceQueryResultsFB *), results)
+			(const XrSpaceEraseInfoFB *), info,
+			(XrAsyncRequestIdFB *), requestId)
 
-	bool initialize_fb_spatial_entity_query_extension(const XrInstance &instance);
-	void on_space_query_results(const XrEventDataSpaceQueryResultsAvailableFB *event);
-	void on_space_query_complete(const XrEventDataSpaceQueryCompleteFB *event);
+	// CORE
+	EXT_PROTO_XRRESULT_FUNC4(xrLocateSpace,
+		(XrSpace), space,
+		(XrSpace), baseSpace,
+		(XrTime), time,
+		(XrSpaceLocation*), location)
 
-	HashMap<XrAsyncRequestIdFB, Vector<XrSpaceQueryResultFB>> query_results;
+	void save_spatial_anchor(const XrSpaceSaveInfoFB* info, SaveCompleteCallback_t callback);
+	void erase_spatial_anchor(const XrSpaceEraseInfoFB* info, EraseCompleteCallback_t callback);
+	bool initialize_fb_spatial_entity_storage_extension(const XrInstance& instance);
+	void on_save_complete(const XrEventDataSpaceSaveCompleteFB* event);
+	void on_erase_complete(const XrEventDataSpaceEraseCompleteFB* event);
+
 	HashMap<String, bool *> request_extensions;
-	HashMap<XrAsyncRequestIdFB, SpaceQueryCompleteCallback_t> query_complete_callbacks;
+	HashMap<XrAsyncRequestIdFB, SaveCompleteCallback_t> save_complete_callbacks;
+	HashMap<XrAsyncRequestIdFB, EraseCompleteCallback_t> erase_complete_callbacks;
+
+	HashMap<String, XrSpace> anchor_spaces;
+	HashMap<String, Ref<XRPositionalTracker>> trackers;
 
 	void cleanup();
 
-	static OpenXRFbSpatialEntityQueryExtensionWrapper *singleton;
+	static OpenXRFbSpatialEntityStorageExtensionWrapper *singleton;
 
-	bool fb_spatial_entity_query_ext = false;
+	bool fb_spatial_entity_storage_ext = false;
 };

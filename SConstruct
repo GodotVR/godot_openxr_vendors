@@ -18,6 +18,7 @@ sources += Glob("#common/src/main/cpp/*.cpp")
 sources += Glob("#common/src/main/cpp/export/*.cpp")
 sources += Glob("#common/src/main/cpp/extensions/*.cpp")
 sources += Glob("#common/src/main/cpp/classes/*.cpp")
+sources += Glob("#common/src/main/cpp/utils/*.cpp")
 
 binary_path = '#demo/addons/godotopenxrvendors/.bin'
 project_name = 'godotopenxrvendors'
