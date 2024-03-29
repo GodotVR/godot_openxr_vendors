@@ -8,7 +8,7 @@ include(${CMAKE_SOURCE_DIR}/../common/CMakeLists.txt)
 project(godotopenxrvendors LANGUAGES CXX)
 
 ## Pico OpenXR loader library
-set(PICO_OPENXR_LIB_PATH "${CMAKE_SOURCE_DIR}/libs/pico_openxr_sdk/${ANDROID_ABI}/libopenxr_loader.so")
+set(PICO_OPENXR_LIB_PATH "${CMAKE_SOURCE_DIR}/../thirdparty/pico_openxr_sdk/${ANDROID_ABI}/libopenxr_loader.so")
 add_library(openxr_loader
         SHARED
         IMPORTED GLOBAL

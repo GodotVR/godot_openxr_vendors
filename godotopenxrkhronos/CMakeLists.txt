@@ -8,7 +8,7 @@ include(${CMAKE_SOURCE_DIR}/../common/CMakeLists.txt)
 project(godotopenxrvendors LANGUAGES CXX)
 
 ## khronos OpenXR loader library
-set(KHRONOS_OPENXR_LIB_PATH "${CMAKE_SOURCE_DIR}/libs/khronos_openxr_sdk/${ANDROID_ABI}/libopenxr_loader.so")
+set(KHRONOS_OPENXR_LIB_PATH "${CMAKE_SOURCE_DIR}/../thirdparty/khronos_openxr_sdk/${ANDROID_ABI}/libopenxr_loader.so")
 add_library(openxr_loader
         SHARED
         IMPORTED GLOBAL
