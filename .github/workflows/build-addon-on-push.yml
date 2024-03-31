@@ -136,13 +136,13 @@ jobs:
       - name: Adding vendor licences
         run: |
           mkdir -p asset/addons/godotopenxrvendors/meta/
-          cp aar/godotopenxrmeta/LICENSE.txt asset/addons/godotopenxrvendors/meta/
+          cp aar/thirdparty/ovr_openxr_mobile_sdk/LICENSE.txt asset/addons/godotopenxrvendors/meta/
 
           mkdir -p asset/addons/godotopenxrvendors/pico/
-          cp aar/godotopenxrpico/libs/pico_openxr_sdk/arm64-v8a/README.md asset/addons/godotopenxrvendors/pico/LICENSE.md
+          cp aar/thirdparty/pico_openxr_sdk/README.md asset/addons/godotopenxrvendors/pico/LICENSE.md
 
           mkdir -p asset/addons/godotopenxrvendors/khronos/
-          cp aar/godotopenxrkhronos/LICENSE asset/addons/godotopenxrvendors/khronos/LICENSE
+          cp aar/thirdparty/khronos_openxr_sdk/LICENSE asset/addons/godotopenxrvendors/khronos/LICENSE
 
       - name: Copying artifacts
         run: |

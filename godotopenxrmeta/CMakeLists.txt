@@ -9,7 +9,7 @@ project(godotopenxrvendors LANGUAGES CXX)
 
 ## OpenXR Mobile loader library
 # Sets the path to the OpenXR mobile library directory.
-set(OPENXR_MOBILE_ROOT_DIR "${CMAKE_SOURCE_DIR}/libs/ovr_openxr_mobile_sdk/OpenXR")
+set(OPENXR_MOBILE_ROOT_DIR "${CMAKE_SOURCE_DIR}/../thirdparty/ovr_openxr_mobile_sdk/OpenXR")
 set(OPENXR_MOBILE_HEADERS_DIR "${OPENXR_MOBILE_ROOT_DIR}/Include" CACHE STRING "")
 
 set(OPENXR_MOBILE_LIB_PATH "${OPENXR_MOBILE_ROOT_DIR}/Libs/Android/${ANDROID_ABI}/${OPENXR_MOBILE_LIB_BUILD_TYPE}/libopenxr_loader.so")

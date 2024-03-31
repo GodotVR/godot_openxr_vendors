@@ -8,7 +8,7 @@ include(${CMAKE_SOURCE_DIR}/../common/CMakeLists.txt)
 project(godotopenxrvendors LANGUAGES CXX)
 
 ## lynx OpenXR loader library
-set(LYNX_OPENXR_LIB_PATH "${CMAKE_SOURCE_DIR}/libs/lynx_openxr_sdk/${ANDROID_ABI}/libopenxr_loader.so")
+set(LYNX_OPENXR_LIB_PATH "${CMAKE_SOURCE_DIR}/../thirdparty/lynx_openxr_sdk/${ANDROID_ABI}/libopenxr_loader.so")
 add_library(openxr_loader
         SHARED
         IMPORTED GLOBAL
