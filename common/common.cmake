@@ -68,8 +68,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 
-project(common LANGUAGES CXX)
-
 add_definitions(-DANDROID)
 
 set(GODOT_COMPILE_FLAGS)
@@ -99,7 +97,7 @@ else ()
 endif (CMAKE_BUILD_TYPE MATCHES Debug)
 
 ## godot-cpp library
-set(GODOT_CPP_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../thirdparty/godot-cpp")
+set(GODOT_CPP_DIR "${CMAKE_CURRENT_LIST_DIR}/../thirdparty/godot-cpp")
 set(GODOT-CPP "godot-cpp")
 
 # Use the godot-cpp prebuilt static binary
@@ -118,11 +116,11 @@ set_target_properties(${GODOT-CPP} PROPERTIES IMPORTED_LOCATION ${GODOT_CPP_STAT
 
 
 ## OpenXR headers
-set(OPENXR_HEADERS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../thirdparty/openxr/include")
+set(OPENXR_HEADERS_DIR "${CMAKE_CURRENT_LIST_DIR}/../thirdparty/openxr/include")
 
 
 # Common lib
-set(COMMON_LIB_HEADERS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../common/src/main/cpp/include)
+set(COMMON_LIB_HEADERS_DIR ${CMAKE_CURRENT_LIST_DIR}/../common/src/main/cpp/include)
 
-file(GLOB_RECURSE COMMON_LIB_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/../common/src/main/cpp/*.c**)
-file(GLOB_RECURSE COMMON_LIB_HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/../common/src/main/cpp/*.h**)
+file(GLOB_RECURSE COMMON_LIB_SOURCES ${CMAKE_CURRENT_LIST_DIR}/../common/src/main/cpp/*.c**)
+file(GLOB_RECURSE COMMON_LIB_HEADERS ${CMAKE_CURRENT_LIST_DIR}/../common/src/main/cpp/*.h**)
