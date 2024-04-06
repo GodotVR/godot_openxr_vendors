@@ -101,6 +101,5 @@ protected:
 	static void _bind_methods();
 
 private:
-	MetaEditorExportPlugin *meta_export_plugin = nullptr;
-
+	Ref<MetaEditorExportPlugin> meta_export_plugin;
 };

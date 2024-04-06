@@ -58,5 +58,5 @@ protected:
 	static void _bind_methods();
 
 private:
-	KhronosEditorExportPlugin *khronos_export_plugin = nullptr;
+	Ref<KhronosEditorExportPlugin> khronos_export_plugin;
 };

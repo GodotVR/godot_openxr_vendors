@@ -35,7 +35,7 @@ void LynxEditorPlugin::_bind_methods() {}
 
 void LynxEditorPlugin::_enter_tree() {
 	// Initialize the editor export plugin
-	lynx_export_plugin = memnew(OpenXREditorExportPlugin);
+	lynx_export_plugin.instantiate();
 	lynx_export_plugin->set_vendor_name(LYNX_VENDOR_NAME);
 	add_export_plugin(lynx_export_plugin);
 }
@@ -44,6 +44,5 @@ void LynxEditorPlugin::_exit_tree() {
 	// Clean up the editor export plugin
 	remove_export_plugin(lynx_export_plugin);
 
-	memfree(lynx_export_plugin);
-	lynx_export_plugin = nullptr;
+	lynx_export_plugin.unref();
 }

@@ -1,6 +1,7 @@
 # Change history for the Godot OpenXR loaders asset
 
 ## 2.0.4
+- Fix misc crash when reloading project on Godot 4.3
 - Fix issue with only the first permission being requested
 
 ## 2.0.3

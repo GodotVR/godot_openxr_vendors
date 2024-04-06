@@ -37,7 +37,7 @@ void MetaEditorPlugin::_bind_methods() {}
 
 void MetaEditorPlugin::_enter_tree() {
 	// Initialize the editor export plugin
-	meta_export_plugin = memnew(MetaEditorExportPlugin);
+	meta_export_plugin.instantiate();
 	add_export_plugin(meta_export_plugin);
 }
 
@@ -45,8 +45,7 @@ void MetaEditorPlugin::_exit_tree() {
 	// Clean up the editor export plugin
 	remove_export_plugin(meta_export_plugin);
 
-	memfree(meta_export_plugin);
-	meta_export_plugin = nullptr;
+	meta_export_plugin.unref();
 }
 
 MetaEditorExportPlugin::MetaEditorExportPlugin() {
