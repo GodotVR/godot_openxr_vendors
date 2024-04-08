@@ -1,14 +1,11 @@
 /**************************************************************************/
-/*  openxr_fb_scene_capture_extension_wrapper.h                           */
+/*  openxr_fb_spatial_entity_query_extension_wrapper.h                    */
 /**************************************************************************/
 /*                       This file is part of:                            */
 /*                              GODOT XR                                  */
 /*                      https://godotengine.org                           */
 /**************************************************************************/
 /* Copyright (c) 2022-present Godot XR contributors (see CONTRIBUTORS.md) */
-/*                                                                        */
-/* Original contributed implementation:                                   */
-/*   Copyright (c) 2022-2023 MattaKis Consulting Kft. (Migeran)           */
 /*                                                                        */
 /* Permission is hereby granted, free of charge, to any person obtaining  */
 /* a copy of this software and associated documentation files (the        */
@@ -30,85 +27,81 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef OPENXR_FB_SCENE_CAPTURE_EXTENSION_WRAPPER_H
-#define OPENXR_FB_SCENE_CAPTURE_EXTENSION_WRAPPER_H
+#ifndef OPENXR_FB_SPATIAL_ENTITY_STORAGE_EXTENSION_WRAPPER_H
+#define OPENXR_FB_SPATIAL_ENTITY_STORAGE_EXTENSION_WRAPPER_H
 
 #include <openxr/openxr.h>
 #include <godot_cpp/classes/open_xr_extension_wrapper_extension.hpp>
 #include <godot_cpp/templates/hash_map.hpp>
-#include <godot_cpp/variant/utility_functions.hpp>
 
 #include "util.h"
 
-#include <map>
-
 using namespace godot;
 
-// Wrapper for the set of Facebook XR scene capture extension.
-class OpenXRFbSceneCaptureExtensionWrapper : public OpenXRExtensionWrapperExtension {
-	GDCLASS(OpenXRFbSceneCaptureExtensionWrapper, OpenXRExtensionWrapperExtension);
+// Wrapper for the set of Facebook XR spatial entity storage extension.
+class OpenXRFbSpatialEntityStorageExtensionWrapper : public OpenXRExtensionWrapperExtension {
+	GDCLASS(OpenXRFbSpatialEntityStorageExtensionWrapper, OpenXRExtensionWrapperExtension);
 
 public:
-	godot::Dictionary _get_requested_extensions() override;
-
+	Dictionary _get_requested_extensions() override;
 	void _on_instance_created(uint64_t instance) override;
-
 	void _on_instance_destroyed() override;
-
-	bool is_scene_capture_supported() {
-		return fb_scene_capture_ext;
-	}
-
-	typedef void (*SceneCaptureCompleteCallback)(XrResult p_result, void *p_userdata);
-
-	bool request_scene_capture(String p_request, SceneCaptureCompleteCallback p_callback, void *p_userdata);
-	bool is_scene_capture_enabled();
-
-	// Supports legacy exposed API.
-	bool _request_scene_capture_bind();
-
 	virtual bool _on_event_polled(const void *event) override;
 
-	static OpenXRFbSceneCaptureExtensionWrapper *get_singleton();
+	bool is_spatial_entity_query_supported() {
+		return fb_spatial_entity_storage_ext;
+	}
 
-	OpenXRFbSceneCaptureExtensionWrapper();
-	~OpenXRFbSceneCaptureExtensionWrapper();
+	static OpenXRFbSpatialEntityStorageExtensionWrapper *get_singleton();
+
+	typedef void (*StorageRequestCompleteCallback)(XrResult p_result, void *p_userdata);
+
+	XrAsyncRequestIdFB save_space(const XrSpaceSaveInfoFB *p_info, StorageRequestCompleteCallback p_callback, void *p_userdata);
+	XrAsyncRequestIdFB erase_space(const XrSpaceEraseInfoFB *p_info, StorageRequestCompleteCallback p_callback, void *p_userdata);
+
+	OpenXRFbSpatialEntityStorageExtensionWrapper();
+	~OpenXRFbSpatialEntityStorageExtensionWrapper();
 
 protected:
 	static void _bind_methods();
 
 private:
-	EXT_PROTO_XRRESULT_FUNC3(xrRequestSceneCaptureFB,
+	EXT_PROTO_XRRESULT_FUNC3(xrSaveSpaceFB,
 			(XrSession), session,
-			(const XrSceneCaptureRequestInfoFB *), request,
+			(const XrSpaceSaveInfoFB *), info,
 			(XrAsyncRequestIdFB *), requestId)
 
-	bool initialize_fb_scene_capture_extension(const XrInstance instance);
-	void on_scene_capture_complete(const XrEventDataSceneCaptureCompleteFB *p_event);
+	EXT_PROTO_XRRESULT_FUNC3(xrEraseSpaceFB,
+			(XrSession), session,
+			(const XrSpaceEraseInfoFB *), info,
+			(XrAsyncRequestIdFB *), requestId)
 
-	std::map<godot::String, bool *> request_extensions;
+
+	bool initialize_fb_spatial_entity_storage_extension(const XrInstance &instance);
+	void on_space_save_complete(const XrEventDataSpaceSaveCompleteFB *event);
+	void on_space_erase_complete(const XrEventDataSpaceEraseCompleteFB *event);
+
+	HashMap<String, bool *> request_extensions;
 
 	struct RequestInfo {
-		SceneCaptureCompleteCallback callback = nullptr;
+		StorageRequestCompleteCallback callback = nullptr;
 		void *userdata = nullptr;
 
-		RequestInfo(SceneCaptureCompleteCallback p_callback, void *p_userdata) {
+		RequestInfo() { }
+
+		RequestInfo(StorageRequestCompleteCallback p_callback, void *p_userdata) {
 			callback = p_callback;
 			userdata = p_userdata;
 		}
-
-		RequestInfo() { }
 	};
 
 	HashMap<XrAsyncRequestIdFB, RequestInfo> requests;
 
 	void cleanup();
 
-	static OpenXRFbSceneCaptureExtensionWrapper *singleton;
+	static OpenXRFbSpatialEntityStorageExtensionWrapper *singleton;
 
-	bool fb_scene_capture_ext = false;
-
-	bool scene_capture_enabled = false;
+	bool fb_spatial_entity_storage_ext = false;
 };
 
-#endif // OPENXR_FB_SCENE_CAPTURE_EXTENSION_WRAPPER_H
+#endif

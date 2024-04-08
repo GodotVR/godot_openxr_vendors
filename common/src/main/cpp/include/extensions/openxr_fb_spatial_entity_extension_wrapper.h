@@ -31,18 +31,12 @@
 
 #include <openxr/openxr.h>
 #include <godot_cpp/classes/open_xr_extension_wrapper_extension.hpp>
+#include <godot_cpp/classes/xr_positional_tracker.hpp>
 #include <godot_cpp/templates/hash_map.hpp>
-#include <godot_cpp/variant/utility_functions.hpp>
 
 #include "util.h"
 
-#include <functional>
-#include <map>
-#include <optional>
-
 using namespace godot;
-
-typedef std::function<void(const XrEventDataSpaceSetStatusCompleteFB *eventData)> SetSpaceComponentStatusCallback_t;
 
 // Wrapper for the set of Facebook XR spatial entity extension.
 class OpenXRFbSpatialEntityExtensionWrapper : public OpenXRExtensionWrapperExtension {
@@ -52,27 +46,22 @@ public:
 	Dictionary _get_requested_extensions() override;
 
 	void _on_instance_created(uint64_t instance) override;
-
 	void _on_instance_destroyed() override;
+	void _on_process() override;
 
 	bool is_spatial_entity_supported() {
 		return fb_spatial_entity_ext;
 	}
 
-	bool is_component_supported(const XrSpace &space, XrSpaceComponentTypeFB type);
-	bool is_component_enabled(const XrSpace &space, XrSpaceComponentTypeFB type);
+	typedef void (*SetComponentEnabledCallback)(XrResult p_result, XrSpaceComponentTypeFB p_component, bool p_enabled, void *p_userdata);
 
-	// Attempts to set the enabled status for the given component of an XrSpace. The callback will
-	// run to deliver results, with an arg of either:
-	// - nullptr on immediate failure
-	// - A valid XrEventDataSpaceSetStatusCompleteFB* delivered by the runtime later on
-	// Both cases should be handled, and the second may still indicate an error depending on the
-	// contained XrResult.
-	void set_component_enabled(
-			const XrSpace &space,
-			XrSpaceComponentTypeFB type,
-			bool status,
-			std::optional<SetSpaceComponentStatusCallback_t> callback = std::nullopt);
+	Vector<XrSpaceComponentTypeFB> get_support_components(const XrSpace &p_space);
+	bool is_component_enabled(const XrSpace &p_space, XrSpaceComponentTypeFB p_component);
+	bool set_component_enabled(const XrSpace &p_space, XrSpaceComponentTypeFB p_component, bool p_enabled, SetComponentEnabledCallback p_callback, void *p_userdata);
+
+	void track_entity(const StringName &p_name, const XrSpace &p_space);
+	void untrack_entity(const StringName &p_name);
+	bool is_entity_tracked(const StringName &p_name) const;
 
 	virtual bool _on_event_polled(const void *event) override;
 
@@ -110,10 +99,41 @@ private:
 			(XrSpaceComponentTypeFB), componentType,
 			(XrSpaceComponentStatusFB *), status)
 
+	EXT_PROTO_XRRESULT_FUNC4(xrLocateSpace,
+		(XrSpace), space,
+		(XrSpace), baseSpace,
+		(XrTime), time,
+		(XrSpaceLocation *), location)
+
 	bool initialize_fb_spatial_entity_extension(const XrInstance &instance);
+	void on_set_component_enabled_complete(const XrEventDataSpaceSetStatusCompleteFB *event);
 
 	HashMap<String, bool *> request_extensions;
-	HashMap<XrAsyncRequestIdFB, SetSpaceComponentStatusCallback_t> set_status_callbacks;
+
+	struct SetComponentEnabledInfo {
+		SetComponentEnabledCallback callback = nullptr;
+		void *userdata = nullptr;
+
+		SetComponentEnabledInfo() { }
+
+		SetComponentEnabledInfo(SetComponentEnabledCallback p_callback, void *p_userdata) {
+			callback = p_callback;
+			userdata = p_userdata;
+		}
+	};
+	HashMap<XrAsyncRequestIdFB, SetComponentEnabledInfo> set_component_enabled_info;
+
+	struct TrackedEntity {
+		XrSpace space = XR_NULL_HANDLE;
+		Ref<XRPositionalTracker> tracker;
+
+		TrackedEntity(XrSpace p_space) {
+			space = p_space;
+		}
+
+		TrackedEntity() {};
+	};
+	HashMap<StringName, TrackedEntity> tracked_entities;
 
 	void cleanup();
 
