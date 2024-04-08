@@ -57,6 +57,7 @@ OpenXRFbPassthroughExtensionWrapper::OpenXRFbPassthroughExtensionWrapper() :
 
 	request_extensions[XR_FB_PASSTHROUGH_EXTENSION_NAME] = &fb_passthrough_ext;
 	request_extensions[XR_FB_TRIANGLE_MESH_EXTENSION_NAME] = &fb_triangle_mesh_ext;
+	request_extensions[XR_META_PASSTHROUGH_PREFERENCES_EXTENSION_NAME] = &meta_passthrough_preferences_ext;
 
 	singleton = this;
 }
@@ -86,6 +87,8 @@ void OpenXRFbPassthroughExtensionWrapper::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("has_passthrough_capability"), &OpenXRFbPassthroughExtensionWrapper::has_passthrough_capability);
 	ClassDB::bind_method(D_METHOD("has_color_passthrough_capability"), &OpenXRFbPassthroughExtensionWrapper::has_color_passthrough_capability);
 	ClassDB::bind_method(D_METHOD("has_layer_depth_passthrough_capability"), &OpenXRFbPassthroughExtensionWrapper::has_layer_depth_passthrough_capability);
+
+	ClassDB::bind_method(D_METHOD("is_passthrough_preferred"), &OpenXRFbPassthroughExtensionWrapper::is_passthrough_preferred);
 
 	ADD_SIGNAL(MethodInfo("openxr_fb_projected_passthrough_layer_created"));
 	ADD_SIGNAL(MethodInfo("openxr_fb_passthrough_stopped"));
@@ -118,6 +121,7 @@ godot::Dictionary OpenXRFbPassthroughExtensionWrapper::_get_requested_extensions
 void OpenXRFbPassthroughExtensionWrapper::cleanup() {
 	fb_passthrough_ext = false;
 	fb_triangle_mesh_ext = false;
+	meta_passthrough_preferences_ext = false;
 }
 
 uint64_t OpenXRFbPassthroughExtensionWrapper::_set_system_properties_and_get_next_pointer(void *p_next_pointer) {
@@ -139,6 +143,14 @@ void OpenXRFbPassthroughExtensionWrapper::_on_instance_created(uint64_t p_instan
 		if (!result) {
 			UtilityFunctions::print("Failed to initialize fb_triangle_mesh extension");
 			fb_triangle_mesh_ext = false;
+		}
+	}
+
+	if (meta_passthrough_preferences_ext) {
+		bool result = initialize_meta_passthrough_preferences_extension(instance);
+		if (!result) {
+			UtilityFunctions::print("Failed to initialize meta_passthrough_preferences extension");
+			meta_passthrough_preferences_ext = false;
 		}
 	}
 }
@@ -607,6 +619,27 @@ bool OpenXRFbPassthroughExtensionWrapper::has_layer_depth_passthrough_capability
 	return (system_passthrough_properties.capabilities & XR_PASSTHROUGH_CAPABILITY_BIT_FB) && (system_passthrough_properties.capabilities & XR_PASSTHROUGH_CAPABILITY_LAYER_DEPTH_BIT_FB);
 }
 
+bool OpenXRFbPassthroughExtensionWrapper::is_passthrough_preferred() {
+	if (!meta_passthrough_preferences_ext) {
+		UtilityFunctions::print("Meta passthrough preferences extension is not enabled");
+		return false;
+	}
+
+	XrPassthroughPreferencesMETA passthrough_preferences = {
+		XR_TYPE_PASSTHROUGH_PREFERENCES_META, // type
+		nullptr, // next
+		0, // flags
+	};
+
+	XrResult result = xrGetPassthroughPreferencesMETA(SESSION, &passthrough_preferences);
+	if (XR_FAILED(result)) {
+		UtilityFunctions::printerr("Failed to get passthrough preferences, error code: ", result);
+		return false;
+	}
+
+	return passthrough_preferences.flags & XR_PASSTHROUGH_PREFERENCE_DEFAULT_TO_ACTIVE_BIT_META;
+}
+
 XRInterface::EnvironmentBlendMode OpenXRFbPassthroughExtensionWrapper::get_blend_mode() {
 	Ref<XRInterface> xr_interface = XRServer::get_singleton()->find_interface("OpenXR");
 	if (xr_interface.is_valid()) {
@@ -641,6 +674,12 @@ bool OpenXRFbPassthroughExtensionWrapper::initialize_fb_triangle_mesh_extension(
 	GDEXTENSION_INIT_XR_FUNC_V(xrTriangleMeshEndUpdateFB);
 	GDEXTENSION_INIT_XR_FUNC_V(xrTriangleMeshBeginVertexBufferUpdateFB);
 	GDEXTENSION_INIT_XR_FUNC_V(xrTriangleMeshEndVertexBufferUpdateFB);
+
+	return true;
+}
+
+bool OpenXRFbPassthroughExtensionWrapper::initialize_meta_passthrough_preferences_extension(const XrInstance p_instance) {
+	GDEXTENSION_INIT_XR_FUNC_V(xrGetPassthroughPreferencesMETA);
 
 	return true;
 }

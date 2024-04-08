@@ -128,6 +128,8 @@ public:
 	bool has_color_passthrough_capability();
 	bool has_layer_depth_passthrough_capability();
 
+	bool is_passthrough_preferred();
+
 	static OpenXRFbPassthroughExtensionWrapper *get_singleton();
 
 protected:
@@ -258,11 +260,15 @@ private:
 	// after a call to `xrTriangleMeshBeginVertexBufferUpdateFB`.
 	EXT_PROTO_XRRESULT_FUNC1(xrTriangleMeshEndVertexBufferUpdateFB, (XrTriangleMeshFB), mesh)
 
+	EXT_PROTO_XRRESULT_FUNC2(xrGetPassthroughPreferencesMETA,
+			(XrSession), session,
+			(XrPassthroughPreferencesMETA *), preferences)
+
 	XRInterface::EnvironmentBlendMode get_blend_mode();
 
 	bool initialize_fb_passthrough_extension(const XrInstance p_instance);
-
 	bool initialize_fb_triangle_mesh_extension(const XrInstance p_instance);
+	bool initialize_meta_passthrough_preferences_extension(const XrInstance p_instance);
 
 	void cleanup();
 
@@ -272,6 +278,7 @@ private:
 
 	bool fb_passthrough_ext = false; // required for any passthrough functionality
 	bool fb_triangle_mesh_ext = false; // only use for projected passthrough
+	bool meta_passthrough_preferences_ext = false;
 
 	XrPassthroughFB passthrough_handle = XR_NULL_HANDLE;
 	XrPassthroughLayerFB passthrough_layer[LAYER_PURPOSE_MAX] = { XR_NULL_HANDLE };
