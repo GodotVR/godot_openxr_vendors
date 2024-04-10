@@ -13,6 +13,7 @@
 - Add a developer-facing API for interacting with scene anchors
 - Add XR_FB_hand_tracking_capsules extension wrapper
 - Add OpenXRFbPassthroughGeometry node
+- Add OpenXRMetaPassthroughColorLut
 
 ## 2.0.3
 - Migrate the export scripts from gdscript to C++ via gdextension

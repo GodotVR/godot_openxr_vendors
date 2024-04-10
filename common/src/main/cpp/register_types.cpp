@@ -65,6 +65,7 @@
 #include "classes/openxr_fb_scene_manager.h"
 #include "classes/openxr_fb_spatial_entity.h"
 #include "classes/openxr_fb_spatial_entity_query.h"
+#include "classes/openxr_meta_passthrough_color_lut.h"
 
 using namespace godot;
 
@@ -141,6 +142,7 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			ClassDB::register_class<OpenXRFbSpatialEntity>();
 			ClassDB::register_class<OpenXRFbSpatialEntityQuery>();
 			ClassDB::register_class<OpenXRFbPassthroughGeometry>();
+			ClassDB::register_class<OpenXRMetaPassthroughColorLut>();
 
 			OpenXRFbHandTrackingAimExtensionWrapper::get_singleton()->add_project_setting();
 		} break;
