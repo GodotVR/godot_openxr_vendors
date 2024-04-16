@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  openxr_fb_spatial_entity.h                                            */
+/*  openxr_meta_spatial_entity_mesh_extension_wrapper.h                   */
 /**************************************************************************/
 /*                       This file is part of:                            */
 /*                              GODOT XR                                  */
@@ -27,86 +27,58 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef OPENXR_FB_SPATIAL_ENTITY_H
-#define OPENXR_FB_SPATIAL_ENTITY_H
+#pragma once
 
 #include <openxr/openxr.h>
-
-#include <godot_cpp/classes/ref_counted.hpp>
+#include <godot_cpp/classes/open_xr_extension_wrapper_extension.hpp>
 #include <godot_cpp/templates/hash_map.hpp>
 
-namespace godot {
-class Node3D;
-class MeshInstance3D;
+#include "util.h"
 
-class OpenXRFbSpatialEntity : public RefCounted {
-	GDCLASS(OpenXRFbSpatialEntity, RefCounted);
+using namespace godot;
+
+// Wrapper for the XR_META_spatial_entity_mesh extension.
+class OpenXRMetaSpatialEntityMeshExtensionWrapper : public OpenXRExtensionWrapperExtension {
+	GDCLASS(OpenXRMetaSpatialEntityMeshExtensionWrapper, OpenXRExtensionWrapperExtension);
 
 public:
+	Dictionary _get_requested_extensions() override;
 
-	enum StorageLocation {
-		STORAGE_LOCAL,
-		STORAGE_CLOUD,
+	void _on_instance_created(uint64_t instance) override;
+	void _on_instance_destroyed() override;
+
+	bool is_spatial_entity_mesh_supported() {
+		return meta_spatial_entity_mesh_ext;
+	}
+
+	struct TriangleMesh {
+		Vector<XrVector3f> vertices;
+		Vector<uint32_t> indices;
 	};
 
-	enum ComponentType {
-		COMPONENT_TYPE_LOCATABLE,
-		COMPONENT_TYPE_STORABLE,
-		COMPONENT_TYPE_SHARABLE,
-		COMPONENT_TYPE_BOUNDED_2D,
-		COMPONENT_TYPE_BOUNDED_3D,
-		COMPONENT_TYPE_SEMANTIC_LABELS,
-		COMPONENT_TYPE_ROOM_LAYOUT,
-		COMPONENT_TYPE_CONTAINER,
-		COMPONENT_TYPE_TRIANGLE_MESH,
-	};
+	bool get_triangle_mesh(const XrSpace &p_space, TriangleMesh &r_triangle_mesh);
 
-private:
-	XrSpace space = XR_NULL_HANDLE;
-	StringName uuid;
+	static OpenXRMetaSpatialEntityMeshExtensionWrapper *get_singleton();
+
+	OpenXRMetaSpatialEntityMeshExtensionWrapper();
+	~OpenXRMetaSpatialEntityMeshExtensionWrapper();
 
 protected:
 	static void _bind_methods();
 
-	static void _on_set_component_enabled_completed(XrResult p_result, XrSpaceComponentTypeFB p_component, bool p_enabled, void *userdata);
+private:
+	EXT_PROTO_XRRESULT_FUNC3(xrGetSpaceTriangleMeshMETA,
+			(XrSpace), space,
+			(const XrSpaceTriangleMeshGetInfoMETA *), getInfo,
+			(XrSpaceTriangleMeshMETA *), triangleMeshOutput)
 
-	String _to_string() const;
+	bool initialize_meta_spatial_entity_mesh_extension(const XrInstance &instance);
 
-public:
-	StringName get_uuid() const;
+	HashMap<String, bool *> request_extensions;
 
-	Array get_supported_components() const;
-	bool is_component_supported(ComponentType p_component) const;
-	bool is_component_enabled(ComponentType p_component) const;
-	void set_component_enabled(ComponentType p_component, bool p_enabled);
+	void cleanup();
 
-	PackedStringArray get_semantic_labels() const;
-	Dictionary get_room_layout() const;
-	Array get_contained_uuids() const;
-	Rect2 get_bounding_box_2d() const;
-	AABB get_bounding_box_3d() const;
-	PackedVector2Array get_boundary_2d() const;
-	Array get_triangle_mesh() const;
+	static OpenXRMetaSpatialEntityMeshExtensionWrapper *singleton;
 
-	void track();
-	void untrack();
-	bool is_tracked() const;
-
-	MeshInstance3D *create_mesh_instance() const;
-	Node3D *create_collision_shape() const;
-
-	static XrSpaceStorageLocationFB to_openxr_storage_location(StorageLocation p_location);
-	static XrSpaceComponentTypeFB to_openxr_component_type(ComponentType p_component);
-	static ComponentType from_openxr_component_type(XrSpaceComponentTypeFB p_component);
-
-	XrSpace get_space();
-
-	OpenXRFbSpatialEntity() = default;
-	OpenXRFbSpatialEntity(XrSpace p_space, const XrUuidEXT &p_uuid);
+	bool meta_spatial_entity_mesh_ext = false;
 };
-} // namespace godot
-
-VARIANT_ENUM_CAST(OpenXRFbSpatialEntity::StorageLocation);
-VARIANT_ENUM_CAST(OpenXRFbSpatialEntity::ComponentType);
-
-#endif

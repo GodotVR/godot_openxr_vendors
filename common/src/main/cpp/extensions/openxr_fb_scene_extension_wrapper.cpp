@@ -98,7 +98,10 @@ void OpenXRFbSceneExtensionWrapper::_on_instance_destroyed() {
 }
 
 const PackedStringArray &OpenXRFbSceneExtensionWrapper::get_supported_semantic_labels() {
-	static PackedStringArray semantic_labels = String(SUPPORTED_SEMANTIC_LABELS).split(",");
+	// We decided to deal with semantic labels in lower-case to make it easier to use them as part of
+	// property names on Godot objects, since Godot automatically converts property names to lower case
+	// when saving.
+	static PackedStringArray semantic_labels = String(SUPPORTED_SEMANTIC_LABELS).to_lower().split(",");
 	return semantic_labels;
 }
 
@@ -132,7 +135,11 @@ PackedStringArray OpenXRFbSceneExtensionWrapper::get_semantic_labels(const XrSpa
 	xrGetSpaceSemanticLabelsFB(SESSION, p_space, &labels);
 
 	label_data[label_data.size() - 1] = '\0';
-	return String(label_data).split(",");
+
+	// We decided to deal with semantic labels in lower-case to make it easier to use them as part of
+	// property names on Godot objects, since Godot automatically converts property names to lower case
+	// when saving.
+	return String(label_data).to_lower().split(",");
 }
 
 bool OpenXRFbSceneExtensionWrapper::get_room_layout(const XrSpace p_space, RoomLayout &r_room_layout) {

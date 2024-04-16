@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://cqsodpswgup8w"]
+[gd_scene load_steps=22 format=4 uid="uid://cqsodpswgup8w"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_fsva1"]
 [ext_resource type="PackedScene" uid="uid://c0uv4eu2yjm3b" path="res://viewport_2d_in_3d.tscn" id="2_7whgo"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://bcjp8kcgde4cs" path="res://scene_anchor.tscn" id="4_3u3ah"]
 [ext_resource type="PackedScene" uid="uid://ikxieb2fyavg" path="res://assets/face/Face.gltf" id="4_wrwst"]
 [ext_resource type="PackedScene" uid="uid://bwfyi8pgigune" path="res://xr_fb_hand_tracking_aim_demo.tscn" id="5_6bxyh"]
+[ext_resource type="PackedScene" uid="uid://bwo5nq0clfe3c" path="res://scene_global_mesh.tscn" id="5_7ikgf"]
 
 [sub_resource type="Gradient" id="Gradient_yvg3n"]
 offsets = PackedFloat32Array(0, 0.484615, 1)
@@ -153,6 +154,7 @@ hand = 1
 default_scene = ExtResource("4_3u3ah")
 auto_create = false
 visible = false
+scenes/global_mesh = ExtResource("5_7ikgf")
 
 [node name="Floor" type="MeshInstance3D" parent="."]
 mesh = SubResource("PlaneMesh_mjcgt")
