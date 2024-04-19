@@ -55,6 +55,11 @@
 #include "extensions/openxr_fb_spatial_entity_container_extension_wrapper.h"
 #include "extensions/openxr_fb_spatial_entity_query_extension_wrapper.h"
 
+#ifdef ANDROID
+#include "extensions/openxr_khr_android_surface_swapchain_extension_wrapper.h"
+#endif
+
+#include "classes/android_surface_layer.h"
 #include "classes/openxr_fb_hand_tracking_mesh.h"
 #include "classes/openxr_fb_render_model.h"
 #include "classes/openxr_fb_scene_manager.h"
@@ -98,6 +103,11 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 
 			ClassDB::register_class<OpenXRFbHandTrackingAimExtensionWrapper>();
 			OpenXRFbHandTrackingAimExtensionWrapper::get_singleton()->register_extension_wrapper();
+
+#ifdef ANDROID
+			ClassDB::register_class<OpenXRKhrAndroidSurfaceSwapchainExtensionWrapper>();
+			OpenXRKhrAndroidSurfaceSwapchainExtensionWrapper::get_singleton()->register_extension_wrapper();
+#endif
 		} break;
 
 		case MODULE_INITIALIZATION_LEVEL_SERVERS:
@@ -115,6 +125,11 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			Engine::get_singleton()->register_singleton("OpenXRFbFaceTrackingExtensionWrapper", OpenXRFbFaceTrackingExtensionWrapper::get_singleton());
 			Engine::get_singleton()->register_singleton("OpenXRFbHandTrackingAimExtensionWrapper", OpenXRFbHandTrackingAimExtensionWrapper::get_singleton());
 
+#ifdef ANDROID
+			Engine::get_singleton()->register_singleton("OpenXRKhrAndroidSurfaceSwapchainExtensionWrapper", OpenXRKhrAndroidSurfaceSwapchainExtensionWrapper::get_singleton());
+#endif
+
+			ClassDB::register_class<AndroidSurfaceLayer>();
 			ClassDB::register_class<OpenXRFbRenderModel>();
 			ClassDB::register_class<OpenXRFbHandTrackingMesh>();
 			ClassDB::register_class<OpenXRFbSceneManager>();
