@@ -51,12 +51,13 @@
 #include "extensions/openxr_fb_render_model_extension_wrapper.h"
 #include "extensions/openxr_fb_scene_capture_extension_wrapper.h"
 #include "extensions/openxr_fb_scene_extension_wrapper.h"
-#include "extensions/openxr_fb_spatial_entity_extension_wrapper.h"
-#include "extensions/openxr_fb_spatial_entity_storage_extension_wrapper.h"
 #include "extensions/openxr_fb_spatial_entity_container_extension_wrapper.h"
+#include "extensions/openxr_fb_spatial_entity_extension_wrapper.h"
 #include "extensions/openxr_fb_spatial_entity_query_extension_wrapper.h"
+#include "extensions/openxr_fb_spatial_entity_storage_extension_wrapper.h"
 
 #include "classes/openxr_fb_hand_tracking_mesh.h"
+#include "classes/openxr_fb_passthrough_geometry.h"
 #include "classes/openxr_fb_render_model.h"
 #include "classes/openxr_fb_scene_manager.h"
 #include "classes/openxr_fb_spatial_entity.h"
@@ -125,6 +126,7 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			ClassDB::register_class<OpenXRFbSceneManager>();
 			ClassDB::register_class<OpenXRFbSpatialEntity>();
 			ClassDB::register_class<OpenXRFbSpatialEntityQuery>();
+			ClassDB::register_class<OpenXRFbPassthroughGeometry>();
 
 			OpenXRFbHandTrackingAimExtensionWrapper::get_singleton()->add_project_setting();
 		} break;

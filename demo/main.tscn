@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://cqsodpswgup8w"]
+[gd_scene load_steps=21 format=3 uid="uid://cqsodpswgup8w"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_fsva1"]
 [ext_resource type="PackedScene" uid="uid://c0uv4eu2yjm3b" path="res://viewport_2d_in_3d.tscn" id="2_7whgo"]
@@ -6,6 +6,17 @@
 [ext_resource type="PackedScene" uid="uid://bcjp8kcgde4cs" path="res://scene_anchor.tscn" id="4_3u3ah"]
 [ext_resource type="PackedScene" uid="uid://ikxieb2fyavg" path="res://assets/face/Face.gltf" id="4_wrwst"]
 [ext_resource type="PackedScene" uid="uid://bwfyi8pgigune" path="res://xr_fb_hand_tracking_aim_demo.tscn" id="5_6bxyh"]
+
+[sub_resource type="Gradient" id="Gradient_yvg3n"]
+offsets = PackedFloat32Array(0, 0.484615, 1)
+colors = PackedColorArray(0.989632, 1, 0, 1, 0, 0.117083, 1, 1, 1, 0, 0.89539, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_syqxs"]
+gradient = SubResource("Gradient_yvg3n")
+
+[sub_resource type="Curve" id="Curve_ykaux"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.240642, 1), 0.0, 0.0, 0, 0, Vector2(0.502674, 0), 0.0, 0.0, 0, 0, Vector2(0.759358, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 5
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_0x6cv"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -16,6 +27,7 @@ sky_material = SubResource("ProceduralSkyMaterial_0x6cv")
 
 [sub_resource type="Environment" id="Environment_m0xew"]
 background_mode = 2
+background_color = Color(0, 0, 0, 0)
 sky = SubResource("Sky_dqyx0")
 ambient_light_source = 2
 ambient_light_color = Color(0.270588, 0.270588, 0.270588, 1)
@@ -34,6 +46,8 @@ albedo_color = Color(0.203922, 0.203922, 0.203922, 1)
 [sub_resource type="BoxMesh" id="BoxMesh_ey3x4"]
 size = Vector3(0.1, 0.1, 0.1)
 
+[sub_resource type="BoxMesh" id="BoxMesh_u0g4q"]
+
 [sub_resource type="SphereMesh" id="SphereMesh_5gcab"]
 radius = 0.025
 height = 0.05
@@ -46,6 +60,9 @@ size = Vector2(10, 10)
 
 [node name="Main" type="Node3D"]
 script = ExtResource("1_fsva1")
+passthrough_gradient = SubResource("GradientTexture1D_syqxs")
+passthrough_curve = SubResource("Curve_ykaux")
+bcs = Vector3(-10, 50, 0)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_m0xew")
@@ -94,6 +111,26 @@ mesh = SubResource("BoxMesh_ey3x4")
 [node name="RightControllerFbRenderModel" type="OpenXRFbRenderModel" parent="XROrigin3D/RightHand"]
 render_model_type = 1
 
+[node name="PassthroughModeInfo" type="Label3D" parent="XROrigin3D/RightHand"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, -0.25)
+pixel_size = 0.001
+text = "[B] Passthrough Mode: None"
+
+[node name="PassthroughFilterInfo" type="Label3D" parent="XROrigin3D/RightHand"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 2.73026e-09, -0.187539)
+pixel_size = 0.001
+text = "[A] Passthrough Filter: Disabled"
+
+[node name="RemoteTransform3D" type="RemoteTransform3D" parent="XROrigin3D/RightHand"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+remote_path = NodePath("../../OpenXRFbPassthroughGeometry")
+
+[node name="OpenXRFbPassthroughGeometry" type="OpenXRFbPassthroughGeometry" parent="XROrigin3D"]
+mesh = SubResource("BoxMesh_u0g4q")
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.478861, -0.531708, -0.241097)
+visible = false
+
 [node name="EyeGaze" type="XRController3D" parent="XROrigin3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.977669, 0)
 tracker = &"/user/eyes_ext"
@@ -136,6 +173,7 @@ transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 
 [connection signal="button_pressed" from="XROrigin3D/LeftHand" to="XRFbHandTrackingAimDemo" method="_on_left_hand_button_pressed"]
 [connection signal="button_released" from="XROrigin3D/LeftHand" to="XRFbHandTrackingAimDemo" method="_on_left_hand_button_released"]
 [connection signal="openxr_fb_render_model_loaded" from="XROrigin3D/LeftHand/LeftControllerFbRenderModel" to="." method="_on_left_controller_fb_render_model_render_model_loaded"]
+[connection signal="button_pressed" from="XROrigin3D/RightHand" to="." method="_on_right_hand_button_pressed"]
 [connection signal="button_pressed" from="XROrigin3D/RightHand" to="XRFbHandTrackingAimDemo" method="_on_right_hand_button_pressed"]
 [connection signal="button_released" from="XROrigin3D/RightHand" to="XRFbHandTrackingAimDemo" method="_on_right_hand_button_released"]
 [connection signal="openxr_fb_render_model_loaded" from="XROrigin3D/RightHand/RightControllerFbRenderModel" to="." method="_on_right_controller_fb_render_model_render_model_loaded"]
