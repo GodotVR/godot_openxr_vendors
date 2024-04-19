@@ -30,6 +30,7 @@
 #include "extensions/openxr_fb_hand_tracking_mesh_extension_wrapper.h"
 
 #include <godot_cpp/classes/open_xrapi_extension.hpp>
+#include <godot_cpp/classes/xr_hand_tracker.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
 
 using namespace godot;
@@ -270,52 +271,61 @@ Ref<ArrayMesh> OpenXRFbHandTrackingMeshExtensionWrapper::get_mesh(Hand p_hand) {
 	return hand_mesh[p_hand];
 }
 
-void OpenXRFbHandTrackingMeshExtensionWrapper::construct_skeleton(Hand p_hand, Skeleton3D *r_skeleton) {
+void OpenXRFbHandTrackingMeshExtensionWrapper::construct_skeleton(Skeleton3D *r_skeleton) {
+	r_skeleton->clear_bones();
+
+	const String bone_names[XRHandTracker::HAND_JOINT_MAX] = {
+		"LeftPalm",
+		"LeftHand",
+		"LeftThumbMetacarpal",
+		"LeftThumbProximal",
+		"LeftThumbDistal",
+		"LeftThumbTip",
+		"LeftIndexMetacarpal",
+		"LeftIndexProximal",
+		"LeftIndexIntermediate",
+		"LeftIndexDistal",
+		"LeftIndexTip",
+		"LeftMiddleMetacarpal",
+		"LeftMiddleProximal",
+		"LeftMiddleIntermediate",
+		"LeftMiddleDistal",
+		"LeftMiddleTip",
+		"LeftRingMetacarpal",
+		"LeftRingProximal",
+		"LeftRingIntermediate",
+		"LeftRingDistal",
+		"LeftRingTip",
+		"LeftLittleMetacarpal",
+		"LeftLittleProximal",
+		"LeftLittleIntermediate",
+		"LeftLittleDistal",
+		"LeftLittleTip",
+	};
+
+	const int bone_parents[XRHandTracker::HAND_JOINT_MAX] = {
+		1, -1, 1, 2, 3, 4, 1, 6, 7, 8, 9, 1, 11, 12, 13, 14, 1, 16, 17, 18, 19, 1, 21, 22, 23, 24
+	};
+
+	for (int i = 0; i < XRHandTracker::HAND_JOINT_MAX; i++) {
+		r_skeleton->add_bone(bone_names[i]);
+
+		if (i > 1) {
+			r_skeleton->set_bone_parent(i, bone_parents[i]);
+		}
+	}
+
+	// Palm bone is added before wrist, so parent it here
+	r_skeleton->set_bone_parent(0, 1);
+}
+
+void OpenXRFbHandTrackingMeshExtensionWrapper::reset_skeleton_pose(Hand p_hand, Skeleton3D *r_skeleton) {
 	ERR_FAIL_COND_MSG(!is_enabled(), "OpenXR extension XR_FB_hand_tracking_mesh is not available");
 	ERR_FAIL_COND_MSG(hand_mesh[p_hand].is_null(), "OpenXR extension XR_FB_hand_tracking_mesh has not populated mesh data");
 	ERR_FAIL_NULL_MSG(r_skeleton, "Skeleton3D r_skeleton not valid");
 
-	r_skeleton->clear_bones();
-
-	static const String bone_names[XRHandTracker::HAND_JOINT_MAX] = {
-		"Palm",
-		"Hand",
-		"ThumbMetacarpal",
-		"ThumbProximal",
-		"ThumbDistal",
-		"ThumbTip",
-		"IndexMetacarpal",
-		"IndexProximal",
-		"IndexIntermediate",
-		"IndexDistal",
-		"IndexTip",
-		"MiddleMetacarpal",
-		"MiddleProximal",
-		"MiddleIntermediate",
-		"MiddleDistal",
-		"MiddleTip",
-		"RingMetacarpal",
-		"RingProximal",
-		"RingIntermediate",
-		"RingDistal",
-		"RingTip",
-		"LittleMetacarpal",
-		"LittleProximal",
-		"LittleIntermediate",
-		"LittleDistal",
-		"LittleTip",
-	};
-
-	static const String bone_name_format[2] = {
-		"Left<bone>",
-		"Right<bone>",
-	};
-
 	for (int i = 0; i < XRHandTracker::HAND_JOINT_MAX; i++) {
-		String bone_name = bone_name_format[p_hand].replace("<bone>", bone_names[i]);
-		r_skeleton->add_bone(bone_name);
-
-		int parent_index = static_cast<int>(bone_data[p_hand].joint_parents[i]);
+		int parent_index = r_skeleton->get_bone_parent(i);
 
 		// rotation adjustment to conform with SKELETON_RIG_HUMANOID
 		const Quaternion rot_adjustment(0.0, -Math_SQRT12, Math_SQRT12, 0.0);
@@ -332,14 +342,7 @@ void OpenXRFbHandTrackingMeshExtensionWrapper::construct_skeleton(Hand p_hand, S
 			Transform3D parent_transform = Transform3D(Quaternion(parent_rot.x, parent_rot.y, parent_rot.z, parent_rot.w) * rot_adjustment, Vector3(parent_pos.x, parent_pos.y, parent_pos.z));
 			r_skeleton->set_bone_rest(i, parent_transform.inverse() * transform);
 		}
-
-		if (i > 1) {
-			r_skeleton->set_bone_parent(i, parent_index);
-		}
 	}
-
-	// palm bone is added before wrist, so parent it here
-	r_skeleton->set_bone_parent(0, 1);
 
 	r_skeleton->reset_bone_poses();
 }

@@ -33,6 +33,7 @@
 
 #include <godot_cpp/classes/xr_hand_modifier3d.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
+#include <godot_cpp/classes/xr_hand_tracker.hpp>
 
 using namespace godot;
 
@@ -41,26 +42,14 @@ void OpenXRFbHandTrackingMesh::setup_hand_mesh(Hand p_hand) {
 		return;
 	}
 
-	ERR_FAIL_COND_MSG(skeleton != nullptr, "OpenXRFbHandTrackingMesh skeleton has already been set up");
+	ERR_FAIL_COND_MSG(mesh_instance != nullptr, "OpenXRFbHandTrackingMesh has already been set up.");
 
-	skeleton = memnew(Skeleton3D);
-	OpenXRFbHandTrackingMeshExtensionWrapper::get_singleton()->construct_skeleton(p_hand, skeleton);
-	add_child(skeleton);
+	OpenXRFbHandTrackingMeshExtensionWrapper::get_singleton()->reset_skeleton_pose(p_hand, this);
 
 	mesh_instance = memnew(MeshInstance3D);
 	mesh_instance->set_mesh(OpenXRFbHandTrackingMeshExtensionWrapper::get_singleton()->get_mesh(p_hand));
 	mesh_instance->set_material_override(material);
-	skeleton->add_child(mesh_instance);
-
-	XRHandModifier3D *parent = Object::cast_to<XRHandModifier3D>(get_parent());
-	if (parent) {
-		// TODO: Fix node relationship
-		//parent->set_target(parent->get_path_to(skeleton));
-	}
-}
-
-Skeleton3D *OpenXRFbHandTrackingMesh::get_skeleton() const {
-	return skeleton;
+	add_child(mesh_instance);
 }
 
 MeshInstance3D *OpenXRFbHandTrackingMesh::get_mesh_instance() const {
@@ -68,10 +57,27 @@ MeshInstance3D *OpenXRFbHandTrackingMesh::get_mesh_instance() const {
 }
 
 void OpenXRFbHandTrackingMesh::set_hand(Hand p_hand) {
+	if (hand == p_hand) {
+		return;
+	}
+
 	hand = p_hand;
+
+	if (hand == Hand::HAND_RIGHT) {
+		for (int i = 0; i < XRHandTracker::HAND_JOINT_MAX; i++) {
+			String bone_name = get_bone_name(i).replace("Left", "Right");
+			set_bone_name(i, bone_name);
+		}
+	} else if (hand == Hand::HAND_LEFT) {
+		for (int i = 0; i < XRHandTracker::HAND_JOINT_MAX; i++) {
+			String bone_name = get_bone_name(i).replace("Right", "Left");
+			set_bone_name(i, bone_name);
+		}
+	}
+	notify_property_list_changed();
 }
 
-XRHandTracker::Hand OpenXRFbHandTrackingMesh::get_hand() const {
+OpenXRFbHandTrackingMesh::Hand OpenXRFbHandTrackingMesh::get_hand() const {
 	return hand;
 }
 
@@ -107,12 +113,12 @@ void OpenXRFbHandTrackingMesh::_notification(int p_what) {
 		case NOTIFICATION_POSTINITIALIZE: {
 			OpenXRFbHandTrackingMeshExtensionWrapper::get_singleton()->enable_fetch_hand_mesh_data();
 			OpenXRFbHandTrackingMeshExtensionWrapper::get_singleton()->connect("openxr_fb_hand_tracking_mesh_data_fetched", callable_mp(this, &OpenXRFbHandTrackingMesh::setup_hand_mesh));
+			OpenXRFbHandTrackingMeshExtensionWrapper::get_singleton()->construct_skeleton(this);
 		} break;
 	}
 }
 
 void OpenXRFbHandTrackingMesh::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("get_skeleton"), &OpenXRFbHandTrackingMesh::get_skeleton);
 	ClassDB::bind_method(D_METHOD("get_mesh_instance"), &OpenXRFbHandTrackingMesh::get_mesh_instance);
 	ClassDB::bind_method(D_METHOD("set_hand", "hand"), &OpenXRFbHandTrackingMesh::set_hand);
 	ClassDB::bind_method(D_METHOD("get_hand"), &OpenXRFbHandTrackingMesh::get_hand);

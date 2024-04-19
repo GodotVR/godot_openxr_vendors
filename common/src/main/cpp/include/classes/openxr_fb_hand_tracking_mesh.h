@@ -33,19 +33,20 @@
 #include <godot_cpp/classes/material.hpp>
 #include <godot_cpp/classes/mesh_instance3d.hpp>
 #include <godot_cpp/classes/skeleton3d.hpp>
-#include <godot_cpp/classes/xr_hand_tracker.hpp>
 
 namespace godot {
-class OpenXRFbHandTrackingMesh : public Node3D {
-	GDCLASS(OpenXRFbHandTrackingMesh, Node3D)
+class OpenXRFbHandTrackingMesh : public Skeleton3D {
+	GDCLASS(OpenXRFbHandTrackingMesh, Skeleton3D)
 public:
-	using Hand = XRHandTracker::Hand;
+	enum Hand {
+		HAND_LEFT,
+		HAND_RIGHT,
+		HAND_MAX
+	};
 
 private:
 	Hand hand = Hand::HAND_LEFT;
 	Ref<Material> material;
-
-	Skeleton3D *skeleton = nullptr;
 
 	MeshInstance3D *mesh_instance = nullptr;
 
@@ -56,9 +57,9 @@ protected:
 
 	static void _bind_methods();
 
-public:
-	Skeleton3D *get_skeleton() const;
+	void construct_skeleton();
 
+public:
 	MeshInstance3D *get_mesh_instance() const;
 
 	void set_hand(Hand p_hand);
@@ -74,5 +75,7 @@ public:
 	float get_scale_override() const;
 };
 } //namespace godot
+
+VARIANT_ENUM_CAST(OpenXRFbHandTrackingMesh::Hand);
 
 #endif
