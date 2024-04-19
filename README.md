@@ -17,7 +17,28 @@ the `godot-cpp` submodule:
 git submodule update --init
 ```
 
-### Building the Godot-CPP bindings
+### Short build instructions
+
+The following build command run all the build commands mentioned in the 'Expanded build instructions' section below.
+
+#### Linux / MacOS
+Run the following command from the root directory to build the plugin artifacts:
+```
+./gradlew buildPlugin
+```
+
+#### Windows
+Run the following command from the root directory to build the plugin artifacts:
+```
+gradlew.bat buildPlugin
+```
+
+### Expanded build instructions
+
+These are all the build commands that are being run by the `gradlew buildPlugin` command.
+They are detailed here for those needing to customize / troubleshoot their build process.
+
+#### Building the Godot-CPP bindings
 Build the Android C++ bindings using the following commands.
 ```
 cd thirdparty/godot-cpp
@@ -30,22 +51,20 @@ scons platform=android target=template_release arch=x86_64 custom_api_file=../go
 When the command is completed, you should have static libraries stored in `thirdparty/godot-cpp/bin`
 that will be used for compilation by the plugin.
 
-### Building the Plugin
+#### Building the Plugin
 Run the following command from the root directory to generate the editor gdextension plugin:
 ```
 scons target=template_debug custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json
 scons target=template_release custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json
-scons target=template_debug platform=android custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json
-scons target=template_release platform=android custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json
 ```
 
-#### Linux / MacOS
+##### Linux / MacOS
 Run the following command from the root directory to build the vendors `AAR` Android binaries:
 ```
 ./gradlew build
 ```
 
-#### Windows
+##### Windows
 Run the following command from the root directory to build the vendors `AAR` Android binaries:
 ```
 gradlew.bat build

@@ -67,6 +67,15 @@ dependencies {
     compileOnly libraries.godotAndroidLib
 }
 
+task cleanAssets(type: Delete) {
+    // Delete the 'addons' directory in the 'assets' folder
+    delete("src/main/assets/addons")
+}
+
+task cleanCxx(type: Delete) {
+    delete(".cxx")
+}
+
 task copyDebugAARToAddons(type: Copy) {
     from 'build/outputs/aar'
     include 'godotopenxrkhronos-debug.aar'
@@ -91,3 +100,5 @@ preBuild.dependsOn(copyGdExtensionConfigToAssets)
 assemble.dependsOn(copyGdExtensionConfigToAssets)
 assemble.finalizedBy(copyDebugAARToAddons)
 assemble.finalizedBy(copyReleaseAARToAddons)
+clean.dependsOn(cleanAssets)
+clean.dependsOn(cleanCxx)

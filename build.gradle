@@ -27,4 +27,102 @@ version = getReleaseVersion()
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+
+    dependsOn 'cleanAddon'
+
+    dependsOn ':godotopenxrkhronos:clean'
+    dependsOn ':godotopenxrlynx:clean'
+    dependsOn ':godotopenxrmeta:clean'
+    dependsOn ':godotopenxrpico:clean'
+}
+
+/**
+ * Clean the artifacts for the 'godotopenxrvendors' addon
+ */
+task cleanAddon(type: Delete) {
+    // Delete the bin directory for the addon
+    delete("demo/addons/godotopenxrvendors/.bin")
+}
+
+/**
+ * Build the 'godotopenxrvendors' plugin
+ */
+task buildPlugin {
+    // Generate the editor gdextension binaries
+    dependsOn ':buildSconsArtifacts'
+
+    dependsOn ":godotopenxrkhronos:build"
+    dependsOn ":godotopenxrlynx:build"
+    dependsOn ":godotopenxrmeta:build"
+    dependsOn ":godotopenxrpico:build"
+}
+
+/**
+ * Build the scons artifacts for the project
+ */
+task buildSconsArtifacts {
+    // Find scons' executable path
+    File sconsExecutableFile = null
+    def sconsName = "scons"
+    def sconsExts = (org.gradle.internal.os.OperatingSystem.current().isWindows()
+            ? [".bat", ".cmd", ".ps1", ".exe"]
+            : [""])
+    logger.debug("Looking for $sconsName executable path")
+    for (ext in sconsExts) {
+        String sconsNameExt = sconsName + ext
+        logger.debug("Checking $sconsNameExt")
+        sconsExecutableFile = org.gradle.internal.os.OperatingSystem.current().findInPath(sconsNameExt)
+        if (sconsExecutableFile != null) {
+            // We're done!
+            break
+        }
+        // Check all the options in path
+        List<File> allOptions = org.gradle.internal.os.OperatingSystem.current().findAllInPath(sconsNameExt)
+        if (!allOptions.isEmpty()) {
+            // Pick the first option and we're done!
+            sconsExecutableFile = allOptions.get(0)
+            break
+        }
+    }
+    if (sconsExecutableFile == null) {
+        throw new GradleException("Unable to find executable path for the '$sconsName' command.")
+    } else {
+        logger.debug("Found executable path for $sconsName: ${sconsExecutableFile.absolutePath}")
+    }
+
+    // Build the Godot-CPP bindings
+    tasks.create(name: "buildGodotCPPArm64Debug", type: Exec) {
+        executable sconsExecutableFile.absolutePath
+        args "--directory=thirdparty/godot-cpp", "platform=android", "target=template_debug", "arch=arm64", "custom_api_file=../godot_cpp_gdextension_api/extension_api.json"
+    }
+    tasks.create(name: "buildGodotCPPArm64Release", type: Exec) {
+        executable sconsExecutableFile.absolutePath
+        args "--directory=thirdparty/godot-cpp", "platform=android", "target=template_release", "arch=arm64", "custom_api_file=../godot_cpp_gdextension_api/extension_api.json"
+    }
+    tasks.create(name: "buildGodotCPPX86_64Debug", type: Exec) {
+        executable sconsExecutableFile.absolutePath
+        args "--directory=thirdparty/godot-cpp", "platform=android", "target=template_debug", "arch=x86_64", "custom_api_file=../godot_cpp_gdextension_api/extension_api.json"
+    }
+    tasks.create(name: "buildGodotCPPX86_64Release", type: Exec) {
+        executable sconsExecutableFile.absolutePath
+        args "--directory=thirdparty/godot-cpp", "platform=android", "target=template_release", "arch=x86_64", "custom_api_file=../godot_cpp_gdextension_api/extension_api.json"
+    }
+
+    dependsOn 'buildGodotCPPArm64Debug'
+    dependsOn 'buildGodotCPPArm64Release'
+    dependsOn 'buildGodotCPPX86_64Debug'
+    dependsOn 'buildGodotCPPX86_64Release'
+
+    // Creating gradle task to generate the editor gdextension binaries
+    tasks.create(name: "buildGodotOpenXRVendorsDebugGDExtension", type: Exec) {
+        executable sconsExecutableFile.absolutePath
+        args "--directory=.", "target=template_debug", "custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json"
+    }
+    tasks.create(name: "buildGodotOpenXRVendorsReleaseGDExtension", type: Exec) {
+        executable sconsExecutableFile.absolutePath
+        args "--directory=.", "target=template_release", "custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json"
+    }
+
+    dependsOn 'buildGodotOpenXRVendorsDebugGDExtension'
+    dependsOn 'buildGodotOpenXRVendorsReleaseGDExtension'
 }
