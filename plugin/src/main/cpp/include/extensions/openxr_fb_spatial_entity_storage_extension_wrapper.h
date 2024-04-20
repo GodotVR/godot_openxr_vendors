@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  openxr_fb_spatial_entity_query_extension_wrapper.h                    */
+/*  openxr_fb_spatial_entity_storage_extension_wrapper.h                    */
 /**************************************************************************/
 /*                       This file is part of:                            */
 /*                              GODOT XR                                  */
@@ -48,7 +48,7 @@ public:
 	void _on_instance_destroyed() override;
 	virtual bool _on_event_polled(const void *event) override;
 
-	bool is_spatial_entity_query_supported() {
+	bool is_spatial_entity_storage_supported() {
 		return fb_spatial_entity_storage_ext;
 	}
 
