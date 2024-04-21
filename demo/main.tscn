@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://cqsodpswgup8w"]
+[gd_scene load_steps=24 format=3 uid="uid://cqsodpswgup8w"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_fsva1"]
 [ext_resource type="PackedScene" uid="uid://c0uv4eu2yjm3b" path="res://viewport_2d_in_3d.tscn" id="2_7whgo"]
@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://cay8oh2ll7yxi" path="res://assets/test_kun/Test-Kun.fbx" id="4_b317s"]
 [ext_resource type="Image" uid="uid://dqxb16d1fqtrw" path="res://assets/color-lut-inverted-32.png" id="4_pv7hh"]
 [ext_resource type="PackedScene" uid="uid://bwfyi8pgigune" path="res://xr_fb_hand_tracking_aim_demo.tscn" id="5_6bxyh"]
+[ext_resource type="Material" uid="uid://bdwh0vc86hsdb" path="res://assets/hand_silhouette_outline_mat.tres" id="7_tpkib"]
 
 [sub_resource type="Gradient" id="Gradient_yvg3n"]
 offsets = PackedFloat32Array(0, 0.484615, 1)
@@ -152,6 +153,7 @@ visible = false
 tracker = &"/user/hand_tracker/left"
 
 [node name="LeftHandModel" type="OpenXRFbHandTrackingMesh" parent="XROrigin3D/LeftHandTracker"]
+material = ExtResource("7_tpkib")
 
 [node name="LeftXRHandModifier3D" type="XRHandModifier3D" parent="XROrigin3D/LeftHandTracker/LeftHandModel"]
 
@@ -186,6 +188,7 @@ bones/22/name = "RightLittleProximal"
 bones/23/name = "RightLittleIntermediate"
 bones/24/name = "RightLittleDistal"
 bones/25/name = "RightLittleTip"
+material = ExtResource("7_tpkib")
 
 [node name="RightXRHandModifier3D" type="XRHandModifier3D" parent="XROrigin3D/RightHandTracker/RightHandModel"]
 hand_tracker = &"/user/hand_tracker/right"

@@ -1,0 +1,22 @@
+[gd_resource type="ShaderMaterial" load_steps=4 format=4 uid="uid://bdwh0vc86hsdb"]
+
+[ext_resource type="Shader" path="res://assets/hand_outline.gdshader" id="1_wpjxj"]
+[ext_resource type="Shader" path="res://assets/hand_silhouette.gdshader" id="2_dvpns"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_42j4f"]
+render_priority = 0
+shader = ExtResource("1_wpjxj")
+shader_parameter/outline_color = Color(0.26, 0.34, 0.4, 1)
+shader_parameter/outline_width = 1.6
+shader_parameter/max_opacity = 0.95
+shader_parameter/fade_offset = 0.055
+shader_parameter/fade_sharpness = 32.0
+
+[resource]
+render_priority = 1
+next_pass = SubResource("ShaderMaterial_42j4f")
+shader = ExtResource("2_dvpns")
+shader_parameter/silhouette_color = Color(0.071, 0.068, 0.104, 1)
+shader_parameter/max_opacity = 0.95
+shader_parameter/fade_offset = 0.055
+shader_parameter/fade_sharpness = 28.0
