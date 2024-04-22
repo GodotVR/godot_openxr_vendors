@@ -52,9 +52,9 @@ class GodotOpenXRMeta(godot: Godot?) : GodotPlugin(godot) {
     companion object {
         private val TAG = GodotOpenXRMeta::class.java.simpleName
 
-        private const val EYE_TRACKING_PERMISSION = "com.oculus.permission.EYE_TRACKING"
-        private const val FACE_TRACKING_PERMISSION = "com.oculus.permission.FACE_TRACKING"
-        private const val SCENE_PERMISSION = "com.oculus.permission.USE_SCENE"
+        const val EYE_TRACKING_PERMISSION = "com.oculus.permission.EYE_TRACKING"
+        const val FACE_TRACKING_PERMISSION = "com.oculus.permission.FACE_TRACKING"
+        const val SCENE_PERMISSION = "com.oculus.permission.USE_SCENE"
 
         init {
             try {
@@ -135,6 +135,30 @@ class GodotOpenXRMeta(godot: Godot?) : GodotPlugin(godot) {
             activity.requestPermissions(requestedPermissions.toTypedArray<String>(), PermissionsUtil.REQUEST_ALL_PERMISSION_REQ_CODE)
             return true
         }
+
+        /**
+         * Dispatch the necessary requests for all plugin's permissions in the app's manifest.
+         */
+        @JvmStatic
+        fun requestAllPluginPermissions(activity: Activity) {
+            val permissionsToRequest = ArrayList<String>()
+            // Request the eye tracking permission if it's included in the manifest
+            if (PermissionsUtil.hasManifestPermission(activity, EYE_TRACKING_PERMISSION)) {
+                permissionsToRequest.add(EYE_TRACKING_PERMISSION)
+            }
+            // Request the face tracking permission if it's included in the manifest
+            if (PermissionsUtil.hasManifestPermission(activity, FACE_TRACKING_PERMISSION)) {
+                permissionsToRequest.add(FACE_TRACKING_PERMISSION)
+            }
+            // Request the scene API permission if it's included in the manifest
+            if (PermissionsUtil.hasManifestPermission(activity, SCENE_PERMISSION)) {
+                permissionsToRequest.add(SCENE_PERMISSION)
+            }
+
+            if (permissionsToRequest.isNotEmpty()) {
+                requestPermissions(activity, permissionsToRequest)
+            }
+        }
     }
 
     override fun getPluginName(): String {
@@ -144,23 +168,7 @@ class GodotOpenXRMeta(godot: Godot?) : GodotPlugin(godot) {
     override fun getPluginGDExtensionLibrariesPaths() = setOf("res://addons/godotopenxrvendors/plugin.gdextension")
 
     override fun onMainCreate(activity: Activity): View? {
-        val permissionsToRequest = ArrayList<String>()
-        // Request the eye tracking permission if it's included in the manifest
-        if (PermissionsUtil.hasManifestPermission(activity, EYE_TRACKING_PERMISSION)) {
-            permissionsToRequest.add(EYE_TRACKING_PERMISSION)
-        }
-        // Request the face tracking permission if it's included in the manifest
-        if (PermissionsUtil.hasManifestPermission(activity, FACE_TRACKING_PERMISSION)) {
-            permissionsToRequest.add(FACE_TRACKING_PERMISSION)
-        }
-        // Request the scene API permission if it's included in the manifest
-        if (PermissionsUtil.hasManifestPermission(activity, SCENE_PERMISSION)) {
-            permissionsToRequest.add(SCENE_PERMISSION)
-        }
-
-        if (permissionsToRequest.isNotEmpty()) {
-            requestPermissions(activity, permissionsToRequest)
-        }
+        requestAllPluginPermissions(activity)
         return null
     }
 
