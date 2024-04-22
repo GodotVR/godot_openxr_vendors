@@ -4,8 +4,7 @@ This directory contains the API JSON for
 [**Godot Engine**](https://github.com/godotengine/godot)'s *GDExtensions* API.
 
 ## Current API version
-- **Godot Engine v4.3.dev5.official**
-- [commit 89f70e98d209563abb4dbc1f8cd5d76c81eb7940](https://github.com/godotengine/godot/commit/89f70e98d209563abb4dbc1f8cd5d76c81eb7940)
+- [commit 7529c0bec597d70bc61975a82063bb5112ac8879](https://github.com/godotengine/godot/commit/7529c0bec597d70bc61975a82063bb5112ac8879)
 
 ## Updating API
 

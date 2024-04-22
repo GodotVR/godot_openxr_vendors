@@ -113,14 +113,14 @@ void OpenXRFbFaceTrackingExtensionWrapper::_on_session_created(uint64_t instance
 	}
 
 	// Create the face-tracker handle
-    XrFaceTrackingDataSource2FB dataSources[2] = {
-        XR_FACE_TRACKING_DATA_SOURCE2_VISUAL_FB,
-        XR_FACE_TRACKING_DATA_SOURCE2_AUDIO_FB
-    };
+	XrFaceTrackingDataSource2FB dataSources[2] = {
+		XR_FACE_TRACKING_DATA_SOURCE2_VISUAL_FB,
+		XR_FACE_TRACKING_DATA_SOURCE2_AUDIO_FB
+	};
 	XrFaceTrackerCreateInfo2FB createInfo2 = { XR_TYPE_FACE_TRACKER_CREATE_INFO2_FB };
 	createInfo2.faceExpressionSet = XR_FACE_EXPRESSION_SET2_DEFAULT_FB;
-    createInfo2.requestedDataSourceCount = 2;
-    createInfo2.requestedDataSources = dataSources;
+	createInfo2.requestedDataSourceCount = 2;
+	createInfo2.requestedDataSources = dataSources;
 	XrResult result = xrCreateFaceTracker2FB(SESSION, &createInfo2, &face_tracker2);
 	if (XR_FAILED(result)) {
 		UtilityFunctions::print("Failed to create face-tracker handle: ", result);
@@ -130,6 +130,7 @@ void OpenXRFbFaceTrackingExtensionWrapper::_on_session_created(uint64_t instance
 	// Construct the XRFaceTracker if necessary
 	if (xr_face_tracker.is_null()) {
 		xr_face_tracker.instantiate();
+		xr_face_tracker->set_tracker_name("/user/face_tracker");
 	}
 }
 
@@ -150,7 +151,7 @@ void OpenXRFbFaceTrackingExtensionWrapper::_on_session_destroyed() {
 	if (xr_face_tracker_registered) {
 		XRServer *xr_server = XRServer::get_singleton();
 		if (xr_server) {
-			xr_server->remove_face_tracker("/user/head");
+			xr_server->remove_tracker(xr_face_tracker);
 		}
 	}
 	xr_face_tracker_registered = false;
@@ -347,7 +348,7 @@ void OpenXRFbFaceTrackingExtensionWrapper::_on_process() {
 	if (!xr_face_tracker_registered) {
 		XRServer *xr_server = XRServer::get_singleton();
 		if (xr_server) {
-			xr_server->add_face_tracker("/user/head", xr_face_tracker);
+			xr_server->add_tracker(xr_face_tracker);
 			xr_face_tracker_registered = true;
 		}
 	}
