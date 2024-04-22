@@ -54,7 +54,8 @@ void OpenXRFbHandTrackingMesh::setup_hand_mesh(Hand p_hand) {
 
 	XRHandModifier3D *parent = Object::cast_to<XRHandModifier3D>(get_parent());
 	if (parent) {
-		parent->set_target(parent->get_path_to(skeleton));
+		// TODO: Fix node relationship
+		//parent->set_target(parent->get_path_to(skeleton));
 	}
 }
 
