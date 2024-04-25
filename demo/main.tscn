@@ -148,7 +148,6 @@ hand_tracker = &"/user/right"
 
 [node name="RightHandModel" type="OpenXRFbHandTrackingMesh" parent="XROrigin3D/RightXRHandModifier3D"]
 hand = 1
-use_scale_override = false
 
 [node name="OpenXRFbSceneManager" type="OpenXRFbSceneManager" parent="XROrigin3D"]
 default_scene = ExtResource("4_3u3ah")
@@ -159,7 +158,7 @@ visible = false
 mesh = SubResource("PlaneMesh_mjcgt")
 
 [node name="TrackedFace" type="Node3D" parent="Floor"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4, -1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.23342, -0.677775)
 
 [node name="Face" parent="Floor/TrackedFace" instance=ExtResource("4_wrwst")]
 
