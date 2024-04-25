@@ -31,6 +31,7 @@
 #include "extensions/openxr_fb_passthrough_extension_wrapper.h"
 
 #include <godot_cpp/classes/gradient.hpp>
+#include <godot_cpp/classes/image.hpp>
 #include <godot_cpp/classes/main_loop.hpp>
 #include <godot_cpp/classes/open_xrapi_extension.hpp>
 #include <godot_cpp/classes/os.hpp>
@@ -58,6 +59,7 @@ OpenXRFbPassthroughExtensionWrapper::OpenXRFbPassthroughExtensionWrapper() :
 	request_extensions[XR_FB_PASSTHROUGH_EXTENSION_NAME] = &fb_passthrough_ext;
 	request_extensions[XR_FB_TRIANGLE_MESH_EXTENSION_NAME] = &fb_triangle_mesh_ext;
 	request_extensions[XR_META_PASSTHROUGH_PREFERENCES_EXTENSION_NAME] = &meta_passthrough_preferences_ext;
+	request_extensions[XR_META_PASSTHROUGH_COLOR_LUT_EXTENSION_NAME] = &meta_passthrough_color_lut_ext;
 
 	singleton = this;
 }
@@ -90,6 +92,11 @@ void OpenXRFbPassthroughExtensionWrapper::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("is_passthrough_preferred"), &OpenXRFbPassthroughExtensionWrapper::is_passthrough_preferred);
 
+	ClassDB::bind_method(D_METHOD("set_color_lut"), &OpenXRFbPassthroughExtensionWrapper::set_color_lut);
+	ClassDB::bind_method(D_METHOD("set_interpolated_color_lut"), &OpenXRFbPassthroughExtensionWrapper::set_interpolated_color_lut);
+	ClassDB::bind_method(D_METHOD("destroy_color_lut"), &OpenXRFbPassthroughExtensionWrapper::destroy_color_lut);
+	ClassDB::bind_method(D_METHOD("get_max_color_lut_resolution"), &OpenXRFbPassthroughExtensionWrapper::get_max_color_lut_resolution);
+
 	ADD_SIGNAL(MethodInfo("openxr_fb_projected_passthrough_layer_created"));
 	ADD_SIGNAL(MethodInfo("openxr_fb_passthrough_stopped"));
 	ADD_SIGNAL(MethodInfo("openxr_fb_passthrough_state_changed", PropertyInfo(Variant::INT, "event_type")));
@@ -102,6 +109,8 @@ void OpenXRFbPassthroughExtensionWrapper::_bind_methods() {
 	BIND_ENUM_CONSTANT(PASSTHROUGH_FILTER_COLOR_MAP);
 	BIND_ENUM_CONSTANT(PASSTHROUGH_FILTER_MONO_MAP);
 	BIND_ENUM_CONSTANT(PASSTHROUGH_FILTER_BRIGHTNESS_CONTRAST_SATURATION);
+	BIND_ENUM_CONSTANT(PASSTHROUGH_FILTER_COLOR_MAP_LUT);
+	BIND_ENUM_CONSTANT(PASSTHROUGH_FILTER_COLOR_MAP_INTERPOLATED_LUT);
 
 	BIND_ENUM_CONSTANT(PASSTHROUGH_ERROR_NON_RECOVERABLE);
 	BIND_ENUM_CONSTANT(PASSTHROUGH_ERROR_RECOVERABLE);
@@ -122,9 +131,11 @@ void OpenXRFbPassthroughExtensionWrapper::cleanup() {
 	fb_passthrough_ext = false;
 	fb_triangle_mesh_ext = false;
 	meta_passthrough_preferences_ext = false;
+	meta_passthrough_color_lut_ext = false;
 }
 
 uint64_t OpenXRFbPassthroughExtensionWrapper::_set_system_properties_and_get_next_pointer(void *p_next_pointer) {
+	system_passthrough_properties.next = &system_passthrough_color_lut_properties;
 	return reinterpret_cast<uint64_t>(&system_passthrough_properties);
 }
 
@@ -151,6 +162,14 @@ void OpenXRFbPassthroughExtensionWrapper::_on_instance_created(uint64_t p_instan
 		if (!result) {
 			UtilityFunctions::print("Failed to initialize meta_passthrough_preferences extension");
 			meta_passthrough_preferences_ext = false;
+		}
+	}
+
+	if (meta_passthrough_color_lut_ext) {
+		bool result = initialize_meta_passthrough_color_lut_extension(instance);
+		if (!result) {
+			UtilityFunctions::printerr("Failed to initialize meta_passthrough_color_lut extension");
+			meta_passthrough_color_lut_ext = false;
 		}
 	}
 }
@@ -519,9 +538,7 @@ Color OpenXRFbPassthroughExtensionWrapper::get_edge_color() {
 }
 
 void OpenXRFbPassthroughExtensionWrapper::set_passthrough_filter(PassthroughFilter p_filter) {
-	current_passthrough_filter = p_filter;
-
-	switch (current_passthrough_filter) {
+	switch (p_filter) {
 		case PASSTHROUGH_FILTER_DISABLED: {
 			passthrough_style.next = nullptr;
 		} break;
@@ -534,7 +551,23 @@ void OpenXRFbPassthroughExtensionWrapper::set_passthrough_filter(PassthroughFilt
 		case PASSTHROUGH_FILTER_BRIGHTNESS_CONTRAST_SATURATION: {
 			passthrough_style.next = &brightness_contrast_saturation;
 		} break;
+		case PASSTHROUGH_FILTER_COLOR_MAP_LUT: {
+			if (color_lut_handle == XR_NULL_HANDLE) {
+				UtilityFunctions::print("Cannot set filter to color map LUT, color LUT has not been previously set");
+				return;
+			}
+			passthrough_style.next = &color_map_lut;
+		} break;
+		case PASSTHROUGH_FILTER_COLOR_MAP_INTERPOLATED_LUT: {
+			if (source_color_lut_handle == XR_NULL_HANDLE || target_color_lut_handle == XR_NULL_HANDLE) {
+				UtilityFunctions::print("Cannot set filter to color map interpolated LUT, interpolated color LUT has not been previously set");
+				return;
+			}
+			passthrough_style.next = &color_map_interpolated_lut;
+		} break;
 	}
+
+	current_passthrough_filter = p_filter;
 
 	if (is_passthrough_started()) {
 		XrResult result = xrPassthroughLayerSetStyleFB(passthrough_layer[current_passthrough_layer], &passthrough_style);
@@ -640,6 +673,137 @@ bool OpenXRFbPassthroughExtensionWrapper::is_passthrough_preferred() {
 	return passthrough_preferences.flags & XR_PASSTHROUGH_PREFERENCE_DEFAULT_TO_ACTIVE_BIT_META;
 }
 
+void OpenXRFbPassthroughExtensionWrapper::set_color_lut(float p_weight, const Ref<OpenXRMetaPassthroughColorLut> &p_color_lut) {
+	if (!meta_passthrough_color_lut_ext) {
+		UtilityFunctions::print("Passthrough color LUT extension not enabled!");
+		return;
+	}
+
+	if (p_color_lut->get_handle() == XR_NULL_HANDLE) {
+		create_color_lut(p_color_lut);
+	}
+
+	color_lut_handle = p_color_lut->get_handle();
+
+	current_passthrough_filter = PASSTHROUGH_FILTER_COLOR_MAP_LUT;
+	color_map_lut.colorLut = color_lut_handle;
+	color_map_lut.weight = CLAMP(p_weight, 0.0, 1.0);
+	passthrough_style.next = &color_map_lut;
+
+	if (is_passthrough_started()) {
+		XrResult result = xrPassthroughLayerSetStyleFB(passthrough_layer[current_passthrough_layer], &passthrough_style);
+		if (XR_FAILED(result)) {
+			UtilityFunctions::printerr("Failed to set passthrough style, error code: ", result);
+		}
+	}
+}
+
+void OpenXRFbPassthroughExtensionWrapper::set_interpolated_color_lut(float p_weight, const Ref<OpenXRMetaPassthroughColorLut> &p_source_color_lut, const Ref<OpenXRMetaPassthroughColorLut> &p_target_color_lut) {
+	if (!meta_passthrough_color_lut_ext) {
+		UtilityFunctions::print("Passthrough color LUT extension not enabled!");
+		return;
+	}
+
+	if (!p_source_color_lut->get_handle()) {
+		create_color_lut(p_source_color_lut);
+	}
+
+	if (!p_target_color_lut->get_handle()) {
+		create_color_lut(p_target_color_lut);
+	}
+
+	source_color_lut_handle = p_source_color_lut->get_handle();
+	target_color_lut_handle = p_target_color_lut->get_handle();
+
+	current_passthrough_filter = PASSTHROUGH_FILTER_COLOR_MAP_INTERPOLATED_LUT;
+	color_map_interpolated_lut.sourceColorLut = source_color_lut_handle;
+	color_map_interpolated_lut.targetColorLut = target_color_lut_handle;
+	color_map_interpolated_lut.weight = CLAMP(p_weight, 0.0, 1.0);
+	passthrough_style.next = &color_map_interpolated_lut;
+
+	if (is_passthrough_started()) {
+		XrResult result = xrPassthroughLayerSetStyleFB(passthrough_layer[current_passthrough_layer], &passthrough_style);
+		if (XR_FAILED(result)) {
+			UtilityFunctions::printerr("Failed to set passthrough style, error code: ", result);
+		}
+	}
+}
+
+void OpenXRFbPassthroughExtensionWrapper::create_color_lut(const Ref<OpenXRMetaPassthroughColorLut> &p_color_lut) {
+	if (p_color_lut->get_image_cell_resolution() > system_passthrough_color_lut_properties.maxColorLutResolution) {
+		UtilityFunctions::print("Color LUT cell resolution cannot be greater than the maximum resolution supported by this system: ", system_passthrough_color_lut_properties.maxColorLutResolution);
+		return;
+	}
+
+	XrPassthroughColorLutChannelsMETA channels;
+	switch (p_color_lut->get_channels()) {
+		case OpenXRMetaPassthroughColorLut::COLOR_LUT_CHANNELS_RGB: {
+			channels = XR_PASSTHROUGH_COLOR_LUT_CHANNELS_RGB_META;
+		} break;
+		case OpenXRMetaPassthroughColorLut::COLOR_LUT_CHANNELS_RGBA: {
+			channels = XR_PASSTHROUGH_COLOR_LUT_CHANNELS_RGBA_META;
+		} break;
+	}
+
+	XrPassthroughColorLutDataMETA color_lut_data = {
+		(uint32_t)p_color_lut->get_buffer().size(), // bufferSize
+		p_color_lut->get_buffer().ptr(), // buffer
+	};
+
+	XrPassthroughColorLutCreateInfoMETA color_lut_create_info = {
+		XR_TYPE_PASSTHROUGH_COLOR_LUT_CREATE_INFO_META, // type
+		nullptr, // next
+		channels, // channels
+		(uint32_t)p_color_lut->get_image_cell_resolution(), // resolution
+		color_lut_data, // data
+	};
+
+	XrPassthroughColorLutMETA handle;
+	XrResult result = xrCreatePassthroughColorLutMETA(passthrough_handle, &color_lut_create_info, &handle);
+	if (XR_FAILED(result)) {
+		UtilityFunctions::printerr("Failed to create passthrough color LUT, error code: ", result);
+		return;
+	}
+
+	p_color_lut->set_handle(handle);
+}
+
+void OpenXRFbPassthroughExtensionWrapper::destroy_color_lut(const Ref<OpenXRMetaPassthroughColorLut> &p_color_lut) {
+	XrPassthroughColorLutMETA handle = p_color_lut->get_handle();
+
+	if (handle == XR_NULL_HANDLE) {
+		UtilityFunctions::print("Cannot delete invalid color LUT");
+		return;
+	}
+
+	XrResult result = xrDestroyPassthroughColorLutMETA(handle);
+	if (XR_FAILED(result)) {
+		UtilityFunctions::printerr("Failed to destroy passthrough color LUT, error code: ", result);
+		return;
+	}
+
+	if (color_lut_handle == handle) {
+		color_lut_handle = XR_NULL_HANDLE;
+	}
+	if (source_color_lut_handle == handle) {
+		source_color_lut_handle = XR_NULL_HANDLE;
+	}
+	if (target_color_lut_handle == handle) {
+		target_color_lut_handle = XR_NULL_HANDLE;
+	}
+
+	p_color_lut->set_handle(XR_NULL_HANDLE);
+}
+
+int OpenXRFbPassthroughExtensionWrapper::get_max_color_lut_resolution() {
+	if (!meta_passthrough_color_lut_ext) {
+		UtilityFunctions::print("Passthrough color LUT extension not enabled!");
+		return 0;
+	}
+
+	return system_passthrough_color_lut_properties.maxColorLutResolution;
+}
+
 XRInterface::EnvironmentBlendMode OpenXRFbPassthroughExtensionWrapper::get_blend_mode() {
 	Ref<XRInterface> xr_interface = XRServer::get_singleton()->find_interface("OpenXR");
 	if (xr_interface.is_valid()) {
@@ -680,6 +844,12 @@ bool OpenXRFbPassthroughExtensionWrapper::initialize_fb_triangle_mesh_extension(
 
 bool OpenXRFbPassthroughExtensionWrapper::initialize_meta_passthrough_preferences_extension(const XrInstance p_instance) {
 	GDEXTENSION_INIT_XR_FUNC_V(xrGetPassthroughPreferencesMETA);
+}
+
+bool OpenXRFbPassthroughExtensionWrapper::initialize_meta_passthrough_color_lut_extension(const XrInstance p_instance) {
+	GDEXTENSION_INIT_XR_FUNC_V(xrCreatePassthroughColorLutMETA);
+	GDEXTENSION_INIT_XR_FUNC_V(xrDestroyPassthroughColorLutMETA);
+	GDEXTENSION_INIT_XR_FUNC_V(xrUpdatePassthroughColorLutMETA);
 
 	return true;
 }
