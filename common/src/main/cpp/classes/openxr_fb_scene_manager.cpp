@@ -93,7 +93,7 @@ bool OpenXRFbSceneManager::_get(const StringName &p_name, Variant &r_ret) const 
 	if (parts.size() == 2 && parts[0] == "scenes") {
 		const PackedStringArray &semantic_labels = OpenXRFbSceneExtensionWrapper::get_supported_semantic_labels();
 		if (semantic_labels.has(parts[1])) {
-			const Ref<PackedScene> *scene = scenes.getptr(p_name.substr(7));
+			const Ref<PackedScene> *scene = scenes.getptr(parts[1]);
 			r_ret = scene ? Variant(*scene) : Variant();
 			return true;
 		}
@@ -104,7 +104,7 @@ bool OpenXRFbSceneManager::_get(const StringName &p_name, Variant &r_ret) const 
 void OpenXRFbSceneManager::_get_property_list(List<PropertyInfo> *p_list) const {
 	const PackedStringArray &semantic_labels = OpenXRFbSceneExtensionWrapper::get_supported_semantic_labels();
 	for (int i = 0; i < semantic_labels.size(); i++) {
-		p_list->push_back(PropertyInfo(Variant::Type::OBJECT, "scenes/" + semantic_labels[i].to_lower(), PROPERTY_HINT_RESOURCE_TYPE, "PackedScene"));
+		p_list->push_back(PropertyInfo(Variant::Type::OBJECT, "scenes/" + semantic_labels[i], PROPERTY_HINT_RESOURCE_TYPE, "PackedScene"));
 	}
 }
 
@@ -300,12 +300,12 @@ void OpenXRFbSceneManager::_create_scene_anchor(const Ref<OpenXRFbSpatialEntity>
 }
 
 Ref<PackedScene> OpenXRFbSceneManager::get_scene_for_entity(const Ref<OpenXRFbSpatialEntity> &p_entity) const {
-	Array semantic_labels = p_entity->get_semantic_labels();
+	PackedStringArray semantic_labels = p_entity->get_semantic_labels();
 
 	// @todo Allow developers to override which label is selected.
-	Variant selected_label = semantic_labels.size() > 0 ? semantic_labels[0] : Variant();
+	String selected_label = semantic_labels.size() > 0 ? semantic_labels[0] : String();
 
-	if (selected_label.get_type() == Variant::STRING && scenes.has(selected_label)) {
+	if (!selected_label.is_empty() && scenes.has(selected_label)) {
 		return scenes[selected_label];
 	}
 

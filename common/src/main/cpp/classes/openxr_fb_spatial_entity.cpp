@@ -29,15 +29,18 @@
 
 #include "classes/openxr_fb_spatial_entity.h"
 
+#include <godot_cpp/classes/array_mesh.hpp>
 #include <godot_cpp/classes/box_mesh.hpp>
 #include <godot_cpp/classes/box_shape3d.hpp>
 #include <godot_cpp/classes/collision_shape3d.hpp>
+#include <godot_cpp/classes/concave_polygon_shape3d.hpp>
 #include <godot_cpp/classes/mesh_instance3d.hpp>
 #include <godot_cpp/classes/plane_mesh.hpp>
 
 #include "extensions/openxr_fb_spatial_entity_extension_wrapper.h"
 #include "extensions/openxr_fb_spatial_entity_container_extension_wrapper.h"
 #include "extensions/openxr_fb_scene_extension_wrapper.h"
+#include "extensions/openxr_meta_spatial_entity_mesh_extension_wrapper.h"
 
 using namespace godot;
 
@@ -55,6 +58,7 @@ void OpenXRFbSpatialEntity::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_bounding_box_2d"), &OpenXRFbSpatialEntity::get_bounding_box_2d);
 	ClassDB::bind_method(D_METHOD("get_bounding_box_3d"), &OpenXRFbSpatialEntity::get_bounding_box_3d);
 	ClassDB::bind_method(D_METHOD("get_boundary_2d"), &OpenXRFbSpatialEntity::get_boundary_2d);
+	ClassDB::bind_method(D_METHOD("get_triangle_mesh"), &OpenXRFbSpatialEntity::get_triangle_mesh);
 
 	ClassDB::bind_method(D_METHOD("track"), &OpenXRFbSpatialEntity::track);
 	ClassDB::bind_method(D_METHOD("untrack"), &OpenXRFbSpatialEntity::untrack);
@@ -180,10 +184,47 @@ bool OpenXRFbSpatialEntity::is_tracked() const {
 	return OpenXRFbSpatialEntityExtensionWrapper::get_singleton()->is_entity_tracked(uuid);
 }
 
+Array OpenXRFbSpatialEntity::get_triangle_mesh() const {
+	OpenXRMetaSpatialEntityMeshExtensionWrapper::TriangleMesh mesh_data;
+	if (!OpenXRMetaSpatialEntityMeshExtensionWrapper::get_singleton()->get_triangle_mesh(space, mesh_data)) {
+		return Array();
+	}
+
+	PackedVector3Array vertices;
+	vertices.resize(mesh_data.vertices.size());
+	for (int i = 0; i < mesh_data.vertices.size(); i++) {
+		XrVector3f vertex = mesh_data.vertices[i];
+		vertices[i] = Vector3(vertex.x, vertex.y, vertex.z);
+	}
+
+	PackedInt32Array indices;
+	indices.resize(mesh_data.indices.size());
+	for (int i = 0; i < mesh_data.indices.size(); i += 3) {
+		// Reverse the winding order.
+		indices[i] = mesh_data.indices[i + 2];
+		indices[i + 1] = mesh_data.indices[i + 1];
+		indices[i + 2] = mesh_data.indices[i];
+	}
+
+	Array mesh_array;
+	mesh_array.resize(Mesh::ARRAY_MAX);
+	mesh_array[Mesh::ARRAY_VERTEX] = vertices;
+	mesh_array[Mesh::ARRAY_INDEX] = indices;
+	return mesh_array;
+}
+
 MeshInstance3D *OpenXRFbSpatialEntity::create_mesh_instance() const {
 	MeshInstance3D *mesh_instance = nullptr;
 
-	if (is_component_enabled(COMPONENT_TYPE_BOUNDED_3D)) {
+	if (is_component_enabled(COMPONENT_TYPE_TRIANGLE_MESH)) {
+		Ref<ArrayMesh> array_mesh;
+		array_mesh.instantiate();
+		array_mesh->add_surface_from_arrays(Mesh::PRIMITIVE_TRIANGLES, get_triangle_mesh());
+
+		mesh_instance = memnew(MeshInstance3D);
+		mesh_instance->set_mesh(array_mesh);
+
+	} else if (is_component_enabled(COMPONENT_TYPE_BOUNDED_3D)) {
 		Ref<BoxMesh> box_mesh;
 		box_mesh.instantiate();
 
@@ -213,7 +254,35 @@ MeshInstance3D *OpenXRFbSpatialEntity::create_mesh_instance() const {
 }
 
 Node3D *OpenXRFbSpatialEntity::create_collision_shape() const {
-	if (is_component_enabled(COMPONENT_TYPE_BOUNDED_3D)) {
+	if (is_component_enabled(COMPONENT_TYPE_TRIANGLE_MESH)) {
+		OpenXRMetaSpatialEntityMeshExtensionWrapper::TriangleMesh mesh_data;
+		if (!OpenXRMetaSpatialEntityMeshExtensionWrapper::get_singleton()->get_triangle_mesh(space, mesh_data)) {
+			return nullptr;
+		}
+
+		PackedVector3Array faces;
+		faces.resize(mesh_data.indices.size());
+		for (int i = 0; i < mesh_data.indices.size(); i += 3) {
+			XrVector3f vertex[3] = {
+				mesh_data.vertices[mesh_data.indices[i]],
+				mesh_data.vertices[mesh_data.indices[i + 1]],
+				mesh_data.vertices[mesh_data.indices[i + 2]],
+			};
+			// Reverse the winding order.
+			faces[i] = Vector3(vertex[2].x, vertex[2].y, vertex[2].z);
+			faces[i + 1] = Vector3(vertex[1].x, vertex[1].y, vertex[1].z);
+			faces[i + 2] = Vector3(vertex[0].x, vertex[0].y, vertex[0].z);
+		}
+
+		Ref<ConcavePolygonShape3D> polygon_shape;
+		polygon_shape.instantiate();
+		polygon_shape->set_faces(faces);
+
+		CollisionShape3D *collision_shape = memnew(CollisionShape3D);
+		collision_shape->set_shape(polygon_shape);
+
+		return collision_shape;
+	} else if (is_component_enabled(COMPONENT_TYPE_BOUNDED_3D)) {
 		Ref<BoxShape3D> box_shape;
 		box_shape.instantiate();
 

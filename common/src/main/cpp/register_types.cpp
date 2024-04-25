@@ -57,6 +57,7 @@
 #include "extensions/openxr_fb_spatial_entity_query_extension_wrapper.h"
 #include "extensions/openxr_fb_spatial_entity_storage_extension_wrapper.h"
 #include "extensions/openxr_htc_facial_tracking_extension_wrapper.h"
+#include "extensions/openxr_meta_spatial_entity_mesh_extension_wrapper.h"
 
 #include "classes/openxr_fb_hand_tracking_mesh.h"
 #include "classes/openxr_fb_passthrough_geometry.h"
@@ -91,6 +92,9 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			ClassDB::register_class<OpenXRFbSpatialEntityContainerExtensionWrapper>();
 			OpenXRFbSpatialEntityContainerExtensionWrapper::get_singleton()->register_extension_wrapper();
 
+			ClassDB::register_class<OpenXRMetaSpatialEntityMeshExtensionWrapper>();
+			OpenXRMetaSpatialEntityMeshExtensionWrapper::get_singleton()->register_extension_wrapper();
+
 			ClassDB::register_class<OpenXRFbSceneExtensionWrapper>();
 			OpenXRFbSceneExtensionWrapper::get_singleton()->register_extension_wrapper();
 
@@ -111,6 +115,7 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 
 			ClassDB::register_class<OpenXRHtcFacialTrackingExtensionWrapper>();
 			OpenXRHtcFacialTrackingExtensionWrapper::get_singleton()->register_extension_wrapper();
+
 		} break;
 
 		case MODULE_INITIALIZATION_LEVEL_SERVERS:

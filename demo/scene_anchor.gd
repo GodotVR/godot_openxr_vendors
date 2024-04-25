@@ -10,7 +10,7 @@ var mesh_instance: MeshInstance3D
 func setup_scene(entity: OpenXRFbSpatialEntity) -> void:
 	var semantic_labels: PackedStringArray = entity.get_semantic_labels()
 
-	label.text = ", ".join(semantic_labels)
+	label.text = ", ".join(Array(semantic_labels).map(func (x): return x.capitalize()))
 
 	var collision_shape = entity.create_collision_shape()
 	if collision_shape:
@@ -35,13 +35,13 @@ func setup_scene(entity: OpenXRFbSpatialEntity) -> void:
 
 func _get_color_for_label(semantic_label) -> Color:
 	match semantic_label:
-		"CEILING","FLOOR":
+		"ceiling","floor":
 			return Color(0.0, 0.0, 0.0, 1.0)
-		"WALL_FACE","INVISIBLE_WALL_FACE":
+		"wall_face","invisible_wall_face":
 			return Color(0.0, 0.0, 1.0, 1.0)
-		"WINDOW_FRAME","DOOR_FRAME":
+		"window_frame","door_frame":
 			return Color(1.0, 0.0, 0.0, 1.0)
-		"COUCH","TABLE","BED","LAMP","PLANT","SCREEN","STORAGE":
+		"couch","table","bed","lamp","plant","screen","storage":
 			return Color(0.0, 1.0, 0.0, 1.0)
 
 	return Color(1.0, 1.0, 1.0, 1.0)
