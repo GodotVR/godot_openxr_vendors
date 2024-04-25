@@ -71,7 +71,7 @@ void OpenXRFbHandTrackingMesh::set_hand(Hand p_hand) {
 	hand = p_hand;
 }
 
-XRHandTracker::Hand OpenXRFbHandTrackingMesh::get_hand() const {
+OpenXRFbHandTrackingMesh::Hand OpenXRFbHandTrackingMesh::get_hand() const {
 	return hand;
 }
 

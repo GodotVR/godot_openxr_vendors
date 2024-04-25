@@ -42,7 +42,6 @@ class OpenXRFbHandTrackingCapsulesExtensionWrapper : public OpenXRExtensionWrapp
 	GDCLASS(OpenXRFbHandTrackingCapsulesExtensionWrapper, OpenXRExtensionWrapperExtension);
 
 public:
-	using Hand = XRHandTracker::Hand;
 	using HandJoint = XRHandTracker::HandJoint;
 
 	godot::Dictionary _get_requested_extensions() override;
@@ -70,6 +69,12 @@ protected:
 	static void _bind_methods();
 
 private:
+	enum Hand {
+		HAND_LEFT,
+		HAND_RIGHT,
+		HAND_MAX,
+	};
+
 	std::map<godot::String, bool *> request_extensions;
 
 	void cleanup();

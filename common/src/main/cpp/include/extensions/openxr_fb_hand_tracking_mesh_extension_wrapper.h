@@ -38,6 +38,7 @@
 #include <godot_cpp/templates/local_vector.hpp>
 #include <map>
 
+#include "classes/openxr_fb_hand_tracking_mesh.h"
 #include "util.h"
 
 using namespace godot;
@@ -53,7 +54,7 @@ public:
 		LocalVector<XrHandJointEXT> joint_parents;
 	};
 
-	using Hand = XRHandTracker::Hand;
+	using Hand = OpenXRFbHandTrackingMesh::Hand;
 
 	godot::Dictionary _get_requested_extensions() override;
 

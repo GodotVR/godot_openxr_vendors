@@ -39,7 +39,11 @@ namespace godot {
 class OpenXRFbHandTrackingMesh : public Node3D {
 	GDCLASS(OpenXRFbHandTrackingMesh, Node3D)
 public:
-	using Hand = XRHandTracker::Hand;
+	enum Hand {
+		HAND_LEFT,
+		HAND_RIGHT,
+		HAND_MAX,
+	};
 
 private:
 	Hand hand = Hand::HAND_LEFT;
@@ -74,5 +78,7 @@ public:
 	float get_scale_override() const;
 };
 } //namespace godot
+
+VARIANT_ENUM_CAST(godot::OpenXRFbHandTrackingMesh::Hand);
 
 #endif
