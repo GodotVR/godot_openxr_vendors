@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  openxr_fb_face_tracking_extension_wrapper.h                           */
+/*  openxr_fb_body_tracking_extension_wrapper.h                           */
 /**************************************************************************/
 /*                       This file is part of:                            */
 /*                              GODOT XR                                  */
@@ -27,12 +27,12 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef OPENXR_FB_FACE_TRACKING_EXTENSION_WRAPPER_H
-#define OPENXR_FB_FACE_TRACKING_EXTENSION_WRAPPER_H
+#ifndef OPENXR_FB_BODY_TRACKING_EXTENSION_WRAPPER_H
+#define OPENXR_FB_BODY_TRACKING_EXTENSION_WRAPPER_H
 
 #include <openxr/openxr.h>
 #include <godot_cpp/classes/open_xr_extension_wrapper_extension.hpp>
-#include <godot_cpp/classes/xr_face_tracker.hpp>
+#include <godot_cpp/classes/xr_body_tracker.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
 #include <map>
 
@@ -40,9 +40,9 @@
 
 using namespace godot;
 
-// Wrapper for the set of Facebook face tracking extension.
-class OpenXRFbFaceTrackingExtensionWrapper : public OpenXRExtensionWrapperExtension {
-	GDCLASS(OpenXRFbFaceTrackingExtensionWrapper, OpenXRExtensionWrapperExtension);
+// Wrapper for the set of Facebook body tracking extension.
+class OpenXRFbBodyTrackingExtensionWrapper : public OpenXRExtensionWrapperExtension {
+	GDCLASS(OpenXRFbBodyTrackingExtensionWrapper, OpenXRExtensionWrapperExtension);
 
 public:
 	uint64_t _set_system_properties_and_get_next_pointer(void *next_pointer) override;
@@ -59,49 +59,49 @@ public:
 
 	void _on_process() override;
 
-	static OpenXRFbFaceTrackingExtensionWrapper *get_singleton();
+	static OpenXRFbBodyTrackingExtensionWrapper *get_singleton();
 
 	bool is_enabled() const;
 
-	OpenXRFbFaceTrackingExtensionWrapper();
-	~OpenXRFbFaceTrackingExtensionWrapper();
+	OpenXRFbBodyTrackingExtensionWrapper();
+	~OpenXRFbBodyTrackingExtensionWrapper();
 
 protected:
 	static void _bind_methods();
 
 private:
-	EXT_PROTO_XRRESULT_FUNC3(xrCreateFaceTracker2FB,
+	EXT_PROTO_XRRESULT_FUNC3(xrCreateBodyTrackerFB,
 			(XrSession), session,
-			(const XrFaceTrackerCreateInfo2FB *), createInfo,
-			(XrFaceTracker2FB *), faceTracker);
+			(const XrBodyTrackerCreateInfoFB *), createInfo,
+			(XrBodyTrackerFB *), bodyTracker);
 
-	EXT_PROTO_XRRESULT_FUNC1(xrDestroyFaceTracker2FB,
-			(XrFaceTracker2FB), faceTracker);
+	EXT_PROTO_XRRESULT_FUNC1(xrDestroyBodyTrackerFB,
+			(XrBodyTrackerFB), bodyTracker);
 
-	EXT_PROTO_XRRESULT_FUNC3(xrGetFaceExpressionWeights2FB,
-			(XrFaceTracker2FB), faceTracker,
-			(const XrFaceExpressionInfo2FB *), expressionInfo,
-			(XrFaceExpressionWeights2FB *), expressionWeights);
+	EXT_PROTO_XRRESULT_FUNC3(xrLocateBodyJointsFB,
+			(XrBodyTrackerFB), bodyTracker,
+			(const XrBodyJointsLocateInfoFB *), locateInfo,
+			(XrBodyJointLocationsFB *), locations);
 
-	bool initialize_fb_face_tracking2_extension(const XrInstance instance);
+	bool initialize_fb_body_tracking_extension(const XrInstance instance);
 
 	void cleanup();
 
-	static OpenXRFbFaceTrackingExtensionWrapper *singleton;
+	static OpenXRFbBodyTrackingExtensionWrapper *singleton;
 
 	std::map<godot::String, bool *> request_extensions;
-	bool fb_face_tracking2_ext = false;
+	bool fb_body_tracking_ext = false;
 
-	bool xr_face_tracker_registered = false;
+	bool xr_body_tracker_registered = false;
 
-	// OpenXR system properties struct for XR_FB_face_tracking2.
-	XrSystemFaceTrackingProperties2FB system_face_tracking_properties2;
+	// OpenXR system properties struct for XR_FB_body_tracking.
+	XrSystemBodyTrackingPropertiesFB system_body_tracking_properties;
 
-	// XR_FB_face_tracking handle.
-	XrFaceTracker2FB face_tracker2 = XR_NULL_HANDLE;
+	// XR_FB_body_tracking handle.
+	XrBodyTrackerFB body_tracker = XR_NULL_HANDLE;
 
-	// Godot XRFaceTracker instance.
-	Ref<XRFaceTracker> xr_face_tracker;
+	// Godot XRBodyTracker instance.
+	Ref<XRBodyTracker> xr_body_tracker;
 };
 
-#endif // OPENXR_FB_FACE_TRACKING_EXTENSION_WRAPPER_H
+#endif // OPENXR_FB_BODY_TRACKING_EXTENSION_WRAPPER_H

@@ -52,6 +52,7 @@ class GodotOpenXRMeta(godot: Godot?) : GodotPlugin(godot) {
     companion object {
         private val TAG = GodotOpenXRMeta::class.java.simpleName
 
+        const val BODY_TRACKING_PERMISSION = "com.oculus.permission.BODY_TRACKING"
         const val EYE_TRACKING_PERMISSION = "com.oculus.permission.EYE_TRACKING"
         const val FACE_TRACKING_PERMISSION = "com.oculus.permission.FACE_TRACKING"
         const val SCENE_PERMISSION = "com.oculus.permission.USE_SCENE"
@@ -142,6 +143,10 @@ class GodotOpenXRMeta(godot: Godot?) : GodotPlugin(godot) {
         @JvmStatic
         fun requestAllPluginPermissions(activity: Activity) {
             val permissionsToRequest = ArrayList<String>()
+            // Request the body tracking permission if it's included in the manifest
+            if (PermissionsUtil.hasManifestPermission(activity, BODY_TRACKING_PERMISSION)) {
+                permissionsToRequest.add(BODY_TRACKING_PERMISSION)
+            }
             // Request the eye tracking permission if it's included in the manifest
             if (PermissionsUtil.hasManifestPermission(activity, EYE_TRACKING_PERMISSION)) {
                 permissionsToRequest.add(EYE_TRACKING_PERMISSION)

@@ -6,7 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://d4b4rllli6tqp" path="res://tablet_content.tscn" id="3_45w5g"]
 [ext_resource type="PackedScene" uid="uid://bcjp8kcgde4cs" path="res://scene_anchor.tscn" id="4_3u3ah"]
 [ext_resource type="Image" uid="uid://dqxb16d1fqtrw" path="res://assets/color-lut-inverted-32.png" id="4_pv7hh"]
-[ext_resource type="PackedScene" uid="uid://ikxieb2fyavg" path="res://assets/face/Face.gltf" id="4_wrwst"]
+[ext_resource type="PackedScene" uid="uid://cay8oh2ll7yxi" path="res://assets/test_kun/Test-Kun.fbx" id="4_b317s"]
 [ext_resource type="PackedScene" uid="uid://bwfyi8pgigune" path="res://xr_fb_hand_tracking_aim_demo.tscn" id="5_6bxyh"]
 [ext_resource type="PackedScene" uid="uid://bwo5nq0clfe3c" path="res://scene_global_mesh.tscn" id="5_7ikgf"]
 
@@ -163,13 +163,21 @@ scenes/global_mesh = ExtResource("5_7ikgf")
 [node name="Floor" type="MeshInstance3D" parent="."]
 mesh = SubResource("PlaneMesh_mjcgt")
 
-[node name="TrackedFace" type="Node3D" parent="Floor"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.23342, -0.677775)
+[node name="AvatarOffset" type="Node3D" parent="Floor"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1)
 
-[node name="Face" parent="Floor/TrackedFace" instance=ExtResource("4_wrwst")]
+[node name="Avatar" type="XRNode3D" parent="Floor/AvatarOffset"]
+tracker = &"/user/body_tracker"
 
-[node name="XRFaceModifier3D" type="XRFaceModifier3D" parent="Floor/TrackedFace/Face/Face" index="0"]
-target = NodePath("..")
+[node name="Test-Kun" parent="Floor/AvatarOffset/Avatar" instance=ExtResource("4_b317s")]
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0, 0)
+
+[node name="XRBodyModifier3D" type="XRBodyModifier3D" parent="Floor/AvatarOffset/Avatar/Test-Kun/Armature/GeneralSkeleton" index="2"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
+bone_update = 1
+
+[node name="XRFaceModifier3D" type="XRFaceModifier3D" parent="Floor/AvatarOffset/Avatar"]
+target = NodePath("../Test-Kun/Armature/GeneralSkeleton/Body")
 
 [node name="XRFbHandTrackingAimDemo" parent="." instance=ExtResource("5_6bxyh")]
 transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, -1, 1, -1)
@@ -185,4 +193,4 @@ transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 
 [connection signal="openxr_fb_scene_capture_completed" from="XROrigin3D/OpenXRFbSceneManager" to="." method="_on_scene_manager_scene_capture_completed"]
 [connection signal="openxr_fb_scene_data_missing" from="XROrigin3D/OpenXRFbSceneManager" to="." method="_on_scene_manager_scene_data_missing"]
 
-[editable path="Floor/TrackedFace/Face"]
+[editable path="Floor/AvatarOffset/Avatar/Test-Kun"]
