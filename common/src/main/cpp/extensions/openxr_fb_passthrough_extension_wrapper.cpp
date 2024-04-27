@@ -844,6 +844,8 @@ bool OpenXRFbPassthroughExtensionWrapper::initialize_fb_triangle_mesh_extension(
 
 bool OpenXRFbPassthroughExtensionWrapper::initialize_meta_passthrough_preferences_extension(const XrInstance p_instance) {
 	GDEXTENSION_INIT_XR_FUNC_V(xrGetPassthroughPreferencesMETA);
+
+	return true;
 }
 
 bool OpenXRFbPassthroughExtensionWrapper::initialize_meta_passthrough_color_lut_extension(const XrInstance p_instance) {
