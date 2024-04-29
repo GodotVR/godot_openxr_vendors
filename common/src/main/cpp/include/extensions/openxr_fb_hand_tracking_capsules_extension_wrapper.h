@@ -42,7 +42,6 @@ class OpenXRFbHandTrackingCapsulesExtensionWrapper : public OpenXRExtensionWrapp
 	GDCLASS(OpenXRFbHandTrackingCapsulesExtensionWrapper, OpenXRExtensionWrapperExtension);
 
 public:
-	using Hand = XRHandTracker::Hand;
 	using HandJoint = XRHandTracker::HandJoint;
 
 	godot::Dictionary _get_requested_extensions() override;
@@ -78,7 +77,8 @@ private:
 
 	bool fb_hand_tracking_capsules_ext = false;
 
-	XrHandTrackingCapsulesStateFB capsules_state[Hand::HAND_MAX];
+	static const int HAND_MAX = 2;
+	XrHandTrackingCapsulesStateFB capsules_state[HAND_MAX];
 };
 
 #endif // OPENXR_FB_HAND_TRACKING_CAPSULES_EXTENSION_WRAPPER_H

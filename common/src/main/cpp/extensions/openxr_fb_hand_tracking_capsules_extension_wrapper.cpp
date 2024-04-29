@@ -93,7 +93,7 @@ uint64_t OpenXRFbHandTrackingCapsulesExtensionWrapper::_set_hand_joint_locations
 }
 
 Transform3D OpenXRFbHandTrackingCapsulesExtensionWrapper::get_hand_capsule_transform(int p_hand_index, int p_capsule_index) const {
-	ERR_FAIL_INDEX_V_MSG(p_hand_index, Hand::HAND_MAX, Transform3D(), vformat("Invalid hand index %d", p_hand_index));
+	ERR_FAIL_INDEX_V_MSG(p_hand_index, HAND_MAX, Transform3D(), vformat("Invalid hand index %d", p_hand_index));
 	ERR_FAIL_INDEX_V_MSG(p_capsule_index, XR_FB_HAND_TRACKING_CAPSULE_COUNT, Transform3D(), vformat("Invalid capsule index %d", p_capsule_index));
 
 	if (!fb_hand_tracking_capsules_ext) {
@@ -123,7 +123,7 @@ Transform3D OpenXRFbHandTrackingCapsulesExtensionWrapper::get_hand_capsule_trans
 }
 
 float OpenXRFbHandTrackingCapsulesExtensionWrapper::get_hand_capsule_height(int p_hand_index, int p_capsule_index) const {
-	ERR_FAIL_INDEX_V_MSG(p_hand_index, Hand::HAND_MAX, 0.0, vformat("Invalid hand index %d", p_hand_index));
+	ERR_FAIL_INDEX_V_MSG(p_hand_index, HAND_MAX, 0.0, vformat("Invalid hand index %d", p_hand_index));
 	ERR_FAIL_INDEX_V_MSG(p_capsule_index, XR_FB_HAND_TRACKING_CAPSULE_COUNT, 0.0, vformat("Invalid capsule index %d", p_capsule_index));
 
 	if (!fb_hand_tracking_capsules_ext) {
@@ -141,7 +141,7 @@ float OpenXRFbHandTrackingCapsulesExtensionWrapper::get_hand_capsule_height(int 
 }
 
 float OpenXRFbHandTrackingCapsulesExtensionWrapper::get_hand_capsule_radius(int p_hand_index, int p_capsule_index) const {
-	ERR_FAIL_INDEX_V_MSG(p_hand_index, Hand::HAND_MAX, 0.0, vformat("Invalid hand index %d", p_hand_index));
+	ERR_FAIL_INDEX_V_MSG(p_hand_index, HAND_MAX, 0.0, vformat("Invalid hand index %d", p_hand_index));
 	ERR_FAIL_INDEX_V_MSG(p_capsule_index, XR_FB_HAND_TRACKING_CAPSULE_COUNT, 0.0, vformat("Invalid capsule index %d", p_capsule_index));
 
 	if (!fb_hand_tracking_capsules_ext) {
@@ -153,7 +153,7 @@ float OpenXRFbHandTrackingCapsulesExtensionWrapper::get_hand_capsule_radius(int 
 }
 
 XRHandTracker::HandJoint OpenXRFbHandTrackingCapsulesExtensionWrapper::get_hand_capsule_joint(int p_hand_index, int p_capsule_index) const {
-	ERR_FAIL_INDEX_V_MSG(p_hand_index, Hand::HAND_MAX, HandJoint(0), vformat("Invalid hand index %d", p_hand_index));
+	ERR_FAIL_INDEX_V_MSG(p_hand_index, HAND_MAX, HandJoint(0), vformat("Invalid hand index %d", p_hand_index));
 	ERR_FAIL_INDEX_V_MSG(p_capsule_index, XR_FB_HAND_TRACKING_CAPSULE_COUNT, HandJoint(0), vformat("Invalid capsule index %d", p_capsule_index));
 
 	if (!fb_hand_tracking_capsules_ext) {

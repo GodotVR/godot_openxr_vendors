@@ -1,14 +1,13 @@
-[gd_scene load_steps=24 format=4 uid="uid://cqsodpswgup8w"]
+[gd_scene load_steps=23 format=3 uid="uid://cqsodpswgup8w"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_fsva1"]
 [ext_resource type="PackedScene" uid="uid://c0uv4eu2yjm3b" path="res://viewport_2d_in_3d.tscn" id="2_7whgo"]
 [ext_resource type="Image" uid="uid://dcd586e34414y" path="res://assets/color-lut.png" id="2_lpxwd"]
 [ext_resource type="PackedScene" uid="uid://d4b4rllli6tqp" path="res://tablet_content.tscn" id="3_45w5g"]
 [ext_resource type="PackedScene" uid="uid://bcjp8kcgde4cs" path="res://scene_anchor.tscn" id="4_3u3ah"]
-[ext_resource type="Image" uid="uid://dqxb16d1fqtrw" path="res://assets/color-lut-inverted-32.png" id="4_pv7hh"]
 [ext_resource type="PackedScene" uid="uid://cay8oh2ll7yxi" path="res://assets/test_kun/Test-Kun.fbx" id="4_b317s"]
+[ext_resource type="Image" uid="uid://dqxb16d1fqtrw" path="res://assets/color-lut-inverted-32.png" id="4_pv7hh"]
 [ext_resource type="PackedScene" uid="uid://bwfyi8pgigune" path="res://xr_fb_hand_tracking_aim_demo.tscn" id="5_6bxyh"]
-[ext_resource type="PackedScene" uid="uid://bwo5nq0clfe3c" path="res://scene_global_mesh.tscn" id="5_7ikgf"]
 
 [sub_resource type="Gradient" id="Gradient_yvg3n"]
 offsets = PackedFloat32Array(0, 0.484615, 1)
@@ -74,6 +73,10 @@ environment = SubResource("Environment_m0xew")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.677077, -0.692092, 0.25015, 0.264251, 0.545897, 0.79509, -0.686831, -0.472235, 0.552501, 0, 0, 0)
+
+[node name="Floor_AvatarOffset_Avatar_Test-Kun_Armature_GeneralSkeleton#XRBodyModifier3D" type="XRBodyModifier3D" parent="."]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
+bone_update = 1
 
 [node name="XROrigin3D" type="XROrigin3D" parent="."]
 
@@ -144,21 +147,52 @@ tracker = &"/user/eyes_ext"
 transform = Transform3D(1, 0, 0, 0, -0.0133513, 0.999911, 0, -0.999911, -0.0133513, 0, 0, -1.18886)
 mesh = SubResource("SphereMesh_5gcab")
 
-[node name="LeftXRHandModifier3D" type="XRHandModifier3D" parent="XROrigin3D"]
-
-[node name="LeftHandModel" type="OpenXRFbHandTrackingMesh" parent="XROrigin3D/LeftXRHandModifier3D"]
-
-[node name="RightXRHandModifier3D" type="XRHandModifier3D" parent="XROrigin3D"]
-hand_tracker = &"/user/right"
-
-[node name="RightHandModel" type="OpenXRFbHandTrackingMesh" parent="XROrigin3D/RightXRHandModifier3D"]
-hand = 1
-
 [node name="OpenXRFbSceneManager" type="OpenXRFbSceneManager" parent="XROrigin3D"]
 default_scene = ExtResource("4_3u3ah")
 auto_create = false
 visible = false
-scenes/global_mesh = ExtResource("5_7ikgf")
+
+[node name="LeftHandTracker" type="XRNode3D" parent="XROrigin3D"]
+tracker = &"/user/hand_tracker/left"
+
+[node name="LeftHandModel" type="OpenXRFbHandTrackingMesh" parent="XROrigin3D/LeftHandTracker"]
+
+[node name="LeftXRHandModifier3D" type="XRHandModifier3D" parent="XROrigin3D/LeftHandTracker/LeftHandModel"]
+
+[node name="RightHandTracker" type="XRNode3D" parent="XROrigin3D"]
+tracker = &"/user/hand_tracker/right"
+
+[node name="RightHandModel" type="OpenXRFbHandTrackingMesh" parent="XROrigin3D/RightHandTracker"]
+hand = 1
+bones/0/name = "RightPalm"
+bones/1/name = "RightHand"
+bones/2/name = "RightThumbMetacarpal"
+bones/3/name = "RightThumbProximal"
+bones/4/name = "RightThumbDistal"
+bones/5/name = "RightThumbTip"
+bones/6/name = "RightIndexMetacarpal"
+bones/7/name = "RightIndexProximal"
+bones/8/name = "RightIndexIntermediate"
+bones/9/name = "RightIndexDistal"
+bones/10/name = "RightIndexTip"
+bones/11/name = "RightMiddleMetacarpal"
+bones/12/name = "RightMiddleProximal"
+bones/13/name = "RightMiddleIntermediate"
+bones/14/name = "RightMiddleDistal"
+bones/15/name = "RightMiddleTip"
+bones/16/name = "RightRingMetacarpal"
+bones/17/name = "RightRingProximal"
+bones/18/name = "RightRingIntermediate"
+bones/19/name = "RightRingDistal"
+bones/20/name = "RightRingTip"
+bones/21/name = "RightLittleMetacarpal"
+bones/22/name = "RightLittleProximal"
+bones/23/name = "RightLittleIntermediate"
+bones/24/name = "RightLittleDistal"
+bones/25/name = "RightLittleTip"
+
+[node name="RightXRHandModifier3D" type="XRHandModifier3D" parent="XROrigin3D/RightHandTracker/RightHandModel"]
+hand_tracker = &"/user/hand_tracker/right"
 
 [node name="Floor" type="MeshInstance3D" parent="."]
 mesh = SubResource("PlaneMesh_mjcgt")
@@ -171,10 +205,6 @@ tracker = &"/user/body_tracker"
 
 [node name="Test-Kun" parent="Floor/AvatarOffset/Avatar" instance=ExtResource("4_b317s")]
 transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0, 0)
-
-[node name="XRBodyModifier3D" type="XRBodyModifier3D" parent="Floor/AvatarOffset/Avatar/Test-Kun/Armature/GeneralSkeleton" index="2"]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
-bone_update = 1
 
 [node name="XRFaceModifier3D" type="XRFaceModifier3D" parent="Floor/AvatarOffset/Avatar"]
 target = NodePath("../Test-Kun/Armature/GeneralSkeleton/Body")

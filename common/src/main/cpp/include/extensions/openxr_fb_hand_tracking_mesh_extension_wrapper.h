@@ -30,11 +30,12 @@
 #ifndef OPENXR_FB_HAND_TRACKING_MESH_EXTENSION_WRAPPER_H
 #define OPENXR_FB_HAND_TRACKING_MESH_EXTENSION_WRAPPER_H
 
+#include "classes/openxr_fb_hand_tracking_mesh.h"
+
 #include <openxr/openxr.h>
 #include <godot_cpp/classes/array_mesh.hpp>
 #include <godot_cpp/classes/open_xr_extension_wrapper_extension.hpp>
 #include <godot_cpp/classes/skeleton3d.hpp>
-#include <godot_cpp/classes/xr_hand_tracker.hpp>
 #include <godot_cpp/templates/local_vector.hpp>
 #include <map>
 
@@ -53,7 +54,7 @@ public:
 		LocalVector<XrHandJointEXT> joint_parents;
 	};
 
-	using Hand = XRHandTracker::Hand;
+	using Hand = OpenXRFbHandTrackingMesh::Hand;
 
 	godot::Dictionary _get_requested_extensions() override;
 
@@ -78,7 +79,8 @@ public:
 	void enable_fetch_hand_mesh_data();
 	bool fetch_hand_mesh_data(Hand p_hand);
 	Ref<ArrayMesh> get_mesh(Hand p_hand);
-	void construct_skeleton(Hand p_hand, Skeleton3D *r_skeleton);
+	void construct_skeleton(Skeleton3D *r_skeleton);
+	void reset_skeleton_pose(Hand p_hand, Skeleton3D *r_skeleton);
 
 	OpenXRFbHandTrackingMeshExtensionWrapper();
 	~OpenXRFbHandTrackingMeshExtensionWrapper();
