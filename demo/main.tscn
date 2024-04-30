@@ -74,10 +74,6 @@ environment = SubResource("Environment_m0xew")
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.677077, -0.692092, 0.25015, 0.264251, 0.545897, 0.79509, -0.686831, -0.472235, 0.552501, 0, 0, 0)
 
-[node name="Floor_AvatarOffset_Avatar_Test-Kun_Armature_GeneralSkeleton#XRBodyModifier3D" type="XRBodyModifier3D" parent="."]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
-bone_update = 1
-
 [node name="XROrigin3D" type="XROrigin3D" parent="."]
 
 [node name="XRCamera3D" type="XRCamera3D" parent="XROrigin3D"]
@@ -205,6 +201,10 @@ tracker = &"/user/body_tracker"
 
 [node name="Test-Kun" parent="Floor/AvatarOffset/Avatar" instance=ExtResource("4_b317s")]
 transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0, 0)
+
+[node name="XRBodyModifier3D" type="XRBodyModifier3D" parent="Floor/AvatarOffset/Avatar/Test-Kun/Armature/GeneralSkeleton" index="3"]
+transform = Transform3D(1, 0, 1.74846e-07, 0, 1, 0, -1.74846e-07, 0, 1, -8.74228e-08, 0, -1)
+bone_update = 1
 
 [node name="XRFaceModifier3D" type="XRFaceModifier3D" parent="Floor/AvatarOffset/Avatar"]
 target = NodePath("../Test-Kun/Armature/GeneralSkeleton/Body")
