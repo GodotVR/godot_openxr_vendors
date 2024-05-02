@@ -44,6 +44,7 @@
 #include "export/pico_export_plugin.h"
 
 #include "extensions/openxr_fb_body_tracking_extension_wrapper.h"
+#include "extensions/openxr_fb_composition_layer_alpha_blend_extension_wrapper.h"
 #include "extensions/openxr_fb_composition_layer_secure_content_extension_wrapper.h"
 #include "extensions/openxr_fb_face_tracking_extension_wrapper.h"
 #include "extensions/openxr_fb_hand_tracking_aim_extension_wrapper.h"
@@ -117,6 +118,9 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 
 			ClassDB::register_class<OpenXRFbCompositionLayerSecureContentExtensionWrapper>();
 			OpenXRFbCompositionLayerSecureContentExtensionWrapper::get_singleton()->register_extension_wrapper();
+
+			ClassDB::register_class<OpenXRFbCompositionLayerAlphaBlendExtensionWrapper>();
+			OpenXRFbCompositionLayerAlphaBlendExtensionWrapper::get_singleton()->register_extension_wrapper();
 
 			ClassDB::register_class<OpenXRHtcFacialTrackingExtensionWrapper>();
 			OpenXRHtcFacialTrackingExtensionWrapper::get_singleton()->register_extension_wrapper();
