@@ -37,7 +37,7 @@
 using namespace godot;
 
 void OpenXRMetaPassthroughColorLut::_bind_methods() {
-	ClassDB::bind_static_method("OpenXRMetaPassthroughColorLut", D_METHOD("create_from_image"), &OpenXRMetaPassthroughColorLut::create_from_image);
+	ClassDB::bind_static_method("OpenXRMetaPassthroughColorLut", D_METHOD("create_from_image", "image", "channels"), &OpenXRMetaPassthroughColorLut::create_from_image);
 
 	BIND_ENUM_CONSTANT(COLOR_LUT_CHANNELS_RGB);
 	BIND_ENUM_CONSTANT(COLOR_LUT_CHANNELS_RGBA);

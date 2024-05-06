@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="OpenXRFbRenderModel" inherits="Node3D" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		Uses the [code]XR_FB_render_model[/code] extension to show the controllers for the headset that is currently in use.
+	</brief_description>
+	<description>
+		Uses the [url=https://registry.khronos.org/OpenXR/specs/1.0/html/xrspec.html#XR_FB_render_model]XR_FB_render_model[/url] extension to show the controllers for the headset that is currently in use.
+		The most common way to use this node, is to make it a child of an [XRController3D] and set its [code]pose[/code] property to [code]"grip"[/code].
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="get_render_model_node">
+			<return type="Node3D" />
+			<description>
+				The top-level node that was loaded from the GLTF document that we received from the OpenXR runtime. It will be a child node of this node.
+				Returns [code]null[/code] if it hasn't been loaded yet.
+			</description>
+		</method>
+		<method name="has_render_model_node">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] if the render model has already been loaded.
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="render_model_type" type="int" setter="set_render_model_type" getter="get_render_model_type" enum="OpenXRFbRenderModel.Model" default="0">
+			Which controller model (left or right) to load.
+		</member>
+	</members>
+	<signals>
+		<signal name="openxr_fb_render_model_loaded">
+			<description>
+				Emitted after the controller model has been loaded.
+				This can only happen sometime after the OpenXR session has started.
+			</description>
+		</signal>
+	</signals>
+	<constants>
+		<constant name="MODEL_CONTROLLER_LEFT" value="0" enum="Model">
+			The left controller model.
+		</constant>
+		<constant name="MODEL_CONTROLLER_RIGHT" value="1" enum="Model">
+			The right controller model.
+		</constant>
+	</constants>
+</class>

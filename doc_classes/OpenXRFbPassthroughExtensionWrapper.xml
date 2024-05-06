@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="OpenXRFbPassthroughExtensionWrapper" inherits="OpenXRExtensionWrapperExtension" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="destroy_color_lut">
+			<return type="void" />
+			<param index="0" name="color_lut" type="OpenXRMetaPassthroughColorLut" />
+			<description>
+			</description>
+		</method>
+		<method name="get_current_layer_purpose">
+			<return type="int" enum="OpenXRFbPassthroughExtensionWrapper.LayerPurpose" />
+			<description>
+			</description>
+		</method>
+		<method name="get_current_passthrough_filter">
+			<return type="int" enum="OpenXRFbPassthroughExtensionWrapper.PassthroughFilter" />
+			<description>
+			</description>
+		</method>
+		<method name="get_edge_color">
+			<return type="Color" />
+			<description>
+			</description>
+		</method>
+		<method name="get_max_color_lut_resolution">
+			<return type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="get_texture_opacity_factor">
+			<return type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="has_color_passthrough_capability">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="has_layer_depth_passthrough_capability">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="has_passthrough_capability">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="is_passthrough_preferred">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="is_passthrough_started">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="is_passthrough_supported">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="set_brightness_contrast_saturation">
+			<return type="void" />
+			<param index="0" name="brightness" type="float" />
+			<param index="1" name="contrast" type="float" />
+			<param index="2" name="saturation" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="set_color_lut">
+			<return type="void" />
+			<param index="0" name="weight" type="float" />
+			<param index="1" name="color_lut" type="OpenXRMetaPassthroughColorLut" />
+			<description>
+			</description>
+		</method>
+		<method name="set_color_map">
+			<return type="void" />
+			<param index="0" name="gradient" type="GradientTexture1D" />
+			<description>
+			</description>
+		</method>
+		<method name="set_edge_color">
+			<return type="void" />
+			<param index="0" name="color" type="Color" />
+			<description>
+			</description>
+		</method>
+		<method name="set_interpolated_color_lut">
+			<return type="void" />
+			<param index="0" name="weight" type="float" />
+			<param index="1" name="source_color_lut" type="OpenXRMetaPassthroughColorLut" />
+			<param index="2" name="target_color_lut" type="OpenXRMetaPassthroughColorLut" />
+			<description>
+			</description>
+		</method>
+		<method name="set_mono_map">
+			<return type="void" />
+			<param index="0" name="curve" type="Curve" />
+			<description>
+			</description>
+		</method>
+		<method name="set_passthrough_filter">
+			<return type="void" />
+			<param index="0" name="filter" type="int" enum="OpenXRFbPassthroughExtensionWrapper.PassthroughFilter" />
+			<description>
+			</description>
+		</method>
+		<method name="set_texture_opacity_factor">
+			<return type="void" />
+			<param index="0" name="value" type="float" />
+			<description>
+			</description>
+		</method>
+	</methods>
+	<signals>
+		<signal name="openxr_fb_passthrough_state_changed">
+			<param index="0" name="event_type" type="int" />
+			<description>
+			</description>
+		</signal>
+		<signal name="openxr_fb_passthrough_stopped">
+			<description>
+			</description>
+		</signal>
+		<signal name="openxr_fb_projected_passthrough_layer_created">
+			<description>
+			</description>
+		</signal>
+	</signals>
+	<constants>
+		<constant name="LAYER_PURPOSE_NONE" value="-1" enum="LayerPurpose">
+		</constant>
+		<constant name="LAYER_PURPOSE_RECONSTRUCTION" value="0" enum="LayerPurpose">
+		</constant>
+		<constant name="LAYER_PURPOSE_PROJECTED" value="1" enum="LayerPurpose">
+		</constant>
+		<constant name="PASSTHROUGH_FILTER_DISABLED" value="0" enum="PassthroughFilter">
+		</constant>
+		<constant name="PASSTHROUGH_FILTER_COLOR_MAP" value="1" enum="PassthroughFilter">
+		</constant>
+		<constant name="PASSTHROUGH_FILTER_MONO_MAP" value="2" enum="PassthroughFilter">
+		</constant>
+		<constant name="PASSTHROUGH_FILTER_BRIGHTNESS_CONTRAST_SATURATION" value="3" enum="PassthroughFilter">
+		</constant>
+		<constant name="PASSTHROUGH_FILTER_COLOR_MAP_LUT" value="4" enum="PassthroughFilter">
+		</constant>
+		<constant name="PASSTHROUGH_FILTER_COLOR_MAP_INTERPOLATED_LUT" value="5" enum="PassthroughFilter">
+		</constant>
+		<constant name="PASSTHROUGH_ERROR_NON_RECOVERABLE" value="0" enum="PassthroughStateChangedEvent">
+		</constant>
+		<constant name="PASSTHROUGH_ERROR_RECOVERABLE" value="1" enum="PassthroughStateChangedEvent">
+		</constant>
+		<constant name="PASSTHROUGH_ERROR_RESTORED" value="2" enum="PassthroughStateChangedEvent">
+		</constant>
+	</constants>
+</class>

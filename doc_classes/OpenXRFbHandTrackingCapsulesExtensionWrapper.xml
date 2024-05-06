@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="OpenXRFbHandTrackingCapsulesExtensionWrapper" inherits="OpenXRExtensionWrapperExtension" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="get_hand_capsule_count">
+			<return type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="get_hand_capsule_height">
+			<return type="float" />
+			<param index="0" name="hand_index" type="int" />
+			<param index="1" name="capsule_index" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="get_hand_capsule_joint">
+			<return type="int" enum="XRHandTracker.HandJoint" />
+			<param index="0" name="hand_index" type="int" />
+			<param index="1" name="capsule_index" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="get_hand_capsule_radius">
+			<return type="float" />
+			<param index="0" name="hand_index" type="int" />
+			<param index="1" name="capsule_index" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="get_hand_capsule_transform">
+			<return type="Transform3D" />
+			<param index="0" name="hand_index" type="int" />
+			<param index="1" name="capsule_index" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="is_enabled">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+	</methods>
+</class>

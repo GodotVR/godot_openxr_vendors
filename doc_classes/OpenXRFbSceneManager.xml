@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="OpenXRFbSceneManager" inherits="Node" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="are_scene_anchors_created">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="create_scene_anchors">
+			<return type="int" enum="Error" />
+			<description>
+			</description>
+		</method>
+		<method name="get_anchor_node">
+			<return type="XRAnchor3D" />
+			<param index="0" name="uuid" type="StringName" />
+			<description>
+			</description>
+		</method>
+		<method name="get_anchor_uuids">
+			<return type="Array" />
+			<description>
+			</description>
+		</method>
+		<method name="get_spatial_entity">
+			<return type="OpenXRFbSpatialEntity" />
+			<param index="0" name="uuid" type="StringName" />
+			<description>
+			</description>
+		</method>
+		<method name="hide">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="is_scene_capture_enabled">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="remove_scene_anchors">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="request_scene_capture">
+			<return type="bool" />
+			<param index="0" name="request" type="String" default="&quot;&quot;" />
+			<description>
+			</description>
+		</method>
+		<method name="show">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="auto_create" type="bool" setter="set_auto_create" getter="get_auto_create" default="true">
+		</member>
+		<member name="default_scene" type="PackedScene" setter="set_default_scene" getter="get_default_scene">
+		</member>
+		<member name="scene_setup_method" type="StringName" setter="set_scene_setup_method" getter="get_scene_setup_method" default="&amp;&quot;setup_scene&quot;">
+		</member>
+		<member name="visible" type="bool" setter="set_visible" getter="get_visible" default="true">
+		</member>
+	</members>
+	<signals>
+		<signal name="openxr_fb_scene_anchor_created">
+			<param index="0" name="scene_node" type="Object" />
+			<param index="1" name="spatial_entity" type="Object" />
+			<description>
+			</description>
+		</signal>
+		<signal name="openxr_fb_scene_capture_completed">
+			<param index="0" name="success" type="bool" />
+			<description>
+			</description>
+		</signal>
+		<signal name="openxr_fb_scene_data_missing">
+			<description>
+			</description>
+		</signal>
+	</signals>
+</class>

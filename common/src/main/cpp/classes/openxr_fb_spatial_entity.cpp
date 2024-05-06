@@ -50,7 +50,7 @@ void OpenXRFbSpatialEntity::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_supported_components"), &OpenXRFbSpatialEntity::get_supported_components);
 	ClassDB::bind_method(D_METHOD("is_component_supported", "component"), &OpenXRFbSpatialEntity::is_component_supported);
 	ClassDB::bind_method(D_METHOD("is_component_enabled", "component"), &OpenXRFbSpatialEntity::is_component_enabled);
-	ClassDB::bind_method(D_METHOD("set_component_enabled", "component"), &OpenXRFbSpatialEntity::set_component_enabled);
+	ClassDB::bind_method(D_METHOD("set_component_enabled", "component", "enabled"), &OpenXRFbSpatialEntity::set_component_enabled);
 
 	ClassDB::bind_method(D_METHOD("get_semantic_labels"), &OpenXRFbSpatialEntity::get_semantic_labels);
 	ClassDB::bind_method(D_METHOD("get_room_layout"), &OpenXRFbSpatialEntity::get_room_layout);

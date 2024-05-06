@@ -1,0 +1,73 @@
+/**
+ * Visual tweaks to the ReadTheDocs theme.
+ */
+
+.wy-nav-side {
+    background-color: #333f67;
+}
+.wy-side-nav-search {
+    background-color: #333f67;
+    padding-bottom: 1.618em;
+}
+
+.wy-side-nav-search > a img.logo {
+    width: 64px;
+    height: 64px
+}
+
+.wy-menu-vertical a {
+}
+.wy-menu-vertical a:hover {
+    background-color: #29355c;
+}
+
+@media only screen and (min-width: 769px) {
+    .wy-nav-side {
+        left: auto;
+    }
+    .wy-body-for-nav {
+        /* Center the page on wide displays for better readability */
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+}
+
+/* Override table no-wrap */
+
+/* The first column cells are not verbose, no need to wrap them */
+.wy-table-responsive table td:not(:nth-child(1)),
+.wy-table-responsive table th:not(:nth-child(1)) {
+    white-space: normal;
+}
+/* Allow to control wrapping behavior per table */
+.wy-table-responsive table.wrap-normal td,
+.wy-table-responsive table.wrap-normal th {
+    white-space: normal;
+}
+
+/* Make sure line blocks don't stretch tables */
+.wy-table-responsive table .line-block {
+    margin-bottom: 0;
+}
+
+
+/* Make sure not to wrap keyboard shortcuts */
+.wy-table-responsive table td kbd {
+    white-space: nowrap;
+}
+
+/* Artificially increasing specificity to make it override theme.css. */
+html.writer-html5 .rst-content .wy-table-responsive > table td > p {
+    line-height: 1.425rem;
+}
+html.writer-html5 .rst-content .wy-table-responsive > table th > p {
+    line-height: 1.425rem;
+    font-size: .95rem;
+    font-weight: 600;
+}
+
+html.writer-html5 .rst-content .wy-table-responsive > table td > p tt.literal,
+html.writer-html5 .rst-content .wy-table-responsive > table td > p code.literal {
+    font-size: .85rem;
+    padding: 2px 5px;
+}
