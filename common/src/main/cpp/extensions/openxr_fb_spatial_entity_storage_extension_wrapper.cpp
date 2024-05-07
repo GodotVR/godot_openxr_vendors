@@ -108,34 +108,34 @@ bool OpenXRFbSpatialEntityStorageExtensionWrapper::_on_event_polled(const void *
 	return false;
 }
 
-XrAsyncRequestIdFB OpenXRFbSpatialEntityStorageExtensionWrapper::save_space(const XrSpaceSaveInfoFB *p_info, StorageRequestCompleteCallback p_callback, void *p_userdata) {
+bool OpenXRFbSpatialEntityStorageExtensionWrapper::save_space(const XrSpaceSaveInfoFB *p_info, StorageRequestCompleteCallback p_callback, void *p_userdata) {
 	XrAsyncRequestIdFB request_id;
 
 	const XrResult result = xrSaveSpaceFB(SESSION, p_info, &request_id);
 	if (!XR_SUCCEEDED(result)) {
 		WARN_PRINT("xrSaveSpaceFB failed!");
 		WARN_PRINT(get_openxr_api()->get_error_string(result));
-		p_callback(result, p_userdata);
-		return 0;
+		p_callback(result, p_info->location, p_userdata);
+		return false;
 	}
 
 	requests[request_id] = RequestInfo(p_callback, p_userdata);
-	return request_id;
+	return true;
 }
 
-XrAsyncRequestIdFB OpenXRFbSpatialEntityStorageExtensionWrapper::erase_space(const XrSpaceEraseInfoFB *p_info, StorageRequestCompleteCallback p_callback, void *p_userdata) {
+bool OpenXRFbSpatialEntityStorageExtensionWrapper::erase_space(const XrSpaceEraseInfoFB *p_info, StorageRequestCompleteCallback p_callback, void *p_userdata) {
 	XrAsyncRequestIdFB request_id;
 
 	const XrResult result = xrEraseSpaceFB(SESSION, p_info, &request_id);
 	if (!XR_SUCCEEDED(result)) {
 		WARN_PRINT("xrEraseSpaceFB failed!");
 		WARN_PRINT(get_openxr_api()->get_error_string(result));
-		p_callback(result, p_userdata);
-		return 0;
+		p_callback(result, p_info->location, p_userdata);
+		return false;
 	}
 
 	requests[request_id] = RequestInfo(p_callback, p_userdata);
-	return request_id;
+	return true;
 }
 
 void OpenXRFbSpatialEntityStorageExtensionWrapper::on_space_save_complete(const XrEventDataSpaceSaveCompleteFB *event) {
@@ -145,7 +145,7 @@ void OpenXRFbSpatialEntityStorageExtensionWrapper::on_space_save_complete(const 
 	}
 
 	RequestInfo *request = requests.getptr(event->requestId);
-	request->callback(event->result, request->userdata);
+	request->callback(event->result, event->location, request->userdata);
 	requests.erase(event->requestId);
 }
 
@@ -156,6 +156,6 @@ void OpenXRFbSpatialEntityStorageExtensionWrapper::on_space_erase_complete(const
 	}
 
 	RequestInfo *request = requests.getptr(event->requestId);
-	request->callback(event->result, request->userdata);
+	request->callback(event->result, event->location, request->userdata);
 	requests.erase(event->requestId);
 }

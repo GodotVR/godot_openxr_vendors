@@ -141,18 +141,69 @@ bool OpenXRFbSpatialEntityExtensionWrapper::initialize_fb_spatial_entity_extensi
 	GDEXTENSION_INIT_XR_FUNC_V(xrEnumerateSpaceSupportedComponentsFB);
 	GDEXTENSION_INIT_XR_FUNC_V(xrSetSpaceComponentStatusFB);
 	GDEXTENSION_INIT_XR_FUNC_V(xrGetSpaceComponentStatusFB);
+	GDEXTENSION_INIT_XR_FUNC_V(xrDestroySpace);
 	GDEXTENSION_INIT_XR_FUNC_V(xrLocateSpace);
 
 	return true;
 }
 
 bool OpenXRFbSpatialEntityExtensionWrapper::_on_event_polled(const void *event) {
+	if (static_cast<const XrEventDataBuffer *>(event)->type == XR_TYPE_EVENT_DATA_SPATIAL_ANCHOR_CREATE_COMPLETE_FB) {
+		on_spatial_anchor_created((const XrEventDataSpatialAnchorCreateCompleteFB *)event);
+		return true;
+	}
+
 	if (static_cast<const XrEventDataBuffer *>(event)->type == XR_TYPE_EVENT_DATA_SPACE_SET_STATUS_COMPLETE_FB) {
 		on_set_component_enabled_complete((const XrEventDataSpaceSetStatusCompleteFB *)event);
 		return true;
 	}
 
 	return false;
+}
+
+bool OpenXRFbSpatialEntityExtensionWrapper::create_spatial_anchor(const Transform3D &p_transform, SpatialAnchorCreatedCallback p_callback, void *p_userdata) {
+	XrAsyncRequestIdFB request_id = 0;
+
+	Quaternion quat = Quaternion(p_transform.basis);
+	Vector3 pos = p_transform.origin;
+	XrPosef pose = {
+		{ quat.x, quat.y, quat.z, quat.w }, // orientation
+		{ pos.x, pos.y, pos.z }, // position
+	};
+
+	XrSpatialAnchorCreateInfoFB info = {
+		XR_TYPE_SPATIAL_ANCHOR_CREATE_INFO_FB, // type
+		nullptr, // next
+		reinterpret_cast<XrSpace>(get_openxr_api()->get_play_space()), // space
+		pose, // poseInSpace
+		get_openxr_api()->get_next_frame_time(), // time
+	};
+
+	const XrResult result = xrCreateSpatialAnchorFB(SESSION, &info, &request_id);
+	if (!XR_SUCCEEDED(result)) {
+		WARN_PRINT("xrCreateSpatialAnchorFB failed!");
+		WARN_PRINT(get_openxr_api()->get_error_string(result));
+		p_callback(result, nullptr, nullptr, p_userdata);
+		return false;
+	}
+
+	spatial_anchor_creation_info[request_id] = SpatialAnchorCreationInfo(p_callback, p_userdata);
+	return true;
+}
+
+void OpenXRFbSpatialEntityExtensionWrapper::on_spatial_anchor_created(const XrEventDataSpatialAnchorCreateCompleteFB *event) {
+	if (!spatial_anchor_creation_info.has(event->requestId)) {
+		WARN_PRINT("Received unexpected XR_TYPE_EVENT_DATA_SPATIAL_ANCHOR_CREATE_COMPLETE_FB");
+		return;
+	}
+
+	SpatialAnchorCreationInfo *info = spatial_anchor_creation_info.getptr(event->requestId);
+	info->callback(event->result, event->space, &event->uuid, info->userdata);
+	spatial_anchor_creation_info.erase(event->requestId);
+}
+
+bool OpenXRFbSpatialEntityExtensionWrapper::destroy_space(const XrSpace &p_space) {
+	return XR_SUCCEEDED(xrDestroySpace(p_space));
 }
 
 Vector<XrSpaceComponentTypeFB> OpenXRFbSpatialEntityExtensionWrapper::get_support_components(const XrSpace &space) {

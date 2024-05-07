@@ -1,4 +1,4 @@
-[gd_scene load_steps=2 format=4 uid="uid://bwo5nq0clfe3c"]
+[gd_scene load_steps=2 format=3 uid="uid://bwo5nq0clfe3c"]
 
 [ext_resource type="Script" path="res://scene_global_mesh.gd" id="1_bmuti"]
 
@@ -6,3 +6,4 @@
 script = ExtResource("1_bmuti")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="."]
+collision_layer = 2

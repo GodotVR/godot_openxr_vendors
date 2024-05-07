@@ -19,6 +19,12 @@ config/icon="res://icon.svg"
 
 settings/stdout/verbose_stdout=true
 
+[layer_names]
+
+3d_physics/layer_1="Virtual Environment"
+3d_physics/layer_2="Scene Understanding"
+3d_physics/layer_3="Spatial Anchors"
+
 [rendering]
 
 renderer/rendering_method="gl_compatibility"
@@ -28,6 +34,7 @@ textures/vram_compression/import_etc2_astc=true
 [xr]
 
 openxr/enabled=true
+openxr/reference_space=1
 openxr/extensions/eye_gaze_interaction=true
 shaders/enabled=true
 openxr/extensions/hand_tracking_aim=true

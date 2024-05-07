@@ -53,7 +53,11 @@ public:
 		return fb_spatial_entity_ext;
 	}
 
+	typedef void (*SpatialAnchorCreatedCallback)(XrResult p_result, XrSpace p_space, const XrUuidEXT *p_uuid, void *p_userdata);
 	typedef void (*SetComponentEnabledCallback)(XrResult p_result, XrSpaceComponentTypeFB p_component, bool p_enabled, void *p_userdata);
+
+	bool create_spatial_anchor(const Transform3D &p_transform, SpatialAnchorCreatedCallback p_callback, void *p_userdata);
+	bool destroy_space(const XrSpace &p_space);
 
 	Vector<XrSpaceComponentTypeFB> get_support_components(const XrSpace &p_space);
 	bool is_component_enabled(const XrSpace &p_space, XrSpaceComponentTypeFB p_component);
@@ -99,6 +103,9 @@ private:
 			(XrSpaceComponentTypeFB), componentType,
 			(XrSpaceComponentStatusFB *), status)
 
+	EXT_PROTO_XRRESULT_FUNC1(xrDestroySpace,
+			(XrSpace), space);
+
 	EXT_PROTO_XRRESULT_FUNC4(xrLocateSpace,
 		(XrSpace), space,
 		(XrSpace), baseSpace,
@@ -106,9 +113,23 @@ private:
 		(XrSpaceLocation *), location)
 
 	bool initialize_fb_spatial_entity_extension(const XrInstance &instance);
+	void on_spatial_anchor_created(const XrEventDataSpatialAnchorCreateCompleteFB *event);
 	void on_set_component_enabled_complete(const XrEventDataSpaceSetStatusCompleteFB *event);
 
 	HashMap<String, bool *> request_extensions;
+
+	struct SpatialAnchorCreationInfo {
+		SpatialAnchorCreatedCallback callback = nullptr;
+		void *userdata = nullptr;
+
+		SpatialAnchorCreationInfo() { }
+
+		SpatialAnchorCreationInfo(SpatialAnchorCreatedCallback p_callback, void *p_userdata) {
+			callback = p_callback;
+			userdata = p_userdata;
+		}
+	};
+	HashMap<XrAsyncRequestIdFB, SpatialAnchorCreationInfo> spatial_anchor_creation_info;
 
 	struct SetComponentEnabledInfo {
 		SetComponentEnabledCallback callback = nullptr;

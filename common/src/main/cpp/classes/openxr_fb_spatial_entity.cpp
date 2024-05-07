@@ -39,6 +39,7 @@
 
 #include "extensions/openxr_fb_spatial_entity_extension_wrapper.h"
 #include "extensions/openxr_fb_spatial_entity_container_extension_wrapper.h"
+#include "extensions/openxr_fb_spatial_entity_storage_extension_wrapper.h"
 #include "extensions/openxr_fb_scene_extension_wrapper.h"
 #include "extensions/openxr_meta_spatial_entity_mesh_extension_wrapper.h"
 
@@ -46,6 +47,8 @@ using namespace godot;
 
 void OpenXRFbSpatialEntity::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_uuid"), &OpenXRFbSpatialEntity::get_uuid);
+	ClassDB::bind_method(D_METHOD("set_custom_data"), &OpenXRFbSpatialEntity::set_custom_data);
+	ClassDB::bind_method(D_METHOD("get_custom_data"), &OpenXRFbSpatialEntity::get_custom_data);
 
 	ClassDB::bind_method(D_METHOD("get_supported_components"), &OpenXRFbSpatialEntity::get_supported_components);
 	ClassDB::bind_method(D_METHOD("is_component_supported", "component"), &OpenXRFbSpatialEntity::is_component_supported);
@@ -67,7 +70,14 @@ void OpenXRFbSpatialEntity::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("create_mesh_instance"), &OpenXRFbSpatialEntity::create_mesh_instance);
 	ClassDB::bind_method(D_METHOD("create_collision_shape"), &OpenXRFbSpatialEntity::create_collision_shape);
 
+	ClassDB::bind_static_method("OpenXRFbSpatialEntity", D_METHOD("create_spatial_anchor", "transform"), &OpenXRFbSpatialEntity::create_spatial_anchor);
+
+	ClassDB::bind_method(D_METHOD("save_to_storage", "location"), &OpenXRFbSpatialEntity::save_to_storage, DEFVAL(STORAGE_LOCAL));
+	ClassDB::bind_method(D_METHOD("erase_from_storage", "location"), &OpenXRFbSpatialEntity::erase_from_storage, DEFVAL(STORAGE_LOCAL));
+	ClassDB::bind_method(D_METHOD("destroy"), &OpenXRFbSpatialEntity::destroy);
+
 	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "uuid", PROPERTY_HINT_NONE, ""), "", "get_uuid");
+	ADD_PROPERTY(PropertyInfo(Variant::DICTIONARY, "custom_data", PROPERTY_HINT_NONE, ""), "set_custom_data", "get_custom_data");
 
 	BIND_ENUM_CONSTANT(STORAGE_LOCAL);
 	BIND_ENUM_CONSTANT(STORAGE_CLOUD);
@@ -83,6 +93,9 @@ void OpenXRFbSpatialEntity::_bind_methods() {
 	BIND_ENUM_CONSTANT(COMPONENT_TYPE_TRIANGLE_MESH);
 
 	ADD_SIGNAL(MethodInfo("openxr_fb_spatial_entity_set_component_enabled_completed", PropertyInfo(Variant::Type::BOOL, "succeeded"), PropertyInfo(Variant::Type::INT, "component"), PropertyInfo(Variant::Type::BOOL, "enabled")));
+	ADD_SIGNAL(MethodInfo("openxr_fb_spatial_entity_created", PropertyInfo(Variant::Type::BOOL, "succeeded")));
+	ADD_SIGNAL(MethodInfo("openxr_fb_spatial_entity_saved", PropertyInfo(Variant::Type::BOOL, "succeeded"), PropertyInfo(Variant::Type::INT, "location")));
+	ADD_SIGNAL(MethodInfo("openxr_fb_spatial_entity_erased", PropertyInfo(Variant::Type::BOOL, "succeeded"), PropertyInfo(Variant::Type::INT, "location")));
 }
 
 String OpenXRFbSpatialEntity::_to_string() const {
@@ -93,8 +106,18 @@ StringName OpenXRFbSpatialEntity::get_uuid() const {
 	return uuid;
 }
 
+void OpenXRFbSpatialEntity::set_custom_data(const Dictionary &p_custom_data) {
+	custom_data = p_custom_data;
+}
+
+Dictionary OpenXRFbSpatialEntity::get_custom_data() const {
+	return custom_data;
+}
+
 Array OpenXRFbSpatialEntity::get_supported_components() const {
 	Array ret;
+
+	ERR_FAIL_COND_V_MSG(space == XR_NULL_HANDLE, ret, "Underlying spatial entity doesn't exist (yet) or has been destroyed.");
 
 	Vector<XrSpaceComponentTypeFB> components = OpenXRFbSpatialEntityExtensionWrapper::get_singleton()->get_support_components(space);
 	ret.resize(components.size());
@@ -106,16 +129,22 @@ Array OpenXRFbSpatialEntity::get_supported_components() const {
 }
 
 bool OpenXRFbSpatialEntity::is_component_supported(ComponentType p_component) const {
+	ERR_FAIL_COND_V_MSG(space == XR_NULL_HANDLE, false, "Underlying spatial entity doesn't exist (yet) or has been destroyed.");
+	ERR_FAIL_COND_V(p_component == COMPONENT_TYPE_UNKNOWN, false);
 	return get_supported_components().has(p_component);
 }
 
 bool OpenXRFbSpatialEntity::is_component_enabled(ComponentType p_component) const {
+	ERR_FAIL_COND_V_MSG(space == XR_NULL_HANDLE, false, "Underlying spatial entity doesn't exist (yet) or has been destroyed.");
+	ERR_FAIL_COND_V(p_component == COMPONENT_TYPE_UNKNOWN, false);
 	return OpenXRFbSpatialEntityExtensionWrapper::get_singleton()->is_component_enabled(space, to_openxr_component_type(p_component));
 }
 
 void OpenXRFbSpatialEntity::set_component_enabled(ComponentType p_component, bool p_enabled) {
+	ERR_FAIL_COND_MSG(space == XR_NULL_HANDLE, "Underlying spatial entity doesn't exist (yet) or has been destroyed.");
+	ERR_FAIL_COND(p_component == COMPONENT_TYPE_UNKNOWN);
 	Ref<OpenXRFbSpatialEntity> *userdata = memnew(Ref<OpenXRFbSpatialEntity>(this));
-	XrAsyncRequestIdFB request_id = OpenXRFbSpatialEntityExtensionWrapper::get_singleton()->set_component_enabled(space, to_openxr_component_type(p_component), p_enabled, OpenXRFbSpatialEntity::_on_set_component_enabled_completed, userdata);
+	OpenXRFbSpatialEntityExtensionWrapper::get_singleton()->set_component_enabled(space, to_openxr_component_type(p_component), p_enabled, OpenXRFbSpatialEntity::_on_set_component_enabled_completed, userdata);
 }
 
 void OpenXRFbSpatialEntity::_on_set_component_enabled_completed(XrResult p_result, XrSpaceComponentTypeFB p_component, bool p_enabled, void *p_userdata) {
@@ -125,10 +154,13 @@ void OpenXRFbSpatialEntity::_on_set_component_enabled_completed(XrResult p_resul
 }
 
 PackedStringArray OpenXRFbSpatialEntity::get_semantic_labels() const {
+	ERR_FAIL_COND_V_MSG(space == XR_NULL_HANDLE, PackedStringArray(), "Underlying spatial entity doesn't exist (yet) or has been destroyed.");
 	return OpenXRFbSceneExtensionWrapper::get_singleton()->get_semantic_labels(space);
 }
 
 Dictionary OpenXRFbSpatialEntity::get_room_layout() const {
+	ERR_FAIL_COND_V_MSG(space == XR_NULL_HANDLE, Dictionary(), "Underlying spatial entity doesn't exist (yet) or has been destroyed.");
+
 	OpenXRFbSceneExtensionWrapper::RoomLayout room_layout;
 	if (!OpenXRFbSceneExtensionWrapper::get_singleton()->get_room_layout(space, room_layout)) {
 		return Dictionary();
@@ -149,6 +181,8 @@ Dictionary OpenXRFbSpatialEntity::get_room_layout() const {
 }
 
 Array OpenXRFbSpatialEntity::get_contained_uuids() const {
+	ERR_FAIL_COND_V_MSG(space == XR_NULL_HANDLE, Array(), "Underlying spatial entity doesn't exist (yet) or has been destroyed.");
+
 	Vector<XrUuidEXT> uuids = OpenXRFbSpatialEntityContainerExtensionWrapper::get_singleton()->get_contained_uuids(space);
 
 	Array ret;
@@ -160,27 +194,33 @@ Array OpenXRFbSpatialEntity::get_contained_uuids() const {
 }
 
 Rect2 OpenXRFbSpatialEntity::get_bounding_box_2d() const {
+	ERR_FAIL_COND_V_MSG(space == XR_NULL_HANDLE, Rect2(), "Underlying spatial entity doesn't exist (yet) or has been destroyed.");
 	return OpenXRFbSceneExtensionWrapper::get_singleton()->get_bounding_box_2d(space);
 }
 
 AABB OpenXRFbSpatialEntity::get_bounding_box_3d() const {
+	ERR_FAIL_COND_V_MSG(space == XR_NULL_HANDLE, AABB(), "Underlying spatial entity doesn't exist (yet) or has been destroyed.");
 	return OpenXRFbSceneExtensionWrapper::get_singleton()->get_bounding_box_3d(space);
 }
 
 PackedVector2Array OpenXRFbSpatialEntity::get_boundary_2d() const {
+	ERR_FAIL_COND_V_MSG(space == XR_NULL_HANDLE, PackedVector2Array(), "Underlying spatial entity doesn't exist (yet) or has been destroyed.");
 	return OpenXRFbSceneExtensionWrapper::get_singleton()->get_boundary_2d(space);
 }
 
 void OpenXRFbSpatialEntity::track() {
+	ERR_FAIL_COND_MSG(space == XR_NULL_HANDLE, "Underlying spatial entity doesn't exist (yet) or has been destroyed.");
 	ERR_FAIL_COND_MSG(!is_component_enabled(COMPONENT_TYPE_LOCATABLE), vformat("Cannot track spatial entity %s because COMPONENT_TYPE_LOCATABLE isn't enabled.", uuid));
 	OpenXRFbSpatialEntityExtensionWrapper::get_singleton()->track_entity(uuid, space);
 }
 
 void OpenXRFbSpatialEntity::untrack() {
+	ERR_FAIL_COND_MSG(space == XR_NULL_HANDLE, "Underlying spatial entity doesn't exist (yet) or has been destroyed.");
 	OpenXRFbSpatialEntityExtensionWrapper::get_singleton()->untrack_entity(uuid);
 }
 
 bool OpenXRFbSpatialEntity::is_tracked() const {
+	ERR_FAIL_COND_V_MSG(space == XR_NULL_HANDLE, false, "Underlying spatial entity doesn't exist (yet) or has been destroyed.");
 	return OpenXRFbSpatialEntityExtensionWrapper::get_singleton()->is_entity_tracked(uuid);
 }
 
@@ -214,6 +254,8 @@ Array OpenXRFbSpatialEntity::get_triangle_mesh() const {
 }
 
 MeshInstance3D *OpenXRFbSpatialEntity::create_mesh_instance() const {
+	ERR_FAIL_COND_V_MSG(space == XR_NULL_HANDLE, nullptr, "Underlying spatial entity doesn't exist (yet) or has been destroyed.");
+
 	MeshInstance3D *mesh_instance = nullptr;
 
 	if (is_component_enabled(COMPONENT_TYPE_TRIANGLE_MESH)) {
@@ -254,6 +296,8 @@ MeshInstance3D *OpenXRFbSpatialEntity::create_mesh_instance() const {
 }
 
 Node3D *OpenXRFbSpatialEntity::create_collision_shape() const {
+	ERR_FAIL_COND_V_MSG(space == XR_NULL_HANDLE, nullptr, "Underlying spatial entity doesn't exist (yet) or has been destroyed.");
+
 	if (is_component_enabled(COMPONENT_TYPE_TRIANGLE_MESH)) {
 		OpenXRMetaSpatialEntityMeshExtensionWrapper::TriangleMesh mesh_data;
 		if (!OpenXRMetaSpatialEntityMeshExtensionWrapper::get_singleton()->get_triangle_mesh(space, mesh_data)) {
@@ -314,6 +358,75 @@ Node3D *OpenXRFbSpatialEntity::create_collision_shape() const {
 	return nullptr;
 }
 
+Ref<OpenXRFbSpatialEntity> OpenXRFbSpatialEntity::create_spatial_anchor(const Transform3D &p_transform) {
+	Ref<OpenXRFbSpatialEntity> *userdata = memnew(Ref<OpenXRFbSpatialEntity>());
+	(*userdata).instantiate();
+	OpenXRFbSpatialEntityExtensionWrapper::get_singleton()->create_spatial_anchor(p_transform, &OpenXRFbSpatialEntity::_on_spatial_anchor_created, userdata);
+	return *userdata;
+}
+
+void OpenXRFbSpatialEntity::_on_spatial_anchor_created(XrResult p_result, XrSpace p_space, const XrUuidEXT *p_uuid, void *p_userdata) {
+	Ref<OpenXRFbSpatialEntity> *userdata = (Ref<OpenXRFbSpatialEntity> *)p_userdata;
+	bool success = XR_SUCCEEDED(p_result);
+	if (success) {
+		(*userdata)->space = p_space;
+		(*userdata)->uuid = OpenXRUtilities::uuid_to_string_name(*p_uuid);
+	}
+	(*userdata)->emit_signal("openxr_fb_spatial_entity_created", success);
+	memdelete(userdata);
+}
+
+void OpenXRFbSpatialEntity::save_to_storage(StorageLocation p_location) {
+	ERR_FAIL_COND_MSG(space == XR_NULL_HANDLE, "Underlying spatial entity doesn't exist (yet) or has been destroyed.");
+
+	XrSpaceSaveInfoFB save_info = {
+		XR_TYPE_SPACE_SAVE_INFO_FB, // type
+		nullptr, // next
+		space, // space
+		to_openxr_storage_location(p_location), // location
+		XR_SPACE_PERSISTENCE_MODE_INDEFINITE_FB, // persistenceMode
+	};
+
+	Ref<OpenXRFbSpatialEntity> *userdata = memnew(Ref<OpenXRFbSpatialEntity>(this));
+	OpenXRFbSpatialEntityStorageExtensionWrapper::get_singleton()->save_space(&save_info, OpenXRFbSpatialEntity::_on_save_to_storage, userdata);
+}
+
+void OpenXRFbSpatialEntity::_on_save_to_storage(XrResult p_result, XrSpaceStorageLocationFB p_location, void *p_userdata) {
+	Ref<OpenXRFbSpatialEntity> *userdata = (Ref<OpenXRFbSpatialEntity> *)p_userdata;
+	(*userdata)->emit_signal("openxr_fb_spatial_entity_saved", XR_SUCCEEDED(p_result), from_openxr_storage_location(p_location));
+	memdelete(userdata);
+}
+
+void OpenXRFbSpatialEntity::erase_from_storage(StorageLocation p_location) {
+	ERR_FAIL_COND_MSG(space == XR_NULL_HANDLE, "Underlying spatial entity doesn't exist (yet) or has been destroyed.");
+
+	XrSpaceEraseInfoFB erase_info = {
+		XR_TYPE_SPACE_ERASE_INFO_FB, // type
+		nullptr, // next
+		space, // space
+		to_openxr_storage_location(p_location), // location
+	};
+
+	Ref<OpenXRFbSpatialEntity> *userdata = memnew(Ref<OpenXRFbSpatialEntity>(this));
+	OpenXRFbSpatialEntityStorageExtensionWrapper::get_singleton()->erase_space(&erase_info, OpenXRFbSpatialEntity::_on_save_to_storage, userdata);
+}
+
+void OpenXRFbSpatialEntity::_on_erase_from_storage(XrResult p_result, XrSpaceStorageLocationFB p_location, void *p_userdata) {
+	Ref<OpenXRFbSpatialEntity> *userdata = (Ref<OpenXRFbSpatialEntity> *)p_userdata;
+	(*userdata)->emit_signal("openxr_fb_spatial_entity_erased", XR_SUCCEEDED(p_result), from_openxr_storage_location(p_location));
+	memdelete(userdata);
+}
+
+void OpenXRFbSpatialEntity::destroy() {
+	ERR_FAIL_COND_MSG(space == XR_NULL_HANDLE, "Underlying spatial entity doesn't exist (yet) or has been destroyed.");
+	OpenXRFbSpatialEntityExtensionWrapper *spatial_entity_extension_wrapper = OpenXRFbSpatialEntityExtensionWrapper::get_singleton();
+	if (spatial_entity_extension_wrapper) {
+		spatial_entity_extension_wrapper->untrack_entity(uuid);
+		spatial_entity_extension_wrapper->destroy_space(space);
+		space = XR_NULL_HANDLE;
+	}
+}
+
 XrSpaceStorageLocationFB OpenXRFbSpatialEntity::to_openxr_storage_location(StorageLocation p_location) {
 	switch (p_location) {
 		case OpenXRFbSpatialEntity::STORAGE_LOCAL: {
@@ -324,6 +437,23 @@ XrSpaceStorageLocationFB OpenXRFbSpatialEntity::to_openxr_storage_location(Stora
 		} break;
 		default: {
 			return XR_SPACE_STORAGE_LOCATION_INVALID_FB;
+		}
+	}
+}
+
+OpenXRFbSpatialEntity::StorageLocation OpenXRFbSpatialEntity::from_openxr_storage_location(XrSpaceStorageLocationFB p_location) {
+	switch (p_location) {
+		case XR_SPACE_STORAGE_LOCATION_LOCAL_FB: {
+			return STORAGE_LOCAL;
+		} break;
+		case XR_SPACE_STORAGE_LOCATION_CLOUD_FB: {
+			return STORAGE_CLOUD;
+		} break;
+		case XR_SPACE_STORAGE_LOCATION_INVALID_FB:
+		case XR_SPACE_STORAGE_LOCATION_MAX_ENUM_FB:
+		default: {
+			WARN_PRINT_ONCE(vformat("Received invalid XrSpaceStorageLocationFB: %s.", (int)p_location));
+			return STORAGE_LOCAL;
 		}
 	}
 }
@@ -357,6 +487,7 @@ XrSpaceComponentTypeFB OpenXRFbSpatialEntity::to_openxr_component_type(Component
 		case COMPONENT_TYPE_TRIANGLE_MESH: {
 			return XR_SPACE_COMPONENT_TYPE_TRIANGLE_MESH_META;
 		} break;
+		case COMPONENT_TYPE_UNKNOWN:
 		default: {
 			ERR_FAIL_V_MSG(XR_SPACE_COMPONENT_TYPE_LOCATABLE_FB, vformat("Unknown component type: %s", p_component));
 		}
@@ -394,7 +525,7 @@ OpenXRFbSpatialEntity::ComponentType OpenXRFbSpatialEntity::from_openxr_componen
 		} break;
 		case XR_SPACE_COMPONENT_TYPE_MAX_ENUM_FB:
 		default: {
-			ERR_FAIL_V_MSG(COMPONENT_TYPE_LOCATABLE, vformat("Unknown OpenXR component type: %s", p_component));
+			ERR_FAIL_V_MSG(COMPONENT_TYPE_UNKNOWN, vformat("Unknown OpenXR component type: %s", p_component));
 		}
 	}
 }
