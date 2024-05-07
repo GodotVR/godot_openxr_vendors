@@ -163,8 +163,8 @@ void OpenXRFbFaceTrackingExtensionWrapper::_on_process() {
 	}
 
 	// Get the next frame time
-	const XrTime next_frame_time = get_openxr_api()->get_next_frame_time();
-	if (next_frame_time == 0) {
+	const XrTime display_time = get_openxr_api()->get_predicted_display_time();
+	if (display_time == 0) {
 		return;
 	}
 
@@ -172,7 +172,7 @@ void OpenXRFbFaceTrackingExtensionWrapper::_on_process() {
 	XrFaceExpressionInfo2FB expression_info2 = {
 		XR_TYPE_FACE_EXPRESSION_INFO2_FB, // type
 		nullptr, // next
-		next_frame_time // time
+		display_time // time
 	};
 
 	// Construct the weights struct.

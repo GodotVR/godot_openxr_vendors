@@ -489,7 +489,7 @@ void OpenXRFbPassthroughExtensionWrapper::set_geometry_instance_transform(XrGeom
 		XR_TYPE_GEOMETRY_INSTANCE_TRANSFORM_FB, // type
 		nullptr, // next
 		(XrSpace)get_openxr_api()->get_play_space(), // baseSpace
-		(XrTime)get_openxr_api()->get_next_frame_time(), // time
+		(XrTime)get_openxr_api()->get_predicted_display_time(), // time
 		xr_pose, // pose
 		xr_scale, // scale
 	};

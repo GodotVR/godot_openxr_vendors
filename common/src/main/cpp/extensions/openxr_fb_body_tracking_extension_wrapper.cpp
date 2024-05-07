@@ -242,8 +242,8 @@ void OpenXRFbBodyTrackingExtensionWrapper::_on_process() {
 	}
 
 	// Get the next frame time
-	const XrTime next_frame_time = get_openxr_api()->get_next_frame_time();
-	if (next_frame_time == 0) {
+	const XrTime display_time = get_openxr_api()->get_predicted_display_time();
+	if (display_time == 0) {
 		return;
 	}
 
@@ -252,7 +252,7 @@ void OpenXRFbBodyTrackingExtensionWrapper::_on_process() {
         XR_TYPE_BODY_JOINTS_LOCATE_INFO_FB, // type
         nullptr, // next
         (XrSpace)get_openxr_api()->get_play_space(), // baseSpace
-        next_frame_time // time
+        display_time // time
     };
 
 	// Construct the locations struct.
