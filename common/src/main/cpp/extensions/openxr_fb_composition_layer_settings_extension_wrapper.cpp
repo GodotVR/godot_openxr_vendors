@@ -34,8 +34,10 @@
 
 using namespace godot;
 
-static const char *SUPERSAMPLING_MODE_PROPERTY_NAME = "XR_FB_composition_layer_settings/supersampling_mode";
-static const char *SHARPENING_MODE_PROPERTY_NAME = "XR_FB_composition_layer_settings/sharpening_mode";
+static const char *SUPERSAMPLING_MODE_PROPERTY_NAME = "XR_FB_composition_layer_settings/manual/supersampling_mode";
+static const char *SHARPENING_MODE_PROPERTY_NAME = "XR_FB_composition_layer_settings/manual/sharpening_mode";
+static const char *ENABLE_AUTO_FILTER_PROPERTY_NAME = "XR_FB_composition_layer_settings/auto/enable_auto_filter";
+static const char *AUTO_OPTIONS_PROPERTY_NAME = "XR_FB_composition_layer_settings/auto/options";
 
 OpenXRFbCompositionLayerSettingsExtensionWrapper *OpenXRFbCompositionLayerSettingsExtensionWrapper::singleton = nullptr;
 
@@ -51,6 +53,8 @@ OpenXRFbCompositionLayerSettingsExtensionWrapper::OpenXRFbCompositionLayerSettin
 	ERR_FAIL_COND_MSG(singleton != nullptr, "An OpenXRFbCompositionLayerSettingsExtensionWrapper singleton already exists.");
 
 	request_extensions[XR_FB_COMPOSITION_LAYER_SETTINGS_EXTENSION_NAME] = &fb_composition_layer_settings;
+	request_extensions[XR_META_AUTOMATIC_LAYER_FILTER_EXTENSION_NAME] = &meta_automatic_layer_filter;
+
 	singleton = this;
 }
 
@@ -70,6 +74,7 @@ void OpenXRFbCompositionLayerSettingsExtensionWrapper::_bind_methods() {
 
 void OpenXRFbCompositionLayerSettingsExtensionWrapper::cleanup() {
 	fb_composition_layer_settings = false;
+	meta_automatic_layer_filter = false;
 }
 
 Dictionary OpenXRFbCompositionLayerSettingsExtensionWrapper::_get_requested_extensions() {
@@ -99,6 +104,14 @@ uint64_t OpenXRFbCompositionLayerSettingsExtensionWrapper::_set_viewport_composi
 	XrCompositionLayerSettingsFB *settings = layer_structs.getptr(layer);
 
 	settings->layerFlags = 0;
+
+	// Auto will always take priority over manual if auto is enabled and at least one auto option flag is selected.
+	if (meta_automatic_layer_filter && p_property_values.get(ENABLE_AUTO_FILTER_PROPERTY_NAME, false) && (int)p_property_values.get(AUTO_OPTIONS_PROPERTY_NAME, 0)) {
+		settings->layerFlags |= XR_COMPOSITION_LAYER_SETTINGS_AUTO_LAYER_FILTER_BIT_META;
+		settings->layerFlags |= (int)p_property_values.get(AUTO_OPTIONS_PROPERTY_NAME, 0);
+
+		return reinterpret_cast<uint64_t>(settings);
+	}
 
 	switch ((SupersamplingMode)(int)p_property_values.get(SUPERSAMPLING_MODE_PROPERTY_NAME, SUPERSAMPLING_MODE_DISABLED)) {
 		case SUPERSAMPLING_MODE_NORMAL: {
@@ -153,6 +166,23 @@ TypedArray<Dictionary> OpenXRFbCompositionLayerSettingsExtensionWrapper::_get_vi
 		properties.push_back(sharpening_mode);
 	}
 
+	{
+		Dictionary enable_auto_filter;
+		enable_auto_filter["name"] = ENABLE_AUTO_FILTER_PROPERTY_NAME;
+		enable_auto_filter["type"] = Variant::BOOL;
+		enable_auto_filter["hint"] = PROPERTY_HINT_NONE;
+		properties.push_back(enable_auto_filter);
+	}
+
+	{
+		Dictionary auto_options;
+		auto_options["name"] = AUTO_OPTIONS_PROPERTY_NAME;
+		auto_options["type"] = Variant::INT;
+		auto_options["hint"] = PROPERTY_HINT_FLAGS;
+		auto_options["hint_string"] = "Normal Supersampling,Quality Supersampling,Normal Sharpening,Quality Sharpening";
+		properties.push_back(auto_options);
+	}
+
 	return properties;
 }
 
@@ -160,5 +190,7 @@ Dictionary OpenXRFbCompositionLayerSettingsExtensionWrapper::_get_viewport_compo
 	Dictionary defaults;
 	defaults[SUPERSAMPLING_MODE_PROPERTY_NAME] = (int)SUPERSAMPLING_MODE_DISABLED;
 	defaults[SHARPENING_MODE_PROPERTY_NAME] = (int)SHARPENING_MODE_DISABLED;
+	defaults[ENABLE_AUTO_FILTER_PROPERTY_NAME] = false;
+	defaults[AUTO_OPTIONS_PROPERTY_NAME] = 0;
 	return defaults;
 }

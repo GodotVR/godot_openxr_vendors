@@ -77,6 +77,7 @@ private:
 	HashMap<String, bool *> request_extensions;
 
 	bool fb_composition_layer_settings = false;
+	bool meta_automatic_layer_filter = false;
 
 	HashMap<const XrCompositionLayerBaseHeader *, XrCompositionLayerSettingsFB> layer_structs;
 };
