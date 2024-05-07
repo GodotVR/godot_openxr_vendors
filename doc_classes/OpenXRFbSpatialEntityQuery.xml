@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="OpenXRFbSpatialEntityQuery" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="execute">
+			<return type="int" enum="Error" />
+			<description>
+			</description>
+		</method>
+		<method name="get_component_type">
+			<return type="int" enum="OpenXRFbSpatialEntity.ComponentType" />
+			<description>
+			</description>
+		</method>
+		<method name="get_query_type">
+			<return type="int" enum="OpenXRFbSpatialEntityQuery.QueryType" />
+			<description>
+			</description>
+		</method>
+		<method name="get_storage_location">
+			<return type="int" enum="OpenXRFbSpatialEntity.StorageLocation" />
+			<description>
+			</description>
+		</method>
+		<method name="get_uuids">
+			<return type="Array" />
+			<description>
+			</description>
+		</method>
+		<method name="query_all">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="query_by_component">
+			<return type="void" />
+			<param index="0" name="component" type="int" enum="OpenXRFbSpatialEntity.ComponentType" />
+			<param index="1" name="location" type="int" enum="OpenXRFbSpatialEntity.StorageLocation" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="query_by_uuid">
+			<return type="void" />
+			<param index="0" name="uuids" type="Array" />
+			<param index="1" name="location" type="int" enum="OpenXRFbSpatialEntity.StorageLocation" default="0" />
+			<description>
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="max_results" type="int" setter="set_max_results" getter="get_max_results" default="25">
+		</member>
+		<member name="timeout" type="float" setter="set_timeout" getter="get_timeout" default="0.0">
+		</member>
+	</members>
+	<signals>
+		<signal name="openxr_fb_spatial_entity_query_completed">
+			<param index="0" name="results" type="Array" />
+			<description>
+			</description>
+		</signal>
+	</signals>
+	<constants>
+		<constant name="QUERY_ALL" value="0" enum="QueryType">
+		</constant>
+		<constant name="QUERY_BY_UUID" value="1" enum="QueryType">
+		</constant>
+		<constant name="QUERY_BY_COMPONENT" value="2" enum="QueryType">
+		</constant>
+	</constants>
+</class>

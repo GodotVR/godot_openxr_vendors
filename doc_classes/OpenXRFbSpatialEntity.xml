@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="OpenXRFbSpatialEntity" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="create_collision_shape">
+			<return type="Node3D" />
+			<description>
+			</description>
+		</method>
+		<method name="create_mesh_instance">
+			<return type="MeshInstance3D" />
+			<description>
+			</description>
+		</method>
+		<method name="get_boundary_2d">
+			<return type="PackedVector2Array" />
+			<description>
+			</description>
+		</method>
+		<method name="get_bounding_box_2d">
+			<return type="Rect2" />
+			<description>
+			</description>
+		</method>
+		<method name="get_bounding_box_3d">
+			<return type="AABB" />
+			<description>
+			</description>
+		</method>
+		<method name="get_contained_uuids">
+			<return type="Array" />
+			<description>
+			</description>
+		</method>
+		<method name="get_room_layout">
+			<return type="Dictionary" />
+			<description>
+			</description>
+		</method>
+		<method name="get_semantic_labels">
+			<return type="PackedStringArray" />
+			<description>
+			</description>
+		</method>
+		<method name="get_supported_components">
+			<return type="Array" />
+			<description>
+			</description>
+		</method>
+		<method name="get_triangle_mesh">
+			<return type="Array" />
+			<description>
+			</description>
+		</method>
+		<method name="is_component_enabled">
+			<return type="bool" />
+			<param index="0" name="component" type="int" enum="OpenXRFbSpatialEntity.ComponentType" />
+			<description>
+			</description>
+		</method>
+		<method name="is_component_supported">
+			<return type="bool" />
+			<param index="0" name="component" type="int" enum="OpenXRFbSpatialEntity.ComponentType" />
+			<description>
+			</description>
+		</method>
+		<method name="is_tracked">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="set_component_enabled">
+			<return type="void" />
+			<param index="0" name="component" type="int" enum="OpenXRFbSpatialEntity.ComponentType" />
+			<param index="1" name="enabled" type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="track">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="untrack">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="uuid" type="StringName" setter="" getter="get_uuid" default="&amp;&quot;&quot;">
+		</member>
+	</members>
+	<signals>
+		<signal name="openxr_fb_spatial_entity_set_component_enabled_completed">
+			<param index="0" name="succeeded" type="bool" />
+			<param index="1" name="component" type="int" />
+			<param index="2" name="enabled" type="bool" />
+			<description>
+			</description>
+		</signal>
+	</signals>
+	<constants>
+		<constant name="STORAGE_LOCAL" value="0" enum="StorageLocation">
+		</constant>
+		<constant name="STORAGE_CLOUD" value="1" enum="StorageLocation">
+		</constant>
+		<constant name="COMPONENT_TYPE_LOCATABLE" value="0" enum="ComponentType">
+		</constant>
+		<constant name="COMPONENT_TYPE_STORABLE" value="1" enum="ComponentType">
+		</constant>
+		<constant name="COMPONENT_TYPE_SHARABLE" value="2" enum="ComponentType">
+		</constant>
+		<constant name="COMPONENT_TYPE_BOUNDED_2D" value="3" enum="ComponentType">
+		</constant>
+		<constant name="COMPONENT_TYPE_BOUNDED_3D" value="4" enum="ComponentType">
+		</constant>
+		<constant name="COMPONENT_TYPE_SEMANTIC_LABELS" value="5" enum="ComponentType">
+		</constant>
+		<constant name="COMPONENT_TYPE_ROOM_LAYOUT" value="6" enum="ComponentType">
+		</constant>
+		<constant name="COMPONENT_TYPE_CONTAINER" value="7" enum="ComponentType">
+		</constant>
+		<constant name="COMPONENT_TYPE_TRIANGLE_MESH" value="8" enum="ComponentType">
+		</constant>
+	</constants>
+</class>

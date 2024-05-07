@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="OpenXRFbHandTrackingMesh" inherits="Skeleton3D" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="get_mesh_instance">
+			<return type="MeshInstance3D" />
+			<description>
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="hand" type="int" setter="set_hand" getter="get_hand" enum="OpenXRFbHandTrackingMesh.Hand" default="0">
+		</member>
+		<member name="material" type="Material" setter="set_material" getter="get_material">
+		</member>
+		<member name="scale_override" type="float" setter="set_scale_override" getter="get_scale_override" default="2.51113e-42">
+		</member>
+		<member name="use_scale_override" type="bool" setter="set_use_scale_override" getter="get_use_scale_override" default="true">
+		</member>
+	</members>
+	<constants>
+		<constant name="Hand::HAND_LEFT" value="0" enum="Hand">
+		</constant>
+		<constant name="Hand::HAND_RIGHT" value="1" enum="Hand">
+		</constant>
+	</constants>
+</class>

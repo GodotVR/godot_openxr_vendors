@@ -72,19 +72,19 @@ void OpenXRFbPassthroughExtensionWrapper::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("is_passthrough_supported"), &OpenXRFbPassthroughExtensionWrapper::is_passthrough_supported);
 	ClassDB::bind_method(D_METHOD("is_passthrough_started"), &OpenXRFbPassthroughExtensionWrapper::is_passthrough_started);
 
-	ClassDB::bind_method(D_METHOD("set_texture_opacity_factor"), &OpenXRFbPassthroughExtensionWrapper::set_texture_opacity_factor);
+	ClassDB::bind_method(D_METHOD("set_texture_opacity_factor", "value"), &OpenXRFbPassthroughExtensionWrapper::set_texture_opacity_factor);
 	ClassDB::bind_method(D_METHOD("get_texture_opacity_factor"), &OpenXRFbPassthroughExtensionWrapper::get_texture_opacity_factor);
 
 	ClassDB::bind_method(D_METHOD("get_current_layer_purpose"), &OpenXRFbPassthroughExtensionWrapper::get_current_layer_purpose);
 
-	ClassDB::bind_method(D_METHOD("set_edge_color"), &OpenXRFbPassthroughExtensionWrapper::set_edge_color);
+	ClassDB::bind_method(D_METHOD("set_edge_color", "color"), &OpenXRFbPassthroughExtensionWrapper::set_edge_color);
 	ClassDB::bind_method(D_METHOD("get_edge_color"), &OpenXRFbPassthroughExtensionWrapper::get_edge_color);
 
-	ClassDB::bind_method(D_METHOD("set_passthrough_filter"), &OpenXRFbPassthroughExtensionWrapper::set_passthrough_filter);
+	ClassDB::bind_method(D_METHOD("set_passthrough_filter", "filter"), &OpenXRFbPassthroughExtensionWrapper::set_passthrough_filter);
 	ClassDB::bind_method(D_METHOD("get_current_passthrough_filter"), &OpenXRFbPassthroughExtensionWrapper::get_current_passthrough_filter);
-	ClassDB::bind_method(D_METHOD("set_color_map"), &OpenXRFbPassthroughExtensionWrapper::set_color_map);
-	ClassDB::bind_method(D_METHOD("set_mono_map"), &OpenXRFbPassthroughExtensionWrapper::set_mono_map);
-	ClassDB::bind_method(D_METHOD("set_brightness_contrast_saturation"), &OpenXRFbPassthroughExtensionWrapper::set_brightness_contrast_saturation);
+	ClassDB::bind_method(D_METHOD("set_color_map", "gradient"), &OpenXRFbPassthroughExtensionWrapper::set_color_map);
+	ClassDB::bind_method(D_METHOD("set_mono_map", "curve"), &OpenXRFbPassthroughExtensionWrapper::set_mono_map);
+	ClassDB::bind_method(D_METHOD("set_brightness_contrast_saturation", "brightness", "contrast", "saturation"), &OpenXRFbPassthroughExtensionWrapper::set_brightness_contrast_saturation);
 
 	ClassDB::bind_method(D_METHOD("has_passthrough_capability"), &OpenXRFbPassthroughExtensionWrapper::has_passthrough_capability);
 	ClassDB::bind_method(D_METHOD("has_color_passthrough_capability"), &OpenXRFbPassthroughExtensionWrapper::has_color_passthrough_capability);
@@ -92,9 +92,9 @@ void OpenXRFbPassthroughExtensionWrapper::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("is_passthrough_preferred"), &OpenXRFbPassthroughExtensionWrapper::is_passthrough_preferred);
 
-	ClassDB::bind_method(D_METHOD("set_color_lut"), &OpenXRFbPassthroughExtensionWrapper::set_color_lut);
-	ClassDB::bind_method(D_METHOD("set_interpolated_color_lut"), &OpenXRFbPassthroughExtensionWrapper::set_interpolated_color_lut);
-	ClassDB::bind_method(D_METHOD("destroy_color_lut"), &OpenXRFbPassthroughExtensionWrapper::destroy_color_lut);
+	ClassDB::bind_method(D_METHOD("set_color_lut", "weight", "color_lut"), &OpenXRFbPassthroughExtensionWrapper::set_color_lut);
+	ClassDB::bind_method(D_METHOD("set_interpolated_color_lut", "weight", "source_color_lut", "target_color_lut"), &OpenXRFbPassthroughExtensionWrapper::set_interpolated_color_lut);
+	ClassDB::bind_method(D_METHOD("destroy_color_lut", "color_lut"), &OpenXRFbPassthroughExtensionWrapper::destroy_color_lut);
 	ClassDB::bind_method(D_METHOD("get_max_color_lut_resolution"), &OpenXRFbPassthroughExtensionWrapper::get_max_color_lut_resolution);
 
 	ADD_SIGNAL(MethodInfo("openxr_fb_projected_passthrough_layer_created"));

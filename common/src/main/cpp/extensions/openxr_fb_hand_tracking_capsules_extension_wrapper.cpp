@@ -55,10 +55,10 @@ OpenXRFbHandTrackingCapsulesExtensionWrapper::~OpenXRFbHandTrackingCapsulesExten
 void OpenXRFbHandTrackingCapsulesExtensionWrapper::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("is_enabled"), &OpenXRFbHandTrackingCapsulesExtensionWrapper::is_enabled);
 	ClassDB::bind_method(D_METHOD("get_hand_capsule_count"), &OpenXRFbHandTrackingCapsulesExtensionWrapper::get_hand_capsule_count);
-	ClassDB::bind_method(D_METHOD("get_hand_capsule_transform"), &OpenXRFbHandTrackingCapsulesExtensionWrapper::get_hand_capsule_transform);
-	ClassDB::bind_method(D_METHOD("get_hand_capsule_height"), &OpenXRFbHandTrackingCapsulesExtensionWrapper::get_hand_capsule_height);
-	ClassDB::bind_method(D_METHOD("get_hand_capsule_radius"), &OpenXRFbHandTrackingCapsulesExtensionWrapper::get_hand_capsule_radius);
-	ClassDB::bind_method(D_METHOD("get_hand_capsule_joint"), &OpenXRFbHandTrackingCapsulesExtensionWrapper::get_hand_capsule_joint);
+	ClassDB::bind_method(D_METHOD("get_hand_capsule_transform", "hand_index", "capsule_index"), &OpenXRFbHandTrackingCapsulesExtensionWrapper::get_hand_capsule_transform);
+	ClassDB::bind_method(D_METHOD("get_hand_capsule_height", "hand_index", "capsule_index"), &OpenXRFbHandTrackingCapsulesExtensionWrapper::get_hand_capsule_height);
+	ClassDB::bind_method(D_METHOD("get_hand_capsule_radius", "hand_index", "capsule_index"), &OpenXRFbHandTrackingCapsulesExtensionWrapper::get_hand_capsule_radius);
+	ClassDB::bind_method(D_METHOD("get_hand_capsule_joint", "hand_index", "capsule_index"), &OpenXRFbHandTrackingCapsulesExtensionWrapper::get_hand_capsule_joint);
 }
 
 void OpenXRFbHandTrackingCapsulesExtensionWrapper::cleanup() {
