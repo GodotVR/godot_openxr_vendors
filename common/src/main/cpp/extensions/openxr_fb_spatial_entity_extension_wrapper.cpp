@@ -109,7 +109,7 @@ void OpenXRFbSpatialEntityExtensionWrapper::_on_process() {
 			} // pose
 		};
 
-		XrResult result = xrLocateSpace(E.value.space, reinterpret_cast<XrSpace>(get_openxr_api()->get_play_space()), get_openxr_api()->get_next_frame_time(), &location);
+		XrResult result = xrLocateSpace(E.value.space, reinterpret_cast<XrSpace>(get_openxr_api()->get_play_space()), get_openxr_api()->get_predicted_display_time(), &location);
 		if (XR_FAILED(result)) {
 			WARN_PRINT("OpenXR: failed to locate anchor " + E.key);
 			WARN_PRINT(get_openxr_api()->get_error_string(result));
@@ -176,7 +176,7 @@ bool OpenXRFbSpatialEntityExtensionWrapper::create_spatial_anchor(const Transfor
 		nullptr, // next
 		reinterpret_cast<XrSpace>(get_openxr_api()->get_play_space()), // space
 		pose, // poseInSpace
-		get_openxr_api()->get_next_frame_time(), // time
+		get_openxr_api()->get_predicted_display_time(), // time
 	};
 
 	const XrResult result = xrCreateSpatialAnchorFB(SESSION, &info, &request_id);

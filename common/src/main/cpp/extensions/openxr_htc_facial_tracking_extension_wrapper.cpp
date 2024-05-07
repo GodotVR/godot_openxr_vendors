@@ -184,8 +184,8 @@ void OpenXRHtcFacialTrackingExtensionWrapper::_on_process() {
 	}
 
 	// Get the next frame time
-	const XrTime next_frame_time = get_openxr_api()->get_next_frame_time();
-	if (next_frame_time == 0) {
+	const XrTime display_time = get_openxr_api()->get_predicted_display_time();
+	if (display_time == 0) {
 		return;
 	}
 
@@ -199,7 +199,7 @@ void OpenXRHtcFacialTrackingExtensionWrapper::_on_process() {
 			XR_TYPE_FACIAL_EXPRESSIONS_HTC, // type
 			nullptr, // next
 			XR_FALSE, // isActive
-			next_frame_time, // sampleTime
+			display_time, // sampleTime
 			XR_FACIAL_EXPRESSION_EYE_COUNT_HTC,
 			eyeWeights
 		};
@@ -218,7 +218,7 @@ void OpenXRHtcFacialTrackingExtensionWrapper::_on_process() {
 			XR_TYPE_FACIAL_EXPRESSIONS_HTC, // type
 			nullptr, // next
 			XR_FALSE, // isActive
-			next_frame_time, // sampleTime
+			display_time, // sampleTime
 			XR_FACIAL_EXPRESSION_LIP_COUNT_HTC,
 			lipWeights
 		};
