@@ -38,6 +38,7 @@
 namespace godot {
 class Node3D;
 class MeshInstance3D;
+class OpenXRFbSpatialEntityUser;
 
 class OpenXRFbSpatialEntity : public RefCounted {
 	GDCLASS(OpenXRFbSpatialEntity, RefCounted);
@@ -74,6 +75,7 @@ protected:
 	static void _on_set_component_enabled_completed(XrResult p_result, XrSpaceComponentTypeFB p_component, bool p_enabled, void *p_userdata);
 	static void _on_save_to_storage(XrResult p_result, XrSpaceStorageLocationFB p_location, void *p_userdata);
 	static void _on_erase_from_storage(XrResult p_result, XrSpaceStorageLocationFB p_location, void *p_userdata);
+	static void _on_share_with_users(XrResult p_result, void *p_userdata);
 
 	String _to_string() const;
 
@@ -107,6 +109,7 @@ public:
 
 	void save_to_storage(StorageLocation p_location = STORAGE_LOCAL);
 	void erase_from_storage(StorageLocation p_location = STORAGE_LOCAL);
+	void share_with_users(const TypedArray<OpenXRFbSpatialEntityUser> &p_users);
 	void destroy();
 
 	static XrSpaceStorageLocationFB to_openxr_storage_location(StorageLocation p_location);
