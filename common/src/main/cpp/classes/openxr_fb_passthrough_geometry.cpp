@@ -32,10 +32,20 @@
 #include "extensions/openxr_fb_passthrough_extension_wrapper.h"
 
 #include <godot_cpp/classes/engine.hpp>
+#include <godot_cpp/classes/shader.hpp>
+#include <godot_cpp/classes/shader_material.hpp>
 #include <godot_cpp/classes/standard_material3d.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
 
 using namespace godot;
+
+const Color PREVIEW_COLOR = Color(1.0, 0.0, 1.0);
+static const char *HOLE_PUNCH_SHADER_CODE =
+		"shader_type spatial;\n"
+		"render_mode blend_mix, depth_draw_opaque, cull_back, shadow_to_opacity, shadows_disabled;\n"
+		"void fragment() {\n"
+		"\tALBEDO = vec3(0.0, 0.0, 0.0);\n"
+		"}\n";
 
 void OpenXRFbPassthroughGeometry::set_mesh(const Ref<Mesh> &p_mesh) {
 	if (p_mesh == mesh) {
@@ -49,27 +59,18 @@ void OpenXRFbPassthroughGeometry::set_mesh(const Ref<Mesh> &p_mesh) {
 	mesh = p_mesh;
 
 	if (mesh.is_null()) {
-		if (preview_mesh != nullptr) {
-			preview_mesh->queue_free();
-			preview_mesh = nullptr;
+		if (opaque_mesh != nullptr) {
+			delete_opaque_mesh();
 		}
 		return;
 	}
 
 	if (Engine::get_singleton()->is_editor_hint()) {
-		if (preview_mesh == nullptr) {
-			const Color PREVIEW_COLOR = Color(1.0, 0.0, 1.0);
-
-			Ref<StandardMaterial3D> material;
-			material.instantiate();
-			material->set_shading_mode(BaseMaterial3D::SHADING_MODE_UNSHADED);
-			material->set_albedo(PREVIEW_COLOR);
-
-			preview_mesh = memnew(MeshInstance3D);
-			preview_mesh->set_material_override(material);
-			add_child(preview_mesh, false, Node::INTERNAL_MODE_BACK);
+		if (opaque_mesh == nullptr) {
+			instatiate_opaque_mesh();
+		} else {
+			opaque_mesh->set_mesh(mesh);
 		}
-		preview_mesh->set_mesh(mesh);
 	}
 
 	if (OpenXRFbPassthroughExtensionWrapper::get_singleton()->is_passthrough_started()) {
@@ -81,8 +82,35 @@ Ref<Mesh> OpenXRFbPassthroughGeometry::get_mesh() const {
 	return mesh;
 }
 
+void OpenXRFbPassthroughGeometry::set_enable_hole_punch(bool p_enable) {
+	if (enable_hole_punch == p_enable) {
+		return;
+	}
+
+	enable_hole_punch = p_enable;
+
+	if (!OpenXRFbPassthroughExtensionWrapper::get_singleton()->is_passthrough_started()) {
+		return;
+	}
+
+	if (opaque_mesh == nullptr && mesh.is_valid() && enable_hole_punch) {
+		instatiate_opaque_mesh();
+	} else if (opaque_mesh != nullptr && !enable_hole_punch) {
+		delete_opaque_mesh();
+	}
+}
+
+bool OpenXRFbPassthroughGeometry::get_enable_hole_punch() const {
+	return enable_hole_punch;
+}
+
 void OpenXRFbPassthroughGeometry::create_passthrough_geometry() {
 	geometry_instance = OpenXRFbPassthroughExtensionWrapper::get_singleton()->create_geometry_instance(mesh, get_transform());
+
+	if (opaque_mesh == nullptr && enable_hole_punch) {
+		instatiate_opaque_mesh();
+	}
+
 	set_notify_local_transform(true);
 }
 
@@ -91,6 +119,46 @@ void OpenXRFbPassthroughGeometry::destroy_passthrough_geometry() {
 		OpenXRFbPassthroughExtensionWrapper::get_singleton()->destroy_geometry_instance(geometry_instance);
 		geometry_instance = XR_NULL_HANDLE;
 	}
+
+	if (opaque_mesh != nullptr) {
+		delete_opaque_mesh();
+	}
+}
+
+void OpenXRFbPassthroughGeometry::instatiate_opaque_mesh() {
+	ERR_FAIL_COND_MSG(opaque_mesh != nullptr, "Opaque mesh child node already exists");
+	ERR_FAIL_COND_MSG(mesh.is_null(), "Mesh resource is null");
+
+	opaque_mesh = memnew(MeshInstance3D);
+	opaque_mesh->set_mesh(mesh);
+	add_child(opaque_mesh, false, Node::INTERNAL_MODE_BACK);
+
+	if (Engine::get_singleton()->is_editor_hint()) {
+		Ref<StandardMaterial3D> standard_material;
+		standard_material.instantiate();
+		standard_material->set_shading_mode(BaseMaterial3D::SHADING_MODE_UNSHADED);
+		standard_material->set_albedo(PREVIEW_COLOR);
+
+		opaque_mesh->set_surface_override_material(0, standard_material);
+	} else {
+		Ref<Shader> shader;
+		shader.instantiate();
+		shader->set_code(HOLE_PUNCH_SHADER_CODE);
+
+		Ref<ShaderMaterial> shader_material;
+		shader_material.instantiate();
+		shader_material->set_shader(shader);
+
+		opaque_mesh->set_surface_override_material(0, shader_material);
+	}
+}
+
+void OpenXRFbPassthroughGeometry::delete_opaque_mesh() {
+	ERR_FAIL_COND_MSG(opaque_mesh == nullptr, "Opaque mesh child node does not exist");
+
+	remove_child(opaque_mesh);
+	opaque_mesh->queue_free();
+	opaque_mesh = nullptr;
 }
 
 void OpenXRFbPassthroughGeometry::_notification(int p_what) {
@@ -127,8 +195,12 @@ void OpenXRFbPassthroughGeometry::_notification(int p_what) {
 }
 
 void OpenXRFbPassthroughGeometry::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("set_mesh"), &OpenXRFbPassthroughGeometry::set_mesh);
+	ClassDB::bind_method(D_METHOD("set_mesh", "mesh"), &OpenXRFbPassthroughGeometry::set_mesh);
 	ClassDB::bind_method(D_METHOD("get_mesh"), &OpenXRFbPassthroughGeometry::get_mesh);
 
+	ClassDB::bind_method(D_METHOD("set_enable_hole_punch", "enable"), &OpenXRFbPassthroughGeometry::set_enable_hole_punch);
+	ClassDB::bind_method(D_METHOD("get_enable_hole_punch"), &OpenXRFbPassthroughGeometry::get_enable_hole_punch);
+
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "mesh", PROPERTY_HINT_RESOURCE_TYPE, "Mesh"), "set_mesh", "get_mesh");
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "enable_hole_punch", PROPERTY_HINT_NONE, ""), "set_enable_hole_punch", "get_enable_hole_punch");
 }

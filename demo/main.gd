@@ -270,11 +270,11 @@ func update_passthrough_mode() -> void:
 			xr_interface.environment_blend_mode = XRInterface.XR_ENV_BLEND_MODE_ALPHA_BLEND
 			passthrough_mode_info.text = STRING_BASE + "Full"
 		OpenXRFbPassthroughExtensionWrapper.LAYER_PURPOSE_RECONSTRUCTION:
+			enable_passthrough_environment(false)
 			xr_interface.environment_blend_mode = XRInterface.XR_ENV_BLEND_MODE_OPAQUE
 			open_xr_fb_passthrough_geometry.show()
 			passthrough_mode_info.text = STRING_BASE + "Geometry"
 		OpenXRFbPassthroughExtensionWrapper.LAYER_PURPOSE_PROJECTED:
-			enable_passthrough_environment(false)
 			open_xr_fb_passthrough_geometry.hide()
 			passthrough_mode_info.text = STRING_BASE + "None"
 

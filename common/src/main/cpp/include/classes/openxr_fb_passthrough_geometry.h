@@ -44,9 +44,13 @@ private:
 	void create_passthrough_geometry();
 	void destroy_passthrough_geometry();
 
-	XrGeometryInstanceFB geometry_instance = XR_NULL_HANDLE;
+	void instatiate_opaque_mesh();
+	void delete_opaque_mesh();
+
 	Ref<Mesh> mesh;
-	MeshInstance3D *preview_mesh = nullptr;
+	bool enable_hole_punch = true;
+	XrGeometryInstanceFB geometry_instance = XR_NULL_HANDLE;
+	MeshInstance3D *opaque_mesh = nullptr;
 
 protected:
 	void _notification(int p_what);
@@ -56,6 +60,9 @@ protected:
 public:
 	void set_mesh(const Ref<Mesh> &p_mesh);
 	Ref<Mesh> get_mesh() const;
+
+	void set_enable_hole_punch(bool p_enable);
+	bool get_enable_hole_punch() const;
 };
 } //namespace godot
 
