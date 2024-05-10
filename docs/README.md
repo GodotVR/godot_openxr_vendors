@@ -9,7 +9,6 @@ How to build the documentation
 Install all the necessary Python dependencies for Sphinx:
 
 ```bash
-cd tests
 python -m venv python.env
 . python.env/bin/activate
 pip install -r requirements.txt
