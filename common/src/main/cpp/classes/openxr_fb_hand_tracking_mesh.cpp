@@ -131,8 +131,8 @@ void OpenXRFbHandTrackingMesh::_bind_methods() {
 
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "hand", PROPERTY_HINT_ENUM, "Left Hand,Right Hand"), "set_hand", "get_hand");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "material", PROPERTY_HINT_RESOURCE_TYPE, "BaseMaterial3D,ShaderMaterial", PROPERTY_USAGE_DEFAULT), "set_material", "get_material");
-	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "use_scale_override", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR), "set_use_scale_override", "get_use_scale_override");
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "scale_override", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR), "set_scale_override", "get_scale_override");
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "use_scale_override", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NONE), "set_use_scale_override", "get_use_scale_override");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "scale_override", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NONE), "set_scale_override", "get_scale_override");
 
 	BIND_ENUM_CONSTANT(Hand::HAND_LEFT);
 	BIND_ENUM_CONSTANT(Hand::HAND_RIGHT);
