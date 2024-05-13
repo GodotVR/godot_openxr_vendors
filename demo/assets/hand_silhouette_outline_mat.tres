@@ -1,4 +1,4 @@
-[gd_resource type="ShaderMaterial" load_steps=4 format=4 uid="uid://bdwh0vc86hsdb"]
+[gd_resource type="ShaderMaterial" load_steps=4 format=3 uid="uid://bdwh0vc86hsdb"]
 
 [ext_resource type="Shader" path="res://assets/hand_outline.gdshader" id="1_wpjxj"]
 [ext_resource type="Shader" path="res://assets/hand_silhouette.gdshader" id="2_dvpns"]
