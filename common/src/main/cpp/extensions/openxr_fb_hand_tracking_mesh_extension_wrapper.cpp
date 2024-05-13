@@ -134,9 +134,21 @@ void OpenXRFbHandTrackingMeshExtensionWrapper::_on_process() {
 				if (fetch_hand_mesh_data(Hand(i))) {
 					emit_signal("openxr_fb_hand_tracking_mesh_data_fetched", i);
 				}
+
+				// May be turned false if fetch_hand_mesh_data encounters errors indicating hand tracking mesh is not supported.
+				if (!should_fetch_hand_mesh_data) {
+					return;
+				}
 			}
 		}
 	}
+
+	for (int i = 0; i < Hand::HAND_MAX; i++) {
+		if (hand_mesh[i].is_null()) {
+			return;
+		}
+	}
+	should_fetch_hand_mesh_data = false;
 }
 
 void OpenXRFbHandTrackingMeshExtensionWrapper::set_use_scale_override(Hand p_hand, bool p_use) {
@@ -173,6 +185,11 @@ bool OpenXRFbHandTrackingMeshExtensionWrapper::fetch_hand_mesh_data(Hand p_hand)
 	XrResult result = xrGetHandMeshFB(hand_tracker, &xr_hand_mesh);
 	if (XR_FAILED(result)) {
 		UtilityFunctions::print("Failed to retrieve capacity inputs for OpenXR XR_FB_hand_tracking_mesh extension, error code: ", result);
+
+		if (result == XR_ERROR_FUNCTION_UNSUPPORTED || result == XR_ERROR_FEATURE_UNSUPPORTED) {
+			should_fetch_hand_mesh_data = false;
+		}
+
 		return false;
 	}
 
@@ -211,6 +228,11 @@ bool OpenXRFbHandTrackingMeshExtensionWrapper::fetch_hand_mesh_data(Hand p_hand)
 	result = xrGetHandMeshFB(hand_tracker, &xr_hand_mesh);
 	if (XR_FAILED(result)) {
 		UtilityFunctions::print("Failed to retrieve hand mesh data for OpenXR XR_FB_hand_tracking_mesh extension, error code: ", result);
+
+		if (result == XR_ERROR_FUNCTION_UNSUPPORTED || result == XR_ERROR_FEATURE_UNSUPPORTED) {
+			should_fetch_hand_mesh_data = false;
+		}
+
 		return false;
 	}
 
