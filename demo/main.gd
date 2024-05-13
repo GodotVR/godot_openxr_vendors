@@ -33,6 +33,9 @@ var selected_spatial_anchor_node: Node3D = null
 @onready var passthrough_mode_info: Label3D = $XROrigin3D/RightHand/PassthroughModeInfo
 @onready var passthrough_filter_info: Label3D = $XROrigin3D/RightHand/PassthroughFilterInfo
 
+const PASSTHROUGH_MODE_STRING_BASE = "[B] Passthrough Mode: "
+const PASSTHROUGH_FILTER_STRING_BASE = "[A] Passthrough Filter: "
+
 const SPATIAL_ANCHORS_FILE = "user://openxr_fb_spatial_anchors.json"
 const SpatialAnchor = preload("res://spatial_anchor.tscn")
 
@@ -208,9 +211,6 @@ func _on_left_hand_button_pressed(name):
 		print("Triggering scene capture")
 		scene_manager.request_scene_capture()
 
-	elif name == "by_button":
-		enable_passthrough(not passthrough_enabled)
-
 	elif name == "trigger_click" and left_hand_pointer.visible:
 		if left_hand_pointer_raycast.is_colliding():
 			if selected_spatial_anchor_node:
@@ -257,58 +257,47 @@ func _on_scene_manager_scene_capture_completed(success: bool) -> void:
 
 		# Switch to passthrough.
 		enable_passthrough(true)
+		passthrough_mode_info.text = PASSTHROUGH_MODE_STRING_BASE + "Full"
 
 func _on_scene_manager_scene_data_missing() -> void:
 	scene_manager.request_scene_capture()
 
 func update_passthrough_mode() -> void:
-	const STRING_BASE = "[B] Passthrough Mode: "
-
 	match fb_passthrough.get_current_layer_purpose():
 		OpenXRFbPassthroughExtensionWrapper.LAYER_PURPOSE_NONE:
-			enable_passthrough_environment(true)
+			enable_passthrough(true)
 			xr_interface.environment_blend_mode = XRInterface.XR_ENV_BLEND_MODE_ALPHA_BLEND
-			passthrough_mode_info.text = STRING_BASE + "Full"
+			passthrough_mode_info.text = PASSTHROUGH_MODE_STRING_BASE + "Full"
 		OpenXRFbPassthroughExtensionWrapper.LAYER_PURPOSE_RECONSTRUCTION:
-			enable_passthrough_environment(false)
+			enable_passthrough(false)
 			xr_interface.environment_blend_mode = XRInterface.XR_ENV_BLEND_MODE_OPAQUE
 			open_xr_fb_passthrough_geometry.show()
-			passthrough_mode_info.text = STRING_BASE + "Geometry"
+			passthrough_mode_info.text = PASSTHROUGH_MODE_STRING_BASE + "Geometry"
 		OpenXRFbPassthroughExtensionWrapper.LAYER_PURPOSE_PROJECTED:
 			open_xr_fb_passthrough_geometry.hide()
-			passthrough_mode_info.text = STRING_BASE + "None"
-
-func enable_passthrough_environment(enable: bool) -> void:
-	if enable:
-		get_viewport().transparent_bg = true
-		world_environment.environment.background_mode = Environment.BG_COLOR
-	else:
-		get_viewport().transparent_bg = false
-		world_environment.environment.background_mode = Environment.BG_SKY
+			passthrough_mode_info.text = PASSTHROUGH_MODE_STRING_BASE + "None"
 
 func update_passthrough_filter() -> void:
-	const STRING_BASE = "[A] Passthrough Filter: "
-
 	match fb_passthrough.get_current_passthrough_filter():
 		OpenXRFbPassthroughExtensionWrapper.PASSTHROUGH_FILTER_DISABLED:
 			fb_passthrough.set_color_map(passthrough_gradient)
-			passthrough_filter_info.text = STRING_BASE + "Color Map"
+			passthrough_filter_info.text = PASSTHROUGH_FILTER_STRING_BASE + "Color Map"
 		OpenXRFbPassthroughExtensionWrapper.PASSTHROUGH_FILTER_COLOR_MAP:
 			fb_passthrough.set_mono_map(passthrough_curve)
-			passthrough_filter_info.text = STRING_BASE + "Mono Map"
+			passthrough_filter_info.text = PASSTHROUGH_FILTER_STRING_BASE + "Mono Map"
 		OpenXRFbPassthroughExtensionWrapper.PASSTHROUGH_FILTER_MONO_MAP:
 			fb_passthrough.set_brightness_contrast_saturation(bcs.x, bcs.y, bcs.z)
-			passthrough_filter_info.text = STRING_BASE + "Brightness Contrast Saturation"
+			passthrough_filter_info.text = PASSTHROUGH_FILTER_STRING_BASE + "Brightness Contrast Saturation"
 		OpenXRFbPassthroughExtensionWrapper.PASSTHROUGH_FILTER_BRIGHTNESS_CONTRAST_SATURATION:
 			fb_passthrough.set_color_lut(1.0, meta_color_lut)
-			passthrough_filter_info.text = STRING_BASE + "Color Map LUT"
+			passthrough_filter_info.text = PASSTHROUGH_FILTER_STRING_BASE + "Color Map LUT"
 		OpenXRFbPassthroughExtensionWrapper.PASSTHROUGH_FILTER_COLOR_MAP_LUT:
 			lut_tween = create_tween()
 			lut_tween.set_loops()
 			lut_tween.tween_method(fb_passthrough.set_interpolated_color_lut.bind(meta_color_lut, meta_color_lut2), 0.0, 1.0, 2.0).set_delay(.1)
 			lut_tween.tween_method(fb_passthrough.set_interpolated_color_lut.bind(meta_color_lut, meta_color_lut2), 1.0, 0.0, 2.0).set_delay(.1)
-			passthrough_filter_info.text = STRING_BASE + "Interpolated Color Map LUT"
+			passthrough_filter_info.text = PASSTHROUGH_FILTER_STRING_BASE + "Interpolated Color Map LUT"
 		OpenXRFbPassthroughExtensionWrapper.PASSTHROUGH_FILTER_COLOR_MAP_INTERPOLATED_LUT:
 			lut_tween.kill()
 			fb_passthrough.set_passthrough_filter(OpenXRFbPassthroughExtensionWrapper.PASSTHROUGH_FILTER_DISABLED)
-			passthrough_filter_info.text = STRING_BASE + "Disabled"
+			passthrough_filter_info.text = PASSTHROUGH_FILTER_STRING_BASE + "Disabled"
