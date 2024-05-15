@@ -1,0 +1,39 @@
+--- vrs_pixmatch.py-orig	2024-05-14 17:41:44.639317754 -0500
++++ vrs_pixmatch.py	2024-05-14 17:42:42.316556319 -0500
+@@ -125,11 +125,12 @@
+ 
+     return numPixelsDiff
+ 
+-def findTheMatchingFrame(frame_stream, frame_name, target_frame_stream, target_frame_name, sampleIdx, max_test_frames, args, minPixelsDiff):
++def findTheMatchingFrame(frame_stream, frame_name, target_frame_stream, target_frame_name, sampleIdx, max_test_frames, args, minPixelsDiff, bestMatch):
+     sampleTS = getTimestamp(frame_stream, sampleIdx)
+     sampleFrame = getFrame(frame_stream, sampleIdx)
+     matchStartIdx = getFrameIdx(target_frame_stream, sampleTS)
+-    # search around the frame of interest until we find the closest match
++
++    # search around the frame of interest until the closest match is found
+ 
+     # find the matching frame in the target_frame_stream
+     for matchIdx in range(matchStartIdx, matchStartIdx+max_test_frames):
+@@ -203,12 +204,12 @@
+         bestMatch = None
+ 
+         # first check the replay against the record
+-        (minPixelsDiff, bestMatch) = findTheMatchingFrame(record_frame_stream, "record", replay_frame_stream, "replay", sampleIdx, max_test_frames, args, minPixelsDiff)
++        (minPixelsDiff, bestMatch) = findTheMatchingFrame(record_frame_stream, "record", replay_frame_stream, "replay", sampleIdx, max_test_frames, args, minPixelsDiff, bestMatch)
+ 
+-        if minPixelsDiff > 0:
+-            print("best match diff is >0 so matching record against replay")
++        if minPixelsDiff > args.best_match_pixels_diff_threshold:
++            print("best match diff is > ", args.best_match_pixels_diff_threshold, " so matching record against replay")
+             # then check the record against the replay
+-            (minPixelsDiff, bestMatch) = findTheMatchingFrame(replay_frame_stream, "replay", record_frame_stream, "record", sampleIdx, max_test_frames, args, minPixelsDiff)
++            (minPixelsDiff, bestMatch) = findTheMatchingFrame(replay_frame_stream, "replay", record_frame_stream, "record", sampleIdx, max_test_frames, args, minPixelsDiff, bestMatch)
+ 
+         # report the best match
+         if bestMatch:
+@@ -230,3 +231,4 @@
+ 
+ if __name__ == "__main__":
+     main()
++
