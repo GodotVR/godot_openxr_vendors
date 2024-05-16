@@ -20,9 +20,6 @@ var selected_spatial_anchor_node: Node3D = null
 @onready var scene_manager: OpenXRFbSceneManager = $XROrigin3D/OpenXRFbSceneManager
 @onready var spatial_anchor_manager: OpenXRFbSpatialAnchorManager = $XROrigin3D/OpenXRFbSpatialAnchorManager
 
-const PASSTHROUGH_MODE_STRING_BASE = "[B] Passthrough Mode: "
-const PASSTHROUGH_FILTER_STRING_BASE = "[A] Passthrough Filter: "
-
 const SPATIAL_ANCHORS_FILE = "user://openxr_fb_spatial_anchors.json"
 const SpatialAnchor = preload("res://spatial_anchor.tscn")
 
