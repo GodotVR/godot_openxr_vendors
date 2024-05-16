@@ -63,6 +63,7 @@
 #include "extensions/openxr_fb_spatial_entity_storage_batch_extension_wrapper.h"
 #include "extensions/openxr_fb_spatial_entity_user_extension_wrapper.h"
 #include "extensions/openxr_htc_facial_tracking_extension_wrapper.h"
+#include "extensions/openxr_htc_passthrough_extension_wrapper.h"
 #include "extensions/openxr_meta_spatial_entity_mesh_extension_wrapper.h"
 
 #include "classes/openxr_fb_hand_tracking_mesh.h"
@@ -144,6 +145,9 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			ClassDB::register_class<OpenXRHtcFacialTrackingExtensionWrapper>();
 			OpenXRHtcFacialTrackingExtensionWrapper::get_singleton()->register_extension_wrapper();
 
+			ClassDB::register_class<OpenXRHtcPassthroughExtensionWrapper>();
+			OpenXRHtcPassthroughExtensionWrapper::get_singleton()->register_extension_wrapper();
+
 		} break;
 
 		case MODULE_INITIALIZATION_LEVEL_SERVERS:
@@ -162,6 +166,7 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			Engine::get_singleton()->register_singleton("OpenXRFbHandTrackingCapsulesExtensionWrapper", OpenXRFbHandTrackingCapsulesExtensionWrapper::get_singleton());
 			Engine::get_singleton()->register_singleton("OpenXRFbCompositionLayerSettingsExtensionWrapper", OpenXRFbCompositionLayerSettingsExtensionWrapper::get_singleton());
 			Engine::get_singleton()->register_singleton("OpenXRHtcFacialTrackingExtensionWrapper", OpenXRHtcFacialTrackingExtensionWrapper::get_singleton());
+			Engine::get_singleton()->register_singleton("OpenXRHtcPassthroughExtensionWrapper", OpenXRHtcPassthroughExtensionWrapper::get_singleton());
 
 			ClassDB::register_class<OpenXRFbRenderModel>();
 			ClassDB::register_class<OpenXRFbHandTrackingMesh>();
