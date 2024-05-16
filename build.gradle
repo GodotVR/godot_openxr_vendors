@@ -29,6 +29,7 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 
     dependsOn 'cleanAddon'
+    dependsOn 'cleanBuildFromSamples'
 
     dependsOn ':godotopenxrkhronos:clean'
     dependsOn ':godotopenxrlynx:clean'
@@ -55,6 +56,8 @@ task buildPlugin {
     dependsOn ":godotopenxrlynx:build"
     dependsOn ":godotopenxrmeta:build"
     dependsOn ":godotopenxrpico:build"
+
+    finalizedBy "copyBuildToSamples"
 }
 
 /**
@@ -125,4 +128,32 @@ task buildSconsArtifacts {
 
     dependsOn 'buildGodotOpenXRVendorsDebugGDExtension'
     dependsOn 'buildGodotOpenXRVendorsReleaseGDExtension'
+}
+
+task copyBuildToSamples {
+    def sourceDir = file 'demo/addons/godotopenxrvendors'
+    def samplesDir = file 'samples'
+    doLast{
+        samplesDir.eachDir { targetSubdir ->
+            if (targetSubdir.name != 'builds') {
+                copy {
+                    from sourceDir
+                    into "${targetSubdir}/addons/godotopenxrvendors"
+                }
+            }
+        }
+    }
+}
+
+task cleanBuildFromSamples {
+    def samplesDir = file 'samples'
+    doLast{
+        samplesDir.eachDir { targetSubdir ->
+            if (targetSubdir.name != 'builds') {
+                delete {
+                    delete "${targetSubdir}/addons/godotopenxrvendors"
+                }
+            }
+        }
+    }
 }

@@ -1,24 +1,14 @@
-[gd_scene load_steps=27 format=3 uid="uid://cqsodpswgup8w"]
+[gd_scene load_steps=22 format=3 uid="uid://cqsodpswgup8w"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_fsva1"]
 [ext_resource type="PackedScene" uid="uid://c0uv4eu2yjm3b" path="res://viewport_2d_in_3d.tscn" id="2_7whgo"]
-[ext_resource type="Image" uid="uid://dcd586e34414y" path="res://assets/color-lut.png" id="2_lpxwd"]
 [ext_resource type="PackedScene" uid="uid://d4b4rllli6tqp" path="res://tablet_content.tscn" id="3_45w5g"]
 [ext_resource type="PackedScene" uid="uid://bcjp8kcgde4cs" path="res://scene_anchor.tscn" id="4_3u3ah"]
 [ext_resource type="PackedScene" uid="uid://cay8oh2ll7yxi" path="res://assets/test_kun/Test-Kun.fbx" id="4_b317s"]
-[ext_resource type="Image" uid="uid://dqxb16d1fqtrw" path="res://assets/color-lut-inverted-32.png" id="4_pv7hh"]
 [ext_resource type="PackedScene" uid="uid://bwfyi8pgigune" path="res://xr_fb_hand_tracking_aim_demo.tscn" id="5_6bxyh"]
 [ext_resource type="PackedScene" uid="uid://bwo5nq0clfe3c" path="res://scene_global_mesh.tscn" id="5_7ikgf"]
 [ext_resource type="PackedScene" uid="uid://dsfd7xrm6o50p" path="res://spatial_anchor.tscn" id="5_g7mio"]
 [ext_resource type="Material" uid="uid://bdwh0vc86hsdb" path="res://assets/hand_silhouette_outline_mat.tres" id="7_tpkib"]
-
-[sub_resource type="Gradient" id="Gradient_hxe3h"]
-offsets = PackedFloat32Array(0, 0.5, 1)
-colors = PackedColorArray(1, 1, 0, 1, 0, 0, 1, 1, 1, 0, 1, 1)
-
-[sub_resource type="Curve" id="Curve_ykaux"]
-_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.240642, 1), 0.0, 0.0, 0, 0, Vector2(0.502674, 0), 0.0, 0.0, 0, 0, Vector2(0.759358, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
-point_count = 5
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_0x6cv"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -48,8 +38,6 @@ albedo_color = Color(0.203922, 0.203922, 0.203922, 1)
 [sub_resource type="BoxMesh" id="BoxMesh_ey3x4"]
 size = Vector3(0.1, 0.1, 0.1)
 
-[sub_resource type="BoxMesh" id="BoxMesh_u0g4q"]
-
 [sub_resource type="SphereMesh" id="SphereMesh_5gcab"]
 radius = 0.025
 height = 0.05
@@ -69,11 +57,6 @@ size = Vector2(10, 10)
 
 [node name="Main" type="Node3D"]
 script = ExtResource("1_fsva1")
-passthrough_gradient = SubResource("Gradient_hxe3h")
-passthrough_curve = SubResource("Curve_ykaux")
-bcs = Vector3(-10, 50, 0)
-color_lut = ExtResource("2_lpxwd")
-color_lut2 = ExtResource("4_pv7hh")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_m0xew")
@@ -121,26 +104,6 @@ mesh = SubResource("BoxMesh_ey3x4")
 
 [node name="RightControllerFbRenderModel" type="OpenXRFbRenderModel" parent="XROrigin3D/RightHand"]
 render_model_type = 1
-
-[node name="PassthroughModeInfo" type="Label3D" parent="XROrigin3D/RightHand"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, -0.25)
-pixel_size = 0.001
-text = "[B] Passthrough Mode: None"
-
-[node name="PassthroughFilterInfo" type="Label3D" parent="XROrigin3D/RightHand"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 2.73026e-09, -0.187539)
-pixel_size = 0.001
-text = "[A] Passthrough Filter: Disabled"
-
-[node name="RemoteTransform3D" type="RemoteTransform3D" parent="XROrigin3D/RightHand"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
-remote_path = NodePath("../../OpenXRFbPassthroughGeometry")
-
-[node name="OpenXRFbPassthroughGeometry" type="OpenXRFbPassthroughGeometry" parent="XROrigin3D"]
-mesh = SubResource("BoxMesh_u0g4q")
-unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.478861, -0.531708, -0.241097)
-visible = false
 
 [node name="EyeGaze" type="XRController3D" parent="XROrigin3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.977669, 0)

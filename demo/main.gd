@@ -1,18 +1,8 @@
 extends Node3D
 
-@export var passthrough_gradient: Gradient
-@export var passthrough_curve: Curve
-@export var bcs: Vector3
-@export var color_lut: Image
-@export var color_lut2: Image
-
 var xr_interface: XRInterface = null
 var hand_tracking_source: Array[OpenXRInterface.HandTrackedSource]
 var passthrough_enabled: bool = false
-var fb_passthrough
-var meta_color_lut: OpenXRMetaPassthroughColorLut
-var meta_color_lut2: OpenXRMetaPassthroughColorLut
-var lut_tween: Tween
 var selected_spatial_anchor_node: Node3D = null
 
 @onready var left_hand: XRController3D = $XROrigin3D/LeftHand
@@ -29,9 +19,6 @@ var selected_spatial_anchor_node: Node3D = null
 @onready var world_environment: WorldEnvironment = $WorldEnvironment
 @onready var scene_manager: OpenXRFbSceneManager = $XROrigin3D/OpenXRFbSceneManager
 @onready var spatial_anchor_manager: OpenXRFbSpatialAnchorManager = $XROrigin3D/OpenXRFbSpatialAnchorManager
-@onready var open_xr_fb_passthrough_geometry: OpenXRFbPassthroughGeometry = %OpenXRFbPassthroughGeometry
-@onready var passthrough_mode_info: Label3D = $XROrigin3D/RightHand/PassthroughModeInfo
-@onready var passthrough_filter_info: Label3D = $XROrigin3D/RightHand/PassthroughFilterInfo
 
 const PASSTHROUGH_MODE_STRING_BASE = "[B] Passthrough Mode: "
 const PASSTHROUGH_FILTER_STRING_BASE = "[A] Passthrough Filter: "
@@ -61,10 +48,6 @@ func _ready():
 	hand_tracking_source.resize(OpenXRInterface.HAND_MAX)
 	for hand in OpenXRInterface.HAND_MAX:
 		hand_tracking_source[hand] = xr_interface.get_hand_tracking_source(hand)
-
-	fb_passthrough = Engine.get_singleton("OpenXRFbPassthroughExtensionWrapper")
-	meta_color_lut = OpenXRMetaPassthroughColorLut.create_from_image(color_lut, OpenXRMetaPassthroughColorLut.COLOR_LUT_CHANNELS_RGB)
-	meta_color_lut2 = OpenXRMetaPassthroughColorLut.create_from_image(color_lut2, OpenXRMetaPassthroughColorLut.COLOR_LUT_CHANNELS_RGB)
 
 	randomize()
 
@@ -236,9 +219,7 @@ func _on_left_hand_button_pressed(name):
 func _on_right_hand_button_pressed(name: String) -> void:
 	match name:
 		"by_button":
-			update_passthrough_mode()
-		"ax_button":
-			update_passthrough_filter()
+			enable_passthrough(not passthrough_enabled)
 
 
 func _on_left_controller_fb_render_model_render_model_loaded() -> void:
@@ -257,47 +238,6 @@ func _on_scene_manager_scene_capture_completed(success: bool) -> void:
 
 		# Switch to passthrough.
 		enable_passthrough(true)
-		passthrough_mode_info.text = PASSTHROUGH_MODE_STRING_BASE + "Full"
 
 func _on_scene_manager_scene_data_missing() -> void:
 	scene_manager.request_scene_capture()
-
-func update_passthrough_mode() -> void:
-	match fb_passthrough.get_current_layer_purpose():
-		OpenXRFbPassthroughExtensionWrapper.LAYER_PURPOSE_NONE:
-			enable_passthrough(true)
-			xr_interface.environment_blend_mode = XRInterface.XR_ENV_BLEND_MODE_ALPHA_BLEND
-			passthrough_mode_info.text = PASSTHROUGH_MODE_STRING_BASE + "Full"
-		OpenXRFbPassthroughExtensionWrapper.LAYER_PURPOSE_RECONSTRUCTION:
-			enable_passthrough(false)
-			xr_interface.environment_blend_mode = XRInterface.XR_ENV_BLEND_MODE_OPAQUE
-			open_xr_fb_passthrough_geometry.show()
-			passthrough_mode_info.text = PASSTHROUGH_MODE_STRING_BASE + "Geometry"
-		OpenXRFbPassthroughExtensionWrapper.LAYER_PURPOSE_PROJECTED:
-			open_xr_fb_passthrough_geometry.hide()
-			passthrough_mode_info.text = PASSTHROUGH_MODE_STRING_BASE + "None"
-
-func update_passthrough_filter() -> void:
-	match fb_passthrough.get_current_passthrough_filter():
-		OpenXRFbPassthroughExtensionWrapper.PASSTHROUGH_FILTER_DISABLED:
-			fb_passthrough.set_color_map(passthrough_gradient)
-			passthrough_filter_info.text = PASSTHROUGH_FILTER_STRING_BASE + "Color Map"
-		OpenXRFbPassthroughExtensionWrapper.PASSTHROUGH_FILTER_COLOR_MAP:
-			fb_passthrough.set_mono_map(passthrough_curve)
-			passthrough_filter_info.text = PASSTHROUGH_FILTER_STRING_BASE + "Mono Map"
-		OpenXRFbPassthroughExtensionWrapper.PASSTHROUGH_FILTER_MONO_MAP:
-			fb_passthrough.set_brightness_contrast_saturation(bcs.x, bcs.y, bcs.z)
-			passthrough_filter_info.text = PASSTHROUGH_FILTER_STRING_BASE + "Brightness Contrast Saturation"
-		OpenXRFbPassthroughExtensionWrapper.PASSTHROUGH_FILTER_BRIGHTNESS_CONTRAST_SATURATION:
-			fb_passthrough.set_color_lut(1.0, meta_color_lut)
-			passthrough_filter_info.text = PASSTHROUGH_FILTER_STRING_BASE + "Color Map LUT"
-		OpenXRFbPassthroughExtensionWrapper.PASSTHROUGH_FILTER_COLOR_MAP_LUT:
-			lut_tween = create_tween()
-			lut_tween.set_loops()
-			lut_tween.tween_method(fb_passthrough.set_interpolated_color_lut.bind(meta_color_lut, meta_color_lut2), 0.0, 1.0, 2.0).set_delay(.1)
-			lut_tween.tween_method(fb_passthrough.set_interpolated_color_lut.bind(meta_color_lut, meta_color_lut2), 1.0, 0.0, 2.0).set_delay(.1)
-			passthrough_filter_info.text = PASSTHROUGH_FILTER_STRING_BASE + "Interpolated Color Map LUT"
-		OpenXRFbPassthroughExtensionWrapper.PASSTHROUGH_FILTER_COLOR_MAP_INTERPOLATED_LUT:
-			lut_tween.kill()
-			fb_passthrough.set_passthrough_filter(OpenXRFbPassthroughExtensionWrapper.PASSTHROUGH_FILTER_DISABLED)
-			passthrough_filter_info.text = PASSTHROUGH_FILTER_STRING_BASE + "Disabled"
