@@ -35,7 +35,7 @@
 #include "classes/openxr_meta_passthrough_color_lut.h"
 
 #include <godot_cpp/classes/curve.hpp>
-#include <godot_cpp/classes/gradient_texture1_d.hpp>
+#include <godot_cpp/classes/gradient.hpp>
 #include <godot_cpp/classes/mesh.hpp>
 #include <godot_cpp/classes/open_xr_extension_wrapper_extension.hpp>
 #include <godot_cpp/classes/xr_interface.hpp>
@@ -123,7 +123,7 @@ public:
 
 	void set_passthrough_filter(PassthroughFilter p_filter);
 	PassthroughFilter get_current_passthrough_filter() { return current_passthrough_filter; }
-	void set_color_map(const Ref<GradientTexture1D> &p_gradient);
+	void set_color_map(const Ref<Gradient> &p_gradient);
 	void set_mono_map(const Ref<Curve> &p_curve);
 	void set_brightness_contrast_saturation(float p_brightness, float p_contrast, float p_saturation);
 

@@ -30,7 +30,6 @@
 
 #include "extensions/openxr_fb_passthrough_extension_wrapper.h"
 
-#include <godot_cpp/classes/gradient.hpp>
 #include <godot_cpp/classes/image.hpp>
 #include <godot_cpp/classes/main_loop.hpp>
 #include <godot_cpp/classes/open_xrapi_extension.hpp>
@@ -577,13 +576,13 @@ void OpenXRFbPassthroughExtensionWrapper::set_passthrough_filter(PassthroughFilt
 	}
 }
 
-void OpenXRFbPassthroughExtensionWrapper::set_color_map(const Ref<GradientTexture1D> &p_gradient) {
+void OpenXRFbPassthroughExtensionWrapper::set_color_map(const Ref<Gradient> &p_gradient) {
 	if (p_gradient.is_null()) {
 		return;
 	}
 
 	for (int i = 0; i < XR_PASSTHROUGH_COLOR_MAP_MONO_SIZE_FB; i++) {
-		Color sample_color = p_gradient->get_gradient()->sample((double)i / (double)XR_PASSTHROUGH_COLOR_MAP_MONO_SIZE_FB);
+		Color sample_color = p_gradient->sample((double)i / (double)XR_PASSTHROUGH_COLOR_MAP_MONO_SIZE_FB);
 		color_map.textureColorMap[i] = { sample_color.r, sample_color.g, sample_color.b, sample_color.a };
 	}
 
