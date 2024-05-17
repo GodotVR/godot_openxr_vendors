@@ -1,6 +1,6 @@
 extends Node3D
 
-@export var passthrough_gradient: GradientTexture1D
+@export var passthrough_gradient: Gradient
 @export var passthrough_curve: Curve
 @export var bcs: Vector3
 @export var color_lut: Image

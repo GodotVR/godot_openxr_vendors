@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://cqsodpswgup8w"]
+[gd_scene load_steps=27 format=3 uid="uid://cqsodpswgup8w"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_fsva1"]
 [ext_resource type="PackedScene" uid="uid://c0uv4eu2yjm3b" path="res://viewport_2d_in_3d.tscn" id="2_7whgo"]
@@ -12,12 +12,9 @@
 [ext_resource type="PackedScene" uid="uid://dsfd7xrm6o50p" path="res://spatial_anchor.tscn" id="5_g7mio"]
 [ext_resource type="Material" uid="uid://bdwh0vc86hsdb" path="res://assets/hand_silhouette_outline_mat.tres" id="7_tpkib"]
 
-[sub_resource type="Gradient" id="Gradient_yvg3n"]
-offsets = PackedFloat32Array(0, 0.484615, 1)
-colors = PackedColorArray(0.989632, 1, 0, 1, 0, 0.117083, 1, 1, 1, 0, 0.89539, 1)
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_syqxs"]
-gradient = SubResource("Gradient_yvg3n")
+[sub_resource type="Gradient" id="Gradient_hxe3h"]
+offsets = PackedFloat32Array(0, 0.5, 1)
+colors = PackedColorArray(1, 1, 0, 1, 0, 0, 1, 1, 1, 0, 1, 1)
 
 [sub_resource type="Curve" id="Curve_ykaux"]
 _data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.240642, 1), 0.0, 0.0, 0, 0, Vector2(0.502674, 0), 0.0, 0.0, 0, 0, Vector2(0.759358, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
@@ -72,7 +69,7 @@ size = Vector2(10, 10)
 
 [node name="Main" type="Node3D"]
 script = ExtResource("1_fsva1")
-passthrough_gradient = SubResource("GradientTexture1D_syqxs")
+passthrough_gradient = SubResource("Gradient_hxe3h")
 passthrough_curve = SubResource("Curve_ykaux")
 bcs = Vector3(-10, 50, 0)
 color_lut = ExtResource("2_lpxwd")
@@ -185,7 +182,6 @@ tracker = &"/user/hand_tracker/right"
 [node name="RightHandModel" type="OpenXRFbHandTrackingMesh" parent="XROrigin3D/RightHandTracker"]
 hand = 1
 material = ExtResource("7_tpkib")
-use_scale_override = false
 bones/0/name = "RightPalm"
 bones/1/name = "RightHand"
 bones/2/name = "RightThumbMetacarpal"
