@@ -12,6 +12,11 @@ local.properties
 # Visual Studio Code project files
 .vscode
 
+# Generated Docs
+/doc
+/modules
+/platform
+
 # Binaries
 *.o
 *.os
