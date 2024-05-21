@@ -36,6 +36,7 @@
 #include <godot_cpp/classes/concave_polygon_shape3d.hpp>
 #include <godot_cpp/classes/mesh_instance3d.hpp>
 #include <godot_cpp/classes/plane_mesh.hpp>
+#include <godot_cpp/classes/surface_tool.hpp>
 #include <godot_cpp/templates/local_vector.hpp>
 
 #include "extensions/openxr_fb_spatial_entity_extension_wrapper.h"
@@ -265,9 +266,16 @@ MeshInstance3D *OpenXRFbSpatialEntity::create_mesh_instance() const {
 	MeshInstance3D *mesh_instance = nullptr;
 
 	if (is_component_enabled(COMPONENT_TYPE_TRIANGLE_MESH)) {
+		Ref<SurfaceTool> surface_tool;
+		surface_tool.instantiate();
+
+		surface_tool->create_from_arrays(get_triangle_mesh(), Mesh::PRIMITIVE_TRIANGLES);
+		surface_tool->generate_normals();
+		surface_tool->generate_tangents();
+
 		Ref<ArrayMesh> array_mesh;
 		array_mesh.instantiate();
-		array_mesh->add_surface_from_arrays(Mesh::PRIMITIVE_TRIANGLES, get_triangle_mesh());
+		array_mesh->add_surface_from_arrays(Mesh::PRIMITIVE_TRIANGLES, surface_tool->commit_to_arrays());
 
 		mesh_instance = memnew(MeshInstance3D);
 		mesh_instance->set_mesh(array_mesh);
