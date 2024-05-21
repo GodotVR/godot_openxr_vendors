@@ -1,77 +1,149 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="OpenXRFbSpatialEntity" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
+		Represents a spatial entity in Meta's Scene Understanding and Spatial Anchor APIs.
 	</brief_description>
 	<description>
+		Represents a spatial entity in Meta's Scene Understanding and Spatial Anchor APIs.
+		A spatial entity can be a spatial anchor created by the application or an element of the real-world environment (sometimes called a "scene anchor"), such as walls, floor, ceiling, furniture, or even a mesh created using the headset's depth sensor, as a result of the user going through the scene capture process.
 	</description>
 	<tutorials>
 	</tutorials>
 	<methods>
-		<method name="create_collision_shape">
+		<method name="create_collision_shape" qualifiers="const">
 			<return type="Node3D" />
 			<description>
+				Creates a [CollisionShape3D] node with the shape and position of the spatial entity, if it has that data. Otherwise, it will return [code]null[/code].
+				The spatial entity must have one of the components [constant COMPONENT_TYPE_TRIANGLE_MESH], [constant COMPONENT_TYPE_BOUNDED_3D], or [constant COMPONENT_TYPE_BOUNDED_2D] enabled, which can be checked by calling [method is_component_enabled].
+				The underlying data can be accessed via [method get_triangle_mesh], [method get_bounding_box_3d], or [method get_bounding_box_2d].
 			</description>
 		</method>
-		<method name="create_mesh_instance">
+		<method name="create_mesh_instance" qualifiers="const">
 			<return type="MeshInstance3D" />
 			<description>
+				Creates a [MeshInstance3D] node with the shape and position of the spatial entity, if it has that data. Otherwise, it will return [code]null[/code].
+				The spatial entity must have one of the compenents [constant COMPONENT_TYPE_TRIANGLE_MESH], [constant COMPONENT_TYPE_BOUNDED_3D], or [constant COMPONENT_TYPE_BOUNDED_2D] enabled, which can be checked by calling [method is_component_enabled].
+				The underlying data can be accessed via [method get_triangle_mesh], [method get_bounding_box_3d], or [method get_bounding_box_2d].
 			</description>
 		</method>
-		<method name="get_boundary_2d">
+		<method name="create_spatial_anchor" qualifiers="static">
+			<return type="OpenXRFbSpatialEntity" />
+			<param index="0" name="transform" type="Transform3D" />
+			<description>
+				Creates a new spatial anchor at the given position (relative to the current [XROrigin3D]).
+				The [OpenXRFbSpatialEntity] object will be returned immediately, but anchor creation is asynchronous, and so the anchor won't really exist until after [signal openxr_fb_spatial_entity_created] is emitted with arguments indicating success.
+				[b]Rather than using this method directly, it's recommended to use an [OpenXRFbSpatialAnchorManager] node instead! It can help with many of the follow-up steps necessary for using spatial anchors in practice.[/b]
+			</description>
+		</method>
+		<method name="destroy">
+			<return type="void" />
+			<description>
+				Untracks and destroys a spatial entity, such that it will no longer be tracked by [XRServer] or the headset.
+				This [i]does not[/i] remove the entity from storage, which must be done via [method erase_from_storage].
+			</description>
+		</method>
+		<method name="erase_from_storage">
+			<return type="void" />
+			<param index="0" name="location" type="int" enum="OpenXRFbSpatialEntity.StorageLocation" default="0" />
+			<description>
+				Removes the spatial entity from the given storage location.
+				The component [constant COMPONENT_TYPE_STORABLE] must be enabled, which can be checked by calling [method is_component_enabled], or set by calling [method set_component_enabled].
+				This is an asynchronous operation - the [signal openxr_fb_spatial_entity_erased] signal will be emitted when completed with an argument indicating if it was successful or not.
+			</description>
+		</method>
+		<method name="get_boundary_2d" qualifiers="const">
 			<return type="PackedVector2Array" />
 			<description>
+				Gets the 2D boundary of the spatial entity as an array of [Vector2]s.
+				The component [constant COMPONENT_TYPE_BOUNDED_2D] must be enabled, which can be checked by calling [method is_component_enabled].
+				Use [method create_mesh_instance] or [method create_collision_shape] to create a node using this data.
 			</description>
 		</method>
-		<method name="get_bounding_box_2d">
+		<method name="get_bounding_box_2d" qualifiers="const">
 			<return type="Rect2" />
 			<description>
+				Gets the 2D boundary of the spatial entity as a [Rect2].
+				The component [constant COMPONENT_TYPE_BOUNDED_2D] must be enabled, which can be checked by calling [method is_component_enabled].
+				Use [method create_mesh_instance] or [method create_collision_shape] to create a node using this data.
 			</description>
 		</method>
-		<method name="get_bounding_box_3d">
+		<method name="get_bounding_box_3d" qualifiers="const">
 			<return type="AABB" />
 			<description>
+				Gets the 3D boundary of the spatial entity as an [AABB].
+				The component [constant COMPONENT_TYPE_BOUNDED_3D] must be enabled, which can be checked by calling [method is_component_enabled].
+				Use [method create_mesh_instance] or [method create_collision_shape] to create a node using this data.
 			</description>
 		</method>
-		<method name="get_contained_uuids">
+		<method name="get_contained_uuids" qualifiers="const">
 			<return type="Array" />
 			<description>
+				Gets an array of the UUIDs of the spatial entities that are contained in this spatial entity.
+				The component [constant COMPONENT_TYPE_CONTAINER] must be enabled, which can be checked by calling [method is_component_enabled].
+				The actual [OpenXRFbSpatialEntity] objects can be obtained using [OpenXRFbSpatialEntityQuery].
 			</description>
 		</method>
-		<method name="get_room_layout">
+		<method name="get_room_layout" qualifiers="const">
 			<return type="Dictionary" />
 			<description>
+				Gets a [Dictionary] containing the following keys:
+				- [code]floor[/code] ([StringName]): the UUID of the spatial entity representing the floor.
+				- [code]ceiling[/code] ([StringName]): the UUID of the spatial entity representing the ceiling.
+				- [code]walls[/code] ([Array] of [StringName]s): the UUIDs of the spatial entities representing the walls.
+				The component [constant COMPONENT_TYPE_ROOM_LAYOUT] must be enabled, which can be checked by calling [method is_component_enabled].
+				The actual [OpenXRFbSpatialEntity] objects can be obtained using [OpenXRFbSpatialEntityQuery].
 			</description>
 		</method>
-		<method name="get_semantic_labels">
+		<method name="get_semantic_labels" qualifiers="const">
 			<return type="PackedStringArray" />
 			<description>
+				Gets an array of the semantic labels used by this spatial entity.
+				The component [constant COMPONENT_TYPE_SEMANTIC_LABELS] must be enabled, which can be checked by calling [method is_component_enabled].
 			</description>
 		</method>
-		<method name="get_supported_components">
+		<method name="get_supported_components" qualifiers="const">
 			<return type="Array" />
 			<description>
+				Gets an array of [enum ComponentType]s where are supported by this spatial entity.
 			</description>
 		</method>
-		<method name="get_triangle_mesh">
+		<method name="get_triangle_mesh" qualifiers="const">
 			<return type="Array" />
 			<description>
+				Gets an array in the same format as used by [ArrayMesh], representing a triangle mesh covering the spatial entity.
+				The component [constant COMPONENT_TYPE_TRIANGLE_MESH] must be enabled, which can be checked by calling [method is_component_enabled].
+				Use [method create_mesh_instance] or [method create_collision_shape] to create a node using this data.
 			</description>
 		</method>
-		<method name="is_component_enabled">
+		<method name="is_component_enabled" qualifiers="const">
 			<return type="bool" />
 			<param index="0" name="component" type="int" enum="OpenXRFbSpatialEntity.ComponentType" />
 			<description>
+				Checks if the given component is enabled on this spatial entity.
 			</description>
 		</method>
-		<method name="is_component_supported">
+		<method name="is_component_supported" qualifiers="const">
 			<return type="bool" />
 			<param index="0" name="component" type="int" enum="OpenXRFbSpatialEntity.ComponentType" />
 			<description>
+				Checks if the given component is supported by this spatial entity.
 			</description>
 		</method>
-		<method name="is_tracked">
+		<method name="is_tracked" qualifiers="const">
 			<return type="bool" />
 			<description>
+				Checks if this spatial entity is being tracked by [XRServer].
+				See [method track] for more information.
+			</description>
+		</method>
+		<method name="save_to_storage">
+			<return type="void" />
+			<param index="0" name="location" type="int" enum="OpenXRFbSpatialEntity.StorageLocation" default="0" />
+			<description>
+				Saves the spatial entity in the given storage location.
+				The component [constant COMPONENT_TYPE_STORABLE] must be enabled, which can be checked by calling [method is_component_enabled], or set by calling [method set_component_enabled].
+				This is an asynchronous operation - the [signal openxr_fb_spatial_entity_saved] signal will be emitted when completed with an argument indicating if it was successful or not.
+				Note: [OpenXRFbSpatialEntityBatch] can be used to save multiple spatial entities in a single operation.
 			</description>
 		</method>
 		<method name="set_component_enabled">
@@ -79,54 +151,116 @@
 			<param index="0" name="component" type="int" enum="OpenXRFbSpatialEntity.ComponentType" />
 			<param index="1" name="enabled" type="bool" />
 			<description>
+				Sets a particular component as enabled or disabled on this spatial entity.
+				You can check if the given component is supported by calling [method is_component_supported], however, not all component types can be enabled or disabled even if supported.
+				This is an asynchronous operation - the [signal openxr_fb_spatial_entity_set_component_enabled_completed] signal will be emitted when completed with an argument indicating if it was successful or not.
+			</description>
+		</method>
+		<method name="share_with_users">
+			<return type="void" />
+			<param index="0" name="users" type="OpenXRFbSpatialEntityUser[]" />
+			<description>
+				Shares this spatial entity with the given users.
+				The component [constant COMPONENT_TYPE_SHARABLE] must be enabled, which can be checked by calling [method is_component_enabled], or set by calling [method set_component_enabled].
+				The spatial entity must have already been saved to the cloud, using [method save_to_storage].
+				This is an asynchronous operation - the [signal openxr_fb_spatial_entity_shared] signal will be emitted when completed with an argument indicating if it was successful or not.
+				Note: [OpenXRFbSpatialEntityBatch] can be used to share multiple spatial entities in a single operation.
 			</description>
 		</method>
 		<method name="track">
 			<return type="void" />
 			<description>
+				Starts tracking this spatial entity on [XRServer].
+				The component [constant COMPONENT_TYPE_LOCATABLE] must be enabled, which can be checked by calling [method is_component_enabled], or set by calling [method set_component_enabled].
+				Once a spatial entity is being tracked, an [XRAnchor3D] node can be created with its [member XRAnchor3D.tracker] property set to the [member uuid] of this spatial entity, and it will be moved to the correct position based on the headset's tracking.
+				Use [method untrack] to stop tracking a spatial anchor on [XRServer].
 			</description>
 		</method>
 		<method name="untrack">
 			<return type="void" />
 			<description>
+				Stops tracking this spatial entity on [XRServer].
+				See [method track] for more information.
 			</description>
 		</method>
 	</methods>
 	<members>
+		<member name="custom_data" type="Dictionary" setter="set_custom_data" getter="get_custom_data" default="{}">
+			Game or application-specific data about the spatial entity.
+		</member>
 		<member name="uuid" type="StringName" setter="" getter="get_uuid" default="&amp;&quot;&quot;">
+			The UUID of the spatial entity.
 		</member>
 	</members>
 	<signals>
+		<signal name="openxr_fb_spatial_entity_created">
+			<param index="0" name="succeeded" type="bool" />
+			<description>
+				Emitted when the operation to create a spatial entity is completed. See [method create_spatial_anchor].
+			</description>
+		</signal>
+		<signal name="openxr_fb_spatial_entity_erased">
+			<param index="0" name="succeeded" type="bool" />
+			<param index="1" name="location" type="int" />
+			<description>
+				Emitted when the operation to erase a spatial entity from storage is completed. See [method erase_from_storage].
+			</description>
+		</signal>
+		<signal name="openxr_fb_spatial_entity_saved">
+			<param index="0" name="succeeded" type="bool" />
+			<param index="1" name="location" type="int" />
+			<description>
+				Emitted when the operation to save a spatial entity to storage is completed. See [method save_to_storage].
+			</description>
+		</signal>
 		<signal name="openxr_fb_spatial_entity_set_component_enabled_completed">
 			<param index="0" name="succeeded" type="bool" />
 			<param index="1" name="component" type="int" />
 			<param index="2" name="enabled" type="bool" />
 			<description>
+				Emitted when the operation to enable or disable a component on the spatial entity is completed. See [method set_component_enabled].
+			</description>
+		</signal>
+		<signal name="openxr_fb_spatial_entity_shared">
+			<param index="0" name="succeeded" type="bool" />
+			<description>
+				Emitted when the operation to share a spatial entity is completed. See [method share_with_users].
 			</description>
 		</signal>
 	</signals>
 	<constants>
 		<constant name="STORAGE_LOCAL" value="0" enum="StorageLocation">
+			Storage on the local headset.
 		</constant>
 		<constant name="STORAGE_CLOUD" value="1" enum="StorageLocation">
+			Storage in the cloud.
 		</constant>
 		<constant name="COMPONENT_TYPE_LOCATABLE" value="0" enum="ComponentType">
+			The spatial entity's location can be tracked. See [method track].
 		</constant>
 		<constant name="COMPONENT_TYPE_STORABLE" value="1" enum="ComponentType">
+			The spatial entity can be stored. See [method save_to_storage] and [method erase_from_storage].
 		</constant>
 		<constant name="COMPONENT_TYPE_SHARABLE" value="2" enum="ComponentType">
+			The spatial entity can be shared with other users. See [method share_with_users].
 		</constant>
 		<constant name="COMPONENT_TYPE_BOUNDED_2D" value="3" enum="ComponentType">
+			The spatial entity has 2D boundary data. See [method get_bounding_box_2d] and [method get_boundary_2d].
 		</constant>
 		<constant name="COMPONENT_TYPE_BOUNDED_3D" value="4" enum="ComponentType">
+			The spatial entity has 3D boundary data. See [method get_bounding_box_3d].
 		</constant>
 		<constant name="COMPONENT_TYPE_SEMANTIC_LABELS" value="5" enum="ComponentType">
+			The spatial entity has semantic labels. See [method get_semantic_labels].
 		</constant>
 		<constant name="COMPONENT_TYPE_ROOM_LAYOUT" value="6" enum="ComponentType">
+			The spatial entity has room layout data. See [method get_room_layout].
 		</constant>
 		<constant name="COMPONENT_TYPE_CONTAINER" value="7" enum="ComponentType">
+			The spatial entity contains other spatial entities. See [method get_contained_uuids].
 		</constant>
 		<constant name="COMPONENT_TYPE_TRIANGLE_MESH" value="8" enum="ComponentType">
+			The spatial entity has triangle mesh data. See [method get_triangle_mesh].
 		</constant>
 	</constants>
 </class>

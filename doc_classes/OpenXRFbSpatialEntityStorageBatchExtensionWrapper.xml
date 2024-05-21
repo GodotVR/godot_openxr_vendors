@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="OpenXRFbSpatialEntityStorageBatchExtensionWrapper" inherits="OpenXRExtensionWrapperExtension" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		Wraps the [code]XR_FB_spatial_entity_storage_batch[/code] extension.
+	</brief_description>
+	<description>
+		Wraps the [code]XR_FB_spatial_entity_storage_batch[/code] extension.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="is_spatial_entity_storage_batch_supported">
+			<return type="bool" />
+			<description>
+				Checks if this extension is enabled.
+			</description>
+		</method>
+	</methods>
+</class>

@@ -7,7 +7,7 @@
 	<tutorials>
 	</tutorials>
 	<methods>
-		<method name="get_mesh_instance">
+		<method name="get_mesh_instance" qualifiers="const">
 			<return type="MeshInstance3D" />
 			<description>
 			</description>
@@ -18,9 +18,9 @@
 		</member>
 		<member name="material" type="Material" setter="set_material" getter="get_material">
 		</member>
-		<member name="scale_override" type="float" setter="set_scale_override" getter="get_scale_override" default="2.51113e-42">
+		<member name="scale_override" type="float" setter="set_scale_override" getter="get_scale_override">
 		</member>
-		<member name="use_scale_override" type="bool" setter="set_use_scale_override" getter="get_use_scale_override" default="true">
+		<member name="use_scale_override" type="bool" setter="set_use_scale_override" getter="get_use_scale_override">
 		</member>
 	</members>
 	<constants>

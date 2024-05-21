@@ -85,7 +85,7 @@
 		</method>
 		<method name="set_color_map">
 			<return type="void" />
-			<param index="0" name="gradient" type="GradientTexture1D" />
+			<param index="0" name="gradient" type="Gradient" />
 			<description>
 			</description>
 		</method>

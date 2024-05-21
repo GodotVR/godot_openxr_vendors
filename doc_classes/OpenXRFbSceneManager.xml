@@ -1,74 +1,101 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="OpenXRFbSceneManager" inherits="Node" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
+		Provides an easy-to-use way to interact with Meta's Scene Understanding.
 	</brief_description>
 	<description>
+		Provides an easy-to-use way to interact with Meta's Scene Understanding.
+		This node allows you to register scenes to be instantiated for each scene anchor that is discovered, and provide a method that will be called on them after creation with a [OpenXRFbSpatialEntity] that can be used to setup the scene using data from the scene anchor.
+		Each instantiated scene will be added as a child of an [XRAnchor3D] node that will be positioned using tracking data from the headset.
 	</description>
 	<tutorials>
 	</tutorials>
 	<methods>
-		<method name="are_scene_anchors_created">
+		<method name="are_scene_anchors_created" qualifiers="const">
 			<return type="bool" />
 			<description>
+				Checks if the scene anchors have been created already or not.
 			</description>
 		</method>
 		<method name="create_scene_anchors">
 			<return type="int" enum="Error" />
 			<description>
+				Attempts to create the scene anchors discovered in the physical space around the user.
+				This is an asynchronous operation - the [signal openxr_fb_scene_data_missing] signal will be emitted if no scene data can be found, and the [signal openxr_fb_scene_anchor_created] signal will be emitted for each scene anchor successfully created.
+				This will only work during an active OpenXR session. If you've set [member auto_create] to [code]true[/code], then this method will be called automatically when an OpenXR session has begun.
 			</description>
 		</method>
-		<method name="get_anchor_node">
+		<method name="get_anchor_node" qualifiers="const">
 			<return type="XRAnchor3D" />
 			<param index="0" name="uuid" type="StringName" />
 			<description>
+				Gets the [XRAnchor3D] node which was created for the spatial entity with the given UUID.
+				Note: All anchors will be created asynchronously, either by calling [method create_scene_anchors] or when the OpenXR session begins if [member auto_create] is set to [code]true[/code].
 			</description>
 		</method>
-		<method name="get_anchor_uuids">
+		<method name="get_anchor_uuids" qualifiers="const">
 			<return type="Array" />
 			<description>
+				Gets the UUIDs of all scene anchors that have been created.
+				Note: All anchors will be created asynchronously, either by calling [method create_scene_anchors] or when the OpenXR session begins if [member auto_create] is set to [code]true[/code].
 			</description>
 		</method>
-		<method name="get_spatial_entity">
+		<method name="get_spatial_entity" qualifiers="const">
 			<return type="OpenXRFbSpatialEntity" />
 			<param index="0" name="uuid" type="StringName" />
 			<description>
+				Gets the spatial entity identified by the given UUID.
+				Note: Only works for spatial entities that were loaded as a result of calling [method create_scene_anchors] or when the OpenXR session begins if [member auto_create] is set to [code]true[/code].
 			</description>
 		</method>
 		<method name="hide">
 			<return type="void" />
 			<description>
+				Hides all scene anchors created by this manager.
 			</description>
 		</method>
-		<method name="is_scene_capture_enabled">
+		<method name="is_scene_capture_enabled" qualifiers="const">
 			<return type="bool" />
 			<description>
+				Checks if scene capture is enabled.
 			</description>
 		</method>
 		<method name="remove_scene_anchors">
 			<return type="void" />
 			<description>
+				Removes all scene anchors.
+				This will be done automatically when the OpenXR session ends, or when this node is removed from the scene tree.
 			</description>
 		</method>
-		<method name="request_scene_capture">
+		<method name="request_scene_capture" qualifiers="const">
 			<return type="bool" />
 			<param index="0" name="request" type="String" default="&quot;&quot;" />
 			<description>
+				Requests the user go through the scene capture process.
+				This will only work if scene capture is enabled, which can be checked by calling [method is_scene_capture_enabled].
+				The [signal openxr_fb_scene_capture_completed] signal will be emitted when the process has completed.
 			</description>
 		</method>
 		<method name="show">
 			<return type="void" />
 			<description>
+				Shows all scene anchors created by this manager, if they had been previously hidden.
 			</description>
 		</method>
 	</methods>
 	<members>
 		<member name="auto_create" type="bool" setter="set_auto_create" getter="get_auto_create" default="true">
+			If enabled, this node will run [method create_scene_anchors] when an OpenXR session starts.
 		</member>
 		<member name="default_scene" type="PackedScene" setter="set_default_scene" getter="get_default_scene">
+			The default scene to be instatiated for any scene anchor, if there isn't a scene registered for the given type of scene anchor.
 		</member>
 		<member name="scene_setup_method" type="StringName" setter="set_scene_setup_method" getter="get_scene_setup_method" default="&amp;&quot;setup_scene&quot;">
+			The method that will be called on scenes after they have been instantiated for a scene anchor.
+			The method will be called with a single [OpenXRFbSpatialEntity] argument, representing the scene anchor.
 		</member>
 		<member name="visible" type="bool" setter="set_visible" getter="get_visible" default="true">
+			Controls the visibility of the scene anchors managed by this node.
 		</member>
 	</members>
 	<signals>
@@ -76,15 +103,20 @@
 			<param index="0" name="scene_node" type="Object" />
 			<param index="1" name="spatial_entity" type="Object" />
 			<description>
+				Emitted when a new scene anchor is created.
+				It will receive the scene that was instantiated, and the `OpenXRFbSpatialEntity` object representing the scene anchor.
 			</description>
 		</signal>
 		<signal name="openxr_fb_scene_capture_completed">
 			<param index="0" name="success" type="bool" />
 			<description>
+				Emitted when the scene capture process is completed.
 			</description>
 		</signal>
 		<signal name="openxr_fb_scene_data_missing">
 			<description>
+				Emitted after [method create_scene_anchors] is called (or the OpenXR session has begun if [member auto_create] is [code]true[/code]), if no scene data can be found.
+				Depending on your application, this may be a good time to initiate the scene capture process via [method request_scene_capture].
 			</description>
 		</signal>
 	</signals>

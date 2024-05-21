@@ -7,7 +7,7 @@
 	<tutorials>
 	</tutorials>
 	<methods>
-		<method name="is_enabled">
+		<method name="is_enabled" qualifiers="const">
 			<return type="bool" />
 			<description>
 			</description>

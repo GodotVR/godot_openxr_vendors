@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="OpenXRFbSpatialEntityBatch" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		Used to batch save or share spatial entities.
+	</brief_description>
+	<description>
+		Used to batch save or share a collection of [OpenXRFbSpatialEntity]s in a single operation.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="create_batch" qualifiers="static">
+			<return type="OpenXRFbSpatialEntityBatch" />
+			<param index="0" name="entities" type="OpenXRFbSpatialEntity[]" />
+			<description>
+				Create a batch of [OpenXRFbSpatialEntity] objects.
+			</description>
+		</method>
+		<method name="save_to_storage">
+			<return type="void" />
+			<param index="0" name="location" type="int" enum="OpenXRFbSpatialEntity.StorageLocation" />
+			<description>
+				Saves all the spatial entities in this batch to the given storage location as a single operation.
+				This is an asynchronous operation - the [signal openxr_fb_spatial_entity_batch_saved] signal will be emitted when completed with an argument indicating if it was successful or not.
+			</description>
+		</method>
+		<method name="share_with_users">
+			<return type="void" />
+			<param index="0" name="users" type="OpenXRFbSpatialEntityUser[]" />
+			<description>
+				Shares all the spatial entities in this batch with the given users in a single operation.
+				This is an asynchronous operation - the [signal openxr_fb_spatial_entity_batch_shared] signal will be emitted when completed with an argument indicating if it was successful or not.
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="entities" type="OpenXRFbSpatialEntity[]" setter="" getter="get_entities" default="[]">
+			The spatial entities in this batch.
+		</member>
+	</members>
+	<signals>
+		<signal name="openxr_fb_spatial_entity_batch_saved">
+			<param index="0" name="succeeded" type="bool" />
+			<param index="1" name="location" type="int" />
+			<description>
+				Emitted when the save operation has completed. See [method save_to_storage].
+			</description>
+		</signal>
+		<signal name="openxr_fb_spatial_entity_batch_shared">
+			<param index="0" name="succeeded" type="bool" />
+			<description>
+				Emitted when the share operation has completed. See [method share_with_users].
+			</description>
+		</signal>
+	</signals>
+</class>

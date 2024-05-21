@@ -7,33 +7,33 @@
 	<tutorials>
 	</tutorials>
 	<methods>
-		<method name="get_hand_capsule_count">
+		<method name="get_hand_capsule_count" qualifiers="const">
 			<return type="int" />
 			<description>
 			</description>
 		</method>
-		<method name="get_hand_capsule_height">
+		<method name="get_hand_capsule_height" qualifiers="const">
 			<return type="float" />
 			<param index="0" name="hand_index" type="int" />
 			<param index="1" name="capsule_index" type="int" />
 			<description>
 			</description>
 		</method>
-		<method name="get_hand_capsule_joint">
+		<method name="get_hand_capsule_joint" qualifiers="const">
 			<return type="int" enum="XRHandTracker.HandJoint" />
 			<param index="0" name="hand_index" type="int" />
 			<param index="1" name="capsule_index" type="int" />
 			<description>
 			</description>
 		</method>
-		<method name="get_hand_capsule_radius">
+		<method name="get_hand_capsule_radius" qualifiers="const">
 			<return type="float" />
 			<param index="0" name="hand_index" type="int" />
 			<param index="1" name="capsule_index" type="int" />
 			<description>
 			</description>
 		</method>
-		<method name="get_hand_capsule_transform">
+		<method name="get_hand_capsule_transform" qualifiers="const">
 			<return type="Transform3D" />
 			<param index="0" name="hand_index" type="int" />
 			<param index="1" name="capsule_index" type="int" />

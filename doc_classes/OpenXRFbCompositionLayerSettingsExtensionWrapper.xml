@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="OpenXRFbCompositionLayerSettingsExtensionWrapper" inherits="OpenXRExtensionWrapperExtension" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<constants>
+		<constant name="SUPERSAMPLING_MODE_DISABLED" value="0" enum="SupersamplingMode">
+		</constant>
+		<constant name="SUPERSAMPLING_MODE_NORMAL" value="1" enum="SupersamplingMode">
+		</constant>
+		<constant name="SUPERSAMPLING_MODE_QUALITY" value="2" enum="SupersamplingMode">
+		</constant>
+		<constant name="SHARPENING_MODE_DISABLED" value="0" enum="SharpeningMode">
+		</constant>
+		<constant name="SHARPENING_MODE_NORMAL" value="1" enum="SharpeningMode">
+		</constant>
+		<constant name="SHARPENING_MODE_QUALITY" value="2" enum="SharpeningMode">
+		</constant>
+	</constants>
+</class>
