@@ -48,9 +48,102 @@ void KhronosEditorPlugin::_exit_tree() {
 
 KhronosEditorExportPlugin::KhronosEditorExportPlugin() {
 	set_vendor_name(KHRONOS_VENDOR_NAME);
+
+	_hand_tracking_option = _generate_export_option(
+			"khronos_xr_features/htc/hand_tracking",
+			"",
+			Variant::Type::INT,
+			PROPERTY_HINT_ENUM,
+			"No,Yes",
+			PROPERTY_USAGE_DEFAULT,
+			MANIFEST_FALSE_VALUE,
+			false);
+	_tracker_option = _generate_export_option(
+			"khronos_xr_features/htc/tracker",
+			"",
+			Variant::Type::INT,
+			PROPERTY_HINT_ENUM,
+			"No,Yes",
+			PROPERTY_USAGE_DEFAULT,
+			MANIFEST_FALSE_VALUE,
+			false);
+	_eye_tracking_option = _generate_export_option(
+			"khronos_xr_features/htc/eye_tracking",
+			"",
+			Variant::Type::INT,
+			PROPERTY_HINT_ENUM,
+			"No,Yes",
+			PROPERTY_USAGE_DEFAULT,
+			MANIFEST_FALSE_VALUE,
+			false);
+	_lip_expression_option = _generate_export_option(
+			"khronos_xr_features/htc/lip_expression",
+			"",
+			Variant::Type::INT,
+			PROPERTY_HINT_ENUM,
+			"No,Yes",
+			PROPERTY_USAGE_DEFAULT,
+			MANIFEST_FALSE_VALUE,
+			false);
 }
 
 void KhronosEditorExportPlugin::_bind_methods() {}
+
+TypedArray<Dictionary> KhronosEditorExportPlugin::_get_export_options(const Ref<EditorExportPlatform> &platform) const {
+	TypedArray<Dictionary> export_options;
+	if (!_supports_platform(platform)) {
+		return export_options;
+	}
+
+	export_options.append(_get_vendor_toggle_option());
+	export_options.append(_hand_tracking_option);
+	export_options.append(_tracker_option);
+	export_options.append(_eye_tracking_option);
+	export_options.append(_lip_expression_option);
+
+	return export_options;
+}
+
+PackedStringArray KhronosEditorExportPlugin::_get_export_features(const Ref<EditorExportPlatform> &platform, bool debug) const {
+	PackedStringArray features;
+	if (!_supports_platform(platform)) {
+		return features;
+	}
+
+	// Add the eye tracking feature if necessary
+	if (_get_int_option("khronos_xr_features/htc/eye_tracking", MANIFEST_FALSE_VALUE) == MANIFEST_TRUE_VALUE) {
+		features.append(EYE_GAZE_INTERACTION_FEATURE);
+	}
+
+	return features;
+}
+
+String KhronosEditorExportPlugin::_get_export_option_warning(const Ref<EditorExportPlatform> &platform, const String &option) const {
+	if (!_supports_platform(platform)) {
+		return "";
+	}
+
+	bool openxr_enabled = _is_openxr_enabled();
+	if (option == "khronos_xr_features/htc/hand_tracking") {
+		if (!openxr_enabled && _get_int_option(option, MANIFEST_FALSE_VALUE) == MANIFEST_TRUE_VALUE) {
+			return "\"Hand Tracking\" requires \"XR Mode\" to be \"OpenXR\".\n";
+		}
+	} else if (option == "khronos_xr_features/htc/tracker") {
+		if (!openxr_enabled && _get_int_option(option, MANIFEST_FALSE_VALUE) == MANIFEST_TRUE_VALUE) {
+			return "\"Tracker\" requires \"XR Mode\" to be \"OpenXR\".\n";
+		}
+	} else if (option == "khronos_xr_features/htc/eye_tracking") {
+		if (!openxr_enabled && _get_int_option(option, MANIFEST_FALSE_VALUE) == MANIFEST_TRUE_VALUE) {
+			return "\"Eye tracking\" requires \"XR Mode\" to be \"OpenXR\".\n";
+		}
+	} else if (option == "khronos_xr_features/htc/lip_expression") {
+		if (!openxr_enabled && _get_int_option(option, MANIFEST_FALSE_VALUE) == MANIFEST_TRUE_VALUE) {
+			return "\"Lip expression\" requires \"XR Mode\" to be \"OpenXR\".\n";
+		}
+	}
+
+	return OpenXREditorExportPlugin::_get_export_option_warning(platform, option);
+}
 
 String KhronosEditorExportPlugin::_get_android_manifest_activity_element_contents(const Ref<EditorExportPlatform> &platform, bool debug) const {
 	if (!_supports_platform(platform) || !_is_vendor_plugin_enabled()) {
@@ -70,4 +163,33 @@ String KhronosEditorExportPlugin::_get_android_manifest_activity_element_content
 					<category android:name="com.htc.intent.category.VRAPP" />
 				</intent-filter>
 )";
+}
+
+String KhronosEditorExportPlugin::_get_android_manifest_element_contents(const Ref<EditorExportPlatform> &platform, bool debug) const {
+	String contents;
+	if (!_supports_platform(platform) || !_is_vendor_plugin_enabled()) {
+		return contents;
+	}
+
+	// Check for hand tracking
+	if (_get_int_option("khronos_xr_features/htc/hand_tracking", MANIFEST_FALSE_VALUE) == MANIFEST_TRUE_VALUE) {
+		contents += "    <uses-feature tools:node=\"replace\" android:name=\"wave.feature.handtracking\" android:required=\"true\" />\n";
+	}
+
+	// Check for tracker
+	if (_get_int_option("khronos_xr_features/htc/tracker", MANIFEST_FALSE_VALUE) == MANIFEST_TRUE_VALUE) {
+		contents += "    <uses-feature tools:node=\"replace\" android:name=\"wave.feature.tracker\" android:required=\"true\" />\n";
+	}
+
+	// Check for eye tracking
+	if (_get_int_option("khronos_xr_features/htc/eye_tracking", MANIFEST_FALSE_VALUE) == MANIFEST_TRUE_VALUE) {
+		contents += "    <uses-feature tools:node=\"replace\" android:name=\"wave.feature.eyetracking\" android:required=\"true\" />\n";
+	}
+
+	// Check for lip expression
+	if (_get_int_option("khronos_xr_features/htc/lip_expression", MANIFEST_FALSE_VALUE) == MANIFEST_TRUE_VALUE) {
+		contents += "    <uses-feature tools:node=\"replace\" android:name=\"wave.feature.lipexpression\" android:required=\"true\" />\n";
+	}
+
+	return contents;
 }
