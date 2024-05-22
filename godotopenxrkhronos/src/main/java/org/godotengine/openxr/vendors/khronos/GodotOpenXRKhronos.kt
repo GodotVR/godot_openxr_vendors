@@ -68,4 +68,12 @@ class GodotOpenXRKhronos(godot: Godot?) : GodotPlugin(godot) {
     override fun getPluginName(): String {
         return "GodotOpenXRKhronos"
     }
+
+    override fun supportsFeature(featureTag: String): Boolean {
+        if ("PERMISSION_XR_EXT_eye_gaze_interaction" == featureTag) {
+            /* HTC doesn't require permission, if other headsets that use the Khronos loader do, we need to figure out how to tell them apart... */
+            return true
+        }
+        return false
+    }
 }

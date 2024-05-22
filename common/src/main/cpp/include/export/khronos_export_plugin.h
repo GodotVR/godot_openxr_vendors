@@ -35,16 +35,31 @@
 
 using namespace godot;
 
+static const int MANIFEST_FALSE_VALUE = 0;
+static const int MANIFEST_TRUE_VALUE = 1;
+
 class KhronosEditorExportPlugin : public OpenXREditorExportPlugin {
 	GDCLASS(KhronosEditorExportPlugin, OpenXREditorExportPlugin)
 
 public:
 	KhronosEditorExportPlugin();
 
+	TypedArray<Dictionary> _get_export_options(const Ref<EditorExportPlatform> &platform) const override;
+
+	PackedStringArray _get_export_features(const Ref<EditorExportPlatform> &platform, bool debug) const override;
+
+	String _get_export_option_warning(const Ref<EditorExportPlatform> &platform, const String &option) const override;
+
 	String _get_android_manifest_activity_element_contents(const Ref<EditorExportPlatform> &platform, bool debug) const override;
+	String _get_android_manifest_element_contents(const Ref<EditorExportPlatform> &platform, bool debug) const override;
 
 protected:
 	static void _bind_methods();
+
+	Dictionary _hand_tracking_option;
+	Dictionary _tracker_option;
+	Dictionary _eye_tracking_option;
+	Dictionary _lip_expression_option;
 };
 
 class KhronosEditorPlugin : public EditorPlugin {
