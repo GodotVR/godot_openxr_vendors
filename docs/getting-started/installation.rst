@@ -1,10 +1,11 @@
 Installation
 ============
 
-Installing android build templates
+Installing Android build templates
 -----------------------------------
 
-The use of a Godot Android plugin requires the use of the gradle build option in Godot:
+Using a Godot Android plugin requires the use of the Gradle build option in Godot:
+
 - Open your Godot XR project in Godot
 - Open the `Project` menu
 - Select `Install Android Build templates`
@@ -12,19 +13,20 @@ The use of a Godot Android plugin requires the use of the gradle build option in
 Copying the plugin into place
 ------------------------------
 
-When downloading this asset from Godot's asset library it should place the required files into
-the `addons`directory.
+When downloading this asset from Godot's asset library, it should place the required files into
+the `addons` directory.
 If you've downloaded the zip file from the releases page, copy the files in `asset/addons`
 manually to `addons` in your project. You may need to create the `addons` folder.
 
-If you have build the asset from source, you need to create the `addons` folder in your project
+If you have built the asset from source, you need to create the `addons` folder in your project
 if it doesn't exist already, and then copy the content of the `demo/addons` folder to `addons`
 in your project.
 
 Configuring your export
 -----------------------
 
-Back in Godot open the `Project` menu and select `Export...`:
+Back in Godot, open the `Project` menu, and select `Export...`:
+
 - If it doesn't already exist, create an Android export configuration by pressing `Add...` and
 selecting `Android`
 - Tick the `Use Gradle Build` tickbox
