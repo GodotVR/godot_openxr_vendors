@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="OpenXRFbSpatialAnchorManager" inherits="Node" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		Provides an easy-to-use way to interact with Meta's Spatial Anchors.
+	</brief_description>
+	<description>
+		Provides an easy-to-use way to interact with Meta's Spatial Anchors.
+		Spatial anchors allow the developer to place virtual objects in a real world location that is persisted over time and adjusted by the headsets tracking.
+		This node allows creating, loading, or removing spatial anchors; and instantiating a scene to represent the virtual objects located at those anchors. Each instantiated scene will be added as a child of an [XRAnchor3D] node that will be positioned using tracking data from the headset.
+		Even though the spatial anchors are saved to the headset's local storage, only the UUID and position are saved. Any application-specific data about what those spatial anchors actually represent (for example, what virtual object is placed there) must be saved by the developer in some other way (for example, as a file saved in [code]user://[/code]). For this reason, spatial anchors aren't automatically loaded (like [OpenXRFbSceneManager] does for scene anchors), and the developer must call [method load_anchors] to reload persisted anchors.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="create_anchor">
+			<return type="void" />
+			<param index="0" name="transform" type="Transform3D" />
+			<param index="1" name="custom_data" type="Dictionary" default="{}" />
+			<description>
+				Creates a new spatial anchor at the given position (in global space).
+				The [param custom_data] argument is application-specific data about what the spatial entity represents (for example, what virtual object should be placed there). This data will be stashed on [member OpenXRFbSpatialEntity.custom_data].
+				This is an asynchronous operation - the [signal openxr_fb_spatial_anchor_tracked] signal will be emitted if creation was successful, or the [signal openxr_fb_spatial_anchor_create_failed] signal will be emitted if unsuccessful.
+			</description>
+		</method>
+		<method name="get_anchor_node" qualifiers="const">
+			<return type="XRAnchor3D" />
+			<param index="0" name="uuid" type="StringName" />
+			<description>
+				Gets the [XRAnchor3D] node which was created for the spatial entity with the given UUID.
+				Note: All anchors will be created asynchronously via [method create_anchor], [method load_anchor], [method load_anchors], or [method track_anchor].
+			</description>
+		</method>
+		<method name="get_anchor_uuids" qualifiers="const">
+			<return type="Array" />
+			<description>
+				Gets the UUIDs of all spatial anchors that have been created.
+				Note: All anchors will be created asynchronously via [method create_anchor], [method load_anchor], [method load_anchors], or [method track_anchor].
+			</description>
+		</method>
+		<method name="get_spatial_entity" qualifiers="const">
+			<return type="OpenXRFbSpatialEntity" />
+			<param index="0" name="uuid" type="StringName" />
+			<description>
+				Gets the spatial entity identified by the given UUID.
+				Note: All anchors will be created asynchronously via [method create_anchor], [method load_anchor], [method load_anchors], or [method track_anchor].
+			</description>
+		</method>
+		<method name="hide">
+			<return type="void" />
+			<description>
+				Hides all spatial anchors created by this manager.
+			</description>
+		</method>
+		<method name="load_anchor">
+			<return type="void" />
+			<param index="0" name="uuid" type="StringName" />
+			<param index="1" name="custom_data" type="Dictionary" default="{}" />
+			<param index="2" name="location" type="int" enum="OpenXRFbSpatialEntity.StorageLocation" default="0" />
+			<description>
+				Loads a spatial anchor with the given UUID from the given storage.
+				The [param custom_data] argument is application-specific data about what the spatial entity represents (for example, what virtual object should be placed there). This data will be stashed on [member OpenXRFbSpatialEntity.custom_data].
+				This is an asynchronous operation - the [signal openxr_fb_spatial_anchor_tracked] signal will be emitted if the load was successful, or the [signal openxr_fb_spatial_anchor_load_failed] signal will be emitted if unsuccessful.
+			</description>
+		</method>
+		<method name="load_anchors">
+			<return type="void" />
+			<param index="0" name="uuids" type="StringName[]" />
+			<param index="1" name="all_custom_data" type="Dictionary" default="{}" />
+			<param index="2" name="location" type="int" enum="OpenXRFbSpatialEntity.StorageLocation" default="0" />
+			<param index="3" name="erase_unknown_anchors" type="bool" default="false" />
+			<description>
+				Loads a list of spatial anchors with the given UUIDs from the given storage.
+				The [param all_custom_data] argument is a [Dictionary] containing application-specific data about what the spatial entity represents (for example, what virtual object should be placed there), keyed by the UUID of the spatial anchor its associated with. This data will be stashed on [member OpenXRFbSpatialEntity.custom_data].
+				If [param erase_unknown_anchors] is [code]true[/code], then all spatial anchors tracked by the headset that aren't in the given list of UUIDs will be erased. This can be used to clean up the list of spatial anchors, if some weren't erased from storage.
+				This is an asynchronous operation - the [signal openxr_fb_spatial_anchor_tracked] signal will be emitted (for each anchor) if the load was successful, or the [signal openxr_fb_spatial_anchor_load_failed] signal will be emitted (for each anchor) if unsuccessful.
+			</description>
+		</method>
+		<method name="show">
+			<return type="void" />
+			<description>
+				Shows all spatial anchors created by this manager, if they had been previously hidden.
+			</description>
+		</method>
+		<method name="track_anchor">
+			<return type="void" />
+			<param index="0" name="spatial_entity" type="OpenXRFbSpatialEntity" />
+			<description>
+				Tracks an existing [OpenXRFbSpatialEntity].
+				This is an asynchronous operation - the [signal openxr_fb_spatial_anchor_tracked] signal will be emitted if the tracking was successful, or the [signal openxr_fb_spatial_anchor_track_failed] signal will be emitted if unsuccessful.
+			</description>
+		</method>
+		<method name="untrack_anchor">
+			<return type="void" />
+			<param index="0" name="spatial_entity_or_uuid" type="Variant" />
+			<description>
+				Untracks the given spatial anchor (either by UUID or [OpenXRFbSpatialEntity] object).
+				This will remove the [XRAnchor3D] node and will erase the anchor from local headset storage automatically. If it's been stored in the cloud, it can be erased by calling [method OpenXRFbSpatialEntity.erase_from_storage].
+				This is an asynchronous operation - the [signal openxr_fb_spatial_anchor_untracked] signal will be emitted regardless of whether the operation was fully successful or not.
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="scene" type="PackedScene" setter="set_scene" getter="get_scene">
+			The scene to be instantiated automatically for each spatial anchor.
+			This is optional - using the [signal openxr_fb_spatial_anchor_tracked] signal and creating any necessary nodes from there is a valid alternative approach.
+		</member>
+		<member name="scene_setup_method" type="StringName" setter="set_scene_setup_method" getter="get_scene_setup_method" default="&amp;&quot;setup_scene&quot;">
+			The method that will be called on scenes after they have been instantiated for a spatial anchor.
+			The method will be called with a single [OpenXRFbSpatialEntity] argument, representing the spatial anchor.
+		</member>
+		<member name="visible" type="bool" setter="set_visible" getter="get_visible" default="true">
+			Controls the visibility of the spatial anchors managed by this node.
+		</member>
+	</members>
+	<signals>
+		<signal name="openxr_fb_spatial_anchor_create_failed">
+			<param index="0" name="transform" type="Transform3D" />
+			<param index="1" name="custom_data" type="Dictionary" />
+			<description>
+				Emitted after [method create_anchor] is called, if the operation was unsuccessful.
+			</description>
+		</signal>
+		<signal name="openxr_fb_spatial_anchor_load_failed">
+			<param index="0" name="uuid" type="StringName" />
+			<param index="1" name="custom_data" type="Dictionary" />
+			<param index="2" name="location" type="int" />
+			<description>
+				Emitted after [method load_anchor] or [method load_anchors] is called, if the operation was unsuccessful.
+			</description>
+		</signal>
+		<signal name="openxr_fb_spatial_anchor_track_failed">
+			<param index="0" name="spatial_entity" type="Object" />
+			<description>
+				Emitted after [method track_anchor] is called, if the operation was unsuccessful.
+			</description>
+		</signal>
+		<signal name="openxr_fb_spatial_anchor_tracked">
+			<param index="0" name="anchor_node" type="Object" />
+			<param index="1" name="spatial_entity" type="Object" />
+			<param index="2" name="is_new" type="bool" />
+			<description>
+				Emitted any time a new spatial anchor is successfully tracked, as a result of calling [method create_anchor], [method load_anchor], [method load_anchors] or [method track_anchor].
+			</description>
+		</signal>
+		<signal name="openxr_fb_spatial_anchor_untracked">
+			<param index="0" name="anchor_node" type="Object" />
+			<param index="1" name="spatial_entity" type="Object" />
+			<description>
+				Emitted any time a spatial anchor is untracked as a result of calling [method untrack_anchor].
+				This signal will be emitted regardless of whether the operation was fully successful or not.
+			</description>
+		</signal>
+	</signals>
+</class>

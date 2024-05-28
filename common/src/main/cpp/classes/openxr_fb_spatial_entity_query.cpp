@@ -178,7 +178,7 @@ bool OpenXRFbSpatialEntityQuery::_execute_query_by_uuid() {
 		XR_TYPE_SPACE_QUERY_INFO_FB, // type
 		nullptr, // next
 		XR_SPACE_QUERY_ACTION_LOAD_FB, // queryAction
-		max_results, // maxResultsCount
+		uuid_array.size(), // maxResultsCount
 		(XrDuration)(timeout * 1000000), // timeout
 		(XrSpaceFilterInfoBaseHeaderFB *)&filter, // filter
 		nullptr, // excludeFilter

@@ -84,7 +84,9 @@ EDITOR_CLASSES: List[str] = []
 CORE_TYPES: List[str] = [
     "AABB",
     "Array",
+    "ArrayMesh",
     "bool",
+    "CollisionShape3D",
     "Color",
     "Curve",
     "Dictionary",
@@ -106,10 +108,14 @@ CORE_TYPES: List[str] = [
     "StringName",
     "Transform3D",
     "Variant",
+    "Vector2",
+    "Vector3",
     "XRAnchor3D",
     "XRController3D",
     "XRHandTracker.HandJoint",
     "XRNode3D",
+    "XROrigin3D",
+    "XRServer",
 ]
 
 class State:
@@ -135,6 +141,9 @@ class State:
         inherits = class_root.get("inherits")
         if inherits is not None:
             class_def.inherits = realize_class_name(inherits)
+
+        class_def.deprecated = class_root.get("deprecated")
+        class_def.experimental = class_root.get("experimental")
 
         brief_desc = class_root.find("brief_description")
         if brief_desc is not None and brief_desc.text:
@@ -167,6 +176,8 @@ class State:
                 property_def = PropertyDef(
                     property_name, type_name, setter, getter, property.text, default_value, overrides
                 )
+                property_def.deprecated = property.get("deprecated")
+                property_def.experimental = property.get("experimental")
                 class_def.properties[property_name] = property_def
 
         constructors = class_root.find("constructors")
@@ -192,6 +203,8 @@ class State:
 
                 method_def = MethodDef(method_name, return_type, params, method_desc, qualifiers)
                 method_def.definition_name = "constructor"
+                method_def.deprecated = constructor.get("deprecated")
+                method_def.experimental = constructor.get("experimental")
                 if method_name not in class_def.constructors:
                     class_def.constructors[method_name] = []
 
@@ -222,6 +235,8 @@ class State:
                     method_desc = desc_element.text
 
                 method_def = MethodDef(method_name, return_type, params, method_desc, qualifiers)
+                method_def.deprecated = method.get("deprecated")
+                method_def.experimental = method.get("experimental")
                 if method_name not in class_def.methods:
                     class_def.methods[method_name] = []
 
@@ -251,6 +266,8 @@ class State:
 
                 method_def = MethodDef(method_name, return_type, params, method_desc, qualifiers)
                 method_def.definition_name = "operator"
+                method_def.deprecated = operator.get("deprecated")
+                method_def.experimental = operator.get("experimental")
                 if method_name not in class_def.operators:
                     class_def.operators[method_name] = []
 
@@ -266,6 +283,8 @@ class State:
                 enum = constant.get("enum")
                 is_bitfield = constant.get("is_bitfield") == "true"
                 constant_def = ConstantDef(constant_name, value, constant.text, is_bitfield)
+                constant_def.deprecated = constant.get("deprecated")
+                constant_def.experimental = constant.get("experimental")
                 if enum is None:
                     if constant_name in class_def.constants:
                         print_error(f'{class_name}.xml: Duplicate constant "{constant_name}".', self)
@@ -328,6 +347,8 @@ class State:
                     signal_desc = desc_element.text
 
                 signal_def = SignalDef(signal_name, params, signal_desc)
+                signal_def.deprecated = signal.get("deprecated")
+                signal_def.experimental = signal.get("experimental")
                 class_def.signals[signal_name] = signal_def
 
         theme_items = class_root.find("theme_items")
@@ -420,6 +441,8 @@ class DefinitionBase:
     ) -> None:
         self.definition_name = definition_name
         self.name = name
+        self.deprecated: Optional[str] = None
+        self.experimental: Optional[str] = None
 
 
 class PropertyDef(DefinitionBase):
@@ -797,6 +820,8 @@ def make_rst_class(class_def: ClassDef, state: State, dry_run: bool, output_dir:
     f.write(f".. _class_{class_name_cleaned}:\n\n")
     f.write(make_heading(class_name, "=", False))
 
+    f.write(make_deprecated_experimental(class_def, state))
+
     ### INHERITANCE TREE ###
 
     # Ascendants
@@ -970,16 +995,10 @@ def make_rst_class(class_def: ClassDef, state: State, dry_run: bool, output_dir:
 
             # Add signal description, or a call to action if it's missing.
 
+            f.write(make_deprecated_experimental(signal, state))
+
             if signal.description is not None and signal.description.strip() != "":
                 f.write(f"{format_text_block(signal.description.strip(), signal, state)}\n\n")
-            else:
-                f.write(".. container:: contribute\n\n\t")
-                f.write(
-                    translate(
-                        "There is currently no description for this signal."
-                    )
-                    + "\n\n"
-                )
 
             index += 1
 
@@ -1015,6 +1034,8 @@ def make_rst_class(class_def: ClassDef, state: State, dry_run: bool, output_dir:
 
                 # Add enum constant description.
 
+                f.write(make_deprecated_experimental(value, state))
+
                 if value.text is not None and value.text.strip() != "":
                     f.write(f"{format_text_block(value.text.strip(), value, state)}")
 
@@ -1040,6 +1061,8 @@ def make_rst_class(class_def: ClassDef, state: State, dry_run: bool, output_dir:
                 f.write(f"**{constant.name}**\n\n")
 
             # Add enum constant description.
+
+            f.write(make_deprecated_experimental(constant, state))
 
             if constant.text is not None and constant.text.strip() != "":
                 f.write(f"{format_text_block(constant.text.strip(), constant, state)}")
@@ -1127,16 +1150,10 @@ def make_rst_class(class_def: ClassDef, state: State, dry_run: bool, output_dir:
 
             # Add property description, or a call to action if it's missing.
 
+            f.write(make_deprecated_experimental(property_def, state))
+
             if property_def.text is not None and property_def.text.strip() != "":
                 f.write(f"{format_text_block(property_def.text.strip(), property_def, state)}\n\n")
-            else:
-                f.write(".. container:: contribute\n\n\t")
-                f.write(
-                    translate(
-                        "There is currently no description for this property."
-                    )
-                    + "\n\n"
-                )
 
             index += 1
 
@@ -1165,16 +1182,10 @@ def make_rst_class(class_def: ClassDef, state: State, dry_run: bool, output_dir:
 
                 # Add constructor description, or a call to action if it's missing.
 
+                f.write(make_deprecated_experimental(m, state))
+
                 if m.description is not None and m.description.strip() != "":
                     f.write(f"{format_text_block(m.description.strip(), m, state)}\n\n")
-                else:
-                    f.write(".. container:: contribute\n\n\t")
-                    f.write(
-                        translate(
-                            "There is currently no description for this constructor."
-                        )
-                        + "\n\n"
-                    )
 
                 index += 1
 
@@ -1202,16 +1213,10 @@ def make_rst_class(class_def: ClassDef, state: State, dry_run: bool, output_dir:
 
                 # Add method description, or a call to action if it's missing.
 
+                f.write(make_deprecated_experimental(m, state))
+
                 if m.description is not None and m.description.strip() != "":
                     f.write(f"{format_text_block(m.description.strip(), m, state)}\n\n")
-                else:
-                    f.write(".. container:: contribute\n\n\t")
-                    f.write(
-                        translate(
-                            "There is currently no description for this method."
-                        )
-                        + "\n\n"
-                    )
 
                 index += 1
 
@@ -1242,16 +1247,10 @@ def make_rst_class(class_def: ClassDef, state: State, dry_run: bool, output_dir:
 
                 # Add operator description, or a call to action if it's missing.
 
+                f.write(make_deprecated_experimental(m, state))
+
                 if m.description is not None and m.description.strip() != "":
                     f.write(f"{format_text_block(m.description.strip(), m, state)}\n\n")
-                else:
-                    f.write(".. container:: contribute\n\n\t")
-                    f.write(
-                        translate(
-                            "There is currently no description for this operator."
-                        )
-                        + "\n\n"
-                    )
 
                 index += 1
 
@@ -1279,16 +1278,10 @@ def make_rst_class(class_def: ClassDef, state: State, dry_run: bool, output_dir:
 
             # Add theme property description, or a call to action if it's missing.
 
+            f.write(make_deprecated_experimental(theme_item_def, state))
+
             if theme_item_def.text is not None and theme_item_def.text.strip() != "":
                 f.write(f"{format_text_block(theme_item_def.text.strip(), theme_item_def, state)}\n\n")
-            else:
-                f.write(".. container:: contribute\n\n\t")
-                f.write(
-                    translate(
-                        "There is currently no description for this theme property."
-                    )
-                    + "\n\n"
-                )
 
             index += 1
 
@@ -1412,6 +1405,28 @@ def make_getter_signature(class_def: ClassDef, property_def: PropertyDef, state:
 
     ret_type, signature = make_method_signature(class_def, getter, "", state)
     return f"{ret_type} {signature}"
+
+
+def make_deprecated_experimental(item: DefinitionBase, state: State) -> str:
+    result = ""
+
+    if item.deprecated is not None:
+        deprecated_prefix = translate("Deprecated:")
+        if item.deprecated.strip() == "":
+            default_message = translate(f"This {item.definition_name} may be changed or removed in future versions.")
+            result += f"**{deprecated_prefix}** {default_message}\n\n"
+        else:
+            result += f"**{deprecated_prefix}** {format_text_block(item.deprecated.strip(), item, state)}\n\n"
+
+    if item.experimental is not None:
+        experimental_prefix = translate("Experimental:")
+        if item.experimental.strip() == "":
+            default_message = translate(f"This {item.definition_name} may be changed or removed in future versions.")
+            result += f"**{experimental_prefix}** {default_message}\n\n"
+        else:
+            result += f"**{experimental_prefix}** {format_text_block(item.experimental.strip(), item, state)}\n\n"
+
+    return result
 
 
 def make_heading(title: str, underline: str, l10n: bool = True) -> str:
@@ -1816,10 +1831,6 @@ def format_text_block(
 
                                 # Search in the current class
                                 search_class_defs = [class_def]
-
-                                if link_target.find(".") == -1:
-                                    # Also search in @GlobalScope as a last resort if no class was specified
-                                    search_class_defs.append(state.classes["@GlobalScope"])
 
                                 for search_class_def in search_class_defs:
                                     if method_param in search_class_def.constants:

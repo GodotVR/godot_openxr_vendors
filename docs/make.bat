@@ -25,6 +25,12 @@ if errorlevel 9009 (
 
 if "%1" == "" goto help
 
+if "%1" == "api" (
+    rmdir /s /q "%SOURCEDIR%\api"
+    python "%SOURCEDIR%\make_rst.py" "%SOURCEDIR%\..\doc_classes" --output "%SOURCEDIR%\api"
+    goto end
+)
+
 %SPHINXBUILD% -M %1 %SOURCEDIR% %BUILDDIR% %SPHINXOPTS% %O%
 goto end
 

@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="OpenXRFbSpatialEntityQuery" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
+		Used to query spatial entities stored on the headset or in the cloud.
 	</brief_description>
 	<description>
+		Used to query [OpenXRFbSpatialEntity] objects stored on the headset or in the cloud.
 	</description>
 	<tutorials>
 	</tutorials>
@@ -10,31 +12,43 @@
 		<method name="execute">
 			<return type="int" enum="Error" />
 			<description>
+				Executes the query. Returns [constant Error.OK] if the query can be executed; otherwise, it returns [constant Error.ERR_ALREADY_IN_USE] or [constant Error.ERR_INVALID_DATA].
+				This is an asynchronous operation - the [signal openxr_fb_spatial_entity_query_completed] signal will be emitted when the query is completed.
+				Each query object can only be executed once. To perform multiple queries, create a new [OpenXRFbSpatialEntityQuery] for each one.
 			</description>
 		</method>
-		<method name="get_component_type">
+		<method name="get_component_type" qualifiers="const">
 			<return type="int" enum="OpenXRFbSpatialEntity.ComponentType" />
 			<description>
+				Gets the component type being searched for when querying by component.
+				See [method query_by_component].
 			</description>
 		</method>
-		<method name="get_query_type">
+		<method name="get_query_type" qualifiers="const">
 			<return type="int" enum="OpenXRFbSpatialEntityQuery.QueryType" />
 			<description>
+				Gets the type of query that will be performed.
+				Set by using [method query_all], [method query_by_component] or [method query_by_uuid].
 			</description>
 		</method>
-		<method name="get_storage_location">
+		<method name="get_storage_location" qualifiers="const">
 			<return type="int" enum="OpenXRFbSpatialEntity.StorageLocation" />
 			<description>
+				The storage location that is being queried.
 			</description>
 		</method>
-		<method name="get_uuids">
+		<method name="get_uuids" qualifiers="const">
 			<return type="Array" />
 			<description>
+				Gets the UUIDs being searched for when querying by UUID.
+				See [method query_by_uuid].
 			</description>
 		</method>
 		<method name="query_all">
 			<return type="void" />
 			<description>
+				Sets up the query to get all spatial entities in local storage (up to the limit of [member max_results]).
+				Note: It's not possible to query all spatial entities stored in the cloud.
 			</description>
 		</method>
 		<method name="query_by_component">
@@ -42,6 +56,7 @@
 			<param index="0" name="component" type="int" enum="OpenXRFbSpatialEntity.ComponentType" />
 			<param index="1" name="location" type="int" enum="OpenXRFbSpatialEntity.StorageLocation" default="0" />
 			<description>
+				Sets up the query to get all spatial entities with the given component in the given storage location (up to the limit of [member max_results]).
 			</description>
 		</method>
 		<method name="query_by_uuid">
@@ -49,28 +64,36 @@
 			<param index="0" name="uuids" type="Array" />
 			<param index="1" name="location" type="int" enum="OpenXRFbSpatialEntity.StorageLocation" default="0" />
 			<description>
+				Sets up the query to get all spatial entities with the given UUIDs from the given storage location.
 			</description>
 		</method>
 	</methods>
 	<members>
 		<member name="max_results" type="int" setter="set_max_results" getter="get_max_results" default="25">
+			The maximum number of results to return as the result of executing the query.
 		</member>
 		<member name="timeout" type="float" setter="set_timeout" getter="get_timeout" default="0.0">
+			The maximum amount of time (in seconds) to wait for the query to return before giving up.
+			If set to [code]0.0[/code], the query won't timeout.
 		</member>
 	</members>
 	<signals>
 		<signal name="openxr_fb_spatial_entity_query_completed">
 			<param index="0" name="results" type="Array" />
 			<description>
+				Emitted when the query has finished executing.
 			</description>
 		</signal>
 	</signals>
 	<constants>
 		<constant name="QUERY_ALL" value="0" enum="QueryType">
+			Query all spatial entities.
 		</constant>
 		<constant name="QUERY_BY_UUID" value="1" enum="QueryType">
+			Query by UUID.
 		</constant>
 		<constant name="QUERY_BY_COMPONENT" value="2" enum="QueryType">
+			Query by component.
 		</constant>
 	</constants>
 </class>

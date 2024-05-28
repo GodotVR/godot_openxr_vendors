@@ -7,6 +7,8 @@
 	<tutorials>
 	</tutorials>
 	<members>
+		<member name="enable_hole_punch" type="bool" setter="set_enable_hole_punch" getter="get_enable_hole_punch" default="true">
+		</member>
 		<member name="mesh" type="Mesh" setter="set_mesh" getter="get_mesh">
 		</member>
 	</members>
