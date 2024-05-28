@@ -92,6 +92,7 @@ CORE_TYPES: List[str] = [
     "Dictionary",
     "Error",
     "float",
+    "Gradient",
     "GradientTexture1D",
     "Image",
     "int",
