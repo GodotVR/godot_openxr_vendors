@@ -1,0 +1,14 @@
+[remap]
+
+importer="image"
+type="Image"
+uid="uid://bygo836c781rj"
+path="res://.godot/imported/color-lut-inverted-32.png-480b3adcfb36f043011ab7ad27c75ec0.image"
+
+[deps]
+
+source_file="res://color-lut-inverted-32.png"
+dest_files=["res://.godot/imported/color-lut-inverted-32.png-480b3adcfb36f043011ab7ad27c75ec0.image"]
+
+[params]
+

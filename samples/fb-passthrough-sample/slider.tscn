@@ -1,0 +1,31 @@
+[gd_scene load_steps=6 format=3 uid="uid://c5cdxjhbriaec"]
+
+[ext_resource type="Script" path="res://slider.gd" id="1_tycwm"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_m3ads"]
+size = Vector3(2, 0.5, 0.1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_prver"]
+size = Vector3(2, 0.5, 0.1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_6pe8m"]
+radius = 0.125
+height = 0.25
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pqfja"]
+albedo_color = Color(1, 0, 0, 1)
+
+[node name="Slider" type="StaticBody3D"]
+script = ExtResource("1_tycwm")
+metadata/_edit_group_ = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_m3ads")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_prver")
+
+[node name="ValueIndicator" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.213189)
+mesh = SubResource("SphereMesh_6pe8m")
+surface_material_override/0 = SubResource("StandardMaterial3D_pqfja")

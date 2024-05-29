@@ -1,0 +1,14 @@
+[remap]
+
+importer="image"
+type="Image"
+uid="uid://2lbwmk1bk7o7"
+path="res://.godot/imported/color-lut-orange-64.png-44f8b1d9ba9445d8ace0ae5dc0f7b54e.image"
+
+[deps]
+
+source_file="res://color-lut-orange-64.png"
+dest_files=["res://.godot/imported/color-lut-orange-64.png-44f8b1d9ba9445d8ace0ae5dc0f7b54e.image"]
+
+[params]
+

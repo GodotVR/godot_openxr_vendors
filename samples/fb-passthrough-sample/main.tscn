@@ -1,0 +1,378 @@
+[gd_scene load_steps=22 format=3 uid="uid://cyfhw445f4w0v"]
+
+[ext_resource type="Script" path="res://main.gd" id="1_37itx"]
+[ext_resource type="Script" path="res://geometry.gd" id="2_8k6m3"]
+[ext_resource type="Image" uid="uid://2lbwmk1bk7o7" path="res://color-lut-orange-64.png" id="2_s3045"]
+[ext_resource type="Image" uid="uid://bygo836c781rj" path="res://color-lut-inverted-32.png" id="3_sehed"]
+[ext_resource type="Script" path="res://raycast.gd" id="4_rjdwo"]
+[ext_resource type="PackedScene" uid="uid://c5cdxjhbriaec" path="res://slider.tscn" id="5_d0odt"]
+
+[sub_resource type="Gradient" id="Gradient_aloay"]
+offsets = PackedFloat32Array(0, 0.493827, 1)
+colors = PackedColorArray(1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1)
+
+[sub_resource type="Curve" id="Curve_2d4i1"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.252101, 1), 0.0, 0.0, 0, 0, Vector2(0.516807, 0), 0.0, 0.0, 0, 0, Vector2(0.752101, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 5
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_tvdja"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_x0hsf"]
+sky_material = SubResource("ProceduralSkyMaterial_tvdja")
+
+[sub_resource type="Environment" id="Environment_fjqtr"]
+background_mode = 2
+sky = SubResource("Sky_x0hsf")
+tonemap_mode = 2
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_1f7cp"]
+top_radius = 0.005
+bottom_radius = 0.005
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_co7tp"]
+shading_mode = 0
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_rcli2"]
+top_radius = 0.005
+bottom_radius = 0.005
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cvvas"]
+shading_mode = 0
+
+[sub_resource type="BoxMesh" id="BoxMesh_ibo6o"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_b0tf2"]
+size = Vector3(1, 0.7, 0.1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_eolno"]
+size = Vector3(1, 0.705322, 0.100586)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_dktyk"]
+size = Vector2(2, 1)
+orientation = 2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xy2op"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4rwac"]
+
+[node name="Main" type="Node3D"]
+script = ExtResource("1_37itx")
+color_map = SubResource("Gradient_aloay")
+mono_map = SubResource("Curve_2d4i1")
+brightness_contrast_saturation = Vector3(0, 1, 1)
+color_lut = ExtResource("2_s3045")
+color_lut2 = ExtResource("3_sehed")
+edge_color = Color(1, 1, 1, 0)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.924573, 0.227053, -0.305961, 0, 0.803036, 0.595931, 0.381006, -0.550981, 0.742465, 0, 3.85782, 0)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_fjqtr")
+
+[node name="XROrigin3D" type="XROrigin3D" parent="."]
+
+[node name="LeftController" type="XRController3D" parent="XROrigin3D"]
+tracker = &"left_hand"
+pose = &"grip"
+
+[node name="OpenXRFbRenderModel" type="OpenXRFbRenderModel" parent="XROrigin3D/LeftController"]
+
+[node name="LeftControllerRayCast" type="RayCast3D" parent="XROrigin3D/LeftController"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0590359, -0.051541)
+target_position = Vector3(0, -10, 0)
+script = ExtResource("4_rjdwo")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/LeftController/LeftControllerRayCast"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0160359, 0.012459)
+mesh = SubResource("CylinderMesh_1f7cp")
+skeleton = NodePath("../../../RightController/RightControllerRayCast")
+surface_material_override/0 = SubResource("StandardMaterial3D_co7tp")
+
+[node name="RightController" type="XRController3D" parent="XROrigin3D"]
+tracker = &"right_hand"
+pose = &"grip"
+
+[node name="OpenXRFbRenderModel" type="OpenXRFbRenderModel" parent="XROrigin3D/RightController"]
+render_model_type = 1
+
+[node name="RightControllerRayCast" type="RayCast3D" parent="XROrigin3D/RightController"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0590359, -0.051541)
+target_position = Vector3(0, -10, 0)
+script = ExtResource("4_rjdwo")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/RightController/RightControllerRayCast"]
+mesh = SubResource("CylinderMesh_rcli2")
+surface_material_override/0 = SubResource("StandardMaterial3D_cvvas")
+
+[node name="XRCamera3D" type="XRCamera3D" parent="XROrigin3D"]
+
+[node name="OpenXRFbPassthroughGeometry" type="OpenXRFbPassthroughGeometry" parent="XROrigin3D"]
+mesh = SubResource("BoxMesh_ibo6o")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -2)
+visible = false
+script = ExtResource("2_8k6m3")
+
+[node name="PassthroughModes" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.98874, 0, -2.9994)
+
+[node name="ModeFull" type="StaticBody3D" parent="PassthroughModes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0112582, 2, -0.000597477)
+metadata/_edit_group_ = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="PassthroughModes/ModeFull"]
+mesh = SubResource("BoxMesh_b0tf2")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PassthroughModes/ModeFull"]
+shape = SubResource("BoxShape3D_eolno")
+
+[node name="Label3D" type="Label3D" parent="PassthroughModes/ModeFull"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.127908)
+text = "Full"
+
+[node name="ModeGeometry" type="StaticBody3D" parent="PassthroughModes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0112582, 1, -0.000597477)
+metadata/_edit_group_ = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="PassthroughModes/ModeGeometry"]
+mesh = SubResource("BoxMesh_b0tf2")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PassthroughModes/ModeGeometry"]
+shape = SubResource("BoxShape3D_eolno")
+
+[node name="Label3D" type="Label3D" parent="PassthroughModes/ModeGeometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.127908)
+text = "Geometry"
+
+[node name="ModeGeometryHP" type="StaticBody3D" parent="PassthroughModes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0112582, 0, -0.000597477)
+metadata/_edit_group_ = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="PassthroughModes/ModeGeometryHP"]
+mesh = SubResource("BoxMesh_b0tf2")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PassthroughModes/ModeGeometryHP"]
+shape = SubResource("BoxShape3D_eolno")
+
+[node name="Label3D" type="Label3D" parent="PassthroughModes/ModeGeometryHP"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.127908)
+text = "Geometry
+(Hole Punch)"
+
+[node name="PassthroughFilters" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.6684, 0, -2.99709)
+
+[node name="FilterColorMap" type="StaticBody3D" parent="PassthroughFilters"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.668395, 2, -0.00290775)
+metadata/_edit_group_ = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="PassthroughFilters/FilterColorMap"]
+mesh = SubResource("BoxMesh_b0tf2")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PassthroughFilters/FilterColorMap"]
+shape = SubResource("BoxShape3D_eolno")
+
+[node name="Label3D" type="Label3D" parent="PassthroughFilters/FilterColorMap"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.127908)
+text = "Color Map"
+
+[node name="FilterMonoMap" type="StaticBody3D" parent="PassthroughFilters"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.668395, 1, -0.00290775)
+metadata/_edit_group_ = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="PassthroughFilters/FilterMonoMap"]
+mesh = SubResource("BoxMesh_b0tf2")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PassthroughFilters/FilterMonoMap"]
+shape = SubResource("BoxShape3D_eolno")
+
+[node name="Label3D" type="Label3D" parent="PassthroughFilters/FilterMonoMap"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.127908)
+text = "Mono Map"
+
+[node name="FilterBrightnessContrastSaturation" type="StaticBody3D" parent="PassthroughFilters"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.668395, 0, -0.00290775)
+metadata/_edit_group_ = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="PassthroughFilters/FilterBrightnessContrastSaturation"]
+mesh = SubResource("BoxMesh_b0tf2")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PassthroughFilters/FilterBrightnessContrastSaturation"]
+shape = SubResource("BoxShape3D_eolno")
+
+[node name="Label3D" type="Label3D" parent="PassthroughFilters/FilterBrightnessContrastSaturation"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.127908)
+text = "Brightness
+Contrast
+Saturation"
+
+[node name="FilterColorMapLUT" type="StaticBody3D" parent="PassthroughFilters"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.667204, 2, -0.00290775)
+metadata/_edit_group_ = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="PassthroughFilters/FilterColorMapLUT"]
+mesh = SubResource("BoxMesh_b0tf2")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PassthroughFilters/FilterColorMapLUT"]
+shape = SubResource("BoxShape3D_eolno")
+
+[node name="Label3D" type="Label3D" parent="PassthroughFilters/FilterColorMapLUT"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.127908)
+text = "Color Map
+LUT"
+
+[node name="FilterColorMapInterpolatedLUT" type="StaticBody3D" parent="PassthroughFilters"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.667204, 1, -0.00290775)
+metadata/_edit_group_ = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="PassthroughFilters/FilterColorMapInterpolatedLUT"]
+mesh = SubResource("BoxMesh_b0tf2")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PassthroughFilters/FilterColorMapInterpolatedLUT"]
+shape = SubResource("BoxShape3D_eolno")
+
+[node name="Label3D" type="Label3D" parent="PassthroughFilters/FilterColorMapInterpolatedLUT"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.127908)
+text = "Color Map
+Interpolated
+LUT"
+
+[node name="FilterDisabled" type="StaticBody3D" parent="PassthroughFilters"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.667204, 0, -0.00290775)
+metadata/_edit_group_ = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="PassthroughFilters/FilterDisabled"]
+mesh = SubResource("BoxMesh_b0tf2")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PassthroughFilters/FilterDisabled"]
+shape = SubResource("BoxShape3D_eolno")
+
+[node name="Label3D" type="Label3D" parent="PassthroughFilters/FilterDisabled"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.127908)
+text = "Disabled"
+
+[node name="Interfaces" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -3)
+
+[node name="InterfaceColorMap" type="Node3D" parent="Interfaces"]
+visible = false
+
+[node name="ColorMapMesh" type="MeshInstance3D" parent="Interfaces/InterfaceColorMap"]
+mesh = SubResource("PlaneMesh_dktyk")
+surface_material_override/0 = SubResource("StandardMaterial3D_xy2op")
+
+[node name="InterfaceMonoMap" type="Node3D" parent="Interfaces"]
+visible = false
+
+[node name="MonoMapMesh" type="MeshInstance3D" parent="Interfaces/InterfaceMonoMap"]
+mesh = SubResource("PlaneMesh_dktyk")
+surface_material_override/0 = SubResource("StandardMaterial3D_4rwac")
+
+[node name="InterfaceBrightnessContrastSaturation" type="Node3D" parent="Interfaces"]
+visible = false
+
+[node name="BrightnessLabel" type="Label3D" parent="Interfaces/InterfaceBrightnessContrastSaturation"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.47016, 0)
+text = "Brightness
+"
+
+[node name="BrightnessSlider" parent="Interfaces/InterfaceBrightnessContrastSaturation" instance=ExtResource("5_d0odt")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+min_value = -100.0
+max_value = 100.0
+
+[node name="ContrastLabel" type="Label3D" parent="Interfaces/InterfaceBrightnessContrastSaturation"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.470157, 0)
+text = "Contrast
+"
+
+[node name="ContrastSlider" parent="Interfaces/InterfaceBrightnessContrastSaturation" instance=ExtResource("5_d0odt")]
+max_value = 2.0
+
+[node name="SaturationLabel" type="Label3D" parent="Interfaces/InterfaceBrightnessContrastSaturation"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.529843, 0)
+text = "Saturation
+"
+
+[node name="SaturationSlider" parent="Interfaces/InterfaceBrightnessContrastSaturation" instance=ExtResource("5_d0odt")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+max_value = 2.0
+
+[node name="InterfaceColorMapLut" type="Node3D" parent="Interfaces"]
+visible = false
+
+[node name="WeightLabel" type="Label3D" parent="Interfaces/InterfaceColorMapLut"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.470157, 0)
+text = "Weight"
+
+[node name="Slider" parent="Interfaces/InterfaceColorMapLut" instance=ExtResource("5_d0odt")]
+
+[node name="InterfaceColorMapInterpolatedLut" type="Node3D" parent="Interfaces"]
+visible = false
+
+[node name="WeightLabel" type="Label3D" parent="Interfaces/InterfaceColorMapInterpolatedLut"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.470157, 0)
+text = "Weight"
+
+[node name="Slider" parent="Interfaces/InterfaceColorMapInterpolatedLut" instance=ExtResource("5_d0odt")]
+
+[node name="InterfaceDisabled" type="Node3D" parent="Interfaces"]
+
+[node name="OpacityLabel" type="Label3D" parent="Interfaces/InterfaceDisabled"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.47016, 0)
+text = "Passthrough Opacity
+"
+
+[node name="OpacitySlider" parent="Interfaces/InterfaceDisabled" instance=ExtResource("5_d0odt")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+start_value = 1.0
+
+[node name="EdgeRLabel" type="Label3D" parent="Interfaces/InterfaceDisabled"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.47016, 0)
+text = "Edge R
+"
+
+[node name="EdgeRSlider" parent="Interfaces/InterfaceDisabled" instance=ExtResource("5_d0odt")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+start_value = 1.0
+
+[node name="EdgeGLabel" type="Label3D" parent="Interfaces/InterfaceDisabled"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.470157, 0)
+text = "Edge G
+"
+
+[node name="EdgeGSlider" parent="Interfaces/InterfaceDisabled" instance=ExtResource("5_d0odt")]
+start_value = 1.0
+
+[node name="EdgeBLabel" type="Label3D" parent="Interfaces/InterfaceDisabled"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.529843, 0)
+text = "Edge B
+"
+
+[node name="EdgeBSlider" parent="Interfaces/InterfaceDisabled" instance=ExtResource("5_d0odt")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+start_value = 1.0
+
+[node name="EdgeALabel" type="Label3D" parent="Interfaces/InterfaceDisabled"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.52984, 0)
+text = "Edge A
+"
+
+[node name="EdgeASlider" parent="Interfaces/InterfaceDisabled" instance=ExtResource("5_d0odt")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, 0)
+start_value = 0.0
+
+[connection signal="button_pressed" from="XROrigin3D/LeftController" to="." method="_on_left_controller_button_pressed"]
+[connection signal="button_pressed" from="XROrigin3D/RightController" to="." method="_on_right_controller_button_pressed"]
+[connection signal="new_value" from="Interfaces/InterfaceBrightnessContrastSaturation/BrightnessSlider" to="." method="_on_brightness_new_value"]
+[connection signal="new_value" from="Interfaces/InterfaceBrightnessContrastSaturation/ContrastSlider" to="." method="_on_contrast_new_value"]
+[connection signal="new_value" from="Interfaces/InterfaceBrightnessContrastSaturation/SaturationSlider" to="." method="_on_saturation_new_value"]
+[connection signal="new_value" from="Interfaces/InterfaceColorMapLut/Slider" to="." method="_on_color_map_lut_weight_new_value"]
+[connection signal="new_value" from="Interfaces/InterfaceColorMapInterpolatedLut/Slider" to="." method="_on_color_map_interpolated_lut_weight_new_value"]
+[connection signal="new_value" from="Interfaces/InterfaceDisabled/OpacitySlider" to="." method="_on_opacity_new_value"]
+[connection signal="new_value" from="Interfaces/InterfaceDisabled/EdgeRSlider" to="." method="_on_edge_r_new_value"]
+[connection signal="new_value" from="Interfaces/InterfaceDisabled/EdgeGSlider" to="." method="_on_edge_g_new_value"]
+[connection signal="new_value" from="Interfaces/InterfaceDisabled/EdgeBSlider" to="." method="_on_edge_b_new_value"]
+[connection signal="new_value" from="Interfaces/InterfaceDisabled/EdgeASlider" to="." method="_on_edge_a_new_value"]
