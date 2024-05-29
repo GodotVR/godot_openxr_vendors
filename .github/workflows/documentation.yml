@@ -5,10 +5,7 @@ permissions:
   pages: write
   id-token: write
 
-on:
-  push:
-    branches:
-      - master
+on: [push, pull_request]
 
 jobs:
   build:
@@ -40,6 +37,7 @@ jobs:
           path: docs/_build/html
 
   deploy:
+    if: github.ref == 'refs/heads/master'
     needs: build
     runs-on: ubuntu-latest
     environment:
