@@ -447,11 +447,14 @@ XrGeometryInstanceFB OpenXRFbPassthroughExtensionWrapper::create_geometry_instan
 		return XR_NULL_HANDLE;
 	}
 
-	Quaternion quat = p_transform.basis.get_rotation_quaternion();
-	Vector3 scale = p_transform.basis.get_scale();
+	Transform3D reference_frame = XRServer::get_singleton()->get_reference_frame();
+	Transform3D transform = reference_frame.inverse() * p_transform;
+
+	Quaternion quat = transform.basis.get_rotation_quaternion();
+	Vector3 scale = transform.basis.get_scale();
 
 	XrQuaternionf xr_orientation = { quat.x, quat.y, quat.z, quat.w };
-	XrVector3f xr_position = { p_transform.origin.x, p_transform.origin.y, p_transform.origin.z };
+	XrVector3f xr_position = { transform.origin.x, transform.origin.y, transform.origin.z };
 	XrPosef xr_pose = { xr_orientation, xr_position };
 	XrVector3f xr_scale = { scale.x, scale.y, scale.z };
 
@@ -476,11 +479,14 @@ XrGeometryInstanceFB OpenXRFbPassthroughExtensionWrapper::create_geometry_instan
 }
 
 void OpenXRFbPassthroughExtensionWrapper::set_geometry_instance_transform(XrGeometryInstanceFB p_geometry_instance, const Transform3D &p_transform) {
-	Quaternion quat = p_transform.basis.get_rotation_quaternion();
-	Vector3 scale = p_transform.basis.get_scale();
+	Transform3D reference_frame = XRServer::get_singleton()->get_reference_frame();
+	Transform3D transform = reference_frame.inverse() * p_transform;
+
+	Quaternion quat = transform.basis.get_rotation_quaternion();
+	Vector3 scale = transform.basis.get_scale();
 
 	XrQuaternionf xr_orientation = { quat.x, quat.y, quat.z, quat.w };
-	XrVector3f xr_position = { p_transform.origin.x, p_transform.origin.y, p_transform.origin.z };
+	XrVector3f xr_position = { transform.origin.x, transform.origin.y, transform.origin.z };
 	XrPosef xr_pose = { xr_orientation, xr_position };
 	XrVector3f xr_scale = { scale.x, scale.y, scale.z };
 

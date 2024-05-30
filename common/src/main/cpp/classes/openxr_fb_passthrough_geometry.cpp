@@ -35,6 +35,7 @@
 #include <godot_cpp/classes/shader.hpp>
 #include <godot_cpp/classes/shader_material.hpp>
 #include <godot_cpp/classes/standard_material3d.hpp>
+#include <godot_cpp/classes/xr_server.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
 
 using namespace godot;
@@ -104,6 +105,10 @@ bool OpenXRFbPassthroughGeometry::get_enable_hole_punch() const {
 	return enable_hole_punch;
 }
 
+OpenXRFbPassthroughGeometry::OpenXRFbPassthroughGeometry() {
+	XRServer::get_singleton()->connect("reference_frame_changed", callable_mp(this, &OpenXRFbPassthroughGeometry::update_passthrough_geometry_transform));
+}
+
 void OpenXRFbPassthroughGeometry::create_passthrough_geometry() {
 	geometry_instance = OpenXRFbPassthroughExtensionWrapper::get_singleton()->create_geometry_instance(mesh, get_transform());
 
@@ -122,6 +127,12 @@ void OpenXRFbPassthroughGeometry::destroy_passthrough_geometry() {
 
 	if (opaque_mesh != nullptr) {
 		delete_opaque_mesh();
+	}
+}
+
+void OpenXRFbPassthroughGeometry::update_passthrough_geometry_transform() {
+	if (geometry_instance) {
+		OpenXRFbPassthroughExtensionWrapper::get_singleton()->set_geometry_instance_transform(geometry_instance, get_transform());
 	}
 }
 
@@ -187,9 +198,7 @@ void OpenXRFbPassthroughGeometry::_notification(int p_what) {
 			}
 		} break;
 		case NOTIFICATION_LOCAL_TRANSFORM_CHANGED: {
-			if (geometry_instance) {
-				OpenXRFbPassthroughExtensionWrapper::get_singleton()->set_geometry_instance_transform(geometry_instance, get_transform());
-			}
+			update_passthrough_geometry_transform();
 		} break;
 	}
 }

@@ -41,8 +41,11 @@ class OpenXRFbPassthroughGeometry : public Node3D {
 	GDCLASS(OpenXRFbPassthroughGeometry, Node3D)
 
 private:
+	OpenXRFbPassthroughGeometry();
+
 	void create_passthrough_geometry();
 	void destroy_passthrough_geometry();
+	void update_passthrough_geometry_transform();
 
 	void instatiate_opaque_mesh();
 	void delete_opaque_mesh();
