@@ -83,9 +83,9 @@ Requesting a Scene Capture
 In case the space hasn't been set up yet, you can use the :ref:`request_scene_capture() <class_openxrfbscenemanager_method_request_scene_capture>` method to request a scene capture.
 The app will be paused and the user will be asked to scan their room.
 
-The :ref:`on_open_xr_fb_scene_capture_completed() <class_openxrfbscenemanager_signal_openxr_fb_scene_capture_completed>` signal can be used to act on the completion of the scene capture.
+The :ref:`openxr_fb_scene_capture_completed() <class_openxrfbscenemanager_signal_openxr_fb_scene_capture_completed>` signal can be used to act on the completion of the scene capture.
 
-Additionally, the :ref:`on_open_xr_fb_scene_data_missing() <class_openxrfbscenemanager_signal_openxr_fb_scene_data_missing>` signal is emitted when the space hasn't been set up yet.
+Additionally, the :ref:`openxr_fb_scene_data_missing() <class_openxrfbscenemanager_signal_openxr_fb_scene_data_missing>` signal is emitted when the space hasn't been set up yet.
 
 The complete code for requesting a scene capture could look like this:
 
@@ -105,7 +105,7 @@ The complete code for requesting a scene capture could look like this:
     func _scene_capture_completed(success: bool) -> void:
         if success == false:
             return
-        
+
         # Recreate scene anchors since the user may have changed them.
         if scene_manager.are_scene_anchors_created():
             scene_manager.remove_scene_anchors()
