@@ -1,0 +1,707 @@
+[gd_scene load_steps=26 format=3 uid="uid://cqsodpswgup8w"]
+
+[ext_resource type="Script" path="res://main.gd" id="1_fsva1"]
+[ext_resource type="Script" path="res://raycast.gd" id="2_u4cnn"]
+[ext_resource type="Texture2D" uid="uid://c6hb7s0wxu0vc" path="res://icon.svg" id="4_wy534"]
+[ext_resource type="PackedScene" uid="uid://v75csjjxgtpx" path="res://example_panel.tscn" id="6_kubns"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_0x6cv"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_dqyx0"]
+sky_material = SubResource("ProceduralSkyMaterial_0x6cv")
+
+[sub_resource type="Environment" id="Environment_m0xew"]
+background_mode = 2
+sky = SubResource("Sky_dqyx0")
+ambient_light_source = 2
+ambient_light_color = Color(0.270588, 0.270588, 0.270588, 1)
+tonemap_mode = 2
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_is4ih"]
+top_radius = 0.005
+bottom_radius = 0.005
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xpljd"]
+shading_mode = 0
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_k07us"]
+top_radius = 0.005
+bottom_radius = 0.005
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0b4kl"]
+shading_mode = 0
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_7mtgu"]
+size = Vector3(0.642334, 0.300781, 0.107422)
+
+[sub_resource type="BoxMesh" id="BoxMesh_3ttch"]
+size = Vector3(0.64, 0.3, 0.1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ccovu"]
+shading_mode = 0
+albedo_color = Color(0, 1, 0, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_2e18c"]
+size = Vector3(0.64, 0.3, 0.1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7qm33"]
+shading_mode = 0
+albedo_color = Color(1, 0, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_81dfm"]
+shading_mode = 0
+albedo_color = Color(1, 0, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_uo2xa"]
+shading_mode = 0
+albedo_color = Color(0, 1, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sl84k"]
+shading_mode = 0
+albedo_color = Color(1, 0, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_au24c"]
+shading_mode = 0
+albedo_color = Color(1, 0, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_j2lf0"]
+shading_mode = 0
+albedo_color = Color(0, 1, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_x4pwl"]
+shading_mode = 0
+albedo_color = Color(1, 0, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_53uq1"]
+shading_mode = 0
+albedo_color = Color(1, 0, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_k604q"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_mjcgt"]
+material = SubResource("StandardMaterial3D_k604q")
+size = Vector2(10, 10)
+
+[node name="Main" type="Node3D"]
+script = ExtResource("1_fsva1")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_m0xew")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.677077, -0.692092, 0.25015, 0.264251, 0.545897, 0.79509, -0.686831, -0.472235, 0.552501, 0, 0, 0)
+
+[node name="XROrigin3D" type="XROrigin3D" parent="."]
+transform = Transform3D(0.813436, 0, 0.581655, 0, 1, 0, -0.581655, 0, 0.813436, 1.32074, 0, 1.72285)
+
+[node name="XRCamera3D" type="XRCamera3D" parent="XROrigin3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.352791, 0)
+
+[node name="LeftController" type="XRController3D" parent="XROrigin3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.460909, 0.388594, -0.241118)
+tracker = &"left_hand"
+pose = &"grip"
+
+[node name="OpenXRFbRenderModel" type="OpenXRFbRenderModel" parent="XROrigin3D/LeftController"]
+
+[node name="LeftControllerRayCast" type="RayCast3D" parent="XROrigin3D/LeftController"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.059, -0.052)
+target_position = Vector3(0, -10, 0)
+script = ExtResource("2_u4cnn")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/LeftController/LeftControllerRayCast"]
+mesh = SubResource("CylinderMesh_is4ih")
+surface_material_override/0 = SubResource("StandardMaterial3D_xpljd")
+
+[node name="RightController" type="XRController3D" parent="XROrigin3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.479, 0.389, -0.241)
+tracker = &"right_hand"
+pose = &"grip"
+
+[node name="OpenXRFbRenderModel" type="OpenXRFbRenderModel" parent="XROrigin3D/RightController"]
+render_model_type = 1
+
+[node name="RightControllerRayCast" type="RayCast3D" parent="XROrigin3D/RightController"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.059, -0.052)
+target_position = Vector3(0, -10, 0)
+script = ExtResource("2_u4cnn")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/RightController/RightControllerRayCast"]
+mesh = SubResource("CylinderMesh_k07us")
+surface_material_override/0 = SubResource("StandardMaterial3D_0b4kl")
+
+[node name="TurnTimer" type="Timer" parent="XROrigin3D"]
+wait_time = 0.2
+one_shot = true
+
+[node name="OpenXRCompositionLayerQuad" type="OpenXRCompositionLayerQuad" parent="XROrigin3D" node_paths=PackedStringArray("layer_viewport") groups=["composition_layer"]]
+transform = Transform3D(1, 0, -2.98023e-08, 0, 0.945712, -0.325007, 0, 0.325007, 0.945712, -5.96046e-08, 1.568, -2.37176)
+layer_viewport = NodePath("../../QuadViewport")
+sort_order = -1
+enable_hole_punch = true
+quad_size = Vector2(1.5, 1.5)
+
+[node name="OpenXRCompositionLayerCylinder" type="OpenXRCompositionLayerCylinder" parent="XROrigin3D" node_paths=PackedStringArray("layer_viewport") groups=["composition_layer"]]
+transform = Transform3D(0.671385, 0.0782645, 0.736964, -1.10785e-08, 0.994408, -0.105605, -0.741109, 0.0709012, 0.66763, -0.772507, 1.55166, -1.30867)
+layer_viewport = NodePath("../../CylinderViewport")
+sort_order = -1
+enable_hole_punch = true
+radius = 0.75
+
+[node name="OpenXRCompositionLayerEquirect" type="OpenXRCompositionLayerEquirect" parent="XROrigin3D" node_paths=PackedStringArray("layer_viewport") groups=["composition_layer"]]
+transform = Transform3D(0.765506, -0.0578683, -0.640822, 2.39438e-09, 0.995947, -0.0899373, 0.643429, 0.0688475, 0.762403, 0.916254, 1.51524, -1.27907)
+layer_viewport = NodePath("../../EquirectViewport")
+sort_order = -1
+enable_hole_punch = true
+radius = 0.75
+
+[node name="HPDisabledCompositionLayer" type="OpenXRCompositionLayerQuad" parent="XROrigin3D" node_paths=PackedStringArray("layer_viewport") groups=["composition_layer"]]
+transform = Transform3D(0.140538, 0, -0.990075, 0, 1, 0, 0.990075, 0, 0.140538, 1.89042, 1.11189, -0.494546)
+layer_viewport = NodePath("../../NonHPViewport")
+
+[node name="HPEnabledCompositionLayer" type="OpenXRCompositionLayerQuad" parent="XROrigin3D" node_paths=PackedStringArray("layer_viewport") groups=["composition_layer"]]
+transform = Transform3D(0.140538, 0, -0.990074, 0, 1, 0, 0.990074, 0, 0.140538, 1.88959, 2.13777, -0.497513)
+layer_viewport = NodePath("../../HPViewport")
+sort_order = -1
+enable_hole_punch = true
+
+[node name="SettingsCompositionLayer" type="OpenXRCompositionLayerCylinder" parent="XROrigin3D" node_paths=PackedStringArray("layer_viewport") groups=["composition_layer"]]
+transform = Transform3D(-0.447884, 0, 0.894091, 0, 1, 0, -0.894091, 0, -0.447884, -0.876689, 1.43458, 2.10925)
+layer_viewport = NodePath("../../SettingsViewport")
+
+[node name="Label3D" type="Label3D" parent="XROrigin3D/SettingsCompositionLayer"]
+transform = Transform3D(1, 0, 1.49012e-07, 0, 1, 0, -1.49012e-07, 0, 1, 0.757602, 0.990318, -0.724057)
+text = "Manual Layer Filtering"
+
+[node name="DisabledSupersampling" type="StaticBody3D" parent="XROrigin3D/SettingsCompositionLayer"]
+transform = Transform3D(1, 0, -2.98023e-08, 0, 1, 0, 2.98023e-08, 0, 1, 1.25252, 0.432407, -0.74741)
+metadata/_edit_group_ = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="XROrigin3D/SettingsCompositionLayer/DisabledSupersampling"]
+shape = SubResource("BoxShape3D_7mtgu")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/SettingsCompositionLayer/DisabledSupersampling"]
+mesh = SubResource("BoxMesh_3ttch")
+surface_material_override/0 = SubResource("StandardMaterial3D_ccovu")
+
+[node name="Label3D" type="Label3D" parent="XROrigin3D/SettingsCompositionLayer/DisabledSupersampling"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.0654687)
+text = "Disabled
+Supersampling"
+font_size = 16
+
+[node name="NormalSupersampling" type="StaticBody3D" parent="XROrigin3D/SettingsCompositionLayer"]
+transform = Transform3D(1, 0, -2.98023e-08, 0, 1, 0, 2.98023e-08, 0, 1, 1.25252, 0.0872573, -0.74741)
+metadata/_edit_group_ = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="XROrigin3D/SettingsCompositionLayer/NormalSupersampling"]
+shape = SubResource("BoxShape3D_7mtgu")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/SettingsCompositionLayer/NormalSupersampling"]
+mesh = SubResource("BoxMesh_2e18c")
+surface_material_override/0 = SubResource("StandardMaterial3D_7qm33")
+
+[node name="Label3D" type="Label3D" parent="XROrigin3D/SettingsCompositionLayer/NormalSupersampling"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.0654687)
+text = "Normal
+Supersampling"
+font_size = 16
+
+[node name="QualitySupersampling" type="StaticBody3D" parent="XROrigin3D/SettingsCompositionLayer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.25252, -0.270333, -0.74741)
+metadata/_edit_group_ = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="XROrigin3D/SettingsCompositionLayer/QualitySupersampling"]
+shape = SubResource("BoxShape3D_7mtgu")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/SettingsCompositionLayer/QualitySupersampling"]
+mesh = SubResource("BoxMesh_2e18c")
+surface_material_override/0 = SubResource("StandardMaterial3D_81dfm")
+
+[node name="Label3D" type="Label3D" parent="XROrigin3D/SettingsCompositionLayer/QualitySupersampling"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.0654687)
+text = "Quality
+Supersampling"
+font_size = 16
+
+[node name="DisabledSharpening" type="StaticBody3D" parent="XROrigin3D/SettingsCompositionLayer"]
+transform = Transform3D(1, 0, -2.98023e-08, 0, 1, 0, 2.98023e-08, 0, 1, 1.96023, 0.432407, -0.74741)
+metadata/_edit_group_ = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="XROrigin3D/SettingsCompositionLayer/DisabledSharpening"]
+shape = SubResource("BoxShape3D_7mtgu")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/SettingsCompositionLayer/DisabledSharpening"]
+mesh = SubResource("BoxMesh_2e18c")
+surface_material_override/0 = SubResource("StandardMaterial3D_uo2xa")
+
+[node name="Label3D" type="Label3D" parent="XROrigin3D/SettingsCompositionLayer/DisabledSharpening"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.0654687)
+text = "Disabled
+Sharpening"
+font_size = 16
+
+[node name="NormalSharpening" type="StaticBody3D" parent="XROrigin3D/SettingsCompositionLayer"]
+transform = Transform3D(1, 0, -2.98023e-08, 0, 1, 0, 2.98023e-08, 0, 1, 1.96023, 0.0872573, -0.74741)
+metadata/_edit_group_ = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="XROrigin3D/SettingsCompositionLayer/NormalSharpening"]
+shape = SubResource("BoxShape3D_7mtgu")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/SettingsCompositionLayer/NormalSharpening"]
+mesh = SubResource("BoxMesh_2e18c")
+surface_material_override/0 = SubResource("StandardMaterial3D_sl84k")
+
+[node name="Label3D" type="Label3D" parent="XROrigin3D/SettingsCompositionLayer/NormalSharpening"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.0654687)
+text = "Normal
+Sharpening"
+font_size = 16
+
+[node name="QualitySharpening" type="StaticBody3D" parent="XROrigin3D/SettingsCompositionLayer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.96023, -0.270333, -0.74741)
+metadata/_edit_group_ = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="XROrigin3D/SettingsCompositionLayer/QualitySharpening"]
+shape = SubResource("BoxShape3D_7mtgu")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/SettingsCompositionLayer/QualitySharpening"]
+mesh = SubResource("BoxMesh_2e18c")
+surface_material_override/0 = SubResource("StandardMaterial3D_au24c")
+
+[node name="Label3D" type="Label3D" parent="XROrigin3D/SettingsCompositionLayer/QualitySharpening"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.0654687)
+text = "Quality
+Sharpening"
+font_size = 16
+
+[node name="AutoSettingsCompositionLayer" type="OpenXRCompositionLayerCylinder" parent="XROrigin3D" node_paths=PackedStringArray("layer_viewport") groups=["composition_layer"]]
+transform = Transform3D(0.485222, 0, 0.874391, 0, 1, 0, -0.874391, 0, 0.485222, -1.40387, 1.43458, -0.184307)
+layer_viewport = NodePath("../../AutoSettingsViewport")
+XR_FB_composition_layer_settings/auto/enable_auto_filter = true
+XR_FB_composition_layer_settings/auto/options = 15
+
+[node name="Label3D" type="Label3D" parent="XROrigin3D/AutoSettingsCompositionLayer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0189411, 0.962373, -0.895034)
+text = "Auto Layer Filtering"
+
+[node name="ABBaseCompositionLayer" type="OpenXRCompositionLayerQuad" parent="XROrigin3D" node_paths=PackedStringArray("layer_viewport") groups=["composition_layer"]]
+transform = Transform3D(-0.24551, 0, -0.969392, 0, 1, 0, 0.969392, 0, -0.24551, 1.67856, 1.6875, 1.46923)
+layer_viewport = NodePath("../../AlphaBlendBaseViewport")
+sort_order = -1
+enable_hole_punch = true
+quad_size = Vector2(2, 2)
+
+[node name="Label3D" type="Label3D" parent="XROrigin3D/ABBaseCompositionLayer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0189411, 1.17098, 0.0236711)
+text = "Alpha Blend"
+
+[node name="ABNormalCompositionLayer" type="OpenXRCompositionLayerQuad" parent="XROrigin3D" node_paths=PackedStringArray("layer_viewport") groups=["composition_layer"]]
+transform = Transform3D(-0.24551, 0, -0.969392, 0, 1, 0, 0.969392, 0, -0.24551, 1.77818, 2.00648, 0.85672)
+layer_viewport = NodePath("../../AlphaBlendNormalViewport")
+sort_order = 2
+alpha_blend = true
+quad_size = Vector2(0.33, 0.33)
+
+[node name="Label3D" type="Label3D" parent="XROrigin3D/ABNormalCompositionLayer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.395301, 0)
+text = "Normal Alpha"
+font_size = 16
+
+[node name="ABOneCompositionLayer" type="OpenXRCompositionLayerQuad" parent="XROrigin3D" node_paths=PackedStringArray("layer_viewport") groups=["composition_layer"]]
+transform = Transform3D(-0.24551, 0, -0.969392, 0, 1, 0, 0.969392, 0, -0.24551, 1.62958, 2.00648, 1.44344)
+layer_viewport = NodePath("../../AlphaBlendOneViewport")
+sort_order = 2
+XR_FB_composition_layer_alpha_blend/enable_alpha_blend_extension = true
+XR_FB_composition_layer_alpha_blend/destination_color_blend_factor = 1
+XR_FB_composition_layer_alpha_blend/destination_alpha_blend_factor = 1
+quad_size = Vector2(0.33, 0.33)
+
+[node name="Label3D" type="Label3D" parent="XROrigin3D/ABOneCompositionLayer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.395301, 0)
+text = "Src Color: One
+Dst Color: One
+Src Alpha: One
+Dst Alpha: One"
+font_size = 16
+
+[node name="ABZeroCompositionLayer" type="OpenXRCompositionLayerQuad" parent="XROrigin3D" node_paths=PackedStringArray("layer_viewport") groups=["composition_layer"]]
+transform = Transform3D(-0.24551, 0, -0.969392, 0, 1, 0, 0.969392, 0, -0.24551, 1.47291, 2.00648, 2.06203)
+layer_viewport = NodePath("../../AlphaBlendZeroViewport")
+sort_order = 2
+XR_FB_composition_layer_alpha_blend/enable_alpha_blend_extension = true
+XR_FB_composition_layer_alpha_blend/source_color_blend_factor = 0
+XR_FB_composition_layer_alpha_blend/source_alpha_blend_factor = 0
+quad_size = Vector2(0.33, 0.33)
+
+[node name="Label3D" type="Label3D" parent="XROrigin3D/ABZeroCompositionLayer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.395301, 0)
+text = "Src Color: Zero
+Dst Color: Zero
+Src Alpha: Zero
+Dst Alpha: Zero"
+font_size = 16
+
+[node name="ABSrcOneCompositionLayer" type="OpenXRCompositionLayerQuad" parent="XROrigin3D" node_paths=PackedStringArray("layer_viewport") groups=["composition_layer"]]
+transform = Transform3D(-0.24551, 0, -0.969392, 0, 1, 0, 0.969392, 0, -0.24551, 1.78034, 1.09783, 0.848158)
+layer_viewport = NodePath("../../AlphaBlendSrcOneViewport")
+sort_order = 2
+XR_FB_composition_layer_alpha_blend/enable_alpha_blend_extension = true
+quad_size = Vector2(0.33, 0.33)
+
+[node name="Label3D" type="Label3D" parent="XROrigin3D/ABSrcOneCompositionLayer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.395301, 0)
+text = "Src Color: One
+Dst Color: Zero
+Src Alpha: One
+Dst Alpha: Zero"
+font_size = 16
+
+[node name="ABDstOneCompositionLayer" type="OpenXRCompositionLayerQuad" parent="XROrigin3D" node_paths=PackedStringArray("layer_viewport") groups=["composition_layer"]]
+transform = Transform3D(-0.24551, 0, -0.969392, 0, 1, 0, 0.969392, 0, -0.24551, 1.62833, 1.09783, 1.44836)
+layer_viewport = NodePath("../../AlphaBlendDstOneViewport")
+sort_order = 2
+XR_FB_composition_layer_alpha_blend/enable_alpha_blend_extension = true
+XR_FB_composition_layer_alpha_blend/source_color_blend_factor = 0
+XR_FB_composition_layer_alpha_blend/destination_color_blend_factor = 1
+XR_FB_composition_layer_alpha_blend/source_alpha_blend_factor = 0
+XR_FB_composition_layer_alpha_blend/destination_alpha_blend_factor = 1
+quad_size = Vector2(0.33, 0.33)
+
+[node name="Label3D" type="Label3D" parent="XROrigin3D/ABDstOneCompositionLayer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.395301, 0)
+text = "Src Color: Zero
+Dst Color: One
+Src Alpha: Zero
+Dst Alpha: One"
+font_size = 16
+
+[node name="ABOneMinusCompositionLayer" type="OpenXRCompositionLayerQuad" parent="XROrigin3D" node_paths=PackedStringArray("layer_viewport") groups=["composition_layer"]]
+transform = Transform3D(-0.24551, 0, -0.969392, 0, 1, 0, 0.969392, 0, -0.24551, 1.47416, 1.09783, 2.05712)
+layer_viewport = NodePath("../../AlphaBlendOneMinusViewport")
+sort_order = 2
+XR_FB_composition_layer_alpha_blend/enable_alpha_blend_extension = true
+XR_FB_composition_layer_alpha_blend/source_color_blend_factor = 3
+XR_FB_composition_layer_alpha_blend/source_alpha_blend_factor = 3
+quad_size = Vector2(0.33, 0.33)
+
+[node name="Label3D" type="Label3D" parent="XROrigin3D/ABOneMinusCompositionLayer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.395301, 0)
+text = "Src Color: 1-SA
+Dst Color: Zero
+Src Alpha: 1-SA
+Dst Alpha: Zero"
+font_size = 16
+
+[node name="SecureContentCompositionLayer" type="OpenXRCompositionLayerCylinder" parent="XROrigin3D" node_paths=PackedStringArray("layer_viewport") groups=["composition_layer"]]
+transform = Transform3D(-0.966657, 0, -0.25607, 0, 1, 0, 0.25607, 0, -0.966657, 0.245687, 1.88364, 2.10131)
+layer_viewport = NodePath("../../SecureContentViewport")
+
+[node name="Label3D" type="Label3D" parent="XROrigin3D/SecureContentCompositionLayer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0189411, 0.962373, -0.895034)
+text = "Secure Content"
+
+[node name="Label3D2" type="Label3D" parent="XROrigin3D/SecureContentCompositionLayer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.365376, -1.15321, -0.895034)
+text = "These settings will change
+how the composition layer
+appears when viewed via casting"
+
+[node name="DisplaySecureContent" type="StaticBody3D" parent="XROrigin3D/SecureContentCompositionLayer"]
+transform = Transform3D(1, 0, -2.98023e-08, 0, 1, 0, 2.98023e-08, 0, 1, 1.12945, 0.489884, -0.855458)
+metadata/_edit_group_ = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="XROrigin3D/SecureContentCompositionLayer/DisplaySecureContent"]
+shape = SubResource("BoxShape3D_7mtgu")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/SecureContentCompositionLayer/DisplaySecureContent"]
+mesh = SubResource("BoxMesh_3ttch")
+surface_material_override/0 = SubResource("StandardMaterial3D_j2lf0")
+
+[node name="Label3D" type="Label3D" parent="XROrigin3D/SecureContentCompositionLayer/DisplaySecureContent"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.0654687)
+text = "Display"
+font_size = 16
+
+[node name="ReplaceSecureContent" type="StaticBody3D" parent="XROrigin3D/SecureContentCompositionLayer"]
+transform = Transform3D(1, 0, -2.98023e-08, 0, 1, 0, 2.98023e-08, 0, 1, 1.12945, 0.0932691, -0.855458)
+metadata/_edit_group_ = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="XROrigin3D/SecureContentCompositionLayer/ReplaceSecureContent"]
+shape = SubResource("BoxShape3D_7mtgu")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/SecureContentCompositionLayer/ReplaceSecureContent"]
+mesh = SubResource("BoxMesh_3ttch")
+surface_material_override/0 = SubResource("StandardMaterial3D_x4pwl")
+
+[node name="Label3D" type="Label3D" parent="XROrigin3D/SecureContentCompositionLayer/ReplaceSecureContent"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.0654687)
+text = "Replace"
+font_size = 16
+
+[node name="ExcludeSecureContent" type="StaticBody3D" parent="XROrigin3D/SecureContentCompositionLayer"]
+transform = Transform3D(1, 0, -2.98023e-08, 0, 1, 0, 2.98023e-08, 0, 1, 1.12945, -0.334742, -0.855458)
+metadata/_edit_group_ = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="XROrigin3D/SecureContentCompositionLayer/ExcludeSecureContent"]
+shape = SubResource("BoxShape3D_7mtgu")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/SecureContentCompositionLayer/ExcludeSecureContent"]
+mesh = SubResource("BoxMesh_3ttch")
+surface_material_override/0 = SubResource("StandardMaterial3D_53uq1")
+
+[node name="Label3D" type="Label3D" parent="XROrigin3D/SecureContentCompositionLayer/ExcludeSecureContent"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.0654687)
+text = "Exclude"
+font_size = 16
+
+[node name="Floor" type="MeshInstance3D" parent="."]
+mesh = SubResource("PlaneMesh_mjcgt")
+
+[node name="QuadViewport" type="SubViewport" parent="."]
+disable_3d = true
+gui_embed_subwindows = true
+render_target_update_mode = 4
+
+[node name="ExamplePanel" parent="QuadViewport" instance=ExtResource("6_kubns")]
+display_string = "This is a Quad!"
+
+[node name="CylinderViewport" type="SubViewport" parent="."]
+disable_3d = true
+gui_embed_subwindows = true
+render_target_update_mode = 4
+
+[node name="ExamplePanel" parent="CylinderViewport" instance=ExtResource("6_kubns")]
+display_string = "This is a Cylinder!"
+
+[node name="EquirectViewport" type="SubViewport" parent="."]
+disable_3d = true
+gui_embed_subwindows = true
+render_target_update_mode = 4
+
+[node name="ExamplePanel" parent="EquirectViewport" instance=ExtResource("6_kubns")]
+display_string = "This is an Equirect!"
+
+[node name="NonHPViewport" type="SubViewport" parent="."]
+render_target_update_mode = 4
+
+[node name="Label" type="Label" parent="NonHPViewport"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 32
+text = "Hole punch disabled
+Sort order = 1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HPViewport" type="SubViewport" parent="."]
+render_target_update_mode = 4
+
+[node name="Label" type="Label" parent="HPViewport"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 32
+text = "Hole punch enabled
+Sort order = -1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SettingsViewport" type="SubViewport" parent="."]
+size = Vector2i(2048, 2048)
+render_target_update_mode = 4
+
+[node name="TextEdit" type="TextEdit" parent="SettingsViewport"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quam vulputate dignissim suspendisse in est ante. Bibendum arcu vitae elementum curabitur. Egestas purus viverra accumsan in nisl nisi scelerisque. Et pharetra pharetra massa massa ultricies mi quis hendrerit dolor. Turpis egestas sed tempus urna et pharetra. Donec massa sapien faucibus et. Nec ullamcorper sit amet risus nullam eget felis eget. Integer eget aliquet nibh praesent tristique magna sit amet. Tellus pellentesque eu tincidunt tortor aliquam nulla facilisi cras. Venenatis urna cursus eget nunc scelerisque viverra. Sapien eget mi proin sed libero.
+
+Non curabitur gravida arcu ac tortor. Euismod elementum nisi quis eleifend quam. Pulvinar etiam non quam lacus suspendisse faucibus interdum posuere. Massa id neque aliquam vestibulum morbi blandit cursus. Tellus id interdum velit laoreet id donec ultrices tincidunt arcu. Ultricies mi eget mauris pharetra et ultrices. Lorem sed risus ultricies tristique nulla. Faucibus ornare suspendisse sed nisi lacus. Libero enim sed faucibus turpis in. In ornare quam viverra orci sagittis eu volutpat odio facilisis. Malesuada fames ac turpis egestas sed. Vulputate odio ut enim blandit volutpat. Egestas tellus rutrum tellus pellentesque eu tincidunt tortor. Et egestas quis ipsum suspendisse ultrices gravida dictum.
+
+Justo eget magna fermentum iaculis eu non diam. Dui faucibus in ornare quam viverra. Risus nec feugiat in fermentum posuere urna. Eu scelerisque felis imperdiet proin fermentum leo vel. Massa vitae tortor condimentum lacinia quis. Vel pretium lectus quam id leo in vitae. Ornare quam viverra orci sagittis. Nisl pretium fusce id velit ut tortor pretium viverra suspendisse. Adipiscing elit duis tristique sollicitudin. Quis auctor elit sed vulputate mi. Ipsum consequat nisl vel pretium lectus quam id. Odio facilisis mauris sit amet massa vitae tortor condimentum. Eget nulla facilisi etiam dignissim diam quis enim.
+
+Eget sit amet tellus cras adipiscing enim eu turpis. Est placerat in egestas erat imperdiet sed euismod nisi. Tellus at urna condimentum mattis pellentesque id nibh tortor. Aliquet bibendum enim facilisis gravida neque convallis a. Ipsum suspendisse ultrices gravida dictum fusce ut placerat. Cras fermentum odio eu feugiat pretium. Vel turpis nunc eget lorem dolor sed. Sed faucibus turpis in eu mi. Proin sed libero enim sed faucibus turpis. Tortor id aliquet lectus proin nibh nisl condimentum. Tempus urna et pharetra pharetra massa massa ultricies mi. Dolor morbi non arcu risus quis varius. Porttitor eget dolor morbi non arcu. Amet nisl purus in mollis nunc sed id. Tellus cras adipiscing enim eu. Aliquet lectus proin nibh nisl condimentum id. Volutpat ac tincidunt vitae semper quis lectus nulla.
+
+At varius vel pharetra vel turpis nunc eget. Leo vel orci porta non. In iaculis nunc sed augue lacus viverra. Amet venenatis urna cursus eget nunc scelerisque. Mauris a diam maecenas sed enim ut sem viverra. Mattis ullamcorper velit sed ullamcorper morbi tincidunt ornare. Vitae congue mauris rhoncus aenean. Elit pellentesque habitant morbi tristique senectus et netus et. Mattis nunc sed blandit libero. Vitae nunc sed velit dignissim sodales ut eu sem integer. Ullamcorper eget nulla facilisi etiam. Pulvinar mattis nunc sed blandit libero. Hac habitasse platea dictumst quisque. Egestas sed tempus urna et pharetra pharetra massa massa ultricies. Eu lobortis elementum nibh tellus molestie.
+
+Id nibh tortor id aliquet lectus. Purus semper eget duis at tellus at urna condimentum mattis. Lectus vestibulum mattis ullamcorper velit sed ullamcorper morbi tincidunt. Sollicitudin tempor id eu nisl. Ullamcorper dignissim cras tincidunt lobortis feugiat. Ultrices vitae auctor eu augue ut lectus. Massa massa ultricies mi quis hendrerit dolor magna eget est. Dui sapien eget mi proin sed libero enim. Id neque aliquam vestibulum morbi blandit cursus. At urna condimentum mattis pellentesque id nibh tortor id aliquet. Quam lacus suspendisse faucibus interdum posuere lorem. Sapien nec sagittis aliquam malesuada bibendum arcu vitae. Non blandit massa enim nec. Sollicitudin tempor id eu nisl nunc mi.
+
+Et odio pellentesque diam volutpat commodo sed. Aliquet enim tortor at auctor urna nunc id. Nunc aliquet bibendum enim facilisis gravida. Ultrices mi tempus imperdiet nulla malesuada pellentesque elit. Nibh nisl condimentum id venenatis a condimentum. Fusce id velit ut tortor pretium viverra suspendisse potenti nullam. Posuere ac ut consequat semper. Fringilla est ullamcorper eget nulla facilisi etiam dignissim diam quis. Volutpat ac tincidunt vitae semper. Posuere lorem ipsum dolor sit amet consectetur. Aenean euismod elementum nisi quis eleifend quam adipiscing. Sit amet justo donec enim diam. Ante metus dictum at tempor. Tristique senectus et netus et malesuada fames ac. Nunc sed augue lacus viverra.
+
+Ut placerat orci nulla pellentesque dignissim enim. Eget lorem dolor sed viverra ipsum. Vel risus commodo viverra maecenas accumsan lacus. Suspendisse sed nisi lacus sed viverra tellus. Eu mi bibendum neque egestas congue quisque egestas diam. Fusce ut placerat orci nulla pellentesque. Nunc scelerisque viverra mauris in aliquam sem. Duis tristique sollicitudin nibh sit amet commodo nulla facilisi. Donec pretium vulputate sapien nec sagittis. Cursus metus aliquam eleifend mi in nulla posuere sollicitudin aliquam. Arcu non odio euismod lacinia at. Ultrices tincidunt arcu non sodales neque sodales ut etiam. Lorem donec massa sapien faucibus. Et netus et malesuada fames ac. Lacus suspendisse faucibus interdum posuere lorem ipsum. Ornare lectus sit amet est placerat in egestas erat imperdiet. Ultrices sagittis orci a scelerisque purus. Sociis natoque penatibus et magnis dis parturient montes nascetur ridiculus. Tellus cras adipiscing enim eu turpis egestas pretium aenean. Turpis massa tincidunt dui ut ornare lectus sit amet.
+
+Massa sed elementum tempus egestas. Massa sed elementum tempus egestas sed sed risus. Etiam sit amet nisl purus in mollis nunc. Venenatis cras sed felis eget velit. Metus aliquam eleifend mi in nulla posuere. Mattis molestie a iaculis at erat pellentesque. Mi proin sed libero enim sed faucibus turpis in. Accumsan in nisl nisi scelerisque eu ultrices vitae auctor eu. Mauris pellentesque pulvinar pellentesque habitant morbi tristique senectus et. Mauris cursus mattis molestie a iaculis at. Ultrices mi tempus imperdiet nulla. Est ultricies integer quis auctor elit sed vulputate mi. Eget velit aliquet sagittis id consectetur purus. Maecenas ultricies mi eget mauris pharetra et ultrices neque ornare. Enim nunc faucibus a pellentesque sit amet porttitor eget dolor.
+
+Velit egestas dui id ornare. In cursus turpis massa tincidunt dui ut ornare lectus sit. Mattis rhoncus urna neque viverra. Egestas purus viverra accumsan in nisl nisi scelerisque eu ultrices. Eu augue ut lectus arcu bibendum at varius. Platea dictumst vestibulum rhoncus est pellentesque elit. Facilisis magna etiam tempor orci eu lobortis elementum nibh. Enim facilisis gravida neque convallis a cras semper. Sit amet tellus cras adipiscing enim eu turpis. Habitant morbi tristique senectus et netus et malesuada fames ac. Eget felis eget nunc lobortis mattis aliquam faucibus purus. Cursus vitae congue mauris rhoncus aenean vel elit scelerisque mauris. Eu tincidunt tortor aliquam nulla facilisi cras fermentum odio eu. Lobortis mattis aliquam faucibus purus in massa tempor nec. Ultricies mi eget mauris pharetra et ultrices neque ornare aenean. Turpis tincidunt id aliquet risus feugiat in ante metus. Suscipit tellus mauris a diam. Egestas quis ipsum suspendisse ultrices gravida dictum. Neque viverra justo nec ultrices dui sapien eget mi proin.
+
+Duis at consectetur lorem donec massa sapien faucibus et molestie. Enim ut sem viverra aliquet eget sit amet. Tempor orci dapibus ultrices in iaculis nunc. Sit amet nisl suscipit adipiscing bibendum est ultricies. Lorem dolor sed viverra ipsum. Elementum nibh tellus molestie nunc non. Turpis massa tincidunt dui ut. Pellentesque massa placerat duis ultricies lacus sed. Nunc sed velit dignissim sodales ut eu sem integer vitae. Tortor aliquam nulla facilisi cras fermentum odio. Convallis aenean et tortor at risus viverra adipiscing at in. Ut sem viverra aliquet eget sit amet. Amet aliquam id diam maecenas. Integer eget aliquet nibh praesent. Morbi non arcu risus quis varius quam quisque id. Faucibus a pellentesque sit amet porttitor eget dolor morbi non. Magna fermentum iaculis eu non diam.
+
+Id consectetur purus ut faucibus. Adipiscing elit ut aliquam purus sit amet luctus venenatis lectus. At varius vel pharetra vel turpis. Fermentum posuere urna nec tincidunt praesent semper feugiat. Elementum eu facilisis sed odio morbi. Augue interdum velit euismod in pellentesque massa placerat duis ultricies. Tempus egestas sed sed risus pretium. Condimentum mattis pellentesque id nibh. Sit amet massa vitae tortor condimentum lacinia quis vel eros. Dui vivamus arcu felis bibendum ut tristique et egestas quis. Ultricies lacus sed turpis tincidunt. Sit amet risus nullam eget. Cursus mattis molestie a iaculis at erat pellentesque adipiscing. Proin fermentum leo vel orci porta non. Sed velit dignissim sodales ut. Nulla facilisi morbi tempus iaculis urna id. Parturient montes nascetur ridiculus mus. Sed tempus urna et pharetra pharetra massa massa. Maecenas pharetra convallis posuere morbi. At risus viverra adipiscing at in tellus integer feugiat.
+
+Facilisis sed odio morbi quis commodo odio. Tortor at auctor urna nunc id cursus metus. Id semper risus in hendrerit gravida rutrum quisque. Diam sit amet nisl suscipit adipiscing bibendum est ultricies. Vulputate sapien nec sagittis aliquam malesuada bibendum arcu. Senectus et netus et malesuada. Volutpat sed cras ornare arcu dui vivamus arcu felis bibendum. Nisi vitae suscipit tellus mauris a. Senectus et netus et malesuada fames. Non quam lacus suspendisse faucibus interdum posuere lorem ipsum. Amet venenatis urna cursus eget nunc. Malesuada fames ac turpis egestas. Sed nisi lacus sed viverra tellus in. Nunc eget lorem dolor sed. Nisl purus in mollis nunc sed id semper risus in. Suscipit tellus mauris a diam maecenas sed enim. Lectus arcu bibendum at varius vel pharetra vel turpis nunc.
+
+Non diam phasellus vestibulum lorem sed risus. Morbi enim nunc faucibus a pellentesque sit. Libero justo laoreet sit amet cursus sit. Faucibus purus in massa tempor nec feugiat nisl pretium fusce. Pulvinar pellentesque habitant morbi tristique senectus et. Elementum sagittis vitae et leo duis ut diam quam. Vel facilisis volutpat est velit egestas dui. Euismod in pellentesque massa placerat duis ultricies. Sem et tortor consequat id porta nibh venenatis. Nunc sed blandit libero volutpat sed cras ornare arcu. Mi ipsum faucibus vitae aliquet nec. Pretium quam vulputate dignissim suspendisse.
+
+Ac tortor vitae purus faucibus ornare suspendisse sed nisi. Eget gravida cum sociis natoque penatibus et. Consectetur lorem donec massa sapien faucibus et. At consectetur lorem donec massa sapien faucibus et molestie ac. Malesuada pellentesque elit eget gravida. Auctor augue mauris augue neque gravida in fermentum et. In est ante in nibh mauris cursus mattis molestie. Mus mauris vitae ultricies leo integer malesuada nunc. Dictum sit amet justo donec enim diam vulputate ut. Amet consectetur adipiscing elit pellentesque habitant morbi. Ultrices neque ornare aenean euismod elementum nisi quis eleifend. Ullamcorper morbi tincidunt ornare massa eget. Morbi enim nunc faucibus a pellentesque sit amet porttitor. Aliquet sagittis id consectetur purus ut faucibus pulvinar. Sed elementum tempus egestas sed sed risus. Quis risus sed vulputate odio ut enim blandit. Vestibulum sed arcu non odio euismod lacinia at quis. Lacinia quis vel eros donec ac odio tempor orci.
+
+Egestas congue quisque egestas diam in arcu cursus euismod. Eu lobortis elementum nibh tellus molestie nunc non. Arcu dui vivamus arcu felis bibendum. Sagittis vitae et leo duis ut. Lorem sed risus ultricies tristique nulla aliquet enim tortor at. Nec tincidunt praesent semper feugiat nibh sed pulvinar proin. Id eu nisl nunc mi. Sed vulputate mi sit amet mauris commodo. Diam donec adipiscing tristique risus nec feugiat in fermentum. Condimentum mattis pellentesque id nibh tortor id aliquet lectus proin. Vitae turpis massa sed elementum tempus egestas sed. Enim ut sem viverra aliquet eget. Mauris rhoncus aenean vel elit. Ornare arcu odio ut sem nulla pharetra diam sit amet. Nisl nisi scelerisque eu ultrices vitae auctor eu augue ut. Adipiscing elit pellentesque habitant morbi tristique senectus et netus. Convallis aenean et tortor at risus viverra adipiscing at in. Ipsum dolor sit amet consectetur adipiscing elit."
+wrap_mode = 1
+
+[node name="AutoSettingsViewport" type="SubViewport" parent="."]
+size = Vector2i(2048, 2048)
+render_target_update_mode = 4
+
+[node name="TextEdit" type="TextEdit" parent="AutoSettingsViewport"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quam vulputate dignissim suspendisse in est ante. Bibendum arcu vitae elementum curabitur. Egestas purus viverra accumsan in nisl nisi scelerisque. Et pharetra pharetra massa massa ultricies mi quis hendrerit dolor. Turpis egestas sed tempus urna et pharetra. Donec massa sapien faucibus et. Nec ullamcorper sit amet risus nullam eget felis eget. Integer eget aliquet nibh praesent tristique magna sit amet. Tellus pellentesque eu tincidunt tortor aliquam nulla facilisi cras. Venenatis urna cursus eget nunc scelerisque viverra. Sapien eget mi proin sed libero.
+
+Non curabitur gravida arcu ac tortor. Euismod elementum nisi quis eleifend quam. Pulvinar etiam non quam lacus suspendisse faucibus interdum posuere. Massa id neque aliquam vestibulum morbi blandit cursus. Tellus id interdum velit laoreet id donec ultrices tincidunt arcu. Ultricies mi eget mauris pharetra et ultrices. Lorem sed risus ultricies tristique nulla. Faucibus ornare suspendisse sed nisi lacus. Libero enim sed faucibus turpis in. In ornare quam viverra orci sagittis eu volutpat odio facilisis. Malesuada fames ac turpis egestas sed. Vulputate odio ut enim blandit volutpat. Egestas tellus rutrum tellus pellentesque eu tincidunt tortor. Et egestas quis ipsum suspendisse ultrices gravida dictum.
+
+Justo eget magna fermentum iaculis eu non diam. Dui faucibus in ornare quam viverra. Risus nec feugiat in fermentum posuere urna. Eu scelerisque felis imperdiet proin fermentum leo vel. Massa vitae tortor condimentum lacinia quis. Vel pretium lectus quam id leo in vitae. Ornare quam viverra orci sagittis. Nisl pretium fusce id velit ut tortor pretium viverra suspendisse. Adipiscing elit duis tristique sollicitudin. Quis auctor elit sed vulputate mi. Ipsum consequat nisl vel pretium lectus quam id. Odio facilisis mauris sit amet massa vitae tortor condimentum. Eget nulla facilisi etiam dignissim diam quis enim.
+
+Eget sit amet tellus cras adipiscing enim eu turpis. Est placerat in egestas erat imperdiet sed euismod nisi. Tellus at urna condimentum mattis pellentesque id nibh tortor. Aliquet bibendum enim facilisis gravida neque convallis a. Ipsum suspendisse ultrices gravida dictum fusce ut placerat. Cras fermentum odio eu feugiat pretium. Vel turpis nunc eget lorem dolor sed. Sed faucibus turpis in eu mi. Proin sed libero enim sed faucibus turpis. Tortor id aliquet lectus proin nibh nisl condimentum. Tempus urna et pharetra pharetra massa massa ultricies mi. Dolor morbi non arcu risus quis varius. Porttitor eget dolor morbi non arcu. Amet nisl purus in mollis nunc sed id. Tellus cras adipiscing enim eu. Aliquet lectus proin nibh nisl condimentum id. Volutpat ac tincidunt vitae semper quis lectus nulla.
+
+At varius vel pharetra vel turpis nunc eget. Leo vel orci porta non. In iaculis nunc sed augue lacus viverra. Amet venenatis urna cursus eget nunc scelerisque. Mauris a diam maecenas sed enim ut sem viverra. Mattis ullamcorper velit sed ullamcorper morbi tincidunt ornare. Vitae congue mauris rhoncus aenean. Elit pellentesque habitant morbi tristique senectus et netus et. Mattis nunc sed blandit libero. Vitae nunc sed velit dignissim sodales ut eu sem integer. Ullamcorper eget nulla facilisi etiam. Pulvinar mattis nunc sed blandit libero. Hac habitasse platea dictumst quisque. Egestas sed tempus urna et pharetra pharetra massa massa ultricies. Eu lobortis elementum nibh tellus molestie.
+
+Id nibh tortor id aliquet lectus. Purus semper eget duis at tellus at urna condimentum mattis. Lectus vestibulum mattis ullamcorper velit sed ullamcorper morbi tincidunt. Sollicitudin tempor id eu nisl. Ullamcorper dignissim cras tincidunt lobortis feugiat. Ultrices vitae auctor eu augue ut lectus. Massa massa ultricies mi quis hendrerit dolor magna eget est. Dui sapien eget mi proin sed libero enim. Id neque aliquam vestibulum morbi blandit cursus. At urna condimentum mattis pellentesque id nibh tortor id aliquet. Quam lacus suspendisse faucibus interdum posuere lorem. Sapien nec sagittis aliquam malesuada bibendum arcu vitae. Non blandit massa enim nec. Sollicitudin tempor id eu nisl nunc mi.
+
+Et odio pellentesque diam volutpat commodo sed. Aliquet enim tortor at auctor urna nunc id. Nunc aliquet bibendum enim facilisis gravida. Ultrices mi tempus imperdiet nulla malesuada pellentesque elit. Nibh nisl condimentum id venenatis a condimentum. Fusce id velit ut tortor pretium viverra suspendisse potenti nullam. Posuere ac ut consequat semper. Fringilla est ullamcorper eget nulla facilisi etiam dignissim diam quis. Volutpat ac tincidunt vitae semper. Posuere lorem ipsum dolor sit amet consectetur. Aenean euismod elementum nisi quis eleifend quam adipiscing. Sit amet justo donec enim diam. Ante metus dictum at tempor. Tristique senectus et netus et malesuada fames ac. Nunc sed augue lacus viverra.
+
+Ut placerat orci nulla pellentesque dignissim enim. Eget lorem dolor sed viverra ipsum. Vel risus commodo viverra maecenas accumsan lacus. Suspendisse sed nisi lacus sed viverra tellus. Eu mi bibendum neque egestas congue quisque egestas diam. Fusce ut placerat orci nulla pellentesque. Nunc scelerisque viverra mauris in aliquam sem. Duis tristique sollicitudin nibh sit amet commodo nulla facilisi. Donec pretium vulputate sapien nec sagittis. Cursus metus aliquam eleifend mi in nulla posuere sollicitudin aliquam. Arcu non odio euismod lacinia at. Ultrices tincidunt arcu non sodales neque sodales ut etiam. Lorem donec massa sapien faucibus. Et netus et malesuada fames ac. Lacus suspendisse faucibus interdum posuere lorem ipsum. Ornare lectus sit amet est placerat in egestas erat imperdiet. Ultrices sagittis orci a scelerisque purus. Sociis natoque penatibus et magnis dis parturient montes nascetur ridiculus. Tellus cras adipiscing enim eu turpis egestas pretium aenean. Turpis massa tincidunt dui ut ornare lectus sit amet.
+
+Massa sed elementum tempus egestas. Massa sed elementum tempus egestas sed sed risus. Etiam sit amet nisl purus in mollis nunc. Venenatis cras sed felis eget velit. Metus aliquam eleifend mi in nulla posuere. Mattis molestie a iaculis at erat pellentesque. Mi proin sed libero enim sed faucibus turpis in. Accumsan in nisl nisi scelerisque eu ultrices vitae auctor eu. Mauris pellentesque pulvinar pellentesque habitant morbi tristique senectus et. Mauris cursus mattis molestie a iaculis at. Ultrices mi tempus imperdiet nulla. Est ultricies integer quis auctor elit sed vulputate mi. Eget velit aliquet sagittis id consectetur purus. Maecenas ultricies mi eget mauris pharetra et ultrices neque ornare. Enim nunc faucibus a pellentesque sit amet porttitor eget dolor.
+
+Velit egestas dui id ornare. In cursus turpis massa tincidunt dui ut ornare lectus sit. Mattis rhoncus urna neque viverra. Egestas purus viverra accumsan in nisl nisi scelerisque eu ultrices. Eu augue ut lectus arcu bibendum at varius. Platea dictumst vestibulum rhoncus est pellentesque elit. Facilisis magna etiam tempor orci eu lobortis elementum nibh. Enim facilisis gravida neque convallis a cras semper. Sit amet tellus cras adipiscing enim eu turpis. Habitant morbi tristique senectus et netus et malesuada fames ac. Eget felis eget nunc lobortis mattis aliquam faucibus purus. Cursus vitae congue mauris rhoncus aenean vel elit scelerisque mauris. Eu tincidunt tortor aliquam nulla facilisi cras fermentum odio eu. Lobortis mattis aliquam faucibus purus in massa tempor nec. Ultricies mi eget mauris pharetra et ultrices neque ornare aenean. Turpis tincidunt id aliquet risus feugiat in ante metus. Suscipit tellus mauris a diam. Egestas quis ipsum suspendisse ultrices gravida dictum. Neque viverra justo nec ultrices dui sapien eget mi proin.
+
+Duis at consectetur lorem donec massa sapien faucibus et molestie. Enim ut sem viverra aliquet eget sit amet. Tempor orci dapibus ultrices in iaculis nunc. Sit amet nisl suscipit adipiscing bibendum est ultricies. Lorem dolor sed viverra ipsum. Elementum nibh tellus molestie nunc non. Turpis massa tincidunt dui ut. Pellentesque massa placerat duis ultricies lacus sed. Nunc sed velit dignissim sodales ut eu sem integer vitae. Tortor aliquam nulla facilisi cras fermentum odio. Convallis aenean et tortor at risus viverra adipiscing at in. Ut sem viverra aliquet eget sit amet. Amet aliquam id diam maecenas. Integer eget aliquet nibh praesent. Morbi non arcu risus quis varius quam quisque id. Faucibus a pellentesque sit amet porttitor eget dolor morbi non. Magna fermentum iaculis eu non diam.
+
+Id consectetur purus ut faucibus. Adipiscing elit ut aliquam purus sit amet luctus venenatis lectus. At varius vel pharetra vel turpis. Fermentum posuere urna nec tincidunt praesent semper feugiat. Elementum eu facilisis sed odio morbi. Augue interdum velit euismod in pellentesque massa placerat duis ultricies. Tempus egestas sed sed risus pretium. Condimentum mattis pellentesque id nibh. Sit amet massa vitae tortor condimentum lacinia quis vel eros. Dui vivamus arcu felis bibendum ut tristique et egestas quis. Ultricies lacus sed turpis tincidunt. Sit amet risus nullam eget. Cursus mattis molestie a iaculis at erat pellentesque adipiscing. Proin fermentum leo vel orci porta non. Sed velit dignissim sodales ut. Nulla facilisi morbi tempus iaculis urna id. Parturient montes nascetur ridiculus mus. Sed tempus urna et pharetra pharetra massa massa. Maecenas pharetra convallis posuere morbi. At risus viverra adipiscing at in tellus integer feugiat.
+
+Facilisis sed odio morbi quis commodo odio. Tortor at auctor urna nunc id cursus metus. Id semper risus in hendrerit gravida rutrum quisque. Diam sit amet nisl suscipit adipiscing bibendum est ultricies. Vulputate sapien nec sagittis aliquam malesuada bibendum arcu. Senectus et netus et malesuada. Volutpat sed cras ornare arcu dui vivamus arcu felis bibendum. Nisi vitae suscipit tellus mauris a. Senectus et netus et malesuada fames. Non quam lacus suspendisse faucibus interdum posuere lorem ipsum. Amet venenatis urna cursus eget nunc. Malesuada fames ac turpis egestas. Sed nisi lacus sed viverra tellus in. Nunc eget lorem dolor sed. Nisl purus in mollis nunc sed id semper risus in. Suscipit tellus mauris a diam maecenas sed enim. Lectus arcu bibendum at varius vel pharetra vel turpis nunc.
+
+Non diam phasellus vestibulum lorem sed risus. Morbi enim nunc faucibus a pellentesque sit. Libero justo laoreet sit amet cursus sit. Faucibus purus in massa tempor nec feugiat nisl pretium fusce. Pulvinar pellentesque habitant morbi tristique senectus et. Elementum sagittis vitae et leo duis ut diam quam. Vel facilisis volutpat est velit egestas dui. Euismod in pellentesque massa placerat duis ultricies. Sem et tortor consequat id porta nibh venenatis. Nunc sed blandit libero volutpat sed cras ornare arcu. Mi ipsum faucibus vitae aliquet nec. Pretium quam vulputate dignissim suspendisse.
+
+Ac tortor vitae purus faucibus ornare suspendisse sed nisi. Eget gravida cum sociis natoque penatibus et. Consectetur lorem donec massa sapien faucibus et. At consectetur lorem donec massa sapien faucibus et molestie ac. Malesuada pellentesque elit eget gravida. Auctor augue mauris augue neque gravida in fermentum et. In est ante in nibh mauris cursus mattis molestie. Mus mauris vitae ultricies leo integer malesuada nunc. Dictum sit amet justo donec enim diam vulputate ut. Amet consectetur adipiscing elit pellentesque habitant morbi. Ultrices neque ornare aenean euismod elementum nisi quis eleifend. Ullamcorper morbi tincidunt ornare massa eget. Morbi enim nunc faucibus a pellentesque sit amet porttitor. Aliquet sagittis id consectetur purus ut faucibus pulvinar. Sed elementum tempus egestas sed sed risus. Quis risus sed vulputate odio ut enim blandit. Vestibulum sed arcu non odio euismod lacinia at quis. Lacinia quis vel eros donec ac odio tempor orci.
+
+Egestas congue quisque egestas diam in arcu cursus euismod. Eu lobortis elementum nibh tellus molestie nunc non. Arcu dui vivamus arcu felis bibendum. Sagittis vitae et leo duis ut. Lorem sed risus ultricies tristique nulla aliquet enim tortor at. Nec tincidunt praesent semper feugiat nibh sed pulvinar proin. Id eu nisl nunc mi. Sed vulputate mi sit amet mauris commodo. Diam donec adipiscing tristique risus nec feugiat in fermentum. Condimentum mattis pellentesque id nibh tortor id aliquet lectus proin. Vitae turpis massa sed elementum tempus egestas sed. Enim ut sem viverra aliquet eget. Mauris rhoncus aenean vel elit. Ornare arcu odio ut sem nulla pharetra diam sit amet. Nisl nisi scelerisque eu ultrices vitae auctor eu augue ut. Adipiscing elit pellentesque habitant morbi tristique senectus et netus. Convallis aenean et tortor at risus viverra adipiscing at in. Ipsum dolor sit amet consectetur adipiscing elit."
+wrap_mode = 1
+
+[node name="AlphaBlendBaseViewport" type="SubViewport" parent="."]
+transparent_bg = true
+render_target_update_mode = 4
+
+[node name="TextureRect" type="TextureRect" parent="AlphaBlendBaseViewport"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("4_wy534")
+
+[node name="AlphaBlendNormalViewport" type="SubViewport" parent="."]
+transparent_bg = true
+render_target_update_mode = 4
+
+[node name="TextureRect" type="TextureRect" parent="AlphaBlendNormalViewport"]
+modulate = Color(1, 1, 1, 0.588235)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("4_wy534")
+
+[node name="AlphaBlendOneViewport" type="SubViewport" parent="."]
+transparent_bg = true
+render_target_update_mode = 4
+
+[node name="TextureRect" type="TextureRect" parent="AlphaBlendOneViewport"]
+modulate = Color(1, 1, 1, 0.588235)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("4_wy534")
+
+[node name="AlphaBlendZeroViewport" type="SubViewport" parent="."]
+transparent_bg = true
+render_target_update_mode = 4
+
+[node name="TextureRect" type="TextureRect" parent="AlphaBlendZeroViewport"]
+modulate = Color(1, 1, 1, 0.588235)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("4_wy534")
+
+[node name="AlphaBlendSrcOneViewport" type="SubViewport" parent="."]
+transparent_bg = true
+render_target_update_mode = 4
+
+[node name="TextureRect" type="TextureRect" parent="AlphaBlendSrcOneViewport"]
+modulate = Color(1, 1, 1, 0.588235)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("4_wy534")
+
+[node name="AlphaBlendDstOneViewport" type="SubViewport" parent="."]
+transparent_bg = true
+render_target_update_mode = 4
+
+[node name="TextureRect" type="TextureRect" parent="AlphaBlendDstOneViewport"]
+modulate = Color(1, 1, 1, 0.588235)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("4_wy534")
+
+[node name="AlphaBlendOneMinusViewport" type="SubViewport" parent="."]
+transparent_bg = true
+render_target_update_mode = 4
+
+[node name="TextureRect" type="TextureRect" parent="AlphaBlendOneMinusViewport"]
+modulate = Color(1, 1, 1, 0.588235)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("4_wy534")
+
+[node name="SecureContentViewport" type="SubViewport" parent="."]
+render_target_update_mode = 4
+
+[node name="TextureRect" type="TextureRect" parent="SecureContentViewport"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("4_wy534")
+
+[connection signal="button_pressed" from="XROrigin3D/LeftController" to="." method="_on_left_controller_button_pressed"]
+[connection signal="input_vector2_changed" from="XROrigin3D/LeftController" to="." method="_on_left_controller_input_vector_2_changed"]
+[connection signal="button_pressed" from="XROrigin3D/RightController" to="." method="_on_right_hand_button_pressed"]
+[connection signal="input_vector2_changed" from="XROrigin3D/RightController" to="." method="_on_right_controller_input_vector_2_changed"]
