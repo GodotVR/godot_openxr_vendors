@@ -14,3 +14,4 @@ This plugin has been developed by or received contributions from:
 - [Malcolm A Nixon](https://github.com/Malcolmnixon)
 - [David Snopek](https://github.com/dsnopek)
 - [Logan Lang](https://github.com/devloglogan)
+- [Hartmut Seichter](https://github.com/seichter)

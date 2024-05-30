@@ -201,6 +201,10 @@ void OpenXRFbPassthroughExtensionWrapper::_on_session_created(uint64_t p_session
 }
 
 void OpenXRFbPassthroughExtensionWrapper::_on_state_ready() {
+	if (!fb_passthrough_ext) {
+		return;
+	}
+
 	XRInterface::EnvironmentBlendMode blend_mode = get_blend_mode();
 	if (blend_mode == XRInterface::XR_ENV_BLEND_MODE_ALPHA_BLEND) {
 		start_passthrough_layer(LAYER_PURPOSE_RECONSTRUCTION);
@@ -208,6 +212,10 @@ void OpenXRFbPassthroughExtensionWrapper::_on_state_ready() {
 }
 
 void OpenXRFbPassthroughExtensionWrapper::_on_process() {
+	if (!fb_passthrough_ext) {
+		return;
+	}
+
 	XRInterface::EnvironmentBlendMode blend_mode = get_blend_mode();
 
 	// Reconstruction layer will always take priority
@@ -221,6 +229,10 @@ void OpenXRFbPassthroughExtensionWrapper::_on_process() {
 }
 
 bool OpenXRFbPassthroughExtensionWrapper::_on_event_polled(const void *p_event) {
+	if (!fb_passthrough_ext) {
+		return false;
+	}
+
 	if (static_cast<const XrEventDataBuffer *>(p_event)->type == XR_TYPE_EVENT_DATA_PASSTHROUGH_STATE_CHANGED_FB) {
 		XrEventDataPassthroughStateChangedFB *passthrough_event = (XrEventDataPassthroughStateChangedFB *)p_event;
 		switch (passthrough_event->flags) {
