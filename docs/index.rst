@@ -17,6 +17,22 @@ the Khronos loader, a number of vendors need to use a proprietary OpenXR loader 
 .. toctree::
    :hidden:
    :maxdepth: 1
+   :caption: Getting Started
+   :name: getting-started
+
+   getting-started/index
+
+.. toctree::
+   :hidden:
+   :maxdepth: 1
+   :caption: Manual
+   :name: manual
+
+   manual/index
+
+.. toctree::
+   :hidden:
+   :maxdepth: 1
    :caption: API Reference
    :name: sec-class-reference
 
