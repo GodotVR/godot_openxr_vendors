@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="OpenXRFbHandTrackingCapsulesExtensionWrapper" inherits="OpenXRExtensionWrapperExtension" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
+		Wraps the [code]XR_FB_hand_tracking_capsules[/code] extension.
 	</brief_description>
 	<description>
+		Wraps the [code]XR_FB_hand_tracking_capsules[/code] extension.
 	</description>
 	<tutorials>
 	</tutorials>
@@ -10,6 +12,7 @@
 		<method name="get_hand_capsule_count" qualifiers="const">
 			<return type="int" />
 			<description>
+				Gets the total number of hand capsules.
 			</description>
 		</method>
 		<method name="get_hand_capsule_height" qualifiers="const">
@@ -17,6 +20,7 @@
 			<param index="0" name="hand_index" type="int" />
 			<param index="1" name="capsule_index" type="int" />
 			<description>
+				Gets the height of the given capsule for the given hand ([code]0[/code] is left, and [code]1[/code] is right).
 			</description>
 		</method>
 		<method name="get_hand_capsule_joint" qualifiers="const">
@@ -24,6 +28,7 @@
 			<param index="0" name="hand_index" type="int" />
 			<param index="1" name="capsule_index" type="int" />
 			<description>
+				Gets the joint that drives the transform of the given capsule for the given hand ([code]0[/code] is left, and [code]1[/code] is right).
 			</description>
 		</method>
 		<method name="get_hand_capsule_radius" qualifiers="const">
@@ -31,6 +36,7 @@
 			<param index="0" name="hand_index" type="int" />
 			<param index="1" name="capsule_index" type="int" />
 			<description>
+				Gets the radius of the given capsule for the given hand ([code]0[/code] is left, and [code]1[/code] is right).
 			</description>
 		</method>
 		<method name="get_hand_capsule_transform" qualifiers="const">
@@ -38,11 +44,13 @@
 			<param index="0" name="hand_index" type="int" />
 			<param index="1" name="capsule_index" type="int" />
 			<description>
+				Gets the transform of the given capsule for the given hand ([code]0[/code] is left, and [code]1[/code] is right).
 			</description>
 		</method>
 		<method name="is_enabled">
 			<return type="bool" />
 			<description>
+				Checks if the extension is enabled or not.
 			</description>
 		</method>
 	</methods>

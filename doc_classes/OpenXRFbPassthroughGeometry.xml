@@ -1,15 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="OpenXRFbPassthroughGeometry" inherits="Node3D" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
+		A mesh that passthrough imagery will be rendered upon (via the [code]XR_FB_passthrough[/code] extension).
 	</brief_description>
 	<description>
+		A mesh that passthrough imagery will be rendered upon (via the [code]XR_FB_passthrough[/code] extension).
 	</description>
 	<tutorials>
 	</tutorials>
 	<members>
 		<member name="enable_hole_punch" type="bool" setter="set_enable_hole_punch" getter="get_enable_hole_punch" default="true">
+			Enables a technique called "hole punching", which removes anything rendered by Godot that would appear behind the mesh.
+			This can be used to create the illusion that the passthrough exists in the same 3D space as everything rendered by Godot, allowing objects to appear to pass both behind or in front of the passthrough.
 		</member>
 		<member name="mesh" type="Mesh" setter="set_mesh" getter="get_mesh">
+			The mesh data.
 		</member>
 	</members>
 </class>

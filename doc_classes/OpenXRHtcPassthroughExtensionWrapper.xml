@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="OpenXRHtcPassthroughExtensionWrapper" inherits="OpenXRExtensionWrapperExtension" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		Wraps the [code]HTC_passthrough[/code] extension.
+	</brief_description>
+	<description>
+		Wraps the [code]HTC_passthrough[/code] extension.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="is_passthrough_started">
+			<return type="bool" />
+			<description>
+				Checks if passthrough has been started.
+			</description>
+		</method>
+		<method name="is_passthrough_supported">
+			<return type="bool" />
+			<description>
+				Checks if passthrough is supported.
+			</description>
+		</method>
+	</methods>
+</class>
