@@ -9,6 +9,12 @@ Version `2.x` and higher of this plugin requires **Godot 4.2**.
 Check the [`1.x` branch](https://github.com/GodotVR/godot_openxr_vendors/tree/1.x) and releases
 for support on prior versions of Godot 4.
 
+## Manual pages
+
+This readme focuses on instructions for building and maintaining this plugin.
+
+User manual pages can be found [here](https://godotvr.github.io/godot_openxr_vendors/).
+
 ## Building this asset
 
 After cloning this project, run the following command in the project root directory to initialize
