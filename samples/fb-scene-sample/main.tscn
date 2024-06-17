@@ -1,0 +1,96 @@
+[gd_scene load_steps=10 format=3 uid="uid://cqsodpswgup8w"]
+
+[ext_resource type="Script" path="res://main.gd" id="1_fsva1"]
+[ext_resource type="PackedScene" uid="uid://bcjp8kcgde4cs" path="res://scene_anchor.tscn" id="4_3u3ah"]
+[ext_resource type="PackedScene" uid="uid://bwo5nq0clfe3c" path="res://scene_global_mesh.tscn" id="5_7ikgf"]
+[ext_resource type="PackedScene" uid="uid://dsfd7xrm6o50p" path="res://spatial_anchor.tscn" id="5_g7mio"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_0x6cv"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_dqyx0"]
+sky_material = SubResource("ProceduralSkyMaterial_0x6cv")
+
+[sub_resource type="Environment" id="Environment_m0xew"]
+background_mode = 1
+background_color = Color(0.3, 0.3, 0.3, 1)
+sky = SubResource("Sky_dqyx0")
+
+[sub_resource type="BoxMesh" id="BoxMesh_d27jm"]
+size = Vector3(0.01, 0.01, 5)
+
+[sub_resource type="SphereMesh" id="SphereMesh_kdpqm"]
+radius = 0.01
+height = 0.02
+
+[node name="Main" type="Node3D"]
+script = ExtResource("1_fsva1")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_m0xew")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.677077, -0.692092, 0.25015, 0.264251, 0.545897, 0.79509, -0.686831, -0.472235, 0.552501, 0, 0, 0)
+
+[node name="XROrigin3D" type="XROrigin3D" parent="."]
+
+[node name="XRCamera3D" type="XRCamera3D" parent="XROrigin3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.352791, 0)
+
+[node name="LeftHand" type="XRController3D" parent="XROrigin3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.460909, 0.388594, -0.241118)
+tracker = &"left_hand"
+pose = &"grip"
+
+[node name="LeftControllerFbRenderModel" type="OpenXRFbRenderModel" parent="XROrigin3D/LeftHand"]
+
+[node name="Label3D" type="Label3D" parent="XROrigin3D/LeftHand"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, -0.124379, -0.185838)
+pixel_size = 0.001
+text = "[Y] Toggle Passthrough
+[X] Toggle Edit Anchors
+[Menu] Capture Scene"
+
+[node name="RightHand" type="XRController3D" parent="XROrigin3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.478861, 0.468292, -0.241097)
+tracker = &"right_hand"
+pose = &"grip"
+
+[node name="RightControllerFbRenderModel" type="OpenXRFbRenderModel" parent="XROrigin3D/RightHand"]
+render_model_type = 1
+
+[node name="Label3D" type="Label3D" parent="XROrigin3D/RightHand"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, -0.124379, -0.185838)
+pixel_size = 0.001
+text = "[A] Place Floating Anchor
+[Trigger] Place/Remove Anchors"
+
+[node name="RightHandPointer" type="XRController3D" parent="XROrigin3D"]
+tracker = &"right_hand"
+
+[node name="ScenePointerMesh" type="MeshInstance3D" parent="XROrigin3D/RightHandPointer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2.5)
+mesh = SubResource("BoxMesh_d27jm")
+
+[node name="SceneCollidingMesh" type="MeshInstance3D" parent="XROrigin3D/RightHandPointer"]
+mesh = SubResource("SphereMesh_kdpqm")
+
+[node name="RayCast3D" type="RayCast3D" parent="XROrigin3D/RightHandPointer"]
+target_position = Vector3(0, 0, -10)
+collision_mask = 6
+collide_with_areas = true
+
+[node name="OpenXRFbSceneManager" type="OpenXRFbSceneManager" parent="XROrigin3D"]
+default_scene = ExtResource("4_3u3ah")
+scenes/global_mesh = ExtResource("5_7ikgf")
+
+[node name="OpenXRFbSpatialAnchorManager" type="OpenXRFbSpatialAnchorManager" parent="XROrigin3D"]
+scene = ExtResource("5_g7mio")
+
+[connection signal="button_pressed" from="XROrigin3D/LeftHand" to="." method="_on_left_hand_button_pressed"]
+[connection signal="button_pressed" from="XROrigin3D/RightHand" to="." method="_on_right_hand_button_pressed"]
+[connection signal="openxr_fb_scene_capture_completed" from="XROrigin3D/OpenXRFbSceneManager" to="." method="_on_scene_manager_scene_capture_completed"]
+[connection signal="openxr_fb_scene_data_missing" from="XROrigin3D/OpenXRFbSceneManager" to="." method="_on_scene_manager_scene_data_missing"]
+[connection signal="openxr_fb_spatial_anchor_tracked" from="XROrigin3D/OpenXRFbSpatialAnchorManager" to="." method="_on_spatial_anchor_tracked"]
+[connection signal="openxr_fb_spatial_anchor_untracked" from="XROrigin3D/OpenXRFbSpatialAnchorManager" to="." method="_on_spatial_anchor_untracked"]

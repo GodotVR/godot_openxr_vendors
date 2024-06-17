@@ -1,6 +1,6 @@
 extends Node3D
 
-const GRID_MATERIAL: StandardMaterial3D = preload("res://assets/cross-grid-material.tres")
+const MATERIAL = preload("res://assets/cross-grid-material.tres")
 
 @onready var label: Label3D = $Label3D
 @onready var static_body: StaticBody3D = $StaticBody3D
@@ -24,7 +24,7 @@ func setup_scene(entity: OpenXRFbSpatialEntity) -> void:
 		mesh_instance.mesh = box_mesh
 
 	# Adjust the material for the entity type.
-	var material: StandardMaterial3D = GRID_MATERIAL.duplicate()
+	var material: StandardMaterial3D = MATERIAL.duplicate()
 	if semantic_labels.size() > 0:
 		material.albedo_color = _get_color_for_label(semantic_labels[0])
 	if mesh_instance.mesh is BoxMesh:
