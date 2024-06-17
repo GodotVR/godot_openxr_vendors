@@ -7,5 +7,6 @@ Getting Started
     :maxdepth: 1
     :name: toc-getting-started
 
+    downloading
     installation
 
