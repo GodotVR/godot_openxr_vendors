@@ -26,6 +26,16 @@ if env["target"] in ["editor", "template_debug"]:
 binary_path = '#demo/addons/godotopenxrvendors/.bin'
 project_name = 'godotopenxrvendors'
 
+# Statically link with libgcc and libstdc++ for more Linux compatibility.
+if env["platform"] == "linux":
+    env.Append(
+        LINKFLAGS=[
+            "-Wl,--no-undefined",
+            "-static-libgcc",
+            "-static-libstdc++",
+        ]
+    )
+
 # Create the library target
 if env["platform"] == "macos":
     library = env.SharedLibrary(
