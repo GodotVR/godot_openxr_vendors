@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="OpenXRMetaPassthroughColorLut" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
+		Uses the [code]XR_META_passthrough_color_lut[/code] extension to provide a color LUT (Look Up Table) for recoloring passthrough imagery.
 	</brief_description>
 	<description>
+		Uses the [code]XR_META_passthrough_color_lut[/code] extension to provide a color LUT (Look Up Table) for recoloring passthrough imagery.
+		See [method OpenXRFbPassthroughExtensionWrapper.set_color_lut] and [method OpenXRFbPassthroughExtensionWrapper.set_interpolated_color_lut]
 	</description>
 	<tutorials>
 	</tutorials>
@@ -12,13 +15,16 @@
 			<param index="0" name="image" type="Image" />
 			<param index="1" name="channels" type="int" enum="OpenXRMetaPassthroughColorLut.ColorLutChannels" />
 			<description>
+				Creates a color LUT (Look Up Table) from an image.
 			</description>
 		</method>
 	</methods>
 	<constants>
 		<constant name="COLOR_LUT_CHANNELS_RGB" value="3" enum="ColorLutChannels">
+			Contains RGB data.
 		</constant>
 		<constant name="COLOR_LUT_CHANNELS_RGBA" value="4" enum="ColorLutChannels">
+			Contains RGBA data.
 		</constant>
 	</constants>
 </class>

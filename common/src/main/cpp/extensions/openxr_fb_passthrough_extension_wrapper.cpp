@@ -93,7 +93,6 @@ void OpenXRFbPassthroughExtensionWrapper::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("set_color_lut", "weight", "color_lut"), &OpenXRFbPassthroughExtensionWrapper::set_color_lut);
 	ClassDB::bind_method(D_METHOD("set_interpolated_color_lut", "weight", "source_color_lut", "target_color_lut"), &OpenXRFbPassthroughExtensionWrapper::set_interpolated_color_lut);
-	ClassDB::bind_method(D_METHOD("destroy_color_lut", "color_lut"), &OpenXRFbPassthroughExtensionWrapper::destroy_color_lut);
 	ClassDB::bind_method(D_METHOD("get_max_color_lut_resolution"), &OpenXRFbPassthroughExtensionWrapper::get_max_color_lut_resolution);
 
 	ADD_SIGNAL(MethodInfo("openxr_fb_projected_passthrough_layer_created"));

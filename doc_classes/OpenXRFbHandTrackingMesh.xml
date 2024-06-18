@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="OpenXRFbHandTrackingMesh" inherits="Skeleton3D" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
+		A skinned mesh representing the player's hand (retreived using the [code]XR_FB_hand_tracking_mesh[/code] extension).
 	</brief_description>
 	<description>
+		A skinned mesh representing the player's hand.
+		The mesh will be retreived using the [code]XR_FB_hand_tracking_mesh[/code] extension (if supported by the OpenXR runtime and headset) sometime after the OpenXR session has begun.
+		It can be animated using [XRHandModifier3D].
 	</description>
 	<tutorials>
 	</tutorials>
@@ -10,23 +14,33 @@
 		<method name="get_mesh_instance" qualifiers="const">
 			<return type="MeshInstance3D" />
 			<description>
+				Gets the [MeshInstance3D] node, if it has been created.
 			</description>
 		</method>
 	</methods>
 	<members>
 		<member name="hand" type="int" setter="set_hand" getter="get_hand" enum="OpenXRFbHandTrackingMesh.Hand" default="0">
+			The hand to retrieve the mesh for.
 		</member>
 		<member name="material" type="Material" setter="set_material" getter="get_material">
+			The material assigned to the hand mesh.
 		</member>
 		<member name="scale_override" type="float" setter="set_scale_override" getter="get_scale_override">
+			A scale multiplier to apply to the mesh.
+			Only used if [member use_scale_override] is [code]true[/code].
+			[b]Note: This is a global value that applies to all [OpenXRFbHandTrackingMesh] nodes, which is only provided here for convenience.[/b]
 		</member>
 		<member name="use_scale_override" type="bool" setter="set_use_scale_override" getter="get_use_scale_override">
+			Indicates whether or not [member scale_override] should be used.
+			[b]Note: This is a global value that applies to all [OpenXRFbHandTrackingMesh] nodes, which is only provided here for convenience.[/b]
 		</member>
 	</members>
 	<constants>
 		<constant name="Hand::HAND_LEFT" value="0" enum="Hand">
+			Left hand.
 		</constant>
 		<constant name="Hand::HAND_RIGHT" value="1" enum="Hand">
+			Right hand.
 		</constant>
 	</constants>
 </class>

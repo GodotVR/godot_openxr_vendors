@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="OpenXRFbRenderModelExtensionWrapper" inherits="OpenXRExtensionWrapperExtension" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
+		Wraps the [code]XR_FB_render_model[/code] extension.
 	</brief_description>
 	<description>
+		Wraps the [code]XR_FB_render_model[/code] extension.
 	</description>
 	<tutorials>
 	</tutorials>
@@ -10,6 +12,7 @@
 		<method name="is_enabled" qualifiers="const">
 			<return type="bool" />
 			<description>
+				Checks if the extension is enabled or not.
 			</description>
 		</method>
 	</methods>
