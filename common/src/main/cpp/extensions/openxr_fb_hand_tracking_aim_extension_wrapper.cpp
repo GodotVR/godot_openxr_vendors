@@ -172,9 +172,14 @@ void OpenXRFbHandTrackingAimExtensionWrapper::_on_process() {
 		trackers[i]->set_input("middle_pinch_strength", aim_state[i].pinchStrengthMiddle);
 		trackers[i]->set_input("ring_pinch_strength", aim_state[i].pinchStrengthRing);
 		trackers[i]->set_input("little_pinch_strength", aim_state[i].pinchStrengthLittle);
-		trackers[i]->set_input("system_gesture", (bool)(aim_state[i].status & XR_HAND_TRACKING_AIM_SYSTEM_GESTURE_BIT_FB));
-		trackers[i]->set_input("menu_gesture", (bool)(aim_state[i].status & XR_HAND_TRACKING_AIM_MENU_PRESSED_BIT_FB));
 		trackers[i]->set_input("dominant_hand", (bool)(aim_state[i].status & XR_HAND_TRACKING_AIM_DOMINANT_HAND_BIT_FB));
+
+		if (i == Hand::HAND_LEFT) {
+			trackers[i]->set_input("menu_gesture", (bool)(aim_state[i].status & XR_HAND_TRACKING_AIM_SYSTEM_GESTURE_BIT_FB));
+			trackers[i]->set_input("menu_pressed", (bool)(aim_state[i].status & XR_HAND_TRACKING_AIM_MENU_PRESSED_BIT_FB));
+		} else if (i == Hand::HAND_RIGHT) {
+			trackers[i]->set_input("system_gesture", (bool)(aim_state[i].status & XR_HAND_TRACKING_AIM_SYSTEM_GESTURE_BIT_FB));
+		}
 	}
 }
 
