@@ -7,5 +7,5 @@
 *.pro eol=lf
 *.properties eol=lf
 *.xml eol=lf
-
 gradlew eol=lf
+*.vrs filter=lfs diff=lfs merge=lfs -text
