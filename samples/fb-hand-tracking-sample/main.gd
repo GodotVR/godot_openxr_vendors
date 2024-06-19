@@ -39,9 +39,17 @@ var right_capsules_loaded := false
 func _ready() -> void:
 	openxr_interface = XRServer.find_interface("OpenXR")
 	if openxr_interface and openxr_interface.initialize():
+		openxr_interface.session_stopping.connect(self._on_session_stopping)
 		get_viewport().use_xr = true
 		DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
 		fb_capsule_ext = Engine.get_singleton("OpenXRFbHandTrackingCapsulesExtensionWrapper")
+
+
+func _on_session_stopping() -> void:
+	if "--xrsim-automated-tests" in OS.get_cmdline_user_args():
+		# When we're running tests via the XR Simulator, it will end the OpenXR
+		# session automatically, and in that case, we want to quit.
+		get_tree().quit()
 
 
 func _process(delta):

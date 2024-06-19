@@ -35,6 +35,7 @@ var xr_interface : XRInterface = null
 func _ready():
 	xr_interface = XRServer.find_interface("OpenXR")
 	if xr_interface and xr_interface.is_initialized():
+		xr_interface.session_stopping.connect(self._on_session_stopping)
 		var vp: Viewport = get_viewport()
 		vp.use_xr = true
 		DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
@@ -44,6 +45,13 @@ func _ready():
 		node_3d.global_transform = composition_layer.global_transform
 		node_3d.name = composition_layer.name
 		add_child(node_3d)
+
+
+func _on_session_stopping() -> void:
+	if "--xrsim-automated-tests" in OS.get_cmdline_user_args():
+		# When we're running tests via the XR Simulator, it will end the OpenXR
+		# session automatically, and in that case, we want to quit.
+		get_tree().quit()
 
 
 func _process(_delta: float) -> void:
