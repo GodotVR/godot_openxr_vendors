@@ -202,7 +202,7 @@ jobs:
       - name: Download Godot
         run: |
           # @todo Download an actual Godot build!
-          Invoke-WebRequest -Uri "https://github.com/godotengine/godot-builds/releases/download/4.3-beta1/Godot_v4.3-beta1_win64.exe.zip" -OutFile "godot.zip"
+          Invoke-WebRequest -Uri "https://github.com/godotengine/godot-builds/releases/download/4.3-beta2/Godot_v4.3-beta2_win64.exe.zip" -OutFile "godot.zip"
 
       - name: Extract Godot
         run: |
@@ -249,7 +249,7 @@ jobs:
 
       - name: Import the demo project
         run: |
-          $godot = "Godot_v4.3-beta1_win64.exe"
+          $godot = "Godot_v4.3-beta2_win64.exe"
           Start-Process -FilePath "$godot" -ArgumentList "--path demo --import --headless" -NoNewWindow -Wait
 
       - name: Launch a synthetic environment
@@ -285,7 +285,7 @@ jobs:
             Set-Content -Path $jsonPath -Value $jsonContent
             echo "$jsonContent"
 
-            $godot = "Godot_v4.3-beta1_win64.exe"
+            $godot = "Godot_v4.3-beta2_win64.exe"
             $timeout = 300
             $waitTime = 0
 
