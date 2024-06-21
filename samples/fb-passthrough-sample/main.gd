@@ -1,4 +1,4 @@
-extends Node3D
+extends StartXR
 
 @export var color_map: Gradient
 @export var mono_map: Curve
@@ -7,7 +7,6 @@ extends Node3D
 @export var color_lut2: Image
 @export var edge_color: Color
 
-var openxr_interface: OpenXRInterface
 var fb_passthrough
 var meta_color_lut: OpenXRMetaPassthroughColorLut
 var meta_color_lut2: OpenXRMetaPassthroughColorLut
@@ -28,10 +27,7 @@ var countdown_to_recenter_hmd: int = 3
 @onready var mono_map_mesh: MeshInstance3D = $Interfaces/InterfaceMonoMap/MonoMapMesh
 
 func _ready() -> void:
-	openxr_interface = XRServer.find_interface("OpenXR")
-	if openxr_interface and openxr_interface.initialize():
-		get_viewport().use_xr = true
-		DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
+	super._ready()
 
 	passthrough_geometry.hide()
 	enable_mode_full()
@@ -66,7 +62,7 @@ func enable_mode_full() -> void:
 	get_viewport().transparent_bg = true
 	world_environment.environment.background_mode = Environment.BG_COLOR
 	world_environment.environment.background_color = Color(0.0, 0.0, 0.0, 0.0)
-	openxr_interface.environment_blend_mode = XRInterface.XR_ENV_BLEND_MODE_ALPHA_BLEND
+	xr_interface.environment_blend_mode = XRInterface.XR_ENV_BLEND_MODE_ALPHA_BLEND
 	passthrough_geometry.hide()
 
 
@@ -74,7 +70,7 @@ func enable_mode_geometry() -> void:
 	get_viewport().transparent_bg = true
 	world_environment.environment.background_mode = Environment.BG_COLOR
 	world_environment.environment.background_color = Color(0.3, 0.3, 0.3, 0.0)
-	openxr_interface.environment_blend_mode = XRInterface.XR_ENV_BLEND_MODE_OPAQUE
+	xr_interface.environment_blend_mode = XRInterface.XR_ENV_BLEND_MODE_OPAQUE
 	passthrough_geometry.enable_hole_punch = false
 	passthrough_geometry.show()
 
@@ -82,7 +78,7 @@ func enable_mode_geometry() -> void:
 func enable_mode_geometry_hp() -> void:
 	get_viewport().transparent_bg = false
 	world_environment.environment.background_mode = Environment.BG_SKY
-	openxr_interface.environment_blend_mode = XRInterface.XR_ENV_BLEND_MODE_OPAQUE
+	xr_interface.environment_blend_mode = XRInterface.XR_ENV_BLEND_MODE_OPAQUE
 	passthrough_geometry.enable_hole_punch = true
 	passthrough_geometry.show()
 

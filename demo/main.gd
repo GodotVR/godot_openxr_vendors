@@ -2,7 +2,6 @@ extends Node3D
 
 var xr_interface: XRInterface = null
 var hand_tracking_source: Array[OpenXRInterface.HandTrackedSource]
-var passthrough_enabled: bool = false
 
 @onready var left_hand: XRController3D = $XROrigin3D/LeftHand
 @onready var right_hand: XRController3D = $XROrigin3D/RightHand
@@ -10,19 +9,6 @@ var passthrough_enabled: bool = false
 @onready var right_hand_mesh: MeshInstance3D = $XROrigin3D/RightHand/RightHandMesh
 @onready var left_controller_model: OpenXRFbRenderModel = $XROrigin3D/LeftHand/LeftControllerFbRenderModel
 @onready var right_controller_model: OpenXRFbRenderModel = $XROrigin3D/RightHand/RightControllerFbRenderModel
-@onready var floor_mesh: MeshInstance3D = $Floor
-@onready var world_environment: WorldEnvironment = $WorldEnvironment
-
-const COLORS = [
-	"#FF0000", # Red
-	"#00FF00", # Green
-	"#0000FF", # Blue
-	"#FFFF00", # Yellow
-	"#00FFFF", # Cyan
-	"#FF00FF", # Magenta
-	"#FF8000", # Orange
-	"#800080", # Purple
-]
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -35,8 +21,6 @@ func _ready():
 	hand_tracking_source.resize(OpenXRInterface.HAND_MAX)
 	for hand in OpenXRInterface.HAND_MAX:
 		hand_tracking_source[hand] = xr_interface.get_hand_tracking_source(hand)
-
-	randomize()
 
 
 func _on_session_stopping() -> void:

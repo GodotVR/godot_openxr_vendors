@@ -1,4 +1,4 @@
-extends Node3D
+extends StartXR
 
 const TURN_THRESHOLD := 0.8
 const TURN_ANGLE := TAU / 16
@@ -30,14 +30,8 @@ const TURN_ANGLE := TAU / 16
 @onready var replace_secure_content_mesh: MeshInstance3D = $XROrigin3D/SecureContentCompositionLayer/ReplaceSecureContent/MeshInstance3D
 @onready var exclude_secure_content_mesh: MeshInstance3D = $XROrigin3D/SecureContentCompositionLayer/ExcludeSecureContent/MeshInstance3D
 
-var xr_interface : XRInterface = null
-
 func _ready():
-	xr_interface = XRServer.find_interface("OpenXR")
-	if xr_interface and xr_interface.is_initialized():
-		var vp: Viewport = get_viewport()
-		vp.use_xr = true
-		DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
+	super._ready()
 
 	for composition_layer in get_tree().get_nodes_in_group("composition_layer"):
 		var node_3d := Node3D.new()

@@ -1,4 +1,4 @@
-extends Node3D
+extends StartXR
 
 const CAPSULE_MATERIAL = preload("res://capsule_material.tres")
 
@@ -30,17 +30,14 @@ const CAPSULE_MATERIAL = preload("res://capsule_material.tres")
 @onready var right_ring_pinch: MeshInstance3D = $RightHandInterface/DiscreteIndicators/RingPinch
 @onready var right_little_pinch: MeshInstance3D = $RightHandInterface/DiscreteIndicators/LittlePinch
 
-var openxr_interface: OpenXRInterface
 var fb_capsule_ext
 var countdown_to_group_hand_meshes := 3
 var left_capsules_loaded := false
 var right_capsules_loaded := false
 
 func _ready() -> void:
-	openxr_interface = XRServer.find_interface("OpenXR")
-	if openxr_interface and openxr_interface.initialize():
-		get_viewport().use_xr = true
-		DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
+	super._ready()
+	if xr_interface and xr_interface.is_initialized():
 		fb_capsule_ext = Engine.get_singleton("OpenXRFbHandTrackingCapsulesExtensionWrapper")
 
 
