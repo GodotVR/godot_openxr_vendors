@@ -35,6 +35,41 @@
 
 using namespace godot;
 
+namespace pico {
+static const int MANIFEST_FALSE_VALUE = 0;
+static const int MANIFEST_TRUE_VALUE = 1;
+
+static const int FACE_TRACKING_NONE_VALUE = 0;
+static const int FACE_TRACKING_FACEONLY_VALUE = 1;
+static const int FACE_TRACKING_LIPSYNCONLY_VALUE = 2;
+static const int FACE_TRACKING_HYBRID_VALUE = 3;
+} // namespace
+
+class PicoEditorExportPlugin : public OpenXREditorExportPlugin {
+	GDCLASS(PicoEditorExportPlugin, OpenXREditorExportPlugin)
+
+public:
+	PicoEditorExportPlugin();
+
+	TypedArray<Dictionary> _get_export_options(const Ref<EditorExportPlatform> &platform) const override;
+
+	PackedStringArray _get_export_features(const Ref<EditorExportPlatform> &platform, bool debug) const override;
+
+	String _get_export_option_warning(const Ref<EditorExportPlatform> &platform, const String &option) const override;
+
+	String _get_android_manifest_element_contents(const Ref<EditorExportPlatform> &platform, bool debug) const override;
+	String _get_android_manifest_application_element_contents(const Ref<EditorExportPlatform> &platform, bool debug) const override;
+
+protected:
+	static void _bind_methods();
+
+	Dictionary _eye_tracking_option;
+	Dictionary _face_tracking_option;
+
+private:
+	bool _is_eye_tracking_enabled() const;
+};
+
 class PicoEditorPlugin : public EditorPlugin {
 	GDCLASS(PicoEditorPlugin, EditorPlugin)
 
@@ -46,5 +81,5 @@ protected:
 	static void _bind_methods();
 
 private:
-	Ref<OpenXREditorExportPlugin> pico_export_plugin;
+	Ref<PicoEditorExportPlugin> pico_export_plugin;
 };
