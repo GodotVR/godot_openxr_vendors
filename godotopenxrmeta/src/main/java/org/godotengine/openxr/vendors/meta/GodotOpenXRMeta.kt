@@ -52,10 +52,10 @@ class GodotOpenXRMeta(godot: Godot?) : GodotPlugin(godot) {
     companion object {
         private val TAG = GodotOpenXRMeta::class.java.simpleName
 
-        const val BODY_TRACKING_PERMISSION = "com.oculus.permission.BODY_TRACKING"
-        const val EYE_TRACKING_PERMISSION = "com.oculus.permission.EYE_TRACKING"
-        const val FACE_TRACKING_PERMISSION = "com.oculus.permission.FACE_TRACKING"
-        const val SCENE_PERMISSION = "com.oculus.permission.USE_SCENE"
+        private const val BODY_TRACKING_PERMISSION = "com.oculus.permission.BODY_TRACKING"
+        private const val EYE_TRACKING_PERMISSION = "com.oculus.permission.EYE_TRACKING"
+        private const val FACE_TRACKING_PERMISSION = "com.oculus.permission.FACE_TRACKING"
+        private const val SCENE_PERMISSION = "com.oculus.permission.USE_SCENE"
 
         init {
             try {
@@ -64,77 +64,6 @@ class GodotOpenXRMeta(godot: Godot?) : GodotPlugin(godot) {
             } catch (e: UnsatisfiedLinkError) {
                 Log.e(TAG, "Unable to load godotopenxrvendors shared library")
             }
-        }
-
-        /**
-         * Returns the information of the desired permission.
-         * @param context the caller context for this method.
-         * @param permission the name of the permission.
-         * @return permission info object
-         * @throws PackageManager.NameNotFoundException the exception is thrown when a given package, application, or component name cannot be found.
-         *
-         * TODO: remove this when Godot 4.3 is out with the new `PermissionsUtil.requestPermissions(...)` api
-         */
-        @Throws(PackageManager.NameNotFoundException::class)
-        private fun getPermissionInfo(context: Context, permission: String): PermissionInfo {
-            val packageManager = context.packageManager
-            return packageManager.getPermissionInfo(permission, 0)
-        }
-
-        /**
-         * Request a list of dangerous permissions. The requested permissions must be included in the app's AndroidManifest
-         * @param permissions list of the permissions to request.
-         * @param activity the caller activity for this method.
-         * @return true/false. "true" if permissions are already granted, "false" if a permissions request was dispatched.
-         *
-         * TODO: remove this when Godot 4.3 is out with the new `PermissionsUtil.requestPermissions(...)` api
-         */
-        private fun requestPermissions(activity: Activity?, permissions: List<String>): Boolean {
-            if (activity == null) {
-                return false
-            }
-            if (permissions.isEmpty()) {
-                return true
-            }
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-                // Not necessary, asked on install already
-                return true
-            }
-
-            val requestedPermissions: MutableSet<String> = HashSet()
-            for (permission in permissions) {
-                try {
-                    if (permission == Manifest.permission.MANAGE_EXTERNAL_STORAGE) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !Environment.isExternalStorageManager()) {
-                            Log.d(TAG, "Requesting permission $permission")
-                            try {
-                                val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
-                                intent.setData(Uri.parse(String.format("package:%s", activity.packageName)))
-                                activity.startActivityForResult(intent, PermissionsUtil.REQUEST_MANAGE_EXTERNAL_STORAGE_REQ_CODE)
-                            } catch (ignored: Exception) {
-                                val intent = Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION)
-                                activity.startActivityForResult(intent, PermissionsUtil.REQUEST_MANAGE_EXTERNAL_STORAGE_REQ_CODE)
-                            }
-                        }
-                    } else {
-                        val permissionInfo = getPermissionInfo(activity, permission)
-                        val protectionLevel = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) permissionInfo.protection else permissionInfo.protectionLevel
-                        if (protectionLevel == PermissionInfo.PROTECTION_DANGEROUS && activity.checkSelfPermission(permission) !== PackageManager.PERMISSION_GRANTED) {
-                            Log.d(TAG, "Requesting permission $permission")
-                            requestedPermissions.add(permission)
-                        }
-                    }
-                } catch (e: PackageManager.NameNotFoundException) {
-                    // Skip this permission and continue.
-                    Log.w(TAG, "Unable to identify permission $permission", e)
-                }
-            }
-            if (requestedPermissions.isEmpty()) {
-                // If list is empty, all of dangerous permissions were granted.
-                return true
-            }
-            activity.requestPermissions(requestedPermissions.toTypedArray<String>(), PermissionsUtil.REQUEST_ALL_PERMISSION_REQ_CODE)
-            return true
         }
 
         /**
@@ -161,7 +90,7 @@ class GodotOpenXRMeta(godot: Godot?) : GodotPlugin(godot) {
             }
 
             if (permissionsToRequest.isNotEmpty()) {
-                requestPermissions(activity, permissionsToRequest)
+                PermissionsUtil.requestPermissions(activity, permissionsToRequest)
             }
         }
     }
