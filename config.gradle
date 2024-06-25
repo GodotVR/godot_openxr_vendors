@@ -12,7 +12,8 @@ ext {
     ]
 
     libraries = [
-            godotAndroidLib: "org.godotengine:godot:4.2.1.stable",
+            // TODO: Update to the 4.3 stable version when it's out.
+            godotAndroidLib: "org.godotengine:godot:4.3.0.beta-SNAPSHOT",
     ]
 }
 
