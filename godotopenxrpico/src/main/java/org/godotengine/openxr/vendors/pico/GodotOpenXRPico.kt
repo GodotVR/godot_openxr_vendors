@@ -29,9 +29,21 @@
 
 package org.godotengine.openxr.vendors.pico
 
+import android.Manifest
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.content.pm.PermissionInfo
+import android.net.Uri
+import android.os.Build
+import android.os.Environment
+import android.provider.Settings
 import android.util.Log
+import android.view.View
 import org.godotengine.godot.Godot
 import org.godotengine.godot.plugin.GodotPlugin
+import org.godotengine.godot.utils.PermissionsUtil
 
 /**
  * Godot plugin for the Pico OpenXR loader.
@@ -39,6 +51,9 @@ import org.godotengine.godot.plugin.GodotPlugin
 class GodotOpenXRPico(godot: Godot?) : GodotPlugin(godot) {
     companion object {
         private val TAG = GodotOpenXRPico::class.java.simpleName
+
+        private const val EYE_TRACKING_PERMISSION = "com.picovr.permission.EYE_TRACKING"
+        private const val FACE_TRACKING_PERMISSION = "com.picovr.permission.FACE_TRACKING"
 
         init {
             try {
@@ -48,11 +63,50 @@ class GodotOpenXRPico(godot: Godot?) : GodotPlugin(godot) {
                 Log.e(TAG, "Unable to load godotopenxrvendors shared library")
             }
         }
+
+        /**
+         * Dispatch the necessary requests for all plugin's permissions in the app's manifest.
+         */
+        @JvmStatic
+        fun requestAllPluginPermissions(activity: Activity) {
+            val permissionsToRequest = ArrayList<String>()
+            // Request the eye tracking permission if it's included in the manifest
+            if (PermissionsUtil.hasManifestPermission(activity, EYE_TRACKING_PERMISSION)) {
+                permissionsToRequest.add(EYE_TRACKING_PERMISSION)
+            }
+            // Request the face tracking permission if it's included in the manifest
+            if (PermissionsUtil.hasManifestPermission(activity, FACE_TRACKING_PERMISSION)) {
+                permissionsToRequest.add(FACE_TRACKING_PERMISSION)
+            }
+
+            if (permissionsToRequest.isNotEmpty()) {
+                PermissionsUtil.requestPermissions(activity, permissionsToRequest)
+            }
+        }
     }
 
     override fun getPluginGDExtensionLibrariesPaths() = setOf("res://addons/godotopenxrvendors/plugin.gdextension")
 
     override fun getPluginName(): String {
         return "GodotOpenXRPico"
+    }
+
+    override fun onMainCreate(activity: Activity): View? {
+        requestAllPluginPermissions(activity)
+        return null
+    }
+
+    override fun supportsFeature(featureTag: String): Boolean {
+        if ("PERMISSION_XR_EXT_eye_gaze_interaction" == featureTag) {
+            val grantedPermissions = godot?.getGrantedPermissions()
+            if (grantedPermissions != null) {
+                for (permission in grantedPermissions) {
+                    if (EYE_TRACKING_PERMISSION == permission) {
+                        return true
+                    }
+                }
+            }
+        }
+        return false
     }
 }

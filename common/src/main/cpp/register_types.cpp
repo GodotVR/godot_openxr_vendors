@@ -196,6 +196,7 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			ClassDB::register_class<MetaEditorPlugin>();
 			EditorPlugins::add_by_type<MetaEditorPlugin>();
 
+			ClassDB::register_class<PicoEditorExportPlugin>();
 			ClassDB::register_class<PicoEditorPlugin>();
 			EditorPlugins::add_by_type<PicoEditorPlugin>();
 		} break;

@@ -29,6 +29,8 @@
 
 #include "export/pico_export_plugin.h"
 
+#include <godot_cpp/classes/project_settings.hpp>
+
 using namespace godot;
 
 void PicoEditorPlugin::_bind_methods() {}
@@ -36,7 +38,6 @@ void PicoEditorPlugin::_bind_methods() {}
 void PicoEditorPlugin::_enter_tree() {
 	// Initialize the editor export plugin
 	pico_export_plugin.instantiate();
-	pico_export_plugin->set_vendor_name(PICO_VENDOR_NAME);
 	add_export_plugin(pico_export_plugin);
 }
 
@@ -45,4 +46,138 @@ void PicoEditorPlugin::_exit_tree() {
 	remove_export_plugin(pico_export_plugin);
 
 	pico_export_plugin.unref();
+}
+
+PicoEditorExportPlugin::PicoEditorExportPlugin() {
+	set_vendor_name(PICO_VENDOR_NAME);
+
+	_eye_tracking_option = _generate_export_option(
+			"pico_xr_features/eye_tracking",
+			"",
+			Variant::Type::INT,
+			PROPERTY_HINT_ENUM,
+			"No,Yes",
+			PROPERTY_USAGE_DEFAULT,
+			pico::MANIFEST_FALSE_VALUE,
+			false);
+
+	_face_tracking_option = _generate_export_option(
+			"pico_xr_features/face_tracking",
+			"",
+			Variant::Type::INT,
+			PROPERTY_HINT_ENUM,
+			"No,Face only,Lipsync only,Hybrid",
+			PROPERTY_USAGE_DEFAULT,
+			pico::FACE_TRACKING_NONE_VALUE,
+			false);
+}
+
+void PicoEditorExportPlugin::_bind_methods() {}
+
+TypedArray<Dictionary> PicoEditorExportPlugin::_get_export_options(const Ref<EditorExportPlatform> &platform) const {
+	TypedArray<Dictionary> export_options;
+	if (!_supports_platform(platform)) {
+		return export_options;
+	}
+
+	export_options.append(_get_vendor_toggle_option());
+	export_options.append(_eye_tracking_option);
+	export_options.append(_face_tracking_option);
+
+	return export_options;
+}
+
+bool PicoEditorExportPlugin::_is_eye_tracking_enabled() const {
+	bool eye_tracking_project_setting_enabled = ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/extensions/eye_gaze_interaction");
+	if (!eye_tracking_project_setting_enabled) {
+		return false;
+	}
+
+	int eye_tracking_option_value = _get_int_option("pico_xr_features/eye_tracking", pico::MANIFEST_FALSE_VALUE);
+	return eye_tracking_option_value == pico::MANIFEST_TRUE_VALUE;
+}
+
+PackedStringArray PicoEditorExportPlugin::_get_export_features(const Ref<EditorExportPlatform> &platform, bool debug) const {
+	PackedStringArray features;
+	if (!_supports_platform(platform)) {
+		return features;
+	}
+
+	// Add the eye tracking feature if necessary
+	if (_is_eye_tracking_enabled()) {
+		features.append(EYE_GAZE_INTERACTION_FEATURE);
+	}
+
+	return features;
+}
+
+String PicoEditorExportPlugin::_get_export_option_warning(const Ref<EditorExportPlatform> &platform, const String &option) const {
+	if (!_supports_platform(platform)) {
+		return "";
+	}
+
+	bool openxr_enabled = _is_openxr_enabled();
+	if (option == "pico_xr_features/eye_tracking") {
+		if (!openxr_enabled && _get_int_option(option, pico::MANIFEST_FALSE_VALUE) == pico::MANIFEST_TRUE_VALUE) {
+			return "\"Eye tracking\" requires \"XR Mode\" to be \"OpenXR\".\n";
+		}
+	} else if (option == "pico_xr_features/face_tracking") {
+		int face_tracking = _get_int_option(option, pico::FACE_TRACKING_NONE_VALUE);
+		if (!openxr_enabled && face_tracking > pico::FACE_TRACKING_NONE_VALUE) {
+			return "\"Face tracking\" requires \"XR Mode\" to be \"OpenXR\".\n";
+		}
+		bool record_audio = _get_bool_option("permissions/record_audio");
+		if (!record_audio && face_tracking == pico::FACE_TRACKING_LIPSYNCONLY_VALUE) {
+			return "\"Lipsync face tracking\" requires \"Record Audio\" to be checked.\n";
+		}
+		if (!record_audio && face_tracking == pico::FACE_TRACKING_HYBRID_VALUE) {
+			return "\"Hybrid face tracking\" requires \"Record Audio\" to be checked.\n";
+		}
+	}
+
+	return OpenXREditorExportPlugin::_get_export_option_warning(platform, option);
+}
+
+String PicoEditorExportPlugin::_get_android_manifest_element_contents(const Ref<EditorExportPlatform> &platform, bool debug) const {
+	String contents;
+	if (!_supports_platform(platform) || !_is_vendor_plugin_enabled()) {
+		return contents;
+	}
+
+	// Check for eye tracking
+	if (_is_eye_tracking_enabled()) {
+		contents += "    <uses-permission android:name=\"com.picovr.permission.EYE_TRACKING\" />\n";
+	}
+
+	// Face tracking
+	int face_tracking = _get_int_option("pico_xr_features/face_tracking", pico::FACE_TRACKING_NONE_VALUE);
+	if (face_tracking == pico::FACE_TRACKING_FACEONLY_VALUE || face_tracking == pico::FACE_TRACKING_HYBRID_VALUE) {
+		contents += "    <uses-permission android:name=\"com.picovr.permission.FACE_TRACKING\" />\n";
+	}
+
+	return contents;
+}
+
+String PicoEditorExportPlugin::_get_android_manifest_application_element_contents(const Ref<EditorExportPlatform> &platform, bool debug) const {
+	String contents;
+	if (!_supports_platform(platform) || !_is_vendor_plugin_enabled()) {
+		return contents;
+	}
+
+	// Standard entries
+	contents += "        <meta-data tools:node=\"replace\" android:name=\"pvr.app.type\" android:value=\"vr\" />\n";
+	contents += "        <meta-data tools:node=\"replace\" android:name=\"pvr.display.orientation\" android:value=\"180\" />\n";
+
+	// Check for eye tracking
+	if (_is_eye_tracking_enabled()) {
+		contents += "        <meta-data tools:node=\"replace\" android:name=\"picovr.software.eye_tracking\" android:value=\"1\" />\n";
+	}
+
+	// Face tracking
+	int face_tracking = _get_int_option("pico_xr_features/face_tracking", pico::FACE_TRACKING_NONE_VALUE);
+	if (face_tracking > pico::FACE_TRACKING_NONE_VALUE) {
+		contents += "        <meta-data tools:node=\"replace\" android:name=\"picovr.software.face_tracking\" android:value=\"1\" />\n";
+	}
+
+	return contents;
 }

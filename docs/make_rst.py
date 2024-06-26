@@ -72,6 +72,7 @@ SKIP_CLASSES: List[str] = [
     "MetaEditorExportPlugin",
     "MetaEditorPlugin",
     "OpenXREditorExportPlugin",
+    "PicoEditorExportPlugin",
     "PicoEditorPlugin",
 ]
 

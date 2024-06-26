@@ -17,6 +17,7 @@
 - Add OpenXRMetaPassthroughColorLut
 - Add feature flags to Khronos loader for HTC
 - Add XR_HTC_passthrough extension wrapper
+- Add manifest entries to Pico loader
 
 ## 2.0.3
 - Migrate the export scripts from gdscript to C++ via gdextension
