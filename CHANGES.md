@@ -1,5 +1,8 @@
 # Change history for the Godot OpenXR loaders asset
 
+## 3.1.0
+- Add export profile for Magic Leap 2
+
 ## 3.0.1
 - Fixed hand tracking issue
 

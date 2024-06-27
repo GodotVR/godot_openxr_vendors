@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  khronos_editor_plugin.h                                               */
+/*  magicleap_editor_plugin.h                                             */
 /**************************************************************************/
 /*                       This file is part of:                            */
 /*                              GODOT XR                                  */
@@ -35,14 +35,11 @@
 
 using namespace godot;
 
-static const int KHRONOS_VENDOR_OTHER = 0;
-static const int KHRONOS_VENDOR_HTC = 1;
-
-class KhronosEditorExportPlugin : public OpenXREditorExportPlugin {
-	GDCLASS(KhronosEditorExportPlugin, OpenXREditorExportPlugin)
+class MagicleapEditorExportPlugin : public OpenXREditorExportPlugin {
+	GDCLASS(MagicleapEditorExportPlugin, OpenXREditorExportPlugin)
 
 public:
-	KhronosEditorExportPlugin();
+	MagicleapEditorExportPlugin();
 
 	TypedArray<Dictionary> _get_export_options(const Ref<EditorExportPlatform> &platform) const override;
 
@@ -58,19 +55,11 @@ public:
 protected:
 	static void _bind_methods();
 
-	bool _is_khronos_htc_enabled() const {
-		return _get_int_option("khronos_xr_features/vendors", KHRONOS_VENDOR_OTHER) == KHRONOS_VENDOR_HTC;
-	}
-
-	Dictionary _khronos_vendors_option;
-	Dictionary _hand_tracking_option;
-	Dictionary _tracker_option;
-	Dictionary _eye_tracking_option;
-	Dictionary _lip_expression_option;
+	Dictionary _ml2_hand_tracking_option;
 };
 
-class KhronosEditorPlugin : public EditorPlugin {
-	GDCLASS(KhronosEditorPlugin, EditorPlugin)
+class MagicleapEditorPlugin : public EditorPlugin {
+	GDCLASS(MagicleapEditorPlugin, EditorPlugin)
 
 public:
 	void _enter_tree() override;
@@ -80,5 +69,5 @@ protected:
 	static void _bind_methods();
 
 private:
-	Ref<KhronosEditorExportPlugin> khronos_export_plugin;
+	Ref<MagicleapEditorExportPlugin> magicleap_export_plugin;
 };

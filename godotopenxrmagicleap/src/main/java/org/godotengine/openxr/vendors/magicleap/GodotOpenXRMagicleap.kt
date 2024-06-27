@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  khronos_editor_plugin.h                                               */
+/*  GodotOpenXRMagicleap.kt                                               */
 /**************************************************************************/
 /*                       This file is part of:                            */
 /*                              GODOT XR                                  */
@@ -27,58 +27,45 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#pragma once
+package org.godotengine.openxr.vendors.magicleap
 
-#include <godot_cpp/classes/editor_plugin.hpp>
+import android.util.Log
+import org.godotengine.godot.Godot
+import org.godotengine.godot.plugin.GodotPlugin
 
-#include "export_plugin.h"
+/**
+ * \brief GodotOpenXRMagicleap is the OpenXR Magicleap plugin for Godot.
+ *
+ * When using OpenXR for your application on Android make sure that
+ * the IMMERSIVE_HMD category is added to your activities intent-filter.
+ *
+ * <intent-filter>
+ * <action android:name="android.intent.action.MAIN"></action>
+ * <category android:name="android.intent.category.LAUNCHER"></category>
+ * <category android:name="org.khronos.openxr.intent.category.IMMERSIVE_HMD"></category>
+ * </intent-filter>
+ *
+ * more details can be found here:
+ * https://registry.khronos.org/OpenXR/specs/1.0/html/xrspec.html#android-runtime-category
+ *
+ */
+class GodotOpenXRMagicleap(godot: Godot?) : GodotPlugin(godot) {
+    companion object {
+        private val TAG = GodotOpenXRMagicleap::class.java.simpleName
 
-using namespace godot;
+        init {
+            try {
+                Log.v(TAG, "Loading godotopenxrvendors library")
+                System.loadLibrary("godotopenxrvendors")
+            } catch (e: UnsatisfiedLinkError) {
+                Log.e(TAG, "Unable to load godotopenxrvendors shared library")
+            }
+        }
+    }
 
-static const int KHRONOS_VENDOR_OTHER = 0;
-static const int KHRONOS_VENDOR_HTC = 1;
+    override fun getPluginGDExtensionLibrariesPaths() = setOf("res://addons/godotopenxrvendors/plugin.gdextension")
 
-class KhronosEditorExportPlugin : public OpenXREditorExportPlugin {
-	GDCLASS(KhronosEditorExportPlugin, OpenXREditorExportPlugin)
-
-public:
-	KhronosEditorExportPlugin();
-
-	TypedArray<Dictionary> _get_export_options(const Ref<EditorExportPlatform> &platform) const override;
-
-	Dictionary _get_export_options_overrides(const Ref<EditorExportPlatform> &p_platform) const override;
-
-	PackedStringArray _get_export_features(const Ref<EditorExportPlatform> &platform, bool debug) const override;
-
-	String _get_export_option_warning(const Ref<EditorExportPlatform> &platform, const String &option) const override;
-
-	String _get_android_manifest_activity_element_contents(const Ref<EditorExportPlatform> &platform, bool debug) const override;
-	String _get_android_manifest_element_contents(const Ref<EditorExportPlatform> &platform, bool debug) const override;
-
-protected:
-	static void _bind_methods();
-
-	bool _is_khronos_htc_enabled() const {
-		return _get_int_option("khronos_xr_features/vendors", KHRONOS_VENDOR_OTHER) == KHRONOS_VENDOR_HTC;
-	}
-
-	Dictionary _khronos_vendors_option;
-	Dictionary _hand_tracking_option;
-	Dictionary _tracker_option;
-	Dictionary _eye_tracking_option;
-	Dictionary _lip_expression_option;
-};
-
-class KhronosEditorPlugin : public EditorPlugin {
-	GDCLASS(KhronosEditorPlugin, EditorPlugin)
-
-public:
-	void _enter_tree() override;
-	void _exit_tree() override;
-
-protected:
-	static void _bind_methods();
-
-private:
-	Ref<KhronosEditorExportPlugin> khronos_export_plugin;
-};
+    override fun getPluginName(): String {
+        return "GodotOpenXRMagicleap"
+    }
+}

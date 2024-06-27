@@ -43,7 +43,7 @@ import org.godotengine.godot.plugin.GodotPlugin
  * <action android:name="android.intent.action.MAIN"></action>
  * <category android:name="android.intent.category.LAUNCHER"></category>
  * <category android:name="org.khronos.openxr.intent.category.IMMERSIVE_HMD"></category>
-</intent-filter> *
+ * </intent-filter>
  *
  * more details can be found here:
  * https://registry.khronos.org/OpenXR/specs/1.0/html/xrspec.html#android-runtime-category

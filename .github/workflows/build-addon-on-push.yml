@@ -156,6 +156,9 @@ jobs:
           mkdir -p asset/addons/godotopenxrvendors/khronos/
           cp aar/thirdparty/khronos_openxr_sdk/LICENSE asset/addons/godotopenxrvendors/khronos/LICENSE
 
+          mkdir -p asset/addons/godotopenxrvendors/magicleap/
+          cp aar/thirdparty/khronos_openxr_sdk/LICENSE asset/addons/godotopenxrvendors/magicleap/LICENSE
+
       - name: Copying artifacts
         run: |
           mkdir -p asset/addons/godotopenxrvendors/.bin/android/
