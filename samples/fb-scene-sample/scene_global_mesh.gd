@@ -11,7 +11,6 @@ func setup_scene(entity: OpenXRFbSpatialEntity) -> void:
 	if collision_shape:
 		static_body.add_child(collision_shape)
 
-
 	#mesh_instance = entity.create_mesh_instance()
 	#if mesh_instance:
 	#	mesh_instance.set_surface_override_material(0, WIREFRAME_MATERIAL)

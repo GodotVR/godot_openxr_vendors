@@ -1,12 +1,9 @@
-[gd_scene load_steps=21 format=3 uid="uid://cqsodpswgup8w"]
+[gd_scene load_steps=16 format=3 uid="uid://cqsodpswgup8w"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_fsva1"]
 [ext_resource type="PackedScene" uid="uid://c0uv4eu2yjm3b" path="res://viewport_2d_in_3d.tscn" id="2_7whgo"]
 [ext_resource type="PackedScene" uid="uid://d4b4rllli6tqp" path="res://tablet_content.tscn" id="3_45w5g"]
-[ext_resource type="PackedScene" uid="uid://bcjp8kcgde4cs" path="res://scene_anchor.tscn" id="4_3u3ah"]
 [ext_resource type="PackedScene" uid="uid://cay8oh2ll7yxi" path="res://assets/test_kun/Test-Kun.fbx" id="4_b317s"]
-[ext_resource type="PackedScene" uid="uid://bwo5nq0clfe3c" path="res://scene_global_mesh.tscn" id="5_7ikgf"]
-[ext_resource type="PackedScene" uid="uid://dsfd7xrm6o50p" path="res://spatial_anchor.tscn" id="5_g7mio"]
 [ext_resource type="Material" uid="uid://bdwh0vc86hsdb" path="res://assets/hand_silhouette_outline_mat.tres" id="7_tpkib"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_0x6cv"]
@@ -40,13 +37,6 @@ size = Vector3(0.1, 0.1, 0.1)
 [sub_resource type="SphereMesh" id="SphereMesh_5gcab"]
 radius = 0.025
 height = 0.05
-
-[sub_resource type="BoxMesh" id="BoxMesh_d27jm"]
-size = Vector3(0.01, 0.01, 5)
-
-[sub_resource type="SphereMesh" id="SphereMesh_kdpqm"]
-radius = 0.01
-height = 0.02
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_k604q"]
 
@@ -112,24 +102,6 @@ tracker = &"/user/eyes_ext"
 transform = Transform3D(1, 0, 0, 0, -0.0133513, 0.999911, 0, -0.999911, -0.0133513, 0, 0, -1.18886)
 mesh = SubResource("SphereMesh_5gcab")
 
-[node name="LeftHandPointer" type="XRController3D" parent="XROrigin3D"]
-visible = false
-tracker = &"left_hand"
-pose = &"aim"
-
-[node name="ScenePointerMesh" type="MeshInstance3D" parent="XROrigin3D/LeftHandPointer"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2.5)
-mesh = SubResource("BoxMesh_d27jm")
-
-[node name="SceneCollidingMesh" type="MeshInstance3D" parent="XROrigin3D/LeftHandPointer"]
-mesh = SubResource("SphereMesh_kdpqm")
-
-[node name="RayCast3D" type="RayCast3D" parent="XROrigin3D/LeftHandPointer"]
-enabled = false
-target_position = Vector3(0, 0, -10)
-collision_mask = 6
-collide_with_areas = true
-
 [node name="LeftHandTracker" type="XRNode3D" parent="XROrigin3D"]
 tracker = &"/user/hand_tracker/left"
 
@@ -174,16 +146,6 @@ bones/25/name = "RightLittleTip"
 [node name="RightXRHandModifier3D" type="XRHandModifier3D" parent="XROrigin3D/RightHandTracker/RightHandModel"]
 hand_tracker = &"/user/hand_tracker/right"
 
-[node name="OpenXRFbSceneManager" type="OpenXRFbSceneManager" parent="XROrigin3D"]
-default_scene = ExtResource("4_3u3ah")
-auto_create = false
-visible = false
-scenes/global_mesh = ExtResource("5_7ikgf")
-
-[node name="OpenXRFbSpatialAnchorManager" type="OpenXRFbSpatialAnchorManager" parent="XROrigin3D"]
-scene = ExtResource("5_g7mio")
-visible = false
-
 [node name="Floor" type="MeshInstance3D" parent="."]
 mesh = SubResource("PlaneMesh_mjcgt")
 
@@ -203,13 +165,7 @@ bone_update = 1
 [node name="XRFaceModifier3D" type="XRFaceModifier3D" parent="Floor/AvatarOffset/Avatar"]
 target = NodePath("../Test-Kun/Armature/GeneralSkeleton/Body")
 
-[connection signal="button_pressed" from="XROrigin3D/LeftHand" to="." method="_on_left_hand_button_pressed"]
 [connection signal="openxr_fb_render_model_loaded" from="XROrigin3D/LeftHand/LeftControllerFbRenderModel" to="." method="_on_left_controller_fb_render_model_render_model_loaded"]
-[connection signal="button_pressed" from="XROrigin3D/RightHand" to="." method="_on_right_hand_button_pressed"]
 [connection signal="openxr_fb_render_model_loaded" from="XROrigin3D/RightHand/RightControllerFbRenderModel" to="." method="_on_right_controller_fb_render_model_render_model_loaded"]
-[connection signal="openxr_fb_scene_capture_completed" from="XROrigin3D/OpenXRFbSceneManager" to="." method="_on_scene_manager_scene_capture_completed"]
-[connection signal="openxr_fb_scene_data_missing" from="XROrigin3D/OpenXRFbSceneManager" to="." method="_on_scene_manager_scene_data_missing"]
-[connection signal="openxr_fb_spatial_anchor_tracked" from="XROrigin3D/OpenXRFbSpatialAnchorManager" to="." method="_on_spatial_anchor_tracked"]
-[connection signal="openxr_fb_spatial_anchor_untracked" from="XROrigin3D/OpenXRFbSpatialAnchorManager" to="." method="_on_spatial_anchor_untracked"]
 
 [editable path="Floor/AvatarOffset/Avatar/Test-Kun"]
