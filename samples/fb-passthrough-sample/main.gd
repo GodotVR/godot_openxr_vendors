@@ -30,6 +30,7 @@ var countdown_to_recenter_hmd: int = 3
 func _ready() -> void:
 	openxr_interface = XRServer.find_interface("OpenXR")
 	if openxr_interface and openxr_interface.initialize():
+		openxr_interface.session_stopping.connect(self._on_session_stopping)
 		get_viewport().use_xr = true
 		DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
 
@@ -53,6 +54,13 @@ func _ready() -> void:
 	curve_texture.curve = mono_map
 	var mono_map_mat := mono_map_mesh.get_surface_override_material(0)
 	mono_map_mat.albedo_texture = curve_texture
+
+
+func _on_session_stopping() -> void:
+	if "--xrsim-automated-tests" in OS.get_cmdline_user_args():
+		# When we're running tests via the XR Simulator, it will end the OpenXR
+		# session automatically, and in that case, we want to quit.
+		get_tree().quit()
 
 
 func _process(_delta: float) -> void:
