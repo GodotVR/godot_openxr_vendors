@@ -7,12 +7,7 @@ project(godotopenxrvendors LANGUAGES CXX)
 include(${PROJECT_SOURCE_DIR}/../common/common.cmake)
 
 ## khronos OpenXR loader library
-set(KHRONOS_OPENXR_LIB_PATH "${PROJECT_SOURCE_DIR}/../thirdparty/khronos_openxr_sdk/${ANDROID_ABI}/libopenxr_loader.so")
-add_library(openxr_loader
-        SHARED
-        IMPORTED GLOBAL
-        )
-set_target_properties(openxr_loader PROPERTIES IMPORTED_LOCATION ${KHRONOS_OPENXR_LIB_PATH})
+find_package(OpenXR REQUIRED CONFIG)
 
 ## Setup the project sources
 file(GLOB_RECURSE ANDROID_SOURCES ${PROJECT_SOURCE_DIR}/src/main/cpp/*.c**)
@@ -37,7 +32,7 @@ target_link_libraries(${PROJECT_NAME}
         android
         log
         ${GODOT-CPP}
-        openxr_loader
+        OpenXR::openxr_loader
         )
 
 # Add the compile flags
