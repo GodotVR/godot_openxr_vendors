@@ -99,7 +99,7 @@ bool PicoEditorExportPlugin::_is_eye_tracking_enabled() const {
 
 PackedStringArray PicoEditorExportPlugin::_get_export_features(const Ref<EditorExportPlatform> &platform, bool debug) const {
 	PackedStringArray features;
-	if (!_supports_platform(platform)) {
+	if (!_supports_platform(platform) || !_is_vendor_plugin_enabled()) {
 		return features;
 	}
 
@@ -112,7 +112,7 @@ PackedStringArray PicoEditorExportPlugin::_get_export_features(const Ref<EditorE
 }
 
 String PicoEditorExportPlugin::_get_export_option_warning(const Ref<EditorExportPlatform> &platform, const String &option) const {
-	if (!_supports_platform(platform)) {
+	if (!_supports_platform(platform) || !_is_vendor_plugin_enabled()) {
 		return "";
 	}
 

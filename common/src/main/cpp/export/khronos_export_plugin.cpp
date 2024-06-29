@@ -106,7 +106,7 @@ TypedArray<Dictionary> KhronosEditorExportPlugin::_get_export_options(const Ref<
 
 PackedStringArray KhronosEditorExportPlugin::_get_export_features(const Ref<EditorExportPlatform> &platform, bool debug) const {
 	PackedStringArray features;
-	if (!_supports_platform(platform)) {
+	if (!_supports_platform(platform) || !_is_vendor_plugin_enabled()) {
 		return features;
 	}
 
@@ -119,7 +119,7 @@ PackedStringArray KhronosEditorExportPlugin::_get_export_features(const Ref<Edit
 }
 
 String KhronosEditorExportPlugin::_get_export_option_warning(const Ref<EditorExportPlatform> &platform, const String &option) const {
-	if (!_supports_platform(platform)) {
+	if (!_supports_platform(platform) || !_is_vendor_plugin_enabled()) {
 		return "";
 	}
 
