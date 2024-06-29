@@ -139,7 +139,7 @@ jobs:
           cp aar/thirdparty/ovr_openxr_mobile_sdk/LICENSE.txt asset/addons/godotopenxrvendors/meta/
 
           mkdir -p asset/addons/godotopenxrvendors/pico/
-          cp aar/thirdparty/pico_openxr_sdk/README.md asset/addons/godotopenxrvendors/pico/LICENSE.md
+          cp aar/thirdparty/khronos_openxr_sdk/LICENSE asset/addons/godotopenxrvendors/pico/LICENSE
 
           mkdir -p asset/addons/godotopenxrvendors/khronos/
           cp aar/thirdparty/khronos_openxr_sdk/LICENSE asset/addons/godotopenxrvendors/khronos/LICENSE
