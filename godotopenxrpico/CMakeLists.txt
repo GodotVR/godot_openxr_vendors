@@ -6,13 +6,8 @@ project(godotopenxrvendors LANGUAGES CXX)
 ## Common dependencies
 include(${PROJECT_SOURCE_DIR}/../common/common.cmake)
 
-## Pico OpenXR loader library
-set(PICO_OPENXR_LIB_PATH "${PROJECT_SOURCE_DIR}/../thirdparty/pico_openxr_sdk/${ANDROID_ABI}/libopenxr_loader.so")
-add_library(openxr_loader
-        SHARED
-        IMPORTED GLOBAL
-        )
-set_target_properties(openxr_loader PROPERTIES IMPORTED_LOCATION ${PICO_OPENXR_LIB_PATH})
+## khronos OpenXR loader library
+find_package(OpenXR REQUIRED CONFIG)
 
 ## Setup the project sources
 file(GLOB_RECURSE ANDROID_SOURCES ${PROJECT_SOURCE_DIR}/src/main/cpp/*.c**)
@@ -37,7 +32,7 @@ target_link_libraries(${PROJECT_NAME}
         android
         log
         ${GODOT-CPP}
-        openxr_loader
+        OpenXR::openxr_loader
         )
 
 # Add the compile flags

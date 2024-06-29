@@ -53,6 +53,7 @@ android {
     }
 
     buildFeatures {
+        prefab true
         prefabPublishing true
     }
 
@@ -65,6 +66,7 @@ android {
 
 dependencies {
     compileOnly libraries.godotAndroidLib
+    implementation "org.khronos.openxr:openxr_loader_for_android:1.0.34"
 }
 
 task cleanAssets(type: Delete) {

@@ -164,10 +164,6 @@ String PicoEditorExportPlugin::_get_android_manifest_application_element_content
 		return contents;
 	}
 
-	// Standard entries
-	contents += "        <meta-data tools:node=\"replace\" android:name=\"pvr.app.type\" android:value=\"vr\" />\n";
-	contents += "        <meta-data tools:node=\"replace\" android:name=\"pvr.display.orientation\" android:value=\"180\" />\n";
-
 	// Check for eye tracking
 	if (_is_eye_tracking_enabled()) {
 		contents += "        <meta-data tools:node=\"replace\" android:name=\"picovr.software.eye_tracking\" android:value=\"1\" />\n";
