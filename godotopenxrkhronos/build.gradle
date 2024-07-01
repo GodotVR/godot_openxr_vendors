@@ -66,7 +66,7 @@ android {
 
 dependencies {
     compileOnly libraries.godotAndroidLib
-    implementation "org.khronos.openxr:openxr_loader_for_android:1.0.34"
+    implementation "org.khronos.openxr:openxr_loader_for_android:$versions.openxrVersion"
 }
 
 task cleanAssets(type: Delete) {
