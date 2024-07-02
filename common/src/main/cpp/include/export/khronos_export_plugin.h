@@ -56,10 +56,12 @@ public:
 protected:
 	static void _bind_methods();
 
-	Dictionary _hand_tracking_option;
-	Dictionary _tracker_option;
-	Dictionary _eye_tracking_option;
-	Dictionary _lip_expression_option;
+	Dictionary _htc_hand_tracking_option;
+	Dictionary _htc_tracker_option;
+	Dictionary _htc_eye_tracking_option;
+	Dictionary _htc_lip_expression_option;
+
+	Dictionary _ml2_hand_tracking_option;
 };
 
 class KhronosEditorPlugin : public EditorPlugin {
