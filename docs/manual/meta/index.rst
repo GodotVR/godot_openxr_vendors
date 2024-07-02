@@ -9,4 +9,5 @@ Meta
 
     scene_manager
     passthrough
+    composition_layers
 
