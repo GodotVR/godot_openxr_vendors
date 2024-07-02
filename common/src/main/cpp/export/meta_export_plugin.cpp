@@ -260,7 +260,7 @@ bool MetaEditorExportPlugin::_is_eye_tracking_enabled() const {
 
 PackedStringArray MetaEditorExportPlugin::_get_export_features(const Ref<EditorExportPlatform> &platform, bool debug) const {
 	PackedStringArray features;
-	if (!_supports_platform(platform)) {
+	if (!_supports_platform(platform) || !_is_vendor_plugin_enabled()) {
 		return features;
 	}
 
@@ -273,7 +273,7 @@ PackedStringArray MetaEditorExportPlugin::_get_export_features(const Ref<EditorE
 }
 
 String MetaEditorExportPlugin::_get_export_option_warning(const Ref<EditorExportPlatform> &platform, const String &option) const {
-	if (!_supports_platform(platform)) {
+	if (!_supports_platform(platform) || !_is_vendor_plugin_enabled()) {
 		return "";
 	}
 

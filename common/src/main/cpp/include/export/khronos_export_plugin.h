@@ -35,6 +35,9 @@
 
 using namespace godot;
 
+static const int KHRONOS_VENDOR_OTHER = 0;
+static const int KHRONOS_VENDOR_HTC = 1;
+
 static const int MANIFEST_FALSE_VALUE = 0;
 static const int MANIFEST_TRUE_VALUE = 1;
 
@@ -46,6 +49,8 @@ public:
 
 	TypedArray<Dictionary> _get_export_options(const Ref<EditorExportPlatform> &platform) const override;
 
+	Dictionary _get_export_options_overrides(const Ref<EditorExportPlatform> &p_platform) const override;
+
 	PackedStringArray _get_export_features(const Ref<EditorExportPlatform> &platform, bool debug) const override;
 
 	String _get_export_option_warning(const Ref<EditorExportPlatform> &platform, const String &option) const override;
@@ -56,6 +61,11 @@ public:
 protected:
 	static void _bind_methods();
 
+	bool _is_khronos_htc_enabled() const {
+		return _get_int_option("khronos_xr_features/vendors", KHRONOS_VENDOR_OTHER) == KHRONOS_VENDOR_HTC;
+	}
+
+	Dictionary _khronos_vendors_option;
 	Dictionary _hand_tracking_option;
 	Dictionary _tracker_option;
 	Dictionary _eye_tracking_option;
