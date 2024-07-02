@@ -9,7 +9,7 @@ Adding the Scene Manager Node
 
 To add the Scene Manager to your project, add the :ref:`OpenXRFbSceneManager <class_openxrfbscenemanager>` as a child node of the XROrigin3D node.
 
-.. image:: img/scene_tree.png
+.. image:: img/scene_manager/scene_tree.png
 
 Let's go over the different options of the Scene Manager.
 The :ref:`Default Scene <class_openxrfbscenemanager_property_default_scene>` will be instantiated by the Scene Manager for any type of spatial entity (e.g. Walls, Doors, or the Global Mesh) and the ``setup_scene(entity: OpenXRFbSpatialEntity)`` method will be called on the created instance. The name of the method that will be called can be set using the :ref:`Scene Setup Method <class_openxrfbscenemanager_property_scene_setup_method>` property.
@@ -18,22 +18,22 @@ The :ref:`Auto Create <class_openxrfbscenemanager_property_auto_create>` option 
 
 The **Scenes** section in the options allows you to individually assign a scene to a kind of spatial entity which can help in separating the logic.
 
-.. image:: img/scene_manager_options.png
+.. image:: img/scene_manager/scene_manager_options.png
 
 Next, head over to the Export Settings and make sure that in the **Meta XR Features** the ``Use Anchor API`` and ``Use Scene API`` options are enabled.
 
-.. image:: img/export_settings.png
+.. image:: img/scene_manager/export_settings.png
 
 Creating Spatial Entities
 -------------------------
 
 Spatial Entities are a collective term for any object that has been mapped by the user in their space. These can be walls, doors, tables, plants, or many other things.
 
-.. image:: img/spatial_entities.png
+.. image:: img/scene_manager/spatial_entities.png
 
 First, create a new scene with the type of ``StaticBody3D`` and add a ``Label3D`` to it. The scene should now look like this:
 
-.. image:: img/spatial_entity_scene.png
+.. image:: img/scene_manager/spatial_entity_scene.png
 
 Next, add a new script with the following content:
 
@@ -70,9 +70,9 @@ The Global Mesh is created by the headset when you scan your space with the dept
 
 |global_mesh| |global_mesh_wireframe|
 
-.. |global_mesh| image:: img/global_mesh.png
+.. |global_mesh| image:: img/scene_manager/global_mesh.png
     :width: 49%
-.. |global_mesh_wireframe| image:: img/global_mesh_wireframe.png
+.. |global_mesh_wireframe| image:: img/scene_manager/global_mesh_wireframe.png
     :width: 49%
 
 The process of creating the template scene for the global mesh is the same as for any other spatial entity.

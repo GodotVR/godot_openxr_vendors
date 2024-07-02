@@ -8,4 +8,5 @@ Meta
     :name: toc-meta
 
     scene_manager
+    passthrough
 
