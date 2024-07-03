@@ -7,7 +7,7 @@ Meta
     :maxdepth: 1
     :name: toc-meta
 
-    scene_manager
-    passthrough
     composition_layers
-
+    hand_tracking
+    passthrough
+    scene_manager
