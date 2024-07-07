@@ -10,16 +10,14 @@ config_version=5
 
 [application]
 
-config/name="Fb Scene Sample"
+config/name="Meta Passthrough Sample"
 run/main_scene="res://main.tscn"
 config/features=PackedStringArray("4.3", "GL Compatibility")
 config/icon="res://icon.svg"
 
-[layer_names]
+[editor_plugins]
 
-3d_physics/layer_1="Virtual Environment"
-3d_physics/layer_2="Scene Understanding"
-3d_physics/layer_3="Spatial Anchors"
+enabled=PackedStringArray("res://addons/godotopenxrvendors/plugin.cfg")
 
 [rendering]
 
@@ -30,7 +28,4 @@ textures/vram_compression/import_etc2_astc=true
 [xr]
 
 openxr/enabled=true
-openxr/reference_space=1
-openxr/extensions/eye_gaze_interaction=true
 shaders/enabled=true
-openxr/extensions/hand_tracking_aim=true
