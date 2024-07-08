@@ -1,6 +1,12 @@
 Meta Scene Manager
 ==================
 
+.. note::
+
+    Meta scene data is frequently used alongside Meta spatial anchors, read the :doc:`spatial_anchors` tutorial for more info.
+    Check out the `Meta Scene Sample <https://github.com/GodotVR/godot_openxr_vendors/tree/master/samples/meta-scene-sample>`_
+    for a working demo using Meta scene data.
+
 The Scene Manager provides you information about the space you are currently in. This includes the scanned mesh of the room (on Quest 3) as well as things like walls, doors, or tables.
 In case you are starting on a new project, please first follow `this guide <https://docs.godotengine.org/en/stable/tutorials/xr/setting_up_xr.html>`_ to set up your project for XR.
 
