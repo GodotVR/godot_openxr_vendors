@@ -49,7 +49,9 @@ void KhronosEditorPlugin::_exit_tree() {
 KhronosEditorExportPlugin::KhronosEditorExportPlugin() {
 	set_vendor_name(KHRONOS_VENDOR_NAME);
 
-	_hand_tracking_option = _generate_export_option(
+	// HTC specific features
+
+	_htc_hand_tracking_option = _generate_export_option(
 			"khronos_xr_features/htc/hand_tracking",
 			"",
 			Variant::Type::INT,
@@ -58,7 +60,7 @@ KhronosEditorExportPlugin::KhronosEditorExportPlugin() {
 			PROPERTY_USAGE_DEFAULT,
 			MANIFEST_FALSE_VALUE,
 			false);
-	_tracker_option = _generate_export_option(
+	_htc_tracker_option = _generate_export_option(
 			"khronos_xr_features/htc/tracker",
 			"",
 			Variant::Type::INT,
@@ -67,7 +69,7 @@ KhronosEditorExportPlugin::KhronosEditorExportPlugin() {
 			PROPERTY_USAGE_DEFAULT,
 			MANIFEST_FALSE_VALUE,
 			false);
-	_eye_tracking_option = _generate_export_option(
+	_htc_eye_tracking_option = _generate_export_option(
 			"khronos_xr_features/htc/eye_tracking",
 			"",
 			Variant::Type::INT,
@@ -76,8 +78,19 @@ KhronosEditorExportPlugin::KhronosEditorExportPlugin() {
 			PROPERTY_USAGE_DEFAULT,
 			MANIFEST_FALSE_VALUE,
 			false);
-	_lip_expression_option = _generate_export_option(
+	_htc_lip_expression_option = _generate_export_option(
 			"khronos_xr_features/htc/lip_expression",
+			"",
+			Variant::Type::INT,
+			PROPERTY_HINT_ENUM,
+			"No,Yes",
+			PROPERTY_USAGE_DEFAULT,
+			MANIFEST_FALSE_VALUE,
+			false);
+
+	// Magic Leap 2 specific features
+	_ml2_hand_tracking_option = _generate_export_option(
+			"khronos_xr_features/magic_leap/hand_tracking",
 			"",
 			Variant::Type::INT,
 			PROPERTY_HINT_ENUM,
@@ -96,10 +109,15 @@ TypedArray<Dictionary> KhronosEditorExportPlugin::_get_export_options(const Ref<
 	}
 
 	export_options.append(_get_vendor_toggle_option());
-	export_options.append(_hand_tracking_option);
-	export_options.append(_tracker_option);
-	export_options.append(_eye_tracking_option);
-	export_options.append(_lip_expression_option);
+
+	// HTC specific features
+	export_options.append(_htc_hand_tracking_option);
+	export_options.append(_htc_tracker_option);
+	export_options.append(_htc_eye_tracking_option);
+	export_options.append(_htc_lip_expression_option);
+
+	// Magic Leap 2 specific features
+	export_options.append(_ml2_hand_tracking_option);
 
 	return export_options;
 }
@@ -124,6 +142,8 @@ String KhronosEditorExportPlugin::_get_export_option_warning(const Ref<EditorExp
 	}
 
 	bool openxr_enabled = _is_openxr_enabled();
+
+	// HTC specific features
 	if (option == "khronos_xr_features/htc/hand_tracking") {
 		if (!openxr_enabled && _get_int_option(option, MANIFEST_FALSE_VALUE) == MANIFEST_TRUE_VALUE) {
 			return "\"Hand Tracking\" requires \"XR Mode\" to be \"OpenXR\".\n";
@@ -142,6 +162,13 @@ String KhronosEditorExportPlugin::_get_export_option_warning(const Ref<EditorExp
 		}
 	}
 
+	// Magic Leap 2 specific features
+	if (option == "khronos_xr_features/magic_leap/hand_tracking") {
+		if (!openxr_enabled && _get_int_option(option, MANIFEST_FALSE_VALUE) == MANIFEST_TRUE_VALUE) {
+			return "\"Hand Tracking\" requires \"XR Mode\" to be \"OpenXR\".\n";
+		}
+	}
+
 	return OpenXREditorExportPlugin::_get_export_option_warning(platform, option);
 }
 
@@ -151,17 +178,17 @@ String KhronosEditorExportPlugin::_get_android_manifest_activity_element_content
 	}
 
 	return R"(
-				<intent-filter>
-					<action android:name="android.intent.action.MAIN" />
-					<category android:name="android.intent.category.LAUNCHER" />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
 
-					<!-- OpenXR category tag to indicate the activity starts in an immersive OpenXR mode.
-					See https://registry.khronos.org/OpenXR/specs/1.0/html/xrspec.html#android-runtime-category. -->
-					<category android:name="org.khronos.openxr.intent.category.IMMERSIVE_HMD" />
+                <!-- OpenXR category tag to indicate the activity starts in an immersive OpenXR mode.
+                See https://registry.khronos.org/OpenXR/specs/1.0/html/xrspec.html#android-runtime-category. -->
+                <category android:name="org.khronos.openxr.intent.category.IMMERSIVE_HMD" />
 
-					<!-- Enable VR access on HTC Vive Focus devices. -->
-					<category android:name="com.htc.intent.category.VRAPP" />
-				</intent-filter>
+                <!-- Enable VR access on HTC Vive Focus devices. -->
+                <category android:name="com.htc.intent.category.VRAPP" />
+            </intent-filter>
 )";
 }
 
@@ -170,6 +197,8 @@ String KhronosEditorExportPlugin::_get_android_manifest_element_contents(const R
 	if (!_supports_platform(platform) || !_is_vendor_plugin_enabled()) {
 		return contents;
 	}
+
+	// HTC specific features
 
 	// Check for hand tracking
 	if (_get_int_option("khronos_xr_features/htc/hand_tracking", MANIFEST_FALSE_VALUE) == MANIFEST_TRUE_VALUE) {
@@ -190,6 +219,14 @@ String KhronosEditorExportPlugin::_get_android_manifest_element_contents(const R
 	if (_get_int_option("khronos_xr_features/htc/lip_expression", MANIFEST_FALSE_VALUE) == MANIFEST_TRUE_VALUE) {
 		contents += "    <uses-feature tools:node=\"replace\" android:name=\"wave.feature.lipexpression\" android:required=\"true\" />\n";
 	}
+
+	// Magic Leap specific features
+	if (_get_int_option("khronos_xr_features/magic_leap/hand_tracking", MANIFEST_FALSE_VALUE) == MANIFEST_TRUE_VALUE) {
+		contents += "    <uses-permission android:name=\"com.magicleap.permission.HAND_TRACKING\" />\n";
+	}
+
+	// Always include this, should be ignored on non magic leap platforms
+	contents += "    <uses-feature android:name=\"com.magicleap.api_level\" android:version=\"20\" />\n";
 
 	return contents;
 }

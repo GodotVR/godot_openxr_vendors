@@ -19,6 +19,7 @@
 - Add XR_HTC_passthrough extension wrapper
 - Add manifest entries to Pico and switch Pico to using the Khronos Loader
 - Add Meta Passthrough tutorial doc
+- Add feature flags to Khronos loader for Magic Leap 2
 
 ## 2.0.3
 - Migrate the export scripts from gdscript to C++ via gdextension
