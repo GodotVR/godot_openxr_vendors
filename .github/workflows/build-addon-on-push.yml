@@ -3,6 +3,11 @@ name: Build on push
 
 on: [push, pull_request]
 
+env:
+  # Only used for the cache key. Increment version to force clean build.
+  GODOT_BASE_BRANCH: master
+  SCONS_CACHE: ${{ github.workspace }}/.scons-cache/
+
 jobs:
   build:
     name: Building for ${{ matrix.name }} (${{ matrix.os }})
@@ -17,42 +22,44 @@ jobs:
             flags: arch=x86_64
             artifact_name: build-files-linux-x86_64
             artifact_path: aar/demo/addons/godotopenxrvendors/.bin/linux/*/*/*.so
+            cache-name: linux-x86_64
           # Not sure how to cross compile these
           # - name: Linux (arm64)
           #   os: ubuntu-20.04
           #   platform: linux
           #   flags: arch=arm64
-          #  artifact_name: build-files-linux-arm64
+          #   artifact_name: build-files-linux-arm64
           #   artifact_path: aar/demo/addons/godotopenxrvendors/.bin/linux/*/*/*.so
+          #   cache-name: linux-arm64
           # - name: Linux (rv64)
           #  os: ubuntu-20.04
           #  platform: linux
           #  flags: arch=rv64
           #  artifact_name: build-files-linux-rv64
           #  artifact_path: aar/demo/addons/godotopenxrvendors/.bin/linux/*/*/*.so
+          #  cache-name: linux-rv64
           - name: Windows
             os: windows-latest
             platform: windows
             artifact_name: build-files-windows
             artifact_path: aar/demo/addons/godotopenxrvendors/.bin/windows/*/*/*.dll
+            cache-name: windows-x86_64
           - name: MacOS
             os: macos-latest
             platform: macos
             flags: arch=universal
             artifact_name: build-files-macos
             artifact_path: aar/demo/addons/godotopenxrvendors/.bin/macos/*/*.framework
-          - name: Android AAR
+            cache-name: macos-universal
+          - name: Android
             os: ubuntu-20.04
             platform: android
             flags: arch=arm64
-            artifact_name: build-files-android-aar
-            artifact_path: aar/demo/addons/godotopenxrvendors/.bin/android/*/*.aar
-          - name: Android SO
-            os: ubuntu-20.04
-            platform: android
-            flags: arch=arm64
-            artifact_name: build-files-android-so
-            artifact_path: aar/demo/addons/godotopenxrvendors/.bin/android/*/*/*.so
+            artifact_name: build-files-android
+            artifact_path: |
+              aar/demo/addons/godotopenxrvendors/.bin/android/*/*.aar
+              aar/demo/addons/godotopenxrvendors/.bin/android/*/*/*.so
+            cache-name: android
 
     # Note, to satisfy the asset library we need to make sure our zip files have a root folder
     # this is why we checkout into aar and build into asset
@@ -62,6 +69,11 @@ jobs:
         with:
           path: aar
           submodules: recursive
+      - name: Setup Godot build cache
+        uses: ./aar/thirdparty/godot-cpp/.github/actions/godot-cache
+        with:
+          cache-name: ${{ matrix.cache-name }}
+        continue-on-error: true
       - name: Set up Python (for SCons)
         uses: actions/setup-python@v4
         with:
@@ -101,10 +113,10 @@ jobs:
           cd ../../..
         if: matrix.platform == 'android'
       - name: Create Godot OpenXR Vendors AARs
-        run: |
-          cd aar
-          ./gradlew build
-          cd ..
+        uses: burrunan/gradle-cache-action@v1
+        with:
+          build-root-directory: aar
+          arguments: build
         if: matrix.platform == 'android'
 
       - name: Upload build files (artifacts)
@@ -147,8 +159,7 @@ jobs:
       - name: Copying artifacts
         run: |
           mkdir -p asset/addons/godotopenxrvendors/.bin/android/
-          cp -r build-files-android-aar/* asset/addons/godotopenxrvendors/.bin/android/
-          cp -r build-files-android-so/* asset/addons/godotopenxrvendors/.bin/android/
+          cp -r build-files-android/* asset/addons/godotopenxrvendors/.bin/android/
 
           mkdir -p asset/addons/godotopenxrvendors/.bin/linux/
           cp -r build-files-linux-x86_64/* asset/addons/godotopenxrvendors/.bin/linux/
