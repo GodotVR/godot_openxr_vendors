@@ -14,7 +14,6 @@ func setup_scene(spatial_entity: OpenXRFbSpatialEntity) -> void:
 	material.albedo_color = color
 	mesh_instance.set_surface_override_material(0, material)
 
-	spatial_entity.openxr_fb_spatial_entity_saved.connect(self._on_saved_to_cloud.bind(spatial_entity))
 	spatial_entity.save_to_storage(OpenXRFbSpatialEntity.STORAGE_CLOUD)
 
 func set_selected(p_selected: bool) -> void:

@@ -187,9 +187,15 @@ jobs:
    runs-on: [Windows, self-hosted, gpu]
    needs: build
 
+   env:
+     GODOT_VERSION: "4.3-beta2"
+     XRSIM_VERSION: "65.0.0"
+
    steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          lfs: 'true'
 
       - name: Install Chocolatey
         run: |
@@ -201,8 +207,7 @@ jobs:
 
       - name: Download Godot
         run: |
-          # @todo Download an actual Godot build!
-          Invoke-WebRequest -Uri "https://github.com/godotengine/godot-builds/releases/download/4.3-beta2/Godot_v4.3-beta2_win64.exe.zip" -OutFile "godot.zip"
+          Invoke-WebRequest -Uri "https://github.com/godotengine/godot-builds/releases/download/${{ env.GODOT_VERSION }}/Godot_v${{ env.GODOT_VERSION }}_win64.exe.zip" -OutFile "godot.zip"
 
       - name: Extract Godot
         run: |
@@ -214,7 +219,7 @@ jobs:
 
       - name: Download Meta XR Simulator
         run: |
-          Invoke-WebRequest -Uri "https://npm.developer.oculus.com/com.meta.xr.simulator/-/com.meta.xr.simulator-65.0.0.tgz" -OutFile MetaXRSimulator.tgz
+          Invoke-WebRequest -Uri "https://npm.developer.oculus.com/com.meta.xr.simulator/-/com.meta.xr.simulator-${{ env.XRSIM_VERSION }}.tgz" -OutFile MetaXRSimulator.tgz
 
       - name: Extract Meta XR Simulator
         run: |
@@ -222,14 +227,6 @@ jobs:
           New-Item -Path "C:\Meta" -ItemType Directory -Force
           tar -xzvf "MetaXRSimulator.tgz" -C "C:\Meta\"
           rm "MetaXRSimulator.tgz"
-
-          # Gunzip.
-          $tgzFile = Get-ChildItem -Path "C:\Meta" -Filter *.tgz
-          7z x $tgzFile.FullName -oC:\Meta -aoa
-
-          # Untar.
-          $tarFile = Get-ChildItem -Path "C:\Meta" -Filter *.tar
-          7z x $tarFile.FullName -oC:\Meta -aoa
 
       - name: Configure the Meta XR Simulator as the active OpenXR runtime
         run: |
@@ -242,15 +239,37 @@ jobs:
           name: build-files-windows
           path: build-files-windows
 
-      - name: Copy Windows build of the addon into the demo project
+      - name: Copy Windows build of the addon into the demo and samples project
         run: |
           mkdir -p demo/addons/godotopenxrvendors/.bin/windows/
           cp -r build-files-windows/* demo/addons/godotopenxrvendors/.bin/windows/
 
-      - name: Import the demo project
+          $sampleProjects = Get-ChildItem -Path "samples/" -Directory
+          foreach ($project in $sampleProjects) {
+            cp -r demo/addons "$($project.FullName)/"
+          }
+
+      - name: Import the demo and sample projects
         run: |
-          $godot = "Godot_v4.3-beta2_win64.exe"
+          $godot = "Godot_v${{ env.GODOT_VERSION }}_win64.exe"
+
+          Write-Output ""
+          Write-Output " ** Importing demo project"
+          Write-Output ""
+
           Start-Process -FilePath "$godot" -ArgumentList "--path demo --import --headless" -NoNewWindow -Wait
+
+          $sampleProjects = Get-ChildItem -Path "samples/" -Directory
+          foreach ($project in $sampleProjects) {
+            $projectFile = Join-Path -Path $project.FullName -ChildPath "project.godot"
+              if (Test-Path $projectFile) {
+              Write-Output ""
+              Write-Output " ** Importing project $($project.Name)"
+              Write-Output ""
+
+              Start-Process -FilePath "$godot" -ArgumentList "--path $($project.FullName) --import --headless" -NoNewWindow -Wait
+            }
+          }
 
       - name: Launch a synthetic environment
         run: |
@@ -267,7 +286,12 @@ jobs:
         run: |
           $jsonPath = "$env:AppData\MetaXR\MetaXrSimulator\persistent_data.json"
 
-          $vrsFiles = Get-ChildItem -Path tests/vrs -Filter *.vrs
+          $demoVrsFiles = Get-ChildItem -Path "demo/tests/" -Recurse -Filter *.vrs
+          $sampleVrsFiles = Get-ChildItem -Path "samples/*/tests/" -Recurse -Filter *.vrs
+          $vrsFiles = @()
+          $vrsFiles += $demoVrsFiles
+          $vrsFiles += $sampleVrsFiles
+
           foreach ($file in $vrsFiles) {
             $replayPath = Join-Path -Path $file.DirectoryName -ChildPath ($file.BaseName + "-replay.vrs")
             $jsonContent = @{
@@ -285,11 +309,17 @@ jobs:
             Set-Content -Path $jsonPath -Value $jsonContent
             echo "$jsonContent"
 
-            $godot = "Godot_v4.3-beta2_win64.exe"
+            $godot = "Godot_v${{ env.GODOT_VERSION }}_win64.exe"
             $timeout = 300
             $waitTime = 0
 
-            $process = Start-Process -FilePath "$godot" -ArgumentList "--path demo --rendering-method mobile --verbose -- --quit-with-openxr" -NoNewWindow -PassThru
+            $projectPath = (Get-Item $file.DirectoryName).Parent
+
+            Write-Output ""
+            Write-Output " ** Running VRS $($file.Name) on $($projectPath.Name) project"
+            Write-Output ""
+
+            $process = Start-Process -FilePath "$godot" -ArgumentList "--path $($projectPath.FullName) --rendering-method mobile --verbose -- --xrsim-automated-tests" -NoNewWindow -PassThru
 
             while ($process.HasExited -eq $false -and $waitTime -lt $timeout) {
                 Start-Sleep -Seconds 1
@@ -314,17 +344,13 @@ jobs:
         run: |
           Get-Process -Name "synth_env_server" | Stop-Process
 
-      - name: Copy vrs_pixmatch.py from Meta XR Simulator
-        run: |
-          $scriptsPath = "C:\Meta\package\MetaXRSimulator\scripts"
-          cp "$scriptsPath\requirements.txt" tests\vrs\
-          cp "$scriptsPath\vrs_pixmatch.py" tests\vrs\
-
       - name: Upload VRS artifacts
         uses: actions/upload-artifact@v3
         with:
           name: ReplayVRS
-          path: tests/vrs/**/*
+          path: |
+            test-scripts/
+            **/*/tests/*.vrs
 
   compare_vrs_replay:
     name: "Compare VRS replay"
@@ -349,23 +375,24 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r tests/vrs/requirements.txt
+          pip install -r scripts/vrs_pixmatch/requirements.txt
 
       - name: Compare VRS replay with expected recordings
         run: |
           cd tests/vrs/
 
-          # Fix bugs in vrs_pixmatch.py script.
-          patch -p0 < ../../thirdparty/meta_xr_simulator/vrs_pixmatch.patch
-
           mkdir diffs
-          for replay in *-replay.vrs; do
+          for replay in $(find . -name \*-replay.vrs); do
+            echo " ==> Checking $replay..."
             expected=$(echo $replay | sed -e 's/-replay.vrs$/.vrs/')
-            python vrs_pixmatch.py "$replay" "$expected" --threshold 0.4 --best_match_pixels_diff_threshold 40000 --diffs_output_path diffs
+            diff_path="diffs/$replay"
+            mkdir -p "$diff_path"
+            python ../../scripts/vrs_pixmatch/vrs_pixmatch.py "$expected" "$replay" --threshold 0.4 --max-pixel-diff 40000 --output-path "$diff_path" --verbose
           done
 
       - name: Upload VRS diff artifacts
         uses: actions/upload-artifact@v3
+        if: always()
         with:
           name: ReplayVRSDiff
           path: tests/vrs/diffs/**/*

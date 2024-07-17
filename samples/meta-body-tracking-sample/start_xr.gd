@@ -107,7 +107,7 @@ func _on_openxr_stopping() -> void:
 	# Our session is being stopped.
 	print("OpenXR is stopping")
 
-	if "--quit-with-openxr" in OS.get_cmdline_user_args():
+	if "--xrsim-automated-tests" in OS.get_cmdline_user_args():
 		# When we're running tests via the XR Simulator, it will end the OpenXR
 		# session automatically, and in that case, we want to quit.
 		get_tree().quit()

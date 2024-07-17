@@ -24,7 +24,7 @@ func _ready():
 
 
 func _on_session_stopping() -> void:
-	if "--quit-with-openxr" in OS.get_cmdline_user_args():
+	if "--xrsim-automated-tests" in OS.get_cmdline_user_args():
 		# When we're running tests via the XR Simulator, it will end the OpenXR
 		# session automatically, and in that case, we want to quit.
 		get_tree().quit()
