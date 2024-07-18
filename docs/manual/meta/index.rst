@@ -11,3 +11,4 @@ Meta
     hand_tracking
     passthrough
     scene_manager
+    spatial_anchors
