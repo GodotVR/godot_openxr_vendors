@@ -30,6 +30,7 @@
 #include "export/meta_export_plugin.h"
 
 #include <godot_cpp/classes/project_settings.hpp>
+#include <godot_cpp/classes/xr_interface.hpp>
 
 using namespace godot;
 
@@ -449,6 +450,11 @@ String MetaEditorExportPlugin::_get_android_manifest_application_element_content
 		const String hand_tracking_frequency_label = (hand_tracking_frequency == HAND_TRACKING_FREQUENCY_LOW_VALUE) ? "LOW" : "HIGH";
 		contents += "        <meta-data tools:node=\"replace\" android:name=\"com.oculus.handtracking.frequency\" android:value=\"" + hand_tracking_frequency_label + "\" />\n";
 		contents += "        <meta-data tools:node=\"replace\" android:name=\"com.oculus.handtracking.version\" android:value=\"V2.0\" />\n";
+	}
+
+	if ((int)ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/environment_blend_mode") != XRInterface::XR_ENV_BLEND_MODE_OPAQUE) {
+		// Show the splash screen in passthrough, if the user launches it from passthrough.
+		contents += "        <meta-data android:name=\"com.oculus.ossplash.background\" android:value=\"passthrough-contextual\" />\n";
 	}
 
 	return contents;
