@@ -102,8 +102,8 @@ The complete code for requesting a scene capture could look like this:
     @onready var scene_manager: OpenXRFbSceneManager = $OpenXRFbSceneManager
 
     func _ready():
-        scene_manager.open_xr_fb_scene_data_missing.connect(_scene_data_missing)
-        scene_manager.open_xr_fb_scene_capture_completed.connect(_scene_capture_completed)
+        scene_manager.openxr_fb_scene_data_missing.connect(_scene_data_missing)
+        scene_manager.openxr_fb_scene_capture_completed.connect(_scene_capture_completed)
 
     func _scene_data_missing() -> void:
         scene_manager.request_scene_capture()
