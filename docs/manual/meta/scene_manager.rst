@@ -112,7 +112,9 @@ The complete code for requesting a scene capture could look like this:
         if success == false:
             return
 
-        # Recreate scene anchors since the user may have changed them.
+        # Delete any existing anchors, since the user may have changed them.
         if scene_manager.are_scene_anchors_created():
             scene_manager.remove_scene_anchors()
-            scene_manager.create_scene_anchors()
+
+        # Create scene_anchors for the freshly captured scene
+        scene_manager.create_scene_anchors()
