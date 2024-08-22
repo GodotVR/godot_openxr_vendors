@@ -83,7 +83,6 @@ private:
 	const String TRACKER_NAME_RIGHT = "/user/fbhandaim/right";
 
 	bool fb_hand_tracking_aim_ext = false;
-	bool is_project_setting_enabled = false;
 
 	Ref<XRPositionalTracker> trackers[Hand::HAND_MAX];
 
