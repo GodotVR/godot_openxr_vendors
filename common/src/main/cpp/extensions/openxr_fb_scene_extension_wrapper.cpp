@@ -34,10 +34,6 @@
 #include <godot_cpp/templates/local_vector.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
 
-#ifdef META_VENDOR_ENABLED
-#include <openxr/fb_scene.h>
-#endif
-
 #include "extensions/openxr_fb_spatial_entity_extension_wrapper.h"
 
 using namespace godot;
@@ -110,10 +106,7 @@ PackedStringArray OpenXRFbSceneExtensionWrapper::get_semantic_labels(const XrSpa
 		return PackedStringArray();
 	}
 
-	XrSemanticLabelsSupportFlagsFB flags = XR_SEMANTIC_LABELS_SUPPORT_MULTIPLE_SEMANTIC_LABELS_BIT_FB | XR_SEMANTIC_LABELS_SUPPORT_ACCEPT_DESK_TO_TABLE_MIGRATION_BIT_FB;
-#ifdef META_VENDOR_ENABLED
-	flags |= XR_SEMANTIC_LABELS_SUPPORT_ACCEPT_INVISIBLE_WALL_FACE_BIT_FB;
-#endif
+	XrSemanticLabelsSupportFlagsFB flags = XR_SEMANTIC_LABELS_SUPPORT_MULTIPLE_SEMANTIC_LABELS_BIT_FB | XR_SEMANTIC_LABELS_SUPPORT_ACCEPT_DESK_TO_TABLE_MIGRATION_BIT_FB | XR_SEMANTIC_LABELS_SUPPORT_ACCEPT_INVISIBLE_WALL_FACE_BIT_FB;
 
 	const XrSemanticLabelsSupportInfoFB semanticLabelsSupportInfo = {
 		XR_TYPE_SEMANTIC_LABELS_SUPPORT_INFO_FB,
