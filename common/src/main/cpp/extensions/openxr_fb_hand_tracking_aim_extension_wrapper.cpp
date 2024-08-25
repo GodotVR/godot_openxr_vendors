@@ -90,8 +90,14 @@ PackedStringArray OpenXRFbHandTrackingAimExtensionWrapper::_get_suggested_tracke
 }
 
 void OpenXRFbHandTrackingAimExtensionWrapper::_on_state_ready() {
-	is_project_setting_enabled = ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/extensions/hand_tracking_aim");
+	// It would be great to not even request the extension, but the ProjectSettings singleton isn't available early enough.
+	ProjectSettings *project_settings = ProjectSettings::get_singleton();
+	bool is_project_setting_enabled = (bool)project_settings->get_setting_with_override("xr/openxr/extensions/hand_tracking") && (bool)project_settings->get_setting_with_override("xr/openxr/extensions/hand_tracking_aim");
 	if (!is_project_setting_enabled) {
+		fb_hand_tracking_aim_ext = false;
+	}
+
+	if (!is_enabled()) {
 		return;
 	}
 
@@ -139,7 +145,7 @@ uint64_t OpenXRFbHandTrackingAimExtensionWrapper::_set_hand_joint_locations_and_
 }
 
 void OpenXRFbHandTrackingAimExtensionWrapper::_on_process() {
-	if (!is_enabled() || !is_project_setting_enabled) {
+	if (!is_enabled()) {
 		return;
 	}
 
