@@ -5,12 +5,7 @@ import re
 import json
 
 SOURCE_DIRS = [
-    '../../common',
-    '../../godotopenxrkhronos',
-    '../../godotopenxrlynx',
-    '../../godotopenxrmeta',
-    '../../godotopenxrpico',
-    '../../godotopenxrmagicleap',
+    '../../plugin',
 ]
 
 GODOT_CPP_HEADERS = "../godot-cpp/gen/include/godot_cpp/classes"
@@ -92,3 +87,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

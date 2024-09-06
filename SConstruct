@@ -9,18 +9,18 @@ opts.Update(env)
 
 # Add common includes
 env.Append(CPPPATH=[
-    "#common/src/main/cpp/include/",
+    "#plugin/src/main/cpp/include/",
     "#thirdparty/openxr/include/",
     ])
 
 sources = []
-sources += Glob("#common/src/main/cpp/*.cpp")
-sources += Glob("#common/src/main/cpp/export/*.cpp")
-sources += Glob("#common/src/main/cpp/extensions/*.cpp")
-sources += Glob("#common/src/main/cpp/classes/*.cpp")
+sources += Glob("#plugin/src/main/cpp/*.cpp")
+sources += Glob("#plugin/src/main/cpp/export/*.cpp")
+sources += Glob("#plugin/src/main/cpp/extensions/*.cpp")
+sources += Glob("#plugin/src/main/cpp/classes/*.cpp")
 
 if env["target"] in ["editor", "template_debug"]:
-  doc_data = env.GodotCPPDocData("#common/src/gen/doc_data.gen.cpp", source=Glob("doc_classes/*.xml"))
+  doc_data = env.GodotCPPDocData("#plugin/src/gen/doc_data.gen.cpp", source=Glob("doc_classes/*.xml"))
   sources.append(doc_data)
 
 binary_path = '#demo/addons/godotopenxrvendors/.bin'

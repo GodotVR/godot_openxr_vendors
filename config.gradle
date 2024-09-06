@@ -15,20 +15,20 @@ ext {
     libraries = [
             godotAndroidLib: "org.godotengine:godot:4.3.0.stable",
     ]
-}
 
-// Parse the release version from the gradle project properties (e.g: -Prelease_version=<version>)
-ext.getReleaseVersion = { ->
-    final String defaultVersion = "3.1.0-dev-SNAPSHOT"
+    // Parse the release version from the gradle project properties (e.g: -Prelease_version=<version>)
+    getReleaseVersion = { ->
+        final String defaultVersion = "3.1.0-dev-SNAPSHOT"
 
-    String releaseVersion = project.hasProperty("release_version") ? project.property("release_version") : defaultVersion
-    if (releaseVersion == null || releaseVersion.isEmpty()) {
-        releaseVersion = defaultVersion
+        String releaseVersion = project.hasProperty("release_version") ? project.property("release_version") : defaultVersion
+        if (releaseVersion == null || releaseVersion.isEmpty()) {
+            releaseVersion = defaultVersion
+        }
+
+        if (!releaseVersion.endsWithIgnoreCase("-stable") && !releaseVersion.endsWithIgnoreCase("-snapshot")) {
+            releaseVersion += "-SNAPSHOT"
+        }
+
+        return releaseVersion
     }
-
-    if (!releaseVersion.endsWithIgnoreCase("-stable") && !releaseVersion.endsWithIgnoreCase("-snapshot")) {
-        releaseVersion += "-SNAPSHOT"
-    }
-
-    return releaseVersion
 }
