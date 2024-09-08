@@ -31,6 +31,7 @@ package org.godotengine.openxr.vendors
 
 import android.util.Log
 import org.godotengine.godot.Godot
+import org.godotengine.godot.GodotLib
 import org.godotengine.godot.plugin.GodotPlugin
 import org.godotengine.godot.utils.PermissionsUtil
 
@@ -56,10 +57,19 @@ abstract class GodotOpenXR(godot: Godot?) : GodotPlugin(godot) {
 	override fun onGodotSetupCompleted() {
 		super.onGodotSetupCompleted()
 
-		// Request plugin permissions if needed
-		val permissionsToRequest = getPluginPermissionsToEnable()
-		if (permissionsToRequest.isNotEmpty()) {
-			PermissionsUtil.requestPermissions(activity, permissionsToRequest)
+		// Check if automatic permissions request is enabled.
+		val automaticallyRequestPermissionsSetting = GodotLib.getGlobal("xr/openxr/extensions/automatically_request_runtime_permissions")
+		// We only request permissions when the project setting is enabled.
+		// If the project setting is not defined, we fall-back to the default behavior which is
+		// to automatically request permissions.
+		val requestPermissionsEnabled = automaticallyRequestPermissionsSetting.isNullOrEmpty() ||
+				automaticallyRequestPermissionsSetting.toBoolean()
+		if (requestPermissionsEnabled) {
+			val permissionsToRequest = getPluginPermissionsToEnable()
+			if (permissionsToRequest.isNotEmpty()) {
+				Log.v(TAG, "Performing automatic request of runtime permissions")
+				PermissionsUtil.requestPermissions(activity, permissionsToRequest)
+			}
 		}
 	}
 
