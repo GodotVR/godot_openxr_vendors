@@ -1,5 +1,8 @@
 # Change history for the Godot OpenXR loaders asset
 
+## 3.0.1
+- Fixed hand tracking issue
+
 ## 3.0.0
 - Merge GDExtension into a single implementation
 - Upgrade Android, Gradle, Godot and Kotlin dependencies
