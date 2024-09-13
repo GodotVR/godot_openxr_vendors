@@ -32,6 +32,7 @@
 #include <gdextension_interface.h>
 
 #include <godot_cpp/classes/engine.hpp>
+#include <godot_cpp/classes/project_settings.hpp>
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/core/defs.hpp>
 #include <godot_cpp/godot.hpp>
@@ -155,6 +156,8 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			break;
 
 		case MODULE_INITIALIZATION_LEVEL_SCENE: {
+			add_plugin_project_settings();
+
 			Engine::get_singleton()->register_singleton("OpenXRFbPassthroughExtensionWrapper", OpenXRFbPassthroughExtensionWrapper::get_singleton());
 			Engine::get_singleton()->register_singleton("OpenXRFbRenderModelExtensionWrapper", OpenXRFbRenderModelExtensionWrapper::get_singleton());
 			Engine::get_singleton()->register_singleton("OpenXRFbSceneCaptureExtensionWrapper", OpenXRFbSceneCaptureExtensionWrapper::get_singleton());
@@ -212,6 +215,30 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 }
 
 void terminate_plugin_module(ModuleInitializationLevel p_level) {
+}
+
+void add_plugin_project_settings() {
+	ProjectSettings* project_settings = ProjectSettings::get_singleton();
+	if (project_settings == nullptr) {
+		return;
+	}
+
+	{
+		// Add the 'automatically_request_runtime_permissions' project setting
+		String request_permissions_setting = "xr/openxr/extensions/automatically_request_runtime_permissions";
+		if (!project_settings->has_setting(request_permissions_setting)) {
+			// Default value is `true` to match prior plugin behavior
+			project_settings->set_setting(request_permissions_setting, true);
+		}
+
+		project_settings->set_initial_value(request_permissions_setting, true);
+		project_settings->set_as_basic(request_permissions_setting, false);
+		Dictionary property_info;
+		property_info["name"] = request_permissions_setting;
+		property_info["type"] = Variant::Type::BOOL;
+		property_info["hint"] = PROPERTY_HINT_NONE;
+		project_settings->add_property_info(property_info);
+	}
 }
 
 extern "C" {
