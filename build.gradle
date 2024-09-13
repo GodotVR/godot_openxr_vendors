@@ -31,11 +31,7 @@ task clean(type: Delete) {
     dependsOn 'cleanAddon'
     dependsOn 'cleanBuildFromSamples'
 
-    dependsOn ':godotopenxrkhronos:clean'
-    dependsOn ':godotopenxrlynx:clean'
-    dependsOn ':godotopenxrmeta:clean'
-    dependsOn ':godotopenxrpico:clean'
-    dependsOn ':godotopenxrmagicleap:clean'
+    dependsOn ':plugin:clean'
 }
 
 /**
@@ -52,13 +48,7 @@ task cleanAddon(type: Delete) {
 task buildPlugin {
     // Generate the editor gdextension binaries
     dependsOn ':buildSconsArtifacts'
-
-    dependsOn ":godotopenxrkhronos:build"
-    dependsOn ":godotopenxrlynx:build"
-    dependsOn ":godotopenxrmeta:build"
-    dependsOn ":godotopenxrpico:build"
-    dependsOn ":godotopenxrmagicleap:build"
-
+    dependsOn ":plugin:build"
     finalizedBy "copyBuildToSamples"
 }
 

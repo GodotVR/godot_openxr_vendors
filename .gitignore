@@ -24,4 +24,4 @@ local.properties
 
 # Misc
 .DS_Store
-/common/src/gen/
+/plugin/src/gen/

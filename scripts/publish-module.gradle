@@ -7,52 +7,67 @@ version = getReleaseVersion()
 afterEvaluate {
     publishing {
         publications {
-            release(MavenPublication) {
-                from components.release
+            android.libraryVariants.all { variant ->
+                String buildType = variant.buildType.name
+                if (buildType != "release") {
+                    return
+                }
 
-                // The coordinates of the library, being set from variables that we'll set up later
-                groupId ossrhGroupId
-                artifactId PUBLISH_ARTIFACT_ID
-                version getReleaseVersion()
+                String flavorArtifactId = PUBLISH_ARTIFACT_ID
+                String flavorName = variant.getFlavorName()
+                if (flavorName != null && !flavorName.isEmpty()) {
+                    flavorArtifactId = "$flavorArtifactId-$flavorName"
+                }
 
-                // Mostly self-explanatory metadata
-                pom {
-                    name = PUBLISH_ARTIFACT_ID
-                    description = 'Godot OpenXR Vendors'
-                    url = 'https://github.com/GodotVR/godot_openxr_vendors#readme'
-                    licenses {
-                        license {
-                            name = 'MIT License'
-                            url = 'https://github.com/GodotVR/godot_openxr_vendors/blob/master/LICENSE'
-                        }
-                    }
-                    developers {
-                        developer {
-                            id = 'm4gr3d'
-                            name = 'Fredia Huya-Kouadio'
-                            email = 'fhuyakou@gmail.com'
-                        }
-                        developer {
-                            id = 'BastiaanOlij'
-                            name = 'Bastiaan Olij'
-                            email = 'mux213@gmail.com'
-                        }
-                        developer {
-                            id = 'kisg'
-                            name = 'Gergely Kis'
-                        }
-                        developer {
-                            id = 'rsjtdrjgfuzkfg'
-                            name = 'Dirk Steinmetz'
-                        }
-                        // Add all other devs here...
-                    }
+                String variantName = variant.name
 
-                    // Version control info - if you're using GitHub, follow the format as seen here
-                    scm {
-                        connection = 'scm:git:github.com/GodotVR/godot_openxr_vendors.git'
-                        developerConnection = 'scm:git:ssh://github.com/GodotVR/godot_openxr_vendors.git'
-                        url = 'https://github.com/GodotVR/godot_openxr_vendors/tree/master'
+                "$variantName"(MavenPublication) {
+                    from components."$variantName"
+
+                    // The coordinates of the library, being set from variables that we'll set up later
+                    groupId ossrhGroupId
+                    artifactId flavorArtifactId
+                    version getReleaseVersion()
+
+                    // Mostly self-explanatory metadata
+                    pom {
+                        name = flavorArtifactId
+                        description = 'Godot OpenXR Vendors'
+                        url = 'https://github.com/GodotVR/godot_openxr_vendors#readme'
+                        licenses {
+                            license {
+                                name = 'MIT License'
+                                url = 'https://github.com/GodotVR/godot_openxr_vendors/blob/master/LICENSE'
+                            }
+                        }
+                        developers {
+                            developer {
+                                id = 'm4gr3d'
+                                name = 'Fredia Huya-Kouadio'
+                                email = 'fhuyakou@gmail.com'
+                            }
+                            developer {
+                                id = 'BastiaanOlij'
+                                name = 'Bastiaan Olij'
+                                email = 'mux213@gmail.com'
+                            }
+                            developer {
+                                id = 'kisg'
+                                name = 'Gergely Kis'
+                            }
+                            developer {
+                                id = 'rsjtdrjgfuzkfg'
+                                name = 'Dirk Steinmetz'
+                            }
+                            // Add all other devs here...
+                        }
+
+                        // Version control info - if you're using GitHub, follow the format as seen here
+                        scm {
+                            connection = 'scm:git:github.com/GodotVR/godot_openxr_vendors.git'
+                            developerConnection = 'scm:git:ssh://github.com/GodotVR/godot_openxr_vendors.git'
+                            url = 'https://github.com/GodotVR/godot_openxr_vendors/tree/master'
+                        }
                     }
                 }
             }
