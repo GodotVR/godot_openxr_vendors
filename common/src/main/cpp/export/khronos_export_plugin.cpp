@@ -122,7 +122,11 @@ Dictionary KhronosEditorExportPlugin::_get_export_options_overrides(const Ref<go
 		return overrides;
 	}
 
-	if (!_is_khronos_htc_enabled()) {
+	if (!_is_vendor_plugin_enabled()) {
+		overrides["khronos_xr_features/vendors"] = KHRONOS_VENDOR_OTHER;
+	}
+
+	if (!_is_vendor_plugin_enabled() || !_is_khronos_htc_enabled()) {
 		// Overrides with the options' default values.
 		overrides["khronos_xr_features/htc/hand_tracking"] = MANIFEST_FALSE_VALUE;
 		overrides["khronos_xr_features/htc/tracker"] = MANIFEST_FALSE_VALUE;

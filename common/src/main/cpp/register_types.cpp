@@ -42,6 +42,7 @@
 #include "export/lynx_export_plugin.h"
 #include "export/meta_export_plugin.h"
 #include "export/pico_export_plugin.h"
+#include "export/magicleap_export_plugin.h"
 
 #include "extensions/openxr_fb_body_tracking_extension_wrapper.h"
 #include "extensions/openxr_fb_composition_layer_alpha_blend_extension_wrapper.h"
@@ -199,6 +200,10 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			ClassDB::register_class<PicoEditorExportPlugin>();
 			ClassDB::register_class<PicoEditorPlugin>();
 			EditorPlugins::add_by_type<PicoEditorPlugin>();
+
+			ClassDB::register_class<MagicleapEditorExportPlugin>();
+			ClassDB::register_class<MagicleapEditorPlugin>();
+			EditorPlugins::add_by_type<MagicleapEditorPlugin>();
 		} break;
 
 		case MODULE_INITIALIZATION_LEVEL_MAX:

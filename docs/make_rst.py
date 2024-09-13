@@ -74,6 +74,8 @@ SKIP_CLASSES: List[str] = [
     "OpenXREditorExportPlugin",
     "PicoEditorExportPlugin",
     "PicoEditorPlugin",
+    "MagicleapEditorExportPlugin",
+    "MagicleapEditorPlugin",
 ]
 
 CLASS_GROUPS: Dict[str, str] = {

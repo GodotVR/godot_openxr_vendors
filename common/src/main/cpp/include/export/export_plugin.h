@@ -44,12 +44,14 @@ static const char *META_VENDOR_NAME = "meta";
 static const char *PICO_VENDOR_NAME = "pico";
 static const char *LYNX_VENDOR_NAME = "lynx";
 static const char *KHRONOS_VENDOR_NAME = "khronos";
+static const char *MAGICLEAP_VENDOR_NAME = "magicleap";
 
 static const char *VENDORS_LIST[] = {
 	META_VENDOR_NAME,
 	PICO_VENDOR_NAME,
 	LYNX_VENDOR_NAME,
 	KHRONOS_VENDOR_NAME,
+	MAGICLEAP_VENDOR_NAME,
 };
 
 // Set of custom feature tags supported by the plugin
@@ -57,6 +59,9 @@ static const char *EYE_GAZE_INTERACTION_FEATURE = "XR_EXT_eye_gaze_interaction";
 
 static const int REGULAR_MODE_VALUE = 0;
 static const int OPENXR_MODE_VALUE = 1;
+
+static const int MANIFEST_FALSE_VALUE = 0;
+static const int MANIFEST_TRUE_VALUE = 1;
 
 /// Base class for the vendor editor export plugin
 class OpenXREditorExportPlugin : public EditorExportPlugin {

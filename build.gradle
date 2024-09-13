@@ -35,6 +35,7 @@ task clean(type: Delete) {
     dependsOn ':godotopenxrlynx:clean'
     dependsOn ':godotopenxrmeta:clean'
     dependsOn ':godotopenxrpico:clean'
+    dependsOn ':godotopenxrmagicleap:clean'
 }
 
 /**
@@ -56,6 +57,7 @@ task buildPlugin {
     dependsOn ":godotopenxrlynx:build"
     dependsOn ":godotopenxrmeta:build"
     dependsOn ":godotopenxrpico:build"
+    dependsOn ":godotopenxrmagicleap:build"
 
     finalizedBy "copyBuildToSamples"
 }

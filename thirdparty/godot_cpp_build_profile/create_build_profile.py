@@ -10,6 +10,7 @@ SOURCE_DIRS = [
     '../../godotopenxrlynx',
     '../../godotopenxrmeta',
     '../../godotopenxrpico',
+    '../../godotopenxrmagicleap',
 ]
 
 GODOT_CPP_HEADERS = "../godot-cpp/gen/include/godot_cpp/classes"
