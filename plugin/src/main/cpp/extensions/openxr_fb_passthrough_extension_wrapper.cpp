@@ -309,7 +309,8 @@ void OpenXRFbPassthroughExtensionWrapper::start_passthrough_layer(LayerPurpose p
 		case LAYER_PURPOSE_PROJECTED:
 			xr_layer_purpose = XR_PASSTHROUGH_LAYER_PURPOSE_PROJECTED_FB;
 			break;
-		default:
+		case LAYER_PURPOSE_NONE:
+		case LAYER_PURPOSE_MAX:
 			UtilityFunctions::print("Corresponding XrPassthroughLayerPurposeFB not found for LayerPurpose: ", p_layer_purpose);
 			return;
 	}
