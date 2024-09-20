@@ -120,6 +120,9 @@ uint64_t OpenXRFbCompositionLayerSettingsExtensionWrapper::_set_viewport_composi
 		case SUPERSAMPLING_MODE_QUALITY: {
 			settings->layerFlags |= XR_COMPOSITION_LAYER_SETTINGS_QUALITY_SUPER_SAMPLING_BIT_FB;
 		} break;
+		case SUPERSAMPLING_MODE_DISABLED: {
+			// Do not enable any supersampling mode flags.
+		} break;
 	}
 
 	switch ((SharpeningMode)(int)p_property_values.get(SHARPENING_MODE_PROPERTY_NAME, SHARPENING_MODE_DISABLED)) {
@@ -128,6 +131,9 @@ uint64_t OpenXRFbCompositionLayerSettingsExtensionWrapper::_set_viewport_composi
 		} break;
 		case SHARPENING_MODE_QUALITY: {
 			settings->layerFlags |= XR_COMPOSITION_LAYER_SETTINGS_QUALITY_SHARPENING_BIT_FB;
+		} break;
+		case SHARPENING_MODE_DISABLED: {
+			// Do not enable any sharpening mode flags.
 		} break;
 	}
 
