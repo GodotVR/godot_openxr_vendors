@@ -32,7 +32,7 @@
 
 #include <godot_cpp/variant/string_name.hpp>
 
-struct XrUuidEXT;
+struct XrUuid;
 
 #define UNPACK(...) __VA_ARGS__
 
@@ -125,7 +125,7 @@ struct XrUuidEXT;
 #define SESSION (XrSession) get_openxr_api()->get_session()
 
 namespace OpenXRUtilities {
-godot::StringName uuid_to_string_name(const XrUuidEXT &p_uuid);
+godot::StringName uuid_to_string_name(const XrUuid &p_uuid);
 };
 
 #endif // UTIL_H
