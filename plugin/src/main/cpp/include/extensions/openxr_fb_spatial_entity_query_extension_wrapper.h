@@ -89,7 +89,7 @@ private:
 		void *userdata = nullptr;
 		Vector<XrSpaceQueryResultFB> results;
 
-		QueryInfo() { }
+		QueryInfo() {}
 
 		QueryInfo(QueryCompleteCallback p_callback, void *p_userdata) {
 			callback = p_callback;

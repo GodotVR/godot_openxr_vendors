@@ -194,10 +194,10 @@ void OpenXRFbBodyTrackingExtensionWrapper::_on_session_created(uint64_t instance
 
 	// Create the body-tracker handle
 	XrBodyTrackerCreateInfoFB createInfo = {
-        XR_TYPE_BODY_TRACKER_CREATE_INFO_FB, // type
-        nullptr, // next
-        XR_BODY_JOINT_SET_DEFAULT_FB // bodyJointSet
-    };
+		XR_TYPE_BODY_TRACKER_CREATE_INFO_FB, // type
+		nullptr, // next
+		XR_BODY_JOINT_SET_DEFAULT_FB // bodyJointSet
+	};
 	XrResult result = xrCreateBodyTrackerFB(SESSION, &createInfo, &body_tracker);
 	if (XR_FAILED(result)) {
 		UtilityFunctions::print("Failed to create body-tracker handle: ", result);
@@ -207,7 +207,7 @@ void OpenXRFbBodyTrackingExtensionWrapper::_on_session_created(uint64_t instance
 	// Construct the XRBodyTracker if necessary
 	if (xr_body_tracker.is_null()) {
 		xr_body_tracker.instantiate();
-        xr_body_tracker->set_tracker_name("/user/body_tracker");
+		xr_body_tracker->set_tracker_name("/user/body_tracker");
 		xr_body_tracker->set_body_flags(XRBodyTracker::BODY_FLAG_UPPER_BODY_SUPPORTED | XRBodyTracker::BODY_FLAG_HANDS_SUPPORTED);
 	}
 }
@@ -249,22 +249,22 @@ void OpenXRFbBodyTrackingExtensionWrapper::_on_process() {
 
 	// Construct the expression info struct.
 	XrBodyJointsLocateInfoFB locate_info = {
-        XR_TYPE_BODY_JOINTS_LOCATE_INFO_FB, // type
-        nullptr, // next
-        (XrSpace)get_openxr_api()->get_play_space(), // baseSpace
-        display_time // time
-    };
+		XR_TYPE_BODY_JOINTS_LOCATE_INFO_FB, // type
+		nullptr, // next
+		(XrSpace)get_openxr_api()->get_play_space(), // baseSpace
+		display_time // time
+	};
 
 	// Construct the locations struct.
 	XrBodyJointLocationFB fb_locations[XR_BODY_JOINT_COUNT_FB] = {};
 	XrBodyJointLocationsFB locations = {
-        XR_TYPE_BODY_JOINT_LOCATIONS_FB, // type
-        nullptr, // next
-        XR_FALSE, // isActive
-        0.0f, // confidence
-        XR_BODY_JOINT_COUNT_FB, // jointCount
-        fb_locations // jointLocations
-    };
+		XR_TYPE_BODY_JOINT_LOCATIONS_FB, // type
+		nullptr, // next
+		XR_FALSE, // isActive
+		0.0f, // confidence
+		XR_BODY_JOINT_COUNT_FB, // jointCount
+		fb_locations // jointLocations
+	};
 
 	// Read the weights
 	XrResult result = xrLocateBodyJointsFB(body_tracker, &locate_info, &locations);
@@ -324,7 +324,7 @@ void OpenXRFbBodyTrackingExtensionWrapper::_on_process() {
 		Vector3 root_o = hips.origin.slide(Vector3(0.0, 1.0, 0.0));
 		Transform3D root = Transform3D(root_x, root_y, root_z, root_o).orthonormalized();
 		xr_body_tracker->set_joint_transform(XRBodyTracker::JOINT_ROOT, root);
-        xr_body_tracker->set_pose("default", root, Vector3(), Vector3(), XRPose::XR_TRACKING_CONFIDENCE_HIGH);
+		xr_body_tracker->set_pose("default", root, Vector3(), Vector3(), XRPose::XR_TRACKING_CONFIDENCE_HIGH);
 
 		// Distance in meters to push the shoulder joints back from the
 		// clavicle-position to be in-line with the upper arm joints as

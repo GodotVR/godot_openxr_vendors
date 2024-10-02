@@ -81,7 +81,7 @@ private:
 		void *userdata = nullptr;
 		XrSpaceStorageLocationFB location = XR_SPACE_STORAGE_LOCATION_INVALID_FB;
 
-		RequestInfo() { }
+		RequestInfo() {}
 
 		RequestInfo(SaveSpacesCompleteCallback p_callback, void *p_userdata, XrSpaceStorageLocationFB p_location) {
 			callback = p_callback;

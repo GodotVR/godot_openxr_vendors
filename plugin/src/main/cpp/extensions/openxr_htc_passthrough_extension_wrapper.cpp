@@ -157,4 +157,3 @@ int OpenXRHtcPassthroughExtensionWrapper::_get_composition_layer_order(int p_ind
 	// Ensure the passthrough layer will be behind the projection layer.
 	return -100;
 }
-

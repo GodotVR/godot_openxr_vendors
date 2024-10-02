@@ -41,9 +41,9 @@
 #include "export/export_plugin.h"
 #include "export/khronos_export_plugin.h"
 #include "export/lynx_export_plugin.h"
+#include "export/magicleap_export_plugin.h"
 #include "export/meta_export_plugin.h"
 #include "export/pico_export_plugin.h"
-#include "export/magicleap_export_plugin.h"
 
 #include "extensions/openxr_fb_body_tracking_extension_wrapper.h"
 #include "extensions/openxr_fb_composition_layer_alpha_blend_extension_wrapper.h"
@@ -61,8 +61,8 @@
 #include "extensions/openxr_fb_spatial_entity_extension_wrapper.h"
 #include "extensions/openxr_fb_spatial_entity_query_extension_wrapper.h"
 #include "extensions/openxr_fb_spatial_entity_sharing_extension_wrapper.h"
-#include "extensions/openxr_fb_spatial_entity_storage_extension_wrapper.h"
 #include "extensions/openxr_fb_spatial_entity_storage_batch_extension_wrapper.h"
+#include "extensions/openxr_fb_spatial_entity_storage_extension_wrapper.h"
 #include "extensions/openxr_fb_spatial_entity_user_extension_wrapper.h"
 #include "extensions/openxr_htc_facial_tracking_extension_wrapper.h"
 #include "extensions/openxr_htc_passthrough_extension_wrapper.h"
@@ -218,7 +218,7 @@ void terminate_plugin_module(ModuleInitializationLevel p_level) {
 }
 
 void add_plugin_project_settings() {
-	ProjectSettings* project_settings = ProjectSettings::get_singleton();
+	ProjectSettings *project_settings = ProjectSettings::get_singleton();
 	if (project_settings == nullptr) {
 		return;
 	}

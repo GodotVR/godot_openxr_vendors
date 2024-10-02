@@ -107,10 +107,10 @@ private:
 			(XrSpace), space);
 
 	EXT_PROTO_XRRESULT_FUNC4(xrLocateSpace,
-		(XrSpace), space,
-		(XrSpace), baseSpace,
-		(XrTime), time,
-		(XrSpaceLocation *), location)
+			(XrSpace), space,
+			(XrSpace), baseSpace,
+			(XrTime), time,
+			(XrSpaceLocation *), location)
 
 	bool initialize_fb_spatial_entity_extension(const XrInstance &instance);
 	void on_spatial_anchor_created(const XrEventDataSpatialAnchorCreateCompleteFB *event);
@@ -122,7 +122,7 @@ private:
 		SpatialAnchorCreatedCallback callback = nullptr;
 		void *userdata = nullptr;
 
-		SpatialAnchorCreationInfo() { }
+		SpatialAnchorCreationInfo() {}
 
 		SpatialAnchorCreationInfo(SpatialAnchorCreatedCallback p_callback, void *p_userdata) {
 			callback = p_callback;
@@ -135,7 +135,7 @@ private:
 		SetComponentEnabledCallback callback = nullptr;
 		void *userdata = nullptr;
 
-		SetComponentEnabledInfo() { }
+		SetComponentEnabledInfo() {}
 
 		SetComponentEnabledInfo(SetComponentEnabledCallback p_callback, void *p_userdata) {
 			callback = p_callback;
@@ -152,7 +152,7 @@ private:
 			space = p_space;
 		}
 
-		TrackedEntity() {};
+		TrackedEntity(){};
 	};
 	HashMap<StringName, TrackedEntity> tracked_entities;
 

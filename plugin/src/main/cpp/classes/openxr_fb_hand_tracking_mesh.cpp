@@ -32,8 +32,8 @@
 #include "extensions/openxr_fb_hand_tracking_mesh_extension_wrapper.h"
 
 #include <godot_cpp/classes/xr_hand_modifier3d.hpp>
-#include <godot_cpp/variant/utility_functions.hpp>
 #include <godot_cpp/classes/xr_hand_tracker.hpp>
+#include <godot_cpp/variant/utility_functions.hpp>
 
 using namespace godot;
 

@@ -44,7 +44,6 @@ class OpenXRFbSpatialEntity : public RefCounted {
 	GDCLASS(OpenXRFbSpatialEntity, RefCounted);
 
 public:
-
 	enum StorageLocation {
 		STORAGE_LOCAL,
 		STORAGE_CLOUD,
