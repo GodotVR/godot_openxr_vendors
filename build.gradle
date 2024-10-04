@@ -30,6 +30,7 @@ task clean(type: Delete) {
 
     dependsOn 'cleanAddon'
     dependsOn 'cleanBuildFromSamples'
+    dependsOn 'cleanZippedSamples'
 
     dependsOn ':plugin:clean'
 }
@@ -148,4 +149,38 @@ task cleanBuildFromSamples {
             }
         }
     }
+}
+
+task zipSamples {
+    def samplesDir = file 'samples'
+    def directoriesToZip = samplesDir.listFiles().findAll { it.isDirectory() && it.name != 'builds' }
+
+    def destinationDir = file 'zippedSamples'
+    destinationDir.mkdirs()
+
+    directoriesToZip.each { dir ->
+        def godotFolder = new File(dir, '.godot')
+        if (godotFolder.exists()) {
+            godotFolder.deleteDir()
+        }
+
+        def androidFolder = new File(dir, 'android')
+        if (androidFolder.exists()) {
+            androidFolder.deleteDir()
+        }
+
+        def zipTask = tasks.create(name: "zip${dir.name.capitalize()}", type: Zip) {
+            from(dir.parentFile) {
+                include "${dir.name}/**"
+            }
+            archiveFileName = "${dir.name}.zip"
+            destinationDirectory = destinationDir
+        }
+
+        dependsOn zipTask
+    }
+}
+
+task cleanZippedSamples {
+    delete 'zippedSamples'
 }

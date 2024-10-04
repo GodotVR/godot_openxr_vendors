@@ -25,3 +25,4 @@ local.properties
 # Misc
 .DS_Store
 /plugin/src/gen/
+/zippedSamples
