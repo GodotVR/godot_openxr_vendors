@@ -16,7 +16,7 @@ jobs:
       fail-fast: true
       matrix:
         include:
-          - name: Linux (x86_64)
+          - name: 🐧 Linux (x86_64, GCC)
             os: ubuntu-20.04
             platform: linux
             flags: arch=x86_64
@@ -38,20 +38,20 @@ jobs:
           #  artifact_name: build-files-linux-rv64
           #  artifact_path: aar/demo/addons/godotopenxrvendors/.bin/linux/*/*/*.so
           #  cache-name: linux-rv64
-          - name: Windows
+          - name: 🏁 Windows (x86_64, MSVC)
             os: windows-latest
             platform: windows
             artifact_name: build-files-windows
             artifact_path: aar/demo/addons/godotopenxrvendors/.bin/windows/*/*/*.dll
-            cache-name: windows-x86_64
-          - name: MacOS
+            cache-name: windows-x86_64-msvc
+          - name: 🍎 MacOS (universal)
             os: macos-latest
             platform: macos
             flags: arch=universal
             artifact_name: build-files-macos
             artifact_path: aar/demo/addons/godotopenxrvendors/.bin/macos/*/*.framework
             cache-name: macos-universal
-          - name: Android
+          - name: 🤖 Android (arm64)
             os: ubuntu-20.04
             platform: android
             flags: arch=arm64
@@ -59,23 +59,23 @@ jobs:
             artifact_path: |
               aar/demo/addons/godotopenxrvendors/.bin/android/*/*.aar
               aar/demo/addons/godotopenxrvendors/.bin/android/*/*/*.so
-            cache-name: android
+            cache-name: android-arm64
 
     # Note, to satisfy the asset library we need to make sure our zip files have a root folder
     # this is why we checkout into aar and build into asset
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           path: aar
           submodules: recursive
-      - name: Setup Godot build cache
-        uses: ./aar/thirdparty/godot-cpp/.github/actions/godot-cache
+      - name: Restore Godot build cache
+        uses: ./aar/thirdparty/godot-cpp/.github/actions/godot-cache-restore
         with:
           cache-name: ${{ matrix.cache-name }}
         continue-on-error: true
       - name: Set up Python (for SCons)
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: "3.x"
       - name: Android dependencies
@@ -92,16 +92,21 @@ jobs:
           scons platform=${{ matrix.platform }} target=template_debug ${{ matrix.flags }} custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json build_profile=thirdparty/godot_cpp_build_profile/build_profile.json
           scons platform=${{ matrix.platform }} target=template_release ${{ matrix.flags }} custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json build_profile=thirdparty/godot_cpp_build_profile/build_profile.json
           cd ..
+      - name: Save Godot build cache
+        uses: ./aar/thirdparty/godot-cpp/.github/actions/godot-cache-save
+        with:
+          cache-name: ${{ matrix.cache-name }}
+        continue-on-error: true
 
       # On Android we build our loaders and build our extension with gradlew
       - name: Setup java
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: 17
           distribution: "adopt"
         if: matrix.platform == 'android'
       - name: Validate Gradle wrapper
-        uses: gradle/wrapper-validation-action@v1
+        uses: gradle/actions/wrapper-validation@v3
         if: matrix.platform == 'android'
       - name: Create Godot-CPP library
         run: |
@@ -120,7 +125,7 @@ jobs:
         if: matrix.platform == 'android'
 
       - name: Upload build files (artifacts)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.artifact_name }}
           path: |
@@ -135,11 +140,11 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           path: aar
       - name: Download all workflow run artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
       - name: Create Godot OpenXR Vendors Addon
         run: |
           mkdir asset
@@ -174,9 +179,10 @@ jobs:
           cp -r build-files-macos/* asset/addons/godotopenxrvendors/.bin/macos/
 
       - name: Create Godot OpenXR Vendor addon artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: GodotOpenXRVendorsAddon
+          include-hidden-files: true
           path: |
             asset
       - name: Zip addon
@@ -207,7 +213,7 @@ jobs:
 
    steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           lfs: 'true'
 
@@ -248,7 +254,7 @@ jobs:
           Set-ItemProperty -Path "HKLM:\SOFTWARE\Khronos\OpenXR\1" -Name "ActiveRuntime" -Value "C:\Meta\package\MetaXRSimulator\meta_openxr_simulator.json"
 
       - name: Download Windows build artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: build-files-windows
           path: build-files-windows
@@ -359,7 +365,7 @@ jobs:
           Get-Process -Name "synth_env_server" | Stop-Process
 
       - name: Upload VRS artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ReplayVRS
           path: |
@@ -373,16 +379,16 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Download VRS artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ReplayVRS
           path: tests/vrs
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
@@ -405,7 +411,7 @@ jobs:
           done
 
       - name: Upload VRS diff artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: ReplayVRSDiff
