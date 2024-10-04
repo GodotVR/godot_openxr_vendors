@@ -34,7 +34,7 @@
 
 using namespace godot;
 
-StringName OpenXRUtilities::uuid_to_string_name(const XrUuidEXT &p_uuid) {
+StringName OpenXRUtilities::uuid_to_string_name(const XrUuid &p_uuid) {
 	const uint8_t *data = p_uuid.data;
 	char uuid_str[37];
 
