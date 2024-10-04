@@ -80,7 +80,7 @@ private:
 		ShareSpacesCompleteCallback callback = nullptr;
 		void *userdata = nullptr;
 
-		RequestInfo() { }
+		RequestInfo() {}
 
 		RequestInfo(ShareSpacesCompleteCallback p_callback, void *p_userdata) {
 			callback = p_callback;

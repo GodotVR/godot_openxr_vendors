@@ -97,7 +97,7 @@ private:
 			userdata = p_userdata;
 		}
 
-		RequestInfo() { }
+		RequestInfo() {}
 	};
 
 	HashMap<XrAsyncRequestIdFB, RequestInfo> requests;

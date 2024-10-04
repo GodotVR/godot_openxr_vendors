@@ -118,12 +118,11 @@ void OpenXRFbSpatialEntityExtensionWrapper::_on_process() {
 
 		if ((location.locationFlags & XR_SPACE_LOCATION_POSITION_VALID_BIT) && (location.locationFlags & XR_SPACE_LOCATION_ORIENTATION_VALID_BIT)) {
 			Transform3D transform(
-				Basis(Quaternion(location.pose.orientation.x, location.pose.orientation.y, location.pose.orientation.z, location.pose.orientation.w)),
-				Vector3(location.pose.position.x, location.pose.position.y, location.pose.position.z));
+					Basis(Quaternion(location.pose.orientation.x, location.pose.orientation.y, location.pose.orientation.z, location.pose.orientation.w)),
+					Vector3(location.pose.position.x, location.pose.position.y, location.pose.position.z));
 
 			E.value.tracker->set_pose("default", transform, Vector3(), Vector3(), XRPose::XR_TRACKING_CONFIDENCE_HIGH);
-		}
-		else {
+		} else {
 			Ref<XRPose> default_pose = E.value.tracker->get_pose("default");
 			if (default_pose.is_valid()) {
 				// Set the tracking confidence to none, while maintaining the existing transform.

@@ -39,11 +39,11 @@
 #include <godot_cpp/classes/surface_tool.hpp>
 #include <godot_cpp/templates/local_vector.hpp>
 
-#include "extensions/openxr_fb_spatial_entity_extension_wrapper.h"
+#include "extensions/openxr_fb_scene_extension_wrapper.h"
 #include "extensions/openxr_fb_spatial_entity_container_extension_wrapper.h"
+#include "extensions/openxr_fb_spatial_entity_extension_wrapper.h"
 #include "extensions/openxr_fb_spatial_entity_sharing_extension_wrapper.h"
 #include "extensions/openxr_fb_spatial_entity_storage_extension_wrapper.h"
-#include "extensions/openxr_fb_scene_extension_wrapper.h"
 #include "extensions/openxr_meta_spatial_entity_mesh_extension_wrapper.h"
 
 #include "classes/openxr_fb_spatial_entity_user.h"

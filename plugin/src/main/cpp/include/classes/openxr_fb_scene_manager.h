@@ -61,7 +61,7 @@ class OpenXRFbSceneManager : public Node {
 			node = p_node->get_instance_id();
 			entity = p_entity;
 		}
-		Anchor() { }
+		Anchor() {}
 	};
 	HashMap<StringName, Anchor> anchors;
 	bool anchors_created = false;

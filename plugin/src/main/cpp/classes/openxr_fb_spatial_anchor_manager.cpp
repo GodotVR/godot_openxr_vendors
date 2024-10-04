@@ -32,8 +32,8 @@
 #include <godot_cpp/classes/open_xr_interface.hpp>
 #include <godot_cpp/classes/open_xrapi_extension.hpp>
 #include <godot_cpp/classes/packed_scene.hpp>
-#include <godot_cpp/classes/xr_origin3d.hpp>
 #include <godot_cpp/classes/xr_anchor3d.hpp>
+#include <godot_cpp/classes/xr_origin3d.hpp>
 #include <godot_cpp/classes/xr_server.hpp>
 
 #include <godot_cpp/variant/utility_functions.hpp>

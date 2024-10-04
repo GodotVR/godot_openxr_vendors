@@ -76,7 +76,6 @@ private:
 			(const XrSpaceEraseInfoFB *), info,
 			(XrAsyncRequestIdFB *), requestId)
 
-
 	bool initialize_fb_spatial_entity_storage_extension(const XrInstance &instance);
 	void on_space_save_complete(const XrEventDataSpaceSaveCompleteFB *event);
 	void on_space_erase_complete(const XrEventDataSpaceEraseCompleteFB *event);
@@ -87,7 +86,7 @@ private:
 		StorageRequestCompleteCallback callback = nullptr;
 		void *userdata = nullptr;
 
-		RequestInfo() { }
+		RequestInfo() {}
 
 		RequestInfo(StorageRequestCompleteCallback p_callback, void *p_userdata) {
 			callback = p_callback;

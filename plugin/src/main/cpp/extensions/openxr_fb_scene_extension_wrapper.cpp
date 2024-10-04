@@ -191,8 +191,8 @@ Rect2 OpenXRFbSceneExtensionWrapper::get_bounding_box_2d(const XrSpace p_space) 
 	}
 
 	return Rect2(
-		Vector2(bounding_box.offset.x, bounding_box.offset.y),
-		Vector2(bounding_box.extent.width, bounding_box.extent.height));
+			Vector2(bounding_box.offset.x, bounding_box.offset.y),
+			Vector2(bounding_box.extent.width, bounding_box.extent.height));
 }
 
 AABB OpenXRFbSceneExtensionWrapper::get_bounding_box_3d(const XrSpace p_space) {
@@ -210,8 +210,8 @@ AABB OpenXRFbSceneExtensionWrapper::get_bounding_box_3d(const XrSpace p_space) {
 	}
 
 	return AABB(
-		Vector3(bounding_box.offset.x, bounding_box.offset.y, bounding_box.offset.z),
-		Vector3(bounding_box.extent.width, bounding_box.extent.height, bounding_box.extent.depth));
+			Vector3(bounding_box.offset.x, bounding_box.offset.y, bounding_box.offset.z),
+			Vector3(bounding_box.extent.width, bounding_box.extent.height, bounding_box.extent.depth));
 }
 
 PackedVector2Array OpenXRFbSceneExtensionWrapper::get_boundary_2d(const XrSpace p_space) {

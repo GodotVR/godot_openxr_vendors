@@ -31,8 +31,8 @@
 
 #include <godot_cpp/templates/local_vector.hpp>
 
-#include "extensions/openxr_fb_spatial_entity_storage_batch_extension_wrapper.h"
 #include "extensions/openxr_fb_spatial_entity_sharing_extension_wrapper.h"
+#include "extensions/openxr_fb_spatial_entity_storage_batch_extension_wrapper.h"
 
 #include "classes/openxr_fb_spatial_entity_user.h"
 
@@ -111,7 +111,6 @@ void OpenXRFbSpatialEntityBatch::_on_share_with_users(XrResult p_result, void *p
 	(*userdata)->emit_signal("openxr_fb_spatial_entity_batch_shared", XR_SUCCEEDED(p_result));
 	memdelete(userdata);
 }
-
 
 Ref<OpenXRFbSpatialEntityBatch> OpenXRFbSpatialEntityBatch::create_batch(const TypedArray<OpenXRFbSpatialEntity> &p_entities) {
 	return Ref<OpenXRFbSpatialEntityBatch>(memnew(OpenXRFbSpatialEntityBatch(p_entities)));

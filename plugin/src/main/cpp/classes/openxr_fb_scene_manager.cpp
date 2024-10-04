@@ -30,13 +30,13 @@
 #include "classes/openxr_fb_scene_manager.h"
 
 #include <godot_cpp/classes/open_xr_interface.hpp>
-#include <godot_cpp/classes/xr_origin3d.hpp>
 #include <godot_cpp/classes/xr_anchor3d.hpp>
+#include <godot_cpp/classes/xr_origin3d.hpp>
 #include <godot_cpp/classes/xr_server.hpp>
 
+#include "classes/openxr_fb_spatial_entity_query.h"
 #include "extensions/openxr_fb_scene_capture_extension_wrapper.h"
 #include "extensions/openxr_fb_scene_extension_wrapper.h"
-#include "classes/openxr_fb_spatial_entity_query.h"
 
 using namespace godot;
 

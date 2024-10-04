@@ -43,7 +43,7 @@ static const int FACE_TRACKING_NONE_VALUE = 0;
 static const int FACE_TRACKING_FACEONLY_VALUE = 1;
 static const int FACE_TRACKING_LIPSYNCONLY_VALUE = 2;
 static const int FACE_TRACKING_HYBRID_VALUE = 3;
-} // namespace
+} //namespace pico
 
 class PicoEditorExportPlugin : public OpenXREditorExportPlugin {
 	GDCLASS(PicoEditorExportPlugin, OpenXREditorExportPlugin)
