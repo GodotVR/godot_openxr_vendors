@@ -1,0 +1,186 @@
+[gd_scene load_steps=20 format=3 uid="uid://cqsodpswgup8w"]
+
+[ext_resource type="Script" path="res://main.gd" id="1_fsva1"]
+[ext_resource type="Script" path="res://multi_mesh_move.gd" id="3_h2yge"]
+[ext_resource type="PackedScene" uid="uid://cfbmcnbws28t1" path="res://bone_cube.tscn" id="4_1bvp3"]
+[ext_resource type="Script" path="res://moving_cube.gd" id="5_lquwl"]
+[ext_resource type="Texture2D" uid="uid://bmei66qp1ec7m" path="res://grass-texture.jpg" id="6_7mycd"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_0x6cv"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_dqyx0"]
+sky_material = SubResource("ProceduralSkyMaterial_0x6cv")
+
+[sub_resource type="Environment" id="Environment_m0xew"]
+background_mode = 2
+background_color = Color(0, 0, 0, 0)
+sky = SubResource("Sky_dqyx0")
+ambient_light_source = 2
+ambient_light_color = Color(0.270588, 0.270588, 0.270588, 1)
+tonemap_mode = 2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_k604q"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_mjcgt"]
+material = SubResource("StandardMaterial3D_k604q")
+size = Vector2(10, 10)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_lquwl"]
+size = Vector3(9.99512, 0.0859375, 10.0342)
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_yvvw4"]
+spread = 0.0
+initial_velocity_min = 3.0
+initial_velocity_max = 3.0
+gravity = Vector3(0, 0, 0)
+
+[sub_resource type="BoxMesh" id="BoxMesh_t5jnj"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_0xm2m"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_h2yge"]
+
+[sub_resource type="MultiMesh" id="MultiMesh_1bvp3"]
+transform_format = 1
+instance_count = 1
+mesh = SubResource("BoxMesh_h2yge")
+buffer = PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+
+[sub_resource type="BoxMesh" id="BoxMesh_7mycd"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_272bh"]
+shading_mode = 0
+albedo_texture = ExtResource("6_7mycd")
+uv1_scale = Vector3(0.35, 0.35, 0.35)
+uv1_triplanar = true
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_5vw27"]
+material = SubResource("StandardMaterial3D_272bh")
+size = Vector2(5, 6)
+
+[node name="Main" type="Node3D"]
+script = ExtResource("1_fsva1")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_m0xew")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.677077, -0.692092, 0.25015, 0.264251, 0.545897, 0.79509, -0.686831, -0.472235, 0.552501, 0, 0, 0)
+
+[node name="XROrigin3D" type="XROrigin3D" parent="."]
+
+[node name="XRCamera3D" type="XRCamera3D" parent="XROrigin3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.352791, 0)
+
+[node name="LeftHand" type="XRController3D" parent="XROrigin3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.460909, 0.388594, -0.241118)
+tracker = &"left_hand"
+pose = &"grip"
+
+[node name="LeftControllerFbRenderModel" type="OpenXRFbRenderModel" parent="XROrigin3D/LeftHand"]
+
+[node name="Label3D" type="Label3D" parent="XROrigin3D/LeftHand"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, -0.124, -0.186)
+pixel_size = 0.001
+text = "[Analog Stick] Move"
+
+[node name="RightHand" type="XRController3D" parent="XROrigin3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.478861, 0.468292, -0.241097)
+tracker = &"right_hand"
+pose = &"grip"
+
+[node name="RightControllerFbRenderModel" type="OpenXRFbRenderModel" parent="XROrigin3D/RightHand"]
+render_model_type = 1
+
+[node name="Label3D" type="Label3D" parent="XROrigin3D/RightHand"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, -0.124, -0.186)
+pixel_size = 0.001
+text = "Turn Mode: SMOOTH
+Space Warp: ENABLED
+
+[B] Toggle Turn Mode
+[A] Enable/Disable Space Warp
+[Analog Stick] Turn"
+
+[node name="TurnTimer" type="Timer" parent="XROrigin3D"]
+wait_time = 0.2
+one_shot = true
+
+[node name="Floor" type="MeshInstance3D" parent="."]
+mesh = SubResource("PlaneMesh_mjcgt")
+
+[node name="FloorCollider" type="Area3D" parent="Floor"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor/FloorCollider"]
+shape = SubResource("BoxShape3D_lquwl")
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1, -4)
+amount = 2
+process_material = SubResource("ParticleProcessMaterial_yvvw4")
+draw_pass_1 = SubResource("BoxMesh_t5jnj")
+
+[node name="Label3D" type="Label3D" parent="GPUParticles3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 0)
+text = "GPU
+Particles"
+
+[node name="CPUParticles3D" type="CPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 2.21267, -4)
+amount = 2
+mesh = SubResource("BoxMesh_0xm2m")
+spread = 0.0
+gravity = Vector3(0, 0, 0)
+initial_velocity_min = 3.0
+initial_velocity_max = 3.0
+
+[node name="Label3D" type="Label3D" parent="CPUParticles3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 0)
+text = "CPU
+Particles"
+
+[node name="MultiMeshInstance3D" type="MultiMeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.40488, -4)
+multimesh = SubResource("MultiMesh_1bvp3")
+script = ExtResource("3_h2yge")
+
+[node name="Label3D" type="Label3D" parent="MultiMeshInstance3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 0)
+text = "MultiMesh"
+
+[node name="BoneCube" parent="." instance=ExtResource("4_1bvp3")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -3, 1, -1)
+
+[node name="Label3D" type="Label3D" parent="BoneCube"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.52612, 0, 0)
+text = "Skeleton"
+
+[node name="MovingCube" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 2.399, -1)
+
+[node name="MovingCube" type="MeshInstance3D" parent="MovingCube"]
+mesh = SubResource("BoxMesh_7mycd")
+skeleton = NodePath("../..")
+script = ExtResource("5_lquwl")
+
+[node name="Label3D" type="Label3D" parent="MovingCube"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0.000349998, 2)
+text = "Mesh"
+
+[node name="GrassTextures" type="Node3D" parent="."]
+
+[node name="GrassTexture" type="MeshInstance3D" parent="GrassTextures"]
+transform = Transform3D(-4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, -4, 2, -1)
+mesh = SubResource("PlaneMesh_5vw27")
+skeleton = NodePath("../..")
+
+[node name="GrassTexture2" type="MeshInstance3D" parent="GrassTextures"]
+transform = Transform3D(1.91069e-15, -4.37114e-08, -1, -1, -4.37114e-08, 0, -4.37114e-08, 1, -4.37114e-08, 0, 2, -5)
+mesh = SubResource("PlaneMesh_5vw27")
+skeleton = NodePath("../..")
+
+[connection signal="input_vector2_changed" from="XROrigin3D/LeftHand" to="." method="_on_left_hand_input_vector_2_changed"]
+[connection signal="button_pressed" from="XROrigin3D/RightHand" to="." method="_on_right_hand_button_pressed"]
+[connection signal="input_vector2_changed" from="XROrigin3D/RightHand" to="." method="check_turn"]
