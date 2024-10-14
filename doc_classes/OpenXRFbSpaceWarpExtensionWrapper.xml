@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="OpenXRFbSpaceWarpExtensionWrapper" inherits="OpenXRExtensionWrapperExtension" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		Wraps the [code]XR_FB_space_warp[/code] extension.
+	</brief_description>
+	<description>
+		Wraps the [code]XR_FB_space_warp[/code] extension.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="is_enabled">
+			<return type="bool" />
+			<description>
+				Checks if the extension is enabled or not.
+			</description>
+		</method>
+		<method name="set_space_warp_enabled">
+			<return type="void" />
+			<param index="0" name="enable" type="bool" />
+			<description>
+				Sets the extension as enabled or disabled.
+				If you only want to disable for a single frame, see [method skip_space_warp_frame].
+				Note: The Application Space Warp project setting must be enabled in order to enable Application Space Warp.
+			</description>
+		</method>
+		<method name="skip_space_warp_frame">
+			<return type="void" />
+			<description>
+				Skips space warp frame extrapolation for the next rendered frame.
+				This is useful in situations where the player camera is snapping/teleporting to a different position.
+				If you want to disable for longer than a single frame, see [method set_space_warp_enabled].
+			</description>
+		</method>
+	</methods>
+</class>
