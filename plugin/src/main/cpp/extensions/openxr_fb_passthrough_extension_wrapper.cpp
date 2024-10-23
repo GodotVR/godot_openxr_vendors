@@ -133,8 +133,15 @@ void OpenXRFbPassthroughExtensionWrapper::cleanup() {
 }
 
 uint64_t OpenXRFbPassthroughExtensionWrapper::_set_system_properties_and_get_next_pointer(void *p_next_pointer) {
-	system_passthrough_properties.next = &system_passthrough_color_lut_properties;
-	return reinterpret_cast<uint64_t>(&system_passthrough_properties);
+	if (fb_passthrough_ext) {
+		system_passthrough_properties.next = p_next_pointer;
+		p_next_pointer = &system_passthrough_properties;
+	}
+	if (meta_passthrough_color_lut_ext) {
+		system_passthrough_color_lut_properties.next = p_next_pointer;
+		p_next_pointer = &system_passthrough_color_lut_properties;
+	}
+	return reinterpret_cast<uint64_t>(p_next_pointer);
 }
 
 void OpenXRFbPassthroughExtensionWrapper::_on_instance_created(uint64_t p_instance) {
