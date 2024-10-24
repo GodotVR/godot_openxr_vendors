@@ -43,6 +43,10 @@ static const int FACE_TRACKING_NONE_VALUE = 0;
 static const int FACE_TRACKING_FACEONLY_VALUE = 1;
 static const int FACE_TRACKING_LIPSYNCONLY_VALUE = 2;
 static const int FACE_TRACKING_HYBRID_VALUE = 3;
+
+static const int HAND_TRACKING_NONE_VALUE = 0;
+static const int HAND_TRACKING_LOWFREQUENCY_VALUE = 1;
+static const int HAND_TRACKING_HIGHFREQUENCY_VALUE = 2;
 } //namespace pico
 
 class PicoEditorExportPlugin : public OpenXREditorExportPlugin {
@@ -65,6 +69,7 @@ protected:
 
 	Dictionary _eye_tracking_option;
 	Dictionary _face_tracking_option;
+	Dictionary _hand_tracking_option;
 
 private:
 	bool _is_eye_tracking_enabled() const;

@@ -70,6 +70,16 @@ PicoEditorExportPlugin::PicoEditorExportPlugin() {
 			PROPERTY_USAGE_DEFAULT,
 			pico::FACE_TRACKING_NONE_VALUE,
 			false);
+
+	_hand_tracking_option = _generate_export_option(
+			"pico_xr_features/hand_tracking",
+			"",
+			Variant::Type::INT,
+			PROPERTY_HINT_ENUM,
+			"No,Low frequency,High frequency (60Hz)",
+			PROPERTY_USAGE_DEFAULT,
+			pico::HAND_TRACKING_NONE_VALUE,
+			false);
 }
 
 void PicoEditorExportPlugin::_bind_methods() {}
@@ -83,6 +93,7 @@ TypedArray<Dictionary> PicoEditorExportPlugin::_get_export_options(const Ref<Edi
 	export_options.append(_get_vendor_toggle_option());
 	export_options.append(_eye_tracking_option);
 	export_options.append(_face_tracking_option);
+	export_options.append(_hand_tracking_option);
 
 	return export_options;
 }
@@ -133,6 +144,11 @@ String PicoEditorExportPlugin::_get_export_option_warning(const Ref<EditorExport
 		if (!record_audio && face_tracking == pico::FACE_TRACKING_HYBRID_VALUE) {
 			return "\"Hybrid face tracking\" requires \"Record Audio\" to be checked.\n";
 		}
+	} else if (option == "pico_xr_features/hand_tracking") {
+		int hand_tracking = _get_int_option(option, pico::HAND_TRACKING_NONE_VALUE);
+		if (!openxr_enabled && hand_tracking > pico::HAND_TRACKING_NONE_VALUE) {
+			return "\"Hand tracking\" requires \"XR Mode\" to be \"OpenXR\".\n";
+		}
 	}
 
 	return OpenXREditorExportPlugin::_get_export_option_warning(platform, option);
@@ -173,6 +189,15 @@ String PicoEditorExportPlugin::_get_android_manifest_application_element_content
 	int face_tracking = _get_int_option("pico_xr_features/face_tracking", pico::FACE_TRACKING_NONE_VALUE);
 	if (face_tracking > pico::FACE_TRACKING_NONE_VALUE) {
 		contents += "        <meta-data tools:node=\"replace\" android:name=\"picovr.software.face_tracking\" android:value=\"1\" />\n";
+	}
+
+	//Hand tracking
+	int hand_tracking = _get_int_option("pico_xr_features/hand_tracking", pico::HAND_TRACKING_NONE_VALUE);
+	if (hand_tracking > pico::HAND_TRACKING_NONE_VALUE) {
+		contents += "        <meta-data tools:node=\"replace\" android:name=\"handtracking\" android:value=\"1\" />\n";
+	}
+	if (hand_tracking > pico::HAND_TRACKING_LOWFREQUENCY_VALUE) {
+		contents += "        <meta-data tools:node=\"replace\" android:name=\"Hand_Tracking_HighFrequency\" android:value=\"1\" />\n";
 	}
 
 	return contents;
