@@ -156,7 +156,7 @@ MetaEditorExportPlugin::MetaEditorExportPlugin() {
 			"",
 			Variant::Type::INT,
 			PROPERTY_HINT_ENUM,
-			"Enabled,Disabled,Contextual",
+			"Enabled,Disabled",
 			PROPERTY_USAGE_DEFAULT,
 			BOUNDARY_ENABLED_VALUE,
 			false);
@@ -428,8 +428,6 @@ String MetaEditorExportPlugin::_get_android_manifest_element_contents(const Ref<
 	int boundary_mode = _get_int_option("meta_xr_features/boundary_mode", BOUNDARY_ENABLED_VALUE);
 	if (boundary_mode == BOUNDARY_DISABLED_VALUE) {
 		contents += "    <uses-feature tools:node=\"replace\" android:name=\"com.oculus.feature.BOUNDARYLESS_APP\" android:required=\"true\" />\n";
-	} else if (boundary_mode == BOUNDARY_CONTEXTUAL_VALUE) {
-		contents += "    <uses-feature tools:node=\"replace\" android:name=\"com.oculus.feature.CONTEXTUAL_BOUNDARYLESS_APP\" android:required=\"true\" />\n";
 	}
 
 	return contents;

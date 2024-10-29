@@ -65,7 +65,6 @@ static const int HAND_TRACKING_FREQUENCY_HIGH_VALUE = 1;
 
 static const int BOUNDARY_ENABLED_VALUE = 0;
 static const int BOUNDARY_DISABLED_VALUE = 1;
-static const int BOUNDARY_CONTEXTUAL_VALUE = 2;
 } // namespace
 
 class MetaEditorExportPlugin : public OpenXREditorExportPlugin {
