@@ -307,23 +307,27 @@ void OpenXRFbBodyTrackingExtensionWrapper::_on_process() {
 	// If the location data is good then we need to apply some corrections
 	// before handing the data back to Godot. These include:
 	//
-	// - The Root joint carries no data, so instead place it on the ground
+	// - The Root joint carries no useful orientation data, so instead align it
 	//   under the hips pointing forwards.
 	//
 	// - Adjusting the left and right shoulder back so they are aligned
 	//   with how models are designed, rather than the Meta positions of
 	//   the tips of the clavicles.
 	if (locations.isActive) {
+		// Align root under the hips pointing 'forwards'
+		// IE, +z aligns with hips & user's real-world [upper-body] forward.
+		// (Remaining, however, parallel to the XRorigin / Global XZ plane; root's basis rotated around Y to fit)
+
 		// Get the hips transform
 		Transform3D hips = xr_body_tracker->get_joint_transform(XRBodyTracker::JOINT_HIPS);
-
-		// Construct the root under the hips pointing forwards
 		Vector3 root_y = Vector3(0.0, 1.0, 0.0);
-		Vector3 root_z = -hips.basis[Vector3::AXIS_X].cross(root_y);
-		Vector3 root_x = root_y.cross(root_z);
-		Vector3 root_o = hips.origin.slide(Vector3(0.0, 1.0, 0.0));
+		Vector3 hips_left = hips.basis.get_column(Vector3::AXIS_X);
+		Vector3 root_x = (hips_left.slide(Vector3(0.0, 1.0, 0.0))).normalized();
+		Vector3 root_z = root_x.cross(root_y);
+		Vector3 root_o = xr_body_tracker->get_joint_transform(XRBodyTracker::JOINT_ROOT).origin;
 		Transform3D root = Transform3D(root_x, root_y, root_z, root_o).orthonormalized();
 		xr_body_tracker->set_joint_transform(XRBodyTracker::JOINT_ROOT, root);
+		// Set tracker pose, velocities, confidence.
 		xr_body_tracker->set_pose("default", root, Vector3(), Vector3(), XRPose::XR_TRACKING_CONFIDENCE_HIGH);
 
 		// Distance in meters to push the shoulder joints back from the
@@ -333,7 +337,7 @@ void OpenXRFbBodyTrackingExtensionWrapper::_on_process() {
 
 		// Deduce the shoulder offset from the upper chest transform
 		Transform3D upper_chest = xr_body_tracker->get_joint_transform(XRBodyTracker::JOINT_UPPER_CHEST);
-		Vector3 shoulder_offset = upper_chest.basis[2] * shoulder_z_offset;
+		Vector3 shoulder_offset = upper_chest.basis.get_column(Vector3::AXIS_Z) * shoulder_z_offset;
 
 		// Correct the left shoulder
 		Transform3D left_shoulder = xr_body_tracker->get_joint_transform(XRBodyTracker::JOINT_LEFT_SHOULDER);
