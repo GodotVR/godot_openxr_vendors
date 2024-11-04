@@ -348,7 +348,6 @@ void OpenXRFbBodyTrackingExtensionWrapper::_on_process() {
 		Transform3D right_shoulder = xr_body_tracker->get_joint_transform(XRBodyTracker::JOINT_RIGHT_SHOULDER);
 		right_shoulder.origin += shoulder_offset;
 		xr_body_tracker->set_joint_transform(XRBodyTracker::JOINT_RIGHT_SHOULDER, right_shoulder);
-
 	}
 
 	// Register the XRBodyTracker if necessary
