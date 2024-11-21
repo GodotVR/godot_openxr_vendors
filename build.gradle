@@ -86,41 +86,41 @@ task buildSconsArtifacts {
         logger.debug("Found executable path for $sconsName: ${sconsExecutableFile.absolutePath}")
     }
 
-    // Build the Godot-CPP bindings
-    tasks.create(name: "buildGodotCPPArm64Debug", type: Exec) {
+    // Build the GDExtension library for Android.
+    tasks.create(name: "buildGodotOpenXRVendorsAndroidArm64Debug", type: Exec) {
         executable sconsExecutableFile.absolutePath
-        args "--directory=thirdparty/godot-cpp", "platform=android", "target=template_debug", "arch=arm64", "custom_api_file=../godot_cpp_gdextension_api/extension_api.json"
+        args "--directory=.", "platform=android", "target=template_debug", "arch=arm64", "custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json"
     }
-    tasks.create(name: "buildGodotCPPArm64Release", type: Exec) {
+    tasks.create(name: "buildGodotOpenXRVendorsAndroidArm64Release", type: Exec) {
         executable sconsExecutableFile.absolutePath
-        args "--directory=thirdparty/godot-cpp", "platform=android", "target=template_release", "arch=arm64", "custom_api_file=../godot_cpp_gdextension_api/extension_api.json"
+        args "--directory=.", "platform=android", "target=template_release", "arch=arm64", "custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json"
     }
-    tasks.create(name: "buildGodotCPPX86_64Debug", type: Exec) {
+    tasks.create(name: "buildGodotOpenXRVendorsAndroidX86_64Debug", type: Exec) {
         executable sconsExecutableFile.absolutePath
-        args "--directory=thirdparty/godot-cpp", "platform=android", "target=template_debug", "arch=x86_64", "custom_api_file=../godot_cpp_gdextension_api/extension_api.json"
+        args "--directory=.", "platform=android", "target=template_debug", "arch=x86_64", "custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json"
     }
-    tasks.create(name: "buildGodotCPPX86_64Release", type: Exec) {
+    tasks.create(name: "buildGodotOpenXRVendorsAndroidX86_64Release", type: Exec) {
         executable sconsExecutableFile.absolutePath
-        args "--directory=thirdparty/godot-cpp", "platform=android", "target=template_release", "arch=x86_64", "custom_api_file=../godot_cpp_gdextension_api/extension_api.json"
+        args "--directory=.", "platform=android", "target=template_release", "arch=x86_64", "custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json"
     }
 
-    dependsOn 'buildGodotCPPArm64Debug'
-    dependsOn 'buildGodotCPPArm64Release'
-    dependsOn 'buildGodotCPPX86_64Debug'
-    dependsOn 'buildGodotCPPX86_64Release'
+    dependsOn 'buildGodotOpenXRVendorsAndroidArm64Debug'
+    dependsOn 'buildGodotOpenXRVendorsAndroidArm64Release'
+    dependsOn 'buildGodotOpenXRVendorsAndroidX86_64Debug'
+    dependsOn 'buildGodotOpenXRVendorsAndroidX86_64Release'
 
-    // Creating gradle task to generate the editor gdextension binaries
-    tasks.create(name: "buildGodotOpenXRVendorsDebugGDExtension", type: Exec) {
+    // Build the GDExtension library for desktop.
+    tasks.create(name: "buildGodotOpenXRVendorsDesktopDebug", type: Exec) {
         executable sconsExecutableFile.absolutePath
         args "--directory=.", "target=template_debug", "custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json"
     }
-    tasks.create(name: "buildGodotOpenXRVendorsReleaseGDExtension", type: Exec) {
+    tasks.create(name: "buildGodotOpenXRVendorsDesktopRelease", type: Exec) {
         executable sconsExecutableFile.absolutePath
         args "--directory=.", "target=template_release", "custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json"
     }
 
-    dependsOn 'buildGodotOpenXRVendorsDebugGDExtension'
-    dependsOn 'buildGodotOpenXRVendorsReleaseGDExtension'
+    dependsOn 'buildGodotOpenXRVendorsDesktopDebug'
+    dependsOn 'buildGodotOpenXRVendorsDesktopRelease'
 }
 
 task copyBuildToSamples {
