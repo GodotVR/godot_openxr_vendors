@@ -24,6 +24,7 @@ if env["target"] in ["editor", "template_debug"]:
   sources.append(doc_data)
 
 binary_path = '#demo/addons/godotopenxrvendors/.bin'
+android_src_path = '#plugin/src'
 project_name = 'godotopenxrvendors'
 
 # Statically link with libgcc and libstdc++ for more Linux compatibility.
@@ -44,6 +45,31 @@ if env["platform"] == "macos":
             env["platform"],
             env["target"],
             project_name,
+        ),
+        source=sources,
+    )
+elif env["platform"] == "android":
+    android_target = "release" if env["target"] == "template_release" else "debug"
+    android_arch = ""
+    if env["arch"] == "arm32":
+        android_arch = "armeabi-v7a"
+    elif env["arch"] == "arm64":
+        android_arch = "arm64-v8a"
+    elif env["arch"] == "x86_32":
+        android_arch = "x86"
+    elif env["arch"] == "x86_64":
+        android_arch = "x86_64"
+    else:
+        raise Exception("Unable to map %s to Android architecture name" % env["arch"])
+
+    library = env.SharedLibrary(
+        "{}/main/libs/{}/{}/{}/lib{}{}".format(
+            android_src_path,
+            android_target,
+            android_arch,
+            android_arch,
+            project_name,
+            env["SHLIBSUFFIX"],
         ),
         source=sources,
     )
