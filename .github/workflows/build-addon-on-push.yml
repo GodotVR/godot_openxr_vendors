@@ -55,11 +55,19 @@ jobs:
             os: ubuntu-20.04
             platform: android
             flags: arch=arm64
-            artifact_name: build-files-android
+            artifact_name: build-files-android-arm64
             artifact_path: |
-              aar/demo/addons/godotopenxrvendors/.bin/android/*/*.aar
-              aar/demo/addons/godotopenxrvendors/.bin/android/*/*/*.so
+              aar/plugin/src/main/libs/*/*/*/*.so
             cache-name: android-arm64
+          - name: 🤖 Android (x86_64)
+            os: ubuntu-20.04
+            platform: android
+            flags: arch=x86_64
+            artifact_name: build-files-android-x86_64
+            artifact_path: |
+              aar/plugin/src/main/libs/*/*/*/*.so
+            cache-name: android-x86_64
+
 
     # Note, to satisfy the asset library we need to make sure our zip files have a root folder
     # this is why we checkout into aar and build into asset
@@ -83,6 +91,7 @@ jobs:
         with:
           ndk-version: r23c
           link-to-sdk: true
+        if: matrix.platform == 'android'
       - name: Install scons
         run: |
           python -m pip install scons==4.0.0
@@ -97,33 +106,6 @@ jobs:
         with:
           cache-name: ${{ matrix.cache-name }}
         continue-on-error: true
-
-      # On Android we build our loaders and build our extension with gradlew
-      - name: Setup java
-        uses: actions/setup-java@v4
-        with:
-          java-version: 17
-          distribution: "adopt"
-        if: matrix.platform == 'android'
-      - name: Validate Gradle wrapper
-        uses: gradle/actions/wrapper-validation@v3
-        if: matrix.platform == 'android'
-      - name: Create Godot-CPP library
-        run: |
-          cd aar/thirdparty/godot-cpp
-          scons platform=${{ matrix.platform }} target=template_debug arch=arm64 custom_api_file=../godot_cpp_gdextension_api/extension_api.json build_profile=../godot_cpp_build_profile/build_profile.json
-          scons platform=${{ matrix.platform }} target=template_release arch=arm64 custom_api_file=../godot_cpp_gdextension_api/extension_api.json build_profile=../godot_cpp_build_profile/build_profile.json
-          scons platform=${{ matrix.platform }} target=template_debug arch=x86_64 custom_api_file=../godot_cpp_gdextension_api/extension_api.json build_profile=../godot_cpp_build_profile/build_profile.json
-          scons platform=${{ matrix.platform }} target=template_release arch=x86_64 custom_api_file=../godot_cpp_gdextension_api/extension_api.json build_profile=../godot_cpp_build_profile/build_profile.json
-          cd ../../..
-        if: matrix.platform == 'android'
-      - name: Create Godot OpenXR Vendors AARs
-        uses: burrunan/gradle-cache-action@v1
-        with:
-          build-root-directory: aar
-          arguments: build
-        if: matrix.platform == 'android'
-
       - name: Upload build files (artifacts)
         uses: actions/upload-artifact@v4
         with:
@@ -131,13 +113,11 @@ jobs:
           path: |
             ${{ matrix.artifact_path }}
 
-  # GODOT 4.2 ADDON GENERATION SECTION
   asset:
     name: Assembling the asset
     runs-on: ubuntu-20.04
     needs: build
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -145,6 +125,23 @@ jobs:
           path: aar
       - name: Download all workflow run artifacts
         uses: actions/download-artifact@v4
+      - name: Setup java
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: "adopt"
+      - name: Validate Gradle wrapper
+        uses: gradle/actions/wrapper-validation@v3
+      - name: Copy Android binaries
+        run: |
+          mkdir aar/plugin/src/main/libs
+          cp -r build-files-android-arm64/* aar/plugin/src/main/libs/
+          cp -r build-files-android-x86_64/* aar/plugin/src/main/libs/
+      - name: Create Godot OpenXR Vendors AARs
+        run: |
+          cd aar
+          ./gradlew build
+          cd ..
       - name: Create Godot OpenXR Vendors Addon
         run: |
           mkdir asset
@@ -166,8 +163,15 @@ jobs:
 
       - name: Copying artifacts
         run: |
-          mkdir -p asset/addons/godotopenxrvendors/.bin/android/
-          cp -r build-files-android/* asset/addons/godotopenxrvendors/.bin/android/
+          mkdir -p asset/addons/godotopenxrvendors/.bin/android/template_debug/arm64
+          mkdir -p asset/addons/godotopenxrvendors/.bin/android/template_release/arm64
+          cp -r build-files-android-arm64/debug/*/*/*.so asset/addons/godotopenxrvendors/.bin/android/template_debug/arm64/
+          cp -r build-files-android-arm64/release/*/*/*.so asset/addons/godotopenxrvendors/.bin/android/template_release/arm64/
+
+          mkdir -p asset/addons/godotopenxrvendors/.bin/android/template_debug/x86_64
+          mkdir -p asset/addons/godotopenxrvendors/.bin/android/template_release/x86_64
+          cp -r build-files-android-x86_64/debug/*/*/*.so asset/addons/godotopenxrvendors/.bin/android/template_debug/x86_64/
+          cp -r build-files-android-x86_64/release/*/*/*.so asset/addons/godotopenxrvendors/.bin/android/template_release/x86_64/
 
           mkdir -p asset/addons/godotopenxrvendors/.bin/linux/
           cp -r build-files-linux-x86_64/* asset/addons/godotopenxrvendors/.bin/linux/

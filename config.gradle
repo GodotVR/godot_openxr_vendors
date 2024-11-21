@@ -7,7 +7,6 @@ ext {
             javaVersion             : JavaVersion.VERSION_17,
             nexusPublishVersion     : '1.3.0',
             kotlinVersion           : '1.9.20',
-            cmakeVersion            : '3.22.1',
             ndkVersion              : '23.2.8568313',
             openxrVersion           : '1.0.34'
     ]
