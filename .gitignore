@@ -25,4 +25,6 @@ local.properties
 # Misc
 .DS_Store
 /plugin/src/gen/
+/plugin/src/main/libs
 /zippedSamples
+/thirdparty/khronos_openxr_sdk/
