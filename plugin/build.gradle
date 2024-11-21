@@ -25,12 +25,6 @@ android {
             abiFilters "arm64-v8a"
         }
     }
-    externalNativeBuild {
-        cmake {
-            path file('CMakeLists.txt')
-            version versions.cmakeVersion
-        }
-    }
 
     namespace = "org.godotengine.openxr.vendors"
 
@@ -42,27 +36,12 @@ android {
                 //noinspection ChromeOsAbiSupport
                 abiFilters 'arm64-v8a', 'x86_64'
             }
-            externalNativeBuild {
-                cmake {
-                    arguments "-DFLAVOR=khronos"
-                }
-            }
         }
         lynx {
             dimension "vendor"
-            externalNativeBuild {
-                cmake {
-                    arguments "-DFLAVOR=lynx"
-                }
-            }
         }
         magicleap {
             dimension "vendor"
-            externalNativeBuild {
-                cmake {
-                    arguments "-DFLAVOR=magicleap"
-                }
-            }
             ndk {
                 //noinspection ChromeOsAbiSupport
                 abiFilters 'arm64-v8a', 'x86_64'
@@ -70,19 +49,80 @@ android {
         }
         meta {
             dimension "vendor"
-            externalNativeBuild {
-                cmake {
-                    arguments "-DFLAVOR=meta"
-                }
-            }
         }
         pico {
             dimension "vendor"
-            externalNativeBuild {
-                cmake {
-                    arguments "-DFLAVOR=pico"
-                }
-            }
+        }
+    }
+
+    sourceSets {
+        khronosDebug {
+            jniLibs.srcDirs = [
+                'src/main/libs/debug/arm64-v8a',
+                'src/main/libs/debug/x86_64',
+                '../thirdparty/khronos_openxr_sdk/arm64-v8a',
+                '../thirdparty/khronos_openxr_sdk/x86_64',
+            ]
+        }
+        khronosRelease {
+            jniLibs.srcDirs = [
+                'src/main/libs/release/arm64-v8a',
+                'src/main/libs/release/x86_64',
+                '../thirdparty/khronos_openxr_sdk/arm64-v8a',
+                '../thirdparty/khronos_openxr_sdk/x86_64',
+            ]
+        }
+        lynxDebug {
+            jniLibs.srcDirs = [
+                'src/main/libs/debug/arm64-v8a',
+                '../thirdparty/lynx_openxr_sdk',
+            ]
+        }
+        lynxRelease {
+            jniLibs.srcDirs = [
+                'src/main/libs/release/arm64-v8a',
+                '../thirdparty/lynx_openxr_sdk',
+            ]
+        }
+        magicleapDebug {
+            jniLibs.srcDirs = [
+                'src/main/libs/debug/arm64-v8a',
+                'src/main/libs/debug/x86_64',
+                '../thirdparty/khronos_openxr_sdk/arm64-v8a',
+                '../thirdparty/khronos_openxr_sdk/x86_64',
+            ]
+        }
+        magicleapRelease {
+            jniLibs.srcDirs = [
+                'src/main/libs/release/arm64-v8a',
+                'src/main/libs/release/x86_64',
+                '../thirdparty/khronos_openxr_sdk/arm64-v8a',
+                '../thirdparty/khronos_openxr_sdk/x86_64',
+            ]
+        }
+        metaDebug {
+            jniLibs.srcDirs = [
+                'src/main/libs/debug/arm64-v8a',
+                '../thirdparty/ovr_openxr_mobile_sdk/OpenXR/Libs/Android/Debug',
+            ]
+        }
+        metaRelease {
+            jniLibs.srcDirs = [
+                'src/main/libs/release/arm64-v8a',
+                '../thirdparty/ovr_openxr_mobile_sdk/OpenXR/Libs/Android/Release',
+            ]
+        }
+        picoDebug {
+            jniLibs.srcDirs = [
+                'src/main/libs/debug/arm64-v8a',
+                '../thirdparty/khronos_openxr_sdk/arm64-v8a',
+            ]
+        }
+        picoRelease {
+            jniLibs.srcDirs = [
+                'src/main/libs/release/arm64-v8a',
+                '../thirdparty/khronos_openxr_sdk/arm64-v8a',
+            ]
         }
     }
 
@@ -128,36 +168,16 @@ android {
 
     buildFeatures {
         prefab true
-        prefabPublishing true
-    }
-
-    prefab {
-        godotopenxrvendors {
-            headers "src/main/cpp/include"
-        }
     }
 }
 
 dependencies {
     compileOnly libraries.godotAndroidLib
-
-    // Khronos dependencies
-    khronosImplementation "org.khronos.openxr:openxr_loader_for_android:$versions.openxrVersion"
-
-    // Magicleap dependencies
-    magicleapImplementation "org.khronos.openxr:openxr_loader_for_android:$versions.openxrVersion"
-
-    // Pico dependencies
-    picoImplementation "org.khronos.openxr:openxr_loader_for_android:$versions.openxrVersion"
 }
 
 task cleanAssets(type: Delete) {
     // Delete the 'addons' directory in the 'assets' folder
     delete("src/main/assets/addons")
-}
-
-task cleanCxx(type: Delete) {
-    delete(".cxx")
 }
 
 task copyDebugAARToAddons(type: Copy) {
@@ -185,4 +205,3 @@ assemble.dependsOn(copyGdExtensionConfigToAssets)
 assemble.finalizedBy(copyDebugAARToAddons)
 assemble.finalizedBy(copyReleaseAARToAddons)
 clean.dependsOn(cleanAssets)
-clean.dependsOn(cleanCxx)
