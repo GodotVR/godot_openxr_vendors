@@ -49,7 +49,6 @@ public:
 
 	String _get_export_option_warning(const Ref<EditorExportPlatform> &platform, const String &option) const override;
 
-	String _get_android_manifest_activity_element_contents(const Ref<EditorExportPlatform> &platform, bool debug) const override;
 	String _get_android_manifest_element_contents(const Ref<EditorExportPlatform> &platform, bool debug) const override;
 
 protected:

@@ -191,14 +191,24 @@ String OpenXREditorExportPlugin::_get_android_manifest_activity_element_contents
 		return "";
 	}
 
-	return R"(
+	String contents = R"(
 				<intent-filter>
 					<action android:name="android.intent.action.MAIN" />
-					<category android:name="android.intent.category.LAUNCHER" />
 
 					<!-- OpenXR category tag to indicate the activity starts in an immersive OpenXR mode.
 					See https://registry.khronos.org/OpenXR/specs/1.0/html/xrspec.html#android-runtime-category. -->
 					<category android:name="org.khronos.openxr.intent.category.IMMERSIVE_HMD" />
-				</intent-filter>
 )";
+
+	if (_get_bool_option("package/show_in_app_library")) {
+		contents += R"(
+						<category android:name="android.intent.category.LAUNCHER" />
+)";
+	}
+
+	contents += R"(
+				</intent-filter>"
+)";
+
+	return contents;
 }
