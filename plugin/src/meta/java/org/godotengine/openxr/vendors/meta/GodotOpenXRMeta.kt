@@ -30,6 +30,8 @@
 package org.godotengine.openxr.vendors.meta
 
 import org.godotengine.godot.Godot
+import org.godotengine.godot.GodotLib
+import org.godotengine.godot.plugin.GodotPlugin
 import org.godotengine.godot.utils.PermissionsUtil
 import org.godotengine.openxr.vendors.GodotOpenXR
 
@@ -52,19 +54,23 @@ class GodotOpenXRMeta(godot: Godot?) : GodotOpenXR(godot) {
         val permissionsToEnable = super.getPluginPermissionsToEnable()
 
         // Request the body tracking permission if it's included in the manifest
-        if (PermissionsUtil.hasManifestPermission(activity, BODY_TRACKING_PERMISSION)) {
+        val body_track_req = GodotLib.getGlobal("xr/openxr/meta/body_tracking_permission_request")
+        if (body_track_req.toBoolean() && PermissionsUtil.hasManifestPermission(activity, BODY_TRACKING_PERMISSION)) {
             permissionsToEnable.add(BODY_TRACKING_PERMISSION)
         }
         // Request the eye tracking permission if it's included in the manifest
-        if (PermissionsUtil.hasManifestPermission(activity, EYE_TRACKING_PERMISSION)) {
+        val eye_track_req = GodotLib.getGlobal("xr/openxr/meta/eye_tracking_permission_request")
+        if (eye_track_req.toBoolean() && PermissionsUtil.hasManifestPermission(activity, EYE_TRACKING_PERMISSION)) {
             permissionsToEnable.add(EYE_TRACKING_PERMISSION)
         }
         // Request the face tracking permission if it's included in the manifest
-        if (PermissionsUtil.hasManifestPermission(activity, FACE_TRACKING_PERMISSION)) {
+        val face_track_req = GodotLib.getGlobal("xr/openxr/meta/face_tracking_permission_request")
+        if (face_track_req.toBoolean() && PermissionsUtil.hasManifestPermission(activity, FACE_TRACKING_PERMISSION)) {
             permissionsToEnable.add(FACE_TRACKING_PERMISSION)
         }
         // Request the scene API permission if it's included in the manifest
-        if (PermissionsUtil.hasManifestPermission(activity, SCENE_PERMISSION)) {
+        val scene_req = GodotLib.getGlobal("xr/openxr/meta/scene_permission_request")
+        if (scene_req.toBoolean() && PermissionsUtil.hasManifestPermission(activity, SCENE_PERMISSION)) {
             permissionsToEnable.add(SCENE_PERMISSION)
         }
 

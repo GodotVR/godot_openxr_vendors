@@ -239,6 +239,72 @@ void add_plugin_project_settings() {
 		property_info["hint"] = PROPERTY_HINT_NONE;
 		project_settings->add_property_info(property_info);
 	}
+
+	{
+		// Add the 'body_track_req' project setting	
+		String body_track_req_setting = "xr/openxr/meta/body_tracking_permission_request";
+		if (!project_settings->has_setting(body_track_req_setting)) {
+			// Default value is `true` to match prior plugin behavior
+			project_settings->set_setting(body_track_req_setting, true);
+		}
+
+		project_settings->set_initial_value(body_track_req_setting, true);
+		project_settings->set_as_basic(body_track_req_setting, false);
+		Dictionary property_info;
+		property_info["name"] = body_track_req_setting;
+		property_info["type"] = Variant::Type::BOOL;
+		property_info["hint"] = PROPERTY_HINT_NONE;
+		project_settings->add_property_info(property_info);
+	}
+
+	{
+		// Add the 'eye_track_req' project setting	
+		String eye_track_req_setting = "xr/openxr/meta/eye_tracking_permission_request";
+		if (!project_settings->has_setting(eye_track_req_setting)) {
+			// Default value is `true` to match prior plugin behavior
+			project_settings->set_setting(eye_track_req_setting, true);
+		}
+
+		project_settings->set_initial_value(eye_track_req_setting, true);
+		project_settings->set_as_basic(eye_track_req_setting, false);
+		Dictionary property_info;
+		property_info["name"] = eye_track_req_setting;
+		property_info["type"] = Variant::Type::BOOL;
+		property_info["hint"] = PROPERTY_HINT_NONE;
+		project_settings->add_property_info(property_info);
+	}
+
+	{
+		// Add the 'face_track_req' project setting	
+		String face_track_req_setting = "xr/openxr/meta/face_tracking_permission_request";
+		if (!project_settings->has_setting(face_track_req_setting)) {
+			project_settings->set_setting(face_track_req_setting, true);
+		}
+
+		project_settings->set_initial_value(face_track_req_setting, true);
+		project_settings->set_as_basic(face_track_req_setting, false);
+		Dictionary property_info;
+		property_info["name"] = face_track_req_setting;
+		property_info["type"] = Variant::Type::BOOL;
+		property_info["hint"] = PROPERTY_HINT_NONE;
+		project_settings->add_property_info(property_info);
+	}
+
+	{
+		// Add the 'scene_req' project setting	
+		String scene_req_setting = "xr/openxr/meta/scene_permission_request";
+		if (!project_settings->has_setting(scene_req_setting)) {
+			project_settings->set_setting(scene_req_setting, true);
+		}
+
+		project_settings->set_initial_value(scene_req_setting, true);
+		project_settings->set_as_basic(scene_req_setting, false);
+		Dictionary property_info;
+		property_info["name"] = scene_req_setting;
+		property_info["type"] = Variant::Type::BOOL;
+		property_info["hint"] = PROPERTY_HINT_NONE;
+		project_settings->add_property_info(property_info);
+	}
 }
 
 extern "C" {
