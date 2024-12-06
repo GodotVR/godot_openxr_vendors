@@ -12,12 +12,16 @@ config_version=5
 
 config/name="OpenXR Demo"
 run/main_scene="res://main.tscn"
-config/features=PackedStringArray("4.3", "GL Compatibility")
+config/features=PackedStringArray("4.4", "GL Compatibility")
 config/icon="res://icon.svg"
 
 [debug]
 
 settings/stdout/verbose_stdout=true
+
+[dotnet]
+
+project/assembly_name="OpenXR Demo"
 
 [layer_names]
 
@@ -30,6 +34,29 @@ settings/stdout/verbose_stdout=true
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
 textures/vram_compression/import_etc2_astc=true
+
+[shader_globals]
+
+environment_depth_texture={
+"type": "sampler2DArray",
+"value": ""
+}
+environment_depth_view_projection_left={
+"type": "mat4",
+"value": Projection(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)
+}
+environment_depth_view_projection_right={
+"type": "mat4",
+"value": Projection(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)
+}
+environment_depth_projection_projection_left={
+"type": "mat4",
+"value": Projection(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)
+}
+environment_depth_projection_projection_right={
+"type": "mat4",
+"value": Projection(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)
+}
 
 [xr]
 
