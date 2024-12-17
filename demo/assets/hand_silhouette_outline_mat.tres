@@ -1,7 +1,7 @@
 [gd_resource type="ShaderMaterial" load_steps=4 format=3 uid="uid://bdwh0vc86hsdb"]
 
-[ext_resource type="Shader" path="res://assets/hand_outline.gdshader" id="1_wpjxj"]
-[ext_resource type="Shader" path="res://assets/hand_silhouette.gdshader" id="2_dvpns"]
+[ext_resource type="Shader" uid="uid://0ii12xoolnko" path="res://assets/hand_outline.gdshader" id="1_wpjxj"]
+[ext_resource type="Shader" uid="uid://c0bg2lg7vwtqh" path="res://assets/hand_silhouette.gdshader" id="2_dvpns"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_42j4f"]
 render_priority = 0
