@@ -375,7 +375,11 @@ Node3D *OpenXRFbSpatialEntity::create_collision_shape() const {
 Ref<OpenXRFbSpatialEntity> OpenXRFbSpatialEntity::create_spatial_anchor(const Transform3D &p_transform) {
 	Ref<OpenXRFbSpatialEntity> *userdata = memnew(Ref<OpenXRFbSpatialEntity>());
 	(*userdata).instantiate();
-	OpenXRFbSpatialEntityExtensionWrapper::get_singleton()->create_spatial_anchor(p_transform, &OpenXRFbSpatialEntity::_on_spatial_anchor_created, userdata);
+	if (!OpenXRFbSpatialEntityExtensionWrapper::get_singleton()->create_spatial_anchor(p_transform, &OpenXRFbSpatialEntity::_on_spatial_anchor_created, userdata)) {
+		// If it fails to create, then _on_spatial_anchor_created() would have been called immediately,
+		// which will have already done memdelete(userdata), so we need to return a new null value.
+		return Ref<OpenXRFbSpatialEntity>();
+	}
 	return *userdata;
 }
 

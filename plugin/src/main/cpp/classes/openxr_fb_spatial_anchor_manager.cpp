@@ -179,8 +179,12 @@ void OpenXRFbSpatialAnchorManager::create_anchor(const Transform3D &p_transform,
 	Transform3D local_transform = xr_origin->get_global_transform().inverse() * p_transform;
 
 	Ref<OpenXRFbSpatialEntity> spatial_entity = OpenXRFbSpatialEntity::create_spatial_anchor(local_transform);
-	spatial_entity->set_custom_data(p_custom_data);
-	spatial_entity->connect("openxr_fb_spatial_entity_created", callable_mp(this, &OpenXRFbSpatialAnchorManager::_on_anchor_created).bind(p_transform, spatial_entity));
+	if (spatial_entity.is_valid()) {
+		spatial_entity->set_custom_data(p_custom_data);
+		spatial_entity->connect("openxr_fb_spatial_entity_created", callable_mp(this, &OpenXRFbSpatialAnchorManager::_on_anchor_created).bind(p_transform, spatial_entity));
+	} else {
+		emit_signal("openxr_fb_spatial_anchor_create_failed", p_transform, p_custom_data);
+	}
 }
 
 void OpenXRFbSpatialAnchorManager::_on_anchor_created(bool p_success, const Transform3D &p_transform, const Ref<OpenXRFbSpatialEntity> &p_spatial_entity) {
