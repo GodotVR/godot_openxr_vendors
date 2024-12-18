@@ -121,7 +121,6 @@ String MagicleapEditorExportPlugin::_get_android_manifest_activity_element_conte
 	contents += R"(
 				<intent-filter>
 					<action android:name="android.intent.action.MAIN" />
-					<category android:name="android.intent.category.LAUNCHER" />
 
 					<!-- OpenXR category tag to indicate the activity starts in an immersive OpenXR mode.
 					See https://registry.khronos.org/OpenXR/specs/1.0/html/xrspec.html#android-runtime-category. -->
