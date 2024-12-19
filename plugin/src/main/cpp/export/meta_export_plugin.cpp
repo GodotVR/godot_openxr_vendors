@@ -466,7 +466,6 @@ String MetaEditorExportPlugin::_get_android_manifest_activity_element_contents(c
 	return R"(
 				<intent-filter>
 					<action android:name="android.intent.action.MAIN" />
-					<category android:name="android.intent.category.LAUNCHER" />
 
 					<!-- Enable access to OpenXR on Oculus mobile devices, no-op on other Android
 					platforms. -->
