@@ -35,6 +35,7 @@
         "PrimitiveMesh",
         "ProjectSettings",
         "RefCounted",
+        "RenderingServer",
         "Resource",
         "SceneTree",
         "Shader",
