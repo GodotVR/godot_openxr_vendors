@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  meta_editor_plugin.h                                                  */
+/*  android_export_plugin.h                                               */
 /**************************************************************************/
 /*                       This file is part of:                            */
 /*                              GODOT XR                                  */
@@ -35,82 +35,45 @@
 
 using namespace godot;
 
-namespace meta {
+namespace android {
 static const int EYE_TRACKING_NONE_VALUE = 0;
 static const int EYE_TRACKING_OPTIONAL_VALUE = 1;
 static const int EYE_TRACKING_REQUIRED_VALUE = 2;
 
-static const int FACE_TRACKING_NONE_VALUE = 0;
-static const int FACE_TRACKING_OPTIONAL_VALUE = 1;
-static const int FACE_TRACKING_REQUIRED_VALUE = 2;
-
-static const int BODY_TRACKING_NONE_VALUE = 0;
-static const int BODY_TRACKING_OPTIONAL_VALUE = 1;
-static const int BODY_TRACKING_REQUIRED_VALUE = 2;
-
-static const int PASSTHROUGH_NONE_VALUE = 0;
-static const int PASSTHROUGH_OPTIONAL_VALUE = 1;
-static const int PASSTHROUGH_REQUIRED_VALUE = 2;
-
-static const int RENDER_MODEL_NONE_VALUE = 0;
-static const int RENDER_MODEL_OPTIONAL_VALUE = 1;
-static const int RENDER_MODEL_REQUIRED_VALUE = 2;
-
 static const int HAND_TRACKING_NONE_VALUE = 0;
 static const int HAND_TRACKING_OPTIONAL_VALUE = 1;
 static const int HAND_TRACKING_REQUIRED_VALUE = 2;
+} // namespace android
 
-static const int HAND_TRACKING_FREQUENCY_LOW_VALUE = 0;
-static const int HAND_TRACKING_FREQUENCY_HIGH_VALUE = 1;
-
-static const int BOUNDARY_ENABLED_VALUE = 0;
-static const int BOUNDARY_DISABLED_VALUE = 1;
-} // namespace meta
-
-class MetaEditorExportPlugin : public OpenXREditorExportPlugin {
-	GDCLASS(MetaEditorExportPlugin, OpenXREditorExportPlugin)
+class AndroidEditorExportPlugin : public OpenXREditorExportPlugin {
+	GDCLASS(AndroidEditorExportPlugin, OpenXREditorExportPlugin)
 
 public:
-	MetaEditorExportPlugin();
+	AndroidEditorExportPlugin();
 
 	TypedArray<Dictionary> _get_export_options(const Ref<EditorExportPlatform> &platform) const override;
+
+	Dictionary _get_export_options_overrides(const Ref<EditorExportPlatform> &p_platform) const override;
 
 	PackedStringArray _get_export_features(const Ref<EditorExportPlatform> &platform, bool debug) const override;
 
 	String _get_export_option_warning(const Ref<EditorExportPlatform> &platform, const String &option) const override;
 
 	String _get_android_manifest_activity_element_contents(const Ref<EditorExportPlatform> &platform, bool debug) const override;
-	String _get_android_manifest_application_element_contents(const Ref<EditorExportPlatform> &platform, bool debug) const override;
 	String _get_android_manifest_element_contents(const Ref<EditorExportPlatform> &platform, bool debug) const override;
 
 protected:
 	static void _bind_methods();
 
-private:
-	PackedStringArray _get_supported_devices() const;
-
-	bool _is_eye_tracking_enabled() const;
-
 	Dictionary _eye_tracking_option;
-	Dictionary _face_tracking_option;
-	Dictionary _body_tracking_option;
 	Dictionary _hand_tracking_option;
-	Dictionary _hand_tracking_frequency_option;
-	Dictionary _passthrough_option;
-	Dictionary _render_model_option;
-	Dictionary _use_anchor_api_option;
-	Dictionary _use_scene_api_option;
-	Dictionary _use_overlay_keyboard_option;
-	Dictionary _use_experimental_features_option;
-	Dictionary _boundary_mode_option;
-	Dictionary _support_quest_1_option;
-	Dictionary _support_quest_2_option;
-	Dictionary _support_quest_3_option;
-	Dictionary _support_quest_pro_option;
+
+private:
+	bool _is_eye_tracking_enabled() const;
 };
 
-class MetaEditorPlugin : public EditorPlugin {
-	GDCLASS(MetaEditorPlugin, EditorPlugin)
+class AndroidEditorPlugin : public EditorPlugin {
+	GDCLASS(AndroidEditorPlugin, EditorPlugin)
 
 public:
 	void _enter_tree() override;
@@ -120,5 +83,5 @@ protected:
 	static void _bind_methods();
 
 private:
-	Ref<MetaEditorExportPlugin> meta_export_plugin;
+	Ref<AndroidEditorExportPlugin> android_export_plugin;
 };
