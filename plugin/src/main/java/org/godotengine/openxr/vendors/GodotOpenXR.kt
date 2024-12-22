@@ -109,6 +109,19 @@ class GodotOpenXR(godot: Godot?) : GodotPlugin(godot) {
 
 	override fun supportsFeature(featureTag: String): Boolean {
 		when (BuildConfig.FLAVOR) {
+			ANDROID_XR_VENDOR_NAME -> {
+				if (EYE_GAZE_INTERACTION_FEATURE_TAG == featureTag) {
+					val grantedPermissions = godot?.getGrantedPermissions()
+					if (grantedPermissions != null) {
+						for (permission in grantedPermissions) {
+							if (ANDROID_XR_EYE_TRACKING_FINE_PERMISSION == permission) {
+								return true
+							}
+						}
+					}
+				}
+			}
+
 			KHRONOS_VENDOR_NAME -> {
 				if (EYE_GAZE_INTERACTION_FEATURE_TAG == featureTag) {
 					/* HTC doesn't require permission, if other headsets that use the Khronos loader do, we need to figure out how to tell them apart... */
