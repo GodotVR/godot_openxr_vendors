@@ -66,6 +66,8 @@ strings_l10n: Dict[str, str] = {}
 STYLES: Dict[str, str] = {}
 
 SKIP_CLASSES: List[str] = [
+    "AndroidXREditorExportPlugin",
+    "AndroidXREditorPlugin",
     "KhronosEditorExportPlugin",
     "KhronosEditorPlugin",
     "LynxEditorPlugin",

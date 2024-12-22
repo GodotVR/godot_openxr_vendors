@@ -39,6 +39,7 @@
 #include <godot_cpp/variant/utility_functions.hpp>
 
 #include "editor_plugin.h"
+#include "export/android_xr_export_plugin.h"
 #include "export/export_plugin.h"
 #include "export/khronos_export_plugin.h"
 #include "export/lynx_export_plugin.h"
@@ -327,6 +328,7 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			GDREGISTER_INTERNAL_CLASS(OpenXRVendorsEditorPlugin);
 			GDREGISTER_INTERNAL_CLASS(OpenXRVendorsEditorExportPlugin);
 
+			GDREGISTER_INTERNAL_CLASS(AndroidXREditorExportPlugin);
 			GDREGISTER_INTERNAL_CLASS(KhronosEditorExportPlugin);
 			GDREGISTER_INTERNAL_CLASS(LynxEditorExportPlugin);
 			GDREGISTER_INTERNAL_CLASS(MagicleapEditorExportPlugin);

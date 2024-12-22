@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  editor_plugin.cpp                                                     */
+/*  android_xr_export_plugin.h                                            */
 /**************************************************************************/
 /*                       This file is part of:                            */
 /*                              GODOT XR                                  */
@@ -27,57 +27,56 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "editor_plugin.h"
+#pragma once
 
-#include "export/android_xr_export_plugin.h"
-#include "export/khronos_export_plugin.h"
-#include "export/lynx_export_plugin.h"
-#include "export/magicleap_export_plugin.h"
-#include "export/meta_export_plugin.h"
-#include "export/pico_export_plugin.h"
+#include <godot_cpp/classes/editor_plugin.hpp>
+
+#include "export_plugin.h"
 
 using namespace godot;
 
-void OpenXRVendorsEditorPlugin::_add_export_plugin(const Ref<EditorExportPlugin> &p_plugin) {
-	add_export_plugin(p_plugin);
-	export_plugins.push_back(p_plugin);
-}
+class AndroidXREditorExportPlugin : public OpenXRVendorsEditorExportPlugin {
+	GDCLASS(AndroidXREditorExportPlugin, OpenXRVendorsEditorExportPlugin)
 
-void OpenXRVendorsEditorPlugin::_bind_methods() {
-}
+	static const int EYE_TRACKING_OPTIONAL_VALUE = 0;
+	static const int EYE_TRACKING_REQUIRED_VALUE = 1;
 
-void OpenXRVendorsEditorPlugin::_enter_tree() {
-	Ref<KhronosEditorExportPlugin> khronos_export_plugin;
-	khronos_export_plugin.instantiate();
-	_add_export_plugin(khronos_export_plugin);
+	static const int HAND_TRACKING_OPTIONAL_VALUE = 0;
+	static const int HAND_TRACKING_REQUIRED_VALUE = 1;
 
-	Ref<LynxEditorExportPlugin> lynx_export_plugin;
-	lynx_export_plugin.instantiate();
-	_add_export_plugin(lynx_export_plugin);
+	static const int TRACKED_CONTROLLERS_NONE_VALUE = 0;
+	static const int TRACKED_CONTROLLERS_OPTIONAL_VALUE = 1;
+	static const int TRACKED_CONTROLLERS_REQUIRED_VALUE = 2;
 
-	Ref<MagicleapEditorExportPlugin> magicleap_export_plugin;
-	magicleap_export_plugin.instantiate();
-	_add_export_plugin(magicleap_export_plugin);
+	static const int RECOMMENDED_BOUNDARY_TYPE_NONE_VALUE = 0;
+	static const int RECOMMENDED_BOUNDARY_TYPE_LARGE_VALUE = 1;
 
-	Ref<MetaEditorExportPlugin> meta_export_plugin;
-	meta_export_plugin.instantiate();
-	_add_export_plugin(meta_export_plugin);
+public:
+	AndroidXREditorExportPlugin();
 
-	Ref<PicoEditorExportPlugin> pico_export_plugin;
-	pico_export_plugin.instantiate();
-	_add_export_plugin(pico_export_plugin);
+	TypedArray<Dictionary> _get_export_options(const Ref<EditorExportPlatform> &platform) const override;
 
-	Ref<AndroidXREditorExportPlugin> android_xr_export_plugin;
-	android_xr_export_plugin.instantiate();
-	_add_export_plugin(android_xr_export_plugin);
-}
+	PackedStringArray _get_export_features(const Ref<EditorExportPlatform> &platform, bool debug) const override;
 
-void OpenXRVendorsEditorPlugin::_exit_tree() {
-	for (const Ref<EditorExportPlugin> &export_plugin : export_plugins) {
-		remove_export_plugin(export_plugin);
+	String _get_export_option_warning(const Ref<EditorExportPlatform> &platform, const String &option) const override;
+	bool _get_export_option_visibility(const Ref<EditorExportPlatform> &p_platform, const String &p_option) const override;
+	bool _should_update_export_options(const Ref<EditorExportPlatform> &p_platform) const override;
+
+	String _get_android_manifest_activity_element_contents(const Ref<EditorExportPlatform> &platform, bool debug) const override;
+	String _get_android_manifest_application_element_contents(const Ref<EditorExportPlatform> &platform, bool debug) const override;
+	String _get_android_manifest_element_contents(const Ref<EditorExportPlatform> &platform, bool debug) const override;
+
+protected:
+	static void _bind_methods();
+
+	Dictionary _eye_tracking_option;
+	Dictionary _hand_tracking_option;
+	Dictionary _tracked_controllers_option;
+	Dictionary _recommended_boundary_type_option;
+
+	mutable bool _should_update_options = false;
+
+	void _project_settings_changed() {
+		_should_update_options = true;
 	}
-	export_plugins.clear();
-}
-
-OpenXRVendorsEditorPlugin::OpenXRVendorsEditorPlugin() {
-}
+};

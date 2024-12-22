@@ -236,6 +236,9 @@ jobs:
           cp aar/CHANGES.md asset/addons/godotopenxrvendors/GodotOpenXRVendors_CHANGES.md
       - name: Adding vendor licences
         run: |
+          mkdir -p asset/addons/godotopenxrvendors/androidxr/
+          cp aar/thirdparty/khronos_openxr_sdk/LICENSE asset/addons/godotopenxrvendors/androidxr/LICENSE
+
           mkdir -p asset/addons/godotopenxrvendors/meta/
           cp ovr_openxr_mobile_sdk/LICENSE.txt asset/addons/godotopenxrvendors/meta/LICENSE-SDK
           cp aar/thirdparty/khronos_openxr_sdk/LICENSE asset/addons/godotopenxrvendors/meta/LICENSE-LOADER
