@@ -99,6 +99,7 @@ private:
 	Dictionary _passthrough_option;
 	Dictionary _render_model_option;
 	Dictionary _use_anchor_api_option;
+	Dictionary _use_anchor_sharing_option;
 	Dictionary _use_scene_api_option;
 	Dictionary _use_overlay_keyboard_option;
 	Dictionary _use_experimental_features_option;

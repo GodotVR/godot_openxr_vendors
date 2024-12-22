@@ -124,6 +124,15 @@ MetaEditorExportPlugin::MetaEditorExportPlugin() {
 			PROPERTY_USAGE_DEFAULT,
 			false,
 			false);
+	_use_anchor_sharing_option = _generate_export_option(
+			"meta_xr_features/use_anchor_sharing",
+			"",
+			Variant::Type::BOOL,
+			PROPERTY_HINT_NONE,
+			"",
+			PROPERTY_USAGE_DEFAULT,
+			false,
+			false);
 	_use_scene_api_option = _generate_export_option(
 			"meta_xr_features/use_scene_api",
 			"",
@@ -215,6 +224,7 @@ TypedArray<Dictionary> MetaEditorExportPlugin::_get_export_options(const Ref<Edi
 	export_options.append(_passthrough_option);
 	export_options.append(_render_model_option);
 	export_options.append(_use_anchor_api_option);
+	export_options.append(_use_anchor_sharing_option);
 	export_options.append(_use_scene_api_option);
 	export_options.append(_use_overlay_keyboard_option);
 	export_options.append(_use_experimental_features_option);
@@ -308,6 +318,10 @@ String MetaEditorExportPlugin::_get_export_option_warning(const Ref<EditorExport
 	} else if (option == "meta_xr_features/use_anchor_api") {
 		if (!openxr_enabled && _get_bool_option(option)) {
 			return "\"Use anchor API\" is only valid when \"XR Mode\" is \"OpenXR\".\n";
+		}
+	} else if (option == "meta_xr_features/use_anchor_sharing") {
+		if (!openxr_enabled && _get_bool_option(option)) {
+			return "\"Use anchor sharing\" is only valid when \"XR Mode\" is \"OpenXR\".\n";
 		}
 	} else if (option == "meta_xr_features/use_scene_api") {
 		if (!openxr_enabled && _get_bool_option(option)) {
@@ -404,6 +418,12 @@ String MetaEditorExportPlugin::_get_android_manifest_element_contents(const Ref<
 	bool use_anchor_api = _get_bool_option("meta_xr_features/use_anchor_api");
 	if (use_anchor_api) {
 		contents += "    <uses-permission android:name=\"com.oculus.permission.USE_ANCHOR_API\" />\n";
+	}
+
+	// Check for anchor sharing
+	bool use_anchor_sharing = _get_bool_option("meta_xr_features/use_anchor_sharing");
+	if (use_anchor_sharing) {
+		contents += "    <uses-permission android:name=\"com.oculus.permission.IMPORT_EXPORT_IOT_MAP_DATA\" />\n";
 	}
 
 	// Check for scene api
