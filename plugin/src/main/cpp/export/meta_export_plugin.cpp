@@ -33,6 +33,7 @@
 #include <godot_cpp/classes/xr_interface.hpp>
 
 using namespace godot;
+using namespace meta;
 
 void MetaEditorPlugin::_bind_methods() {}
 
