@@ -10,6 +10,8 @@ var hand_tracking_source: Array[OpenXRInterface.HandTrackedSource]
 @onready var left_controller_model: OpenXRFbRenderModel = $XROrigin3D/LeftHand/LeftControllerFbRenderModel
 @onready var right_controller_model: OpenXRFbRenderModel = $XROrigin3D/RightHand/RightControllerFbRenderModel
 
+var depth_extension_wrapper
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	xr_interface = XRServer.find_interface("OpenXR")
@@ -22,6 +24,20 @@ func _ready():
 	for hand in OpenXRInterface.HAND_MAX:
 		hand_tracking_source[hand] = xr_interface.get_hand_tracking_source(hand)
 
+	if Engine.has_singleton("OpenXRFbEnvironmentDepthExtensionWrapper"):
+		await await get_tree().create_timer(1.0).timeout
+		
+		depth_extension_wrapper = Engine.get_singleton("OpenXRFbEnvironmentDepthExtensionWrapper")
+		print(depth_extension_wrapper.prepare());
+		print(depth_extension_wrapper.supports_environment_depth)
+		print(depth_extension_wrapper.supports_hand_removal)
+		depth_extension_wrapper.enable_hand_removal = true
+		depth_extension_wrapper.started = true
+
+		#await await get_tree().create_timer(5.0).timeout
+		#depth_extension_wrapper.started = false
+	else:
+		print("No wrapper :(")
 
 func _on_session_stopping() -> void:
 	if "--xrsim-automated-tests" in OS.get_cmdline_user_args():
@@ -55,7 +71,6 @@ func _physics_process(_delta: float) -> void:
 					right_hand.pose = "grip"
 
 		hand_tracking_source[hand] = source
-
 
 func _on_left_controller_fb_render_model_render_model_loaded() -> void:
 	left_hand_mesh.hide()
