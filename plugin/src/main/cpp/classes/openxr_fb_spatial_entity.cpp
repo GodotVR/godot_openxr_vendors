@@ -36,6 +36,7 @@
 #include <godot_cpp/classes/concave_polygon_shape3d.hpp>
 #include <godot_cpp/classes/mesh_instance3d.hpp>
 #include <godot_cpp/classes/plane_mesh.hpp>
+#include <godot_cpp/classes/project_settings.hpp>
 #include <godot_cpp/classes/surface_tool.hpp>
 #include <godot_cpp/templates/local_vector.hpp>
 
@@ -353,18 +354,23 @@ Node3D *OpenXRFbSpatialEntity::create_collision_shape() const {
 
 		return collision_shape;
 	} else if (is_component_enabled(COMPONENT_TYPE_BOUNDED_2D)) {
+		ProjectSettings *project_settings = ProjectSettings::get_singleton();
+		ERR_FAIL_NULL_V(project_settings, nullptr);
+
+		float collision_shape_2d_thickness = project_settings->get_setting_with_override("xr/openxr/extensions/meta_scene_api/collision_shape_2d_thickness");
+
 		Ref<BoxShape3D> box_shape;
 		box_shape.instantiate();
 
 		Rect2 bounding_box = get_bounding_box_2d();
-		box_shape->set_size(Vector3(bounding_box.size.x, 0, bounding_box.size.y));
+		box_shape->set_size(Vector3(bounding_box.size.x, collision_shape_2d_thickness, bounding_box.size.y));
 
 		CollisionShape3D *collision_shape = memnew(CollisionShape3D);
 		collision_shape->set_shape(box_shape);
 
 		Vector2 plane_center = bounding_box.get_center();
 		collision_shape->rotate_x(Math_PI / 2.0);
-		collision_shape->set_position(Vector3(plane_center.x, plane_center.y, 0));
+		collision_shape->set_position(Vector3(plane_center.x, plane_center.y, -(collision_shape_2d_thickness / 2.0)));
 
 		return collision_shape;
 	}
