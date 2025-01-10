@@ -1,6 +1,15 @@
 # Change history for the Godot OpenXR loaders asset
 
 ## 3.1.0
+- Fix wall, floor and ceiling collision shapes with Jolt physics
+- Add option to enable permissions necessary for sharing of Meta's spatial anchors
+- Fix crash when attempting to create a spatial anchor too early
+- Reworked geometric algebra used by Meta body tracking extension
+- Remove deprecated "Contextual" boundary mode on Meta Quest
+- Add two modes of Pico hand tracking to selectable export features
+- Fix `OpenXRFbPassthroughExtensionWrapper` from wiping out the next pointer chain for system properties
+- Update OpenXR to Khronos 1.1.41 release
+- Add a project setting to enable/disable automatic requests for runtime permissions
 - Add export profile for Magic Leap 2
 
 ## 3.0.1
