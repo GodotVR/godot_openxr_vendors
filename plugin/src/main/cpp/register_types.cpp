@@ -239,6 +239,21 @@ void add_plugin_project_settings() {
 		property_info["hint"] = PROPERTY_HINT_NONE;
 		project_settings->add_property_info(property_info);
 	}
+
+	{
+		String collision_shape_2d_thickness = "xr/openxr/extensions/meta_scene_api/collision_shape_2d_thickness";
+		if (!project_settings->has_setting(collision_shape_2d_thickness)) {
+			project_settings->set_setting(collision_shape_2d_thickness, 0.1);
+		}
+
+		project_settings->set_initial_value(collision_shape_2d_thickness, 0.1);
+		project_settings->set_as_basic(collision_shape_2d_thickness, false);
+		Dictionary property_info;
+		property_info["name"] = collision_shape_2d_thickness;
+		property_info["type"] = Variant::Type::FLOAT;
+		property_info["hint"] = PROPERTY_HINT_NONE;
+		project_settings->add_property_info(property_info);
+	}
 }
 
 extern "C" {
