@@ -36,6 +36,18 @@ android {
 
     flavorDimensions = ["vendor"]
     productFlavors {
+        android {
+            dimension "vendor"
+            ndk {
+                //noinspection ChromeOsAbiSupport
+                abiFilters 'arm64-v8a', 'x86_64'
+            }
+            externalNativeBuild {
+                cmake {
+                    arguments "-DFLAVOR=android"
+                }
+            }
+        }
         khronos {
             dimension "vendor"
             ndk {
@@ -100,6 +112,11 @@ android {
     }
 
     publishing {
+        singleVariant("androidRelease") {
+            withSourcesJar()
+            withJavadocJar()
+        }
+
         singleVariant("khronosRelease") {
             withSourcesJar()
             withJavadocJar()
@@ -140,6 +157,9 @@ android {
 
 dependencies {
     compileOnly libraries.godotAndroidLib
+
+    // AndroidXR dependencies
+    androidImplementation "org.khronos.openxr:openxr_loader_for_android:$versions.openxrVersion"
 
     // Khronos dependencies
     khronosImplementation "org.khronos.openxr:openxr_loader_for_android:$versions.openxrVersion"

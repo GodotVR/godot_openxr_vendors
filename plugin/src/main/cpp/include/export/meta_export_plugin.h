@@ -35,40 +35,38 @@
 
 using namespace godot;
 
-namespace {
-static const int EYE_TRACKING_NONE_VALUE = 0;
-static const int EYE_TRACKING_OPTIONAL_VALUE = 1;
-static const int EYE_TRACKING_REQUIRED_VALUE = 2;
-
-static const int FACE_TRACKING_NONE_VALUE = 0;
-static const int FACE_TRACKING_OPTIONAL_VALUE = 1;
-static const int FACE_TRACKING_REQUIRED_VALUE = 2;
-
-static const int BODY_TRACKING_NONE_VALUE = 0;
-static const int BODY_TRACKING_OPTIONAL_VALUE = 1;
-static const int BODY_TRACKING_REQUIRED_VALUE = 2;
-
-static const int PASSTHROUGH_NONE_VALUE = 0;
-static const int PASSTHROUGH_OPTIONAL_VALUE = 1;
-static const int PASSTHROUGH_REQUIRED_VALUE = 2;
-
-static const int RENDER_MODEL_NONE_VALUE = 0;
-static const int RENDER_MODEL_OPTIONAL_VALUE = 1;
-static const int RENDER_MODEL_REQUIRED_VALUE = 2;
-
-static const int HAND_TRACKING_NONE_VALUE = 0;
-static const int HAND_TRACKING_OPTIONAL_VALUE = 1;
-static const int HAND_TRACKING_REQUIRED_VALUE = 2;
-
-static const int HAND_TRACKING_FREQUENCY_LOW_VALUE = 0;
-static const int HAND_TRACKING_FREQUENCY_HIGH_VALUE = 1;
-
-static const int BOUNDARY_ENABLED_VALUE = 0;
-static const int BOUNDARY_DISABLED_VALUE = 1;
-} // namespace
-
 class MetaEditorExportPlugin : public OpenXREditorExportPlugin {
 	GDCLASS(MetaEditorExportPlugin, OpenXREditorExportPlugin)
+
+	static const int EYE_TRACKING_NONE_VALUE = 0;
+	static const int EYE_TRACKING_OPTIONAL_VALUE = 1;
+	static const int EYE_TRACKING_REQUIRED_VALUE = 2;
+
+	static const int FACE_TRACKING_NONE_VALUE = 0;
+	static const int FACE_TRACKING_OPTIONAL_VALUE = 1;
+	static const int FACE_TRACKING_REQUIRED_VALUE = 2;
+
+	static const int BODY_TRACKING_NONE_VALUE = 0;
+	static const int BODY_TRACKING_OPTIONAL_VALUE = 1;
+	static const int BODY_TRACKING_REQUIRED_VALUE = 2;
+
+	static const int PASSTHROUGH_NONE_VALUE = 0;
+	static const int PASSTHROUGH_OPTIONAL_VALUE = 1;
+	static const int PASSTHROUGH_REQUIRED_VALUE = 2;
+
+	static const int RENDER_MODEL_NONE_VALUE = 0;
+	static const int RENDER_MODEL_OPTIONAL_VALUE = 1;
+	static const int RENDER_MODEL_REQUIRED_VALUE = 2;
+
+	static const int HAND_TRACKING_NONE_VALUE = 0;
+	static const int HAND_TRACKING_OPTIONAL_VALUE = 1;
+	static const int HAND_TRACKING_REQUIRED_VALUE = 2;
+
+	static const int HAND_TRACKING_FREQUENCY_LOW_VALUE = 0;
+	static const int HAND_TRACKING_FREQUENCY_HIGH_VALUE = 1;
+
+	static const int BOUNDARY_ENABLED_VALUE = 0;
+	static const int BOUNDARY_DISABLED_VALUE = 1;
 
 public:
 	MetaEditorExportPlugin();
