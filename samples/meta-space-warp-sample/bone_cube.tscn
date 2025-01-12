@@ -1,0 +1,7 @@
+[gd_scene load_steps=3 format=3 uid="uid://cfbmcnbws28t1"]
+
+[ext_resource type="PackedScene" uid="uid://detbvmjyhigan" path="res://bone-cube.glb" id="1_fud8w"]
+[ext_resource type="Script" path="res://bone_cube.gd" id="2_n023m"]
+
+[node name="BoneCube" instance=ExtResource("1_fud8w")]
+script = ExtResource("2_n023m")
