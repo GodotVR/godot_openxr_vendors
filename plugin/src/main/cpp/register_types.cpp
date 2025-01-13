@@ -149,6 +149,9 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 
 			ClassDB::register_class<OpenXRHtcPassthroughExtensionWrapper>();
 			OpenXRHtcPassthroughExtensionWrapper::get_singleton()->register_extension_wrapper();
+			
+			ClassDB::register_class<OpenXRPerformanceSettingsExtensionWrapper>();
+			OpenXRPerformanceSettingsExtensionWrapper::get_singleton()->register_extension_wrapper();
 
 		} break;
 
