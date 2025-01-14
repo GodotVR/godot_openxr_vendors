@@ -432,7 +432,7 @@ void OpenXRFbSpatialEntity::erase_from_storage(StorageLocation p_location) {
 	};
 
 	Ref<OpenXRFbSpatialEntity> *userdata = memnew(Ref<OpenXRFbSpatialEntity>(this));
-	OpenXRFbSpatialEntityStorageExtensionWrapper::get_singleton()->erase_space(&erase_info, OpenXRFbSpatialEntity::_on_save_to_storage, userdata);
+	OpenXRFbSpatialEntityStorageExtensionWrapper::get_singleton()->erase_space(&erase_info, OpenXRFbSpatialEntity::_on_erase_from_storage, userdata);
 }
 
 void OpenXRFbSpatialEntity::_on_erase_from_storage(XrResult p_result, XrSpaceStorageLocationFB p_location, void *p_userdata) {
