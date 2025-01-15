@@ -141,6 +141,9 @@ android {
 dependencies {
     compileOnly libraries.godotAndroidLib
 
+    implementation "androidx.fragment:fragment:$versions.fragmentVersion"
+    implementation "androidx.core:core-splashscreen:$versions.splashscreenVersion"
+
     // Khronos dependencies
     khronosImplementation "org.khronos.openxr:openxr_loader_for_android:$versions.openxrVersion"
 

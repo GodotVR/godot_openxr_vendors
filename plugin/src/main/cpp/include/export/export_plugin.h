@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <godot_cpp/classes/display_server.hpp>
 #include <godot_cpp/classes/editor_export_platform.hpp>
 #include <godot_cpp/classes/editor_export_plugin.hpp>
 #include <godot_cpp/classes/editor_plugin.hpp>
@@ -56,6 +57,7 @@ static const char *VENDORS_LIST[] = {
 
 // Set of custom feature tags supported by the plugin
 static const char *EYE_GAZE_INTERACTION_FEATURE = "XR_EXT_eye_gaze_interaction";
+static const char *HYBRID_APP_FEATURE = "godot_openxr_hybrid_app";
 
 static const int REGULAR_MODE_VALUE = 0;
 static const int OPENXR_MODE_VALUE = 1;
@@ -68,11 +70,18 @@ class OpenXREditorExportPlugin : public EditorExportPlugin {
 	GDCLASS(OpenXREditorExportPlugin, EditorExportPlugin)
 
 public:
+	enum HybridType {
+		HYBRID_TYPE_DISABLED,
+		HYBRID_TYPE_START_AS_IMMERSIVE,
+		HYBRID_TYPE_START_AS_PANEL,
+	};
+
 	OpenXREditorExportPlugin();
 
 	String _get_name() const override;
 
 	TypedArray<Dictionary> _get_export_options(const Ref<EditorExportPlatform> &platform) const override;
+	Dictionary _get_export_options_overrides(const Ref<EditorExportPlatform> &p_platform) const override;
 
 	String _get_export_option_warning(const Ref<EditorExportPlatform> &platform, const String &option) const override;
 
@@ -105,11 +114,17 @@ protected:
 
 	Dictionary _get_vendor_toggle_option(const String &vendor_name) const;
 
+	HybridType _get_hybrid_app_setting_value() const;
+
 	bool _is_openxr_enabled() const;
 
 	bool _get_bool_option(const String &option) const;
 
 	int _get_int_option(const String &option, int default_value) const;
+
+	String _bool_to_string(bool p_value) const;
+
+	String _get_android_orientation_label(DisplayServer::ScreenOrientation screen_orientation) const;
 
 	bool _is_vendor_plugin_enabled(const String &vendor_name) const {
 		return _get_bool_option(_get_vendor_toggle_option_name(vendor_name));

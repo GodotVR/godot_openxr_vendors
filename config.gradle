@@ -9,7 +9,9 @@ ext {
             kotlinVersion           : '1.9.20',
             cmakeVersion            : '3.22.1',
             ndkVersion              : '23.2.8568313',
-            openxrVersion           : '1.0.34'
+            openxrVersion           : '1.0.34',
+            fragmentVersion         : '1.7.1',
+            splashscreenVersion     : '1.0.1',
     ]
 
     libraries = [

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<style name="GodotPanelAppMainTheme" parent="@android:style/Theme.DeviceDefault.NoActionBar">
+		<item name="android:windowDrawsSystemBarBackgrounds">false</item>
+		<item name="android:windowSwipeToDismiss">false</item>
+	</style>
+
+	<style name="GodotPanelAppSplashTheme" parent="Theme.SplashScreen">
+		<!-- Set the theme of the Activity that directly follows your splash
+		screen. This is required. -->
+		<item name="postSplashScreenTheme">@style/GodotPanelAppMainTheme</item>
+	</style>
+</resources>

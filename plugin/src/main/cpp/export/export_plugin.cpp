@@ -30,6 +30,7 @@
 #include "export/export_plugin.h"
 
 #include <godot_cpp/classes/editor_export_platform_android.hpp>
+#include <godot_cpp/classes/project_settings.hpp>
 
 using namespace godot;
 
@@ -90,8 +91,36 @@ Dictionary OpenXREditorExportPlugin::_get_vendor_toggle_option(const String &ven
 			false);
 }
 
+OpenXREditorExportPlugin::HybridType OpenXREditorExportPlugin::_get_hybrid_app_setting_value() const {
+	return (HybridType)(int)ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/hybrid_app");
+}
+
 bool OpenXREditorExportPlugin::_is_openxr_enabled() const {
 	return _get_int_option("xr_features/xr_mode", REGULAR_MODE_VALUE) == OPENXR_MODE_VALUE;
+}
+
+String OpenXREditorExportPlugin::_bool_to_string(bool p_value) const {
+	return p_value ? "true" : "false";
+}
+
+String OpenXREditorExportPlugin::_get_android_orientation_label(DisplayServer::ScreenOrientation screen_orientation) const {
+	switch (screen_orientation) {
+		case DisplayServer::SCREEN_PORTRAIT:
+			return "portrait";
+		case DisplayServer::SCREEN_REVERSE_LANDSCAPE:
+			return "reverseLandscape";
+		case DisplayServer::SCREEN_REVERSE_PORTRAIT:
+			return "reversePortrait";
+		case DisplayServer::SCREEN_SENSOR_LANDSCAPE:
+			return "userLandscape";
+		case DisplayServer::SCREEN_SENSOR_PORTRAIT:
+			return "userPortrait";
+		case DisplayServer::SCREEN_SENSOR:
+			return "fullUser";
+		case DisplayServer::SCREEN_LANDSCAPE:
+		default:
+			return "landscape";
+	}
 }
 
 TypedArray<Dictionary> OpenXREditorExportPlugin::_get_export_options(const Ref<EditorExportPlatform> &platform) const {
@@ -126,6 +155,22 @@ String OpenXREditorExportPlugin::_get_export_option_warning(const Ref<EditorExpo
 	}
 
 	return "";
+}
+
+Dictionary OpenXREditorExportPlugin::_get_export_options_overrides(const Ref<EditorExportPlatform> &platform) const {
+	Dictionary overrides;
+	if (!_supports_platform(platform) || !_is_vendor_plugin_enabled()) {
+		return overrides;
+	}
+
+	HybridType hybrid_type = _get_hybrid_app_setting_value();
+	if (hybrid_type != HYBRID_TYPE_DISABLED) {
+		// Unless this is a hybrid app that launches as a panel, then we want to force this option on.
+		// Otherwise, it needs to be off, so that the panel activity can be the one that's launched by default.
+		overrides["package/show_in_app_library"] = (hybrid_type != HYBRID_TYPE_START_AS_PANEL);
+	}
+
+	return overrides;
 }
 
 bool OpenXREditorExportPlugin::_supports_platform(const Ref<EditorExportPlatform> &platform) const {

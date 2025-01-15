@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:horizonos="http://schemas.horizonos/sdk">
+
+    <horizonos:uses-horizonos-sdk
+        horizonos:minSdkVersion="69"
+        horizonos:targetSdkVersion="69" />
 
     <uses-feature
         android:name="android.hardware.vr.headtracking"
@@ -10,6 +15,10 @@
         <meta-data
             android:name="org.godotengine.plugin.v2.GodotOpenXRMeta"
             android:value="org.godotengine.openxr.vendors.meta.GodotOpenXRMeta" />
+
+        <meta-data
+            android:name="org.godotengine.plugin.v2.GodotOpenXRHybridAppInternal"
+            android:value="org.godotengine.openxr.vendors.GodotOpenXRHybridAppInternal" />
 
         <meta-data
             android:name="com.oculus.supportedDevices"

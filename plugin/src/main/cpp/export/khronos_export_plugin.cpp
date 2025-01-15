@@ -117,10 +117,11 @@ TypedArray<Dictionary> KhronosEditorExportPlugin::_get_export_options(const Ref<
 }
 
 Dictionary KhronosEditorExportPlugin::_get_export_options_overrides(const Ref<godot::EditorExportPlatform> &p_platform) const {
-	Dictionary overrides;
 	if (!_supports_platform(p_platform)) {
-		return overrides;
+		return Dictionary();
 	}
+
+	Dictionary overrides = OpenXREditorExportPlugin::_get_export_options_overrides(p_platform);
 
 	if (!_is_vendor_plugin_enabled()) {
 		overrides["khronos_xr_features/vendors"] = KHRONOS_VENDOR_OTHER;
