@@ -59,9 +59,10 @@ func _process(_delta: float) -> void:
 		panel_switcher_layer.update_pointer(t.origin, -t.basis.z, pointer_pressed)
 
 func _on_right_controller_pointer_button_pressed(p_name: String) -> void:
-	if p_name == 'trigger_click':
+	print("button: ", p_name)
+	if p_name == 'trigger_click' or p_name == 'select_button':
 		pointer_pressed = true
 
 func _on_right_controller_pointer_button_released(p_name: String) -> void:
-	if p_name == 'trigger_click':
+	if p_name == 'trigger_click' or p_name == 'select_button':
 		pointer_pressed = false

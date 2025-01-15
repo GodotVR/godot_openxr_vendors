@@ -116,6 +116,8 @@ protected:
 
 	HybridType _get_hybrid_app_setting_value() const;
 
+	String _get_opening_activity_tag_for_panel_app() const;
+
 	bool _is_openxr_enabled() const;
 
 	bool _get_bool_option(const String &option) const;
