@@ -56,6 +56,7 @@ static const char *VENDORS_LIST[] = {
 
 // Set of custom feature tags supported by the plugin
 static const char *EYE_GAZE_INTERACTION_FEATURE = "XR_EXT_eye_gaze_interaction";
+static const char *HYBRID_APP_FEATURE = "godot_openxr_hybrid_app";
 
 static const int REGULAR_MODE_VALUE = 0;
 static const int OPENXR_MODE_VALUE = 1;
@@ -68,6 +69,12 @@ class OpenXREditorExportPlugin : public EditorExportPlugin {
 	GDCLASS(OpenXREditorExportPlugin, EditorExportPlugin)
 
 public:
+	enum HybridType {
+		HYBRID_TYPE_DISABLED,
+		HYBRID_TYPE_START_AS_IMMERSIVE,
+		HYBRID_TYPE_START_AS_PANEL,
+	};
+
 	OpenXREditorExportPlugin();
 
 	String _get_name() const override;
@@ -104,6 +111,9 @@ protected:
 	}
 
 	Dictionary _get_vendor_toggle_option(const String &vendor_name) const;
+
+	String _get_hybrid_app_option_name(const String &p_prefix) const;
+	Dictionary _get_hybrid_app_option(const String &p_prefix) const;
 
 	bool _is_openxr_enabled() const;
 

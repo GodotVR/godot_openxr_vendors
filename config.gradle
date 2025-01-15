@@ -9,11 +9,13 @@ ext {
             kotlinVersion           : '1.9.20',
             cmakeVersion            : '3.22.1',
             ndkVersion              : '23.2.8568313',
-            openxrVersion           : '1.0.34'
+            openxrVersion           : '1.0.34',
+            fragmentVersion         : '1.7.1',
+            splashscreenVersion     : '1.0.1',
     ]
 
     libraries = [
-            godotAndroidLib: "org.godotengine:godot:4.3.0.stable",
+            godotAndroidLib: "org.godotengine:godot:4.4.0.dev-SNAPSHOT",
     ]
 
     // Parse the release version from the gradle project properties (e.g: -Prelease_version=<version>)

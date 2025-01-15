@@ -74,6 +74,7 @@ public:
 	MetaEditorExportPlugin();
 
 	TypedArray<Dictionary> _get_export_options(const Ref<EditorExportPlatform> &platform) const override;
+	Dictionary _get_export_options_overrides(const Ref<EditorExportPlatform> &p_platform) const;
 
 	PackedStringArray _get_export_features(const Ref<EditorExportPlatform> &platform, bool debug) const override;
 
