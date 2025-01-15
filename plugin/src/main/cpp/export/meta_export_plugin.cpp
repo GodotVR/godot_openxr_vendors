@@ -229,12 +229,26 @@ TypedArray<Dictionary> MetaEditorExportPlugin::_get_export_options(const Ref<Edi
 	export_options.append(_use_overlay_keyboard_option);
 	export_options.append(_use_experimental_features_option);
 	export_options.append(_boundary_mode_option);
+	export_options.append(_get_hybrid_app_option("meta_xr_features"));
 	export_options.append(_support_quest_1_option);
 	export_options.append(_support_quest_2_option);
 	export_options.append(_support_quest_3_option);
 	export_options.append(_support_quest_pro_option);
 
 	return export_options;
+}
+
+Dictionary MetaEditorExportPlugin::_get_export_options_overrides(const Ref<EditorExportPlatform> &p_platform) const {
+	Dictionary overrides;
+
+	HybridType hybrid_type = (HybridType)_get_int_option(_get_hybrid_app_option_name("meta_xr_features"), HYBRID_TYPE_DISABLED);
+	if (hybrid_type != HYBRID_TYPE_DISABLED) {
+		// Unless this is a hybrid app that launches as a panel, then we want to force this option on.
+		// Otherwise, it needs to be off, so that the panel activity can be the one that's launched by default.
+		overrides["package/show_in_app_library"] = (hybrid_type != HYBRID_TYPE_START_AS_PANEL);
+	}
+
+	return overrides;
 }
 
 PackedStringArray MetaEditorExportPlugin::_get_supported_devices() const {
@@ -278,6 +292,11 @@ PackedStringArray MetaEditorExportPlugin::_get_export_features(const Ref<EditorE
 	// Add the eye tracking feature if necessary
 	if (_is_eye_tracking_enabled()) {
 		features.append(EYE_GAZE_INTERACTION_FEATURE);
+	}
+
+	HybridType hybrid_type = (HybridType)_get_int_option(_get_hybrid_app_option_name("meta_xr_features"), HYBRID_TYPE_DISABLED);
+	if (hybrid_type != HYBRID_TYPE_DISABLED) {
+		features.append(HYBRID_APP_FEATURE);
 	}
 
 	return features;
@@ -473,6 +492,34 @@ String MetaEditorExportPlugin::_get_android_manifest_application_element_content
 	if ((int)ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/environment_blend_mode") != XRInterface::XR_ENV_BLEND_MODE_OPAQUE) {
 		// Show the splash screen in passthrough, if the user launches it from passthrough.
 		contents += "        <meta-data android:name=\"com.oculus.ossplash.background\" android:value=\"passthrough-contextual\" />\n";
+	}
+
+	HybridType hybrid_type = (HybridType)_get_int_option(_get_hybrid_app_option_name("meta_xr_features"), HYBRID_TYPE_DISABLED);
+	if (hybrid_type != HYBRID_TYPE_DISABLED) {
+		contents +=
+				"        <activity android:name=\"org.godotengine.openxr.vendors.GodotPanelApp\" "
+				"android:process=\":GodotPanelApp\" "
+				"android:label=\"@string/godot_project_name_string\" "
+				"android:theme=\"@style/GodotAppSplashTheme\" "
+				"android:launchMode=\"singleInstancePerTask\" "
+				"android:excludeFromRecents=\"false\" "
+				"android:exported=\"true\" "
+				"android:screenOrientation=\"landscape\" "
+				"android:configChanges=\"orientation|keyboardHidden|screenSize|smallestScreenSize|density|keyboard|navigation|screenLayout|uiMode\" "
+				"android:resizeableActivity=\"true\" "
+				"tools:ignore=\"UnusedAttribute\" >\n"
+				"          <intent-filter>\n"
+				"            <action android:name=\"android.intent.action.MAIN\" />\n"
+				"            <category android:name=\"android.intent.category.DEFAULT\" />\n"
+				"            <category android:name=\"com.oculus.intent.category.2D\" />\n";
+
+		if (hybrid_type == HYBRID_TYPE_START_AS_PANEL) {
+			contents += "            <category android:name=\"android.intent.category.LAUNCHER\" />\n";
+		}
+
+		contents +=
+				"          </intent-filter>\n"
+				"        </activity>\n";
 	}
 
 	return contents;

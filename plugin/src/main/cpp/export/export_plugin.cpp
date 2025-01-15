@@ -90,6 +90,22 @@ Dictionary OpenXREditorExportPlugin::_get_vendor_toggle_option(const String &ven
 			false);
 }
 
+String OpenXREditorExportPlugin::_get_hybrid_app_option_name(const String &p_prefix) const {
+	return p_prefix + String("/hybrid_app");
+}
+
+Dictionary OpenXREditorExportPlugin::_get_hybrid_app_option(const String &p_prefix) const {
+	return _generate_export_option(
+			_get_hybrid_app_option_name(p_prefix),
+			"",
+			Variant::Type::INT,
+			PROPERTY_HINT_ENUM,
+			"Disabled,Start As Immersive,Start As Panel",
+			PROPERTY_USAGE_DEFAULT,
+			HYBRID_TYPE_DISABLED,
+			false);
+}
+
 bool OpenXREditorExportPlugin::_is_openxr_enabled() const {
 	return _get_int_option("xr_features/xr_mode", REGULAR_MODE_VALUE) == OPENXR_MODE_VALUE;
 }

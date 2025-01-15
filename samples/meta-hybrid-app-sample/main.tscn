@@ -1,0 +1,74 @@
+[gd_scene load_steps=8 format=3 uid="uid://c0ol8en13wpk3"]
+
+[ext_resource type="Script" uid="uid://cxttlef5wanms" path="res://main.gd" id="1_0xm2m"]
+[ext_resource type="PackedScene" uid="uid://b8a73fckkvdxx" path="res://assets/gltf/turkey.glb" id="2_lrsmu"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_h1cjv"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_a1pyg"]
+sky_material = SubResource("ProceduralSkyMaterial_h1cjv")
+
+[sub_resource type="Environment" id="Environment_jc7i8"]
+sky = SubResource("Sky_a1pyg")
+tonemap_mode = 2
+
+[sub_resource type="BoxMesh" id="BoxMesh_h2yge"]
+size = Vector3(0.01, 0.01, 0.5)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1bvp3"]
+shading_mode = 0
+albedo_color = Color(1, 0, 0, 1)
+
+[node name="Main" type="Node3D"]
+script = ExtResource("1_0xm2m")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_jc7i8")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
+
+[node name="DirectionalLight3D2" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866025, -0.433013, 0.250001, -0.12941, -0.288849, -0.948588, 0.482963, -0.853854, 0.194114, 0, 0, 0)
+
+[node name="Turkey" parent="." instance=ExtResource("2_lrsmu")]
+unique_name_in_owner = true
+transform = Transform3D(0.7, 0, 0, 0, 0.7, 0, 0, 0, 0.7, 0, 0.5, -0.7)
+
+[node name="XROrigin3D" type="XROrigin3D" parent="."]
+
+[node name="LeftController" type="XRController3D" parent="XROrigin3D"]
+tracker = &"left_hand"
+pose = &"grip"
+
+[node name="LeftControllerRenderModel" type="OpenXRFbRenderModel" parent="XROrigin3D/LeftController"]
+
+[node name="RightController" type="XRController3D" parent="XROrigin3D"]
+tracker = &"right_hand"
+pose = &"grip"
+
+[node name="RightControllerRenderModel" type="OpenXRFbRenderModel" parent="XROrigin3D/RightController"]
+render_model_type = 1
+
+[node name="PanelSwitcherMarker" type="Marker3D" parent="XROrigin3D"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2779, -1.2729)
+
+[node name="RightControllerPointer" type="XRController3D" parent="XROrigin3D"]
+unique_name_in_owner = true
+tracker = &"right_hand"
+pose = &"aim"
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/RightControllerPointer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.25)
+mesh = SubResource("BoxMesh_h2yge")
+surface_material_override/0 = SubResource("StandardMaterial3D_1bvp3")
+
+[node name="XRCamera3D" type="XRCamera3D" parent="XROrigin3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.655479, 0)
+current = true
+
+[connection signal="button_pressed" from="XROrigin3D/RightControllerPointer" to="." method="_on_right_controller_pointer_button_pressed"]
+[connection signal="button_released" from="XROrigin3D/RightControllerPointer" to="." method="_on_right_controller_pointer_button_released"]
