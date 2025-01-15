@@ -503,7 +503,7 @@ String MetaEditorExportPlugin::_get_android_manifest_activity_element_contents(c
 	}
 
 	contents += R"(
-				</intent-filter>"
+				</intent-filter>
 )";
 
 	return contents;
