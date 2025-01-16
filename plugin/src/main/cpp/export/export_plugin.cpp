@@ -207,7 +207,7 @@ String OpenXREditorExportPlugin::_get_android_manifest_activity_element_contents
 	}
 
 	contents += R"(
-				</intent-filter>"
+				</intent-filter>
 )";
 
 	return contents;
