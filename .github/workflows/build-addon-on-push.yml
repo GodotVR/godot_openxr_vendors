@@ -194,6 +194,7 @@ jobs:
         with:
           allowUpdates: true
           artifacts: "godotopenxrvendorsaddon.zip"
+          draft: true
           omitNameDuringUpdate: true
           omitBodyDuringUpdate: true
           omitDraftDuringUpdate: true
