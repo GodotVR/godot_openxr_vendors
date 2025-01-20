@@ -209,7 +209,7 @@ jobs:
    needs: build
 
    env:
-     GODOT_VERSION: "4.3-stable"
+     GODOT_VERSION: "4.4-beta1"
      XRSIM_VERSION: "65.0.0"
 
    steps:
