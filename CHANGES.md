@@ -1,5 +1,9 @@
 # Change history for the Godot OpenXR loaders asset
 
+## 3.1.1
+- Emit correct signal from `OpenXRFbSpatialEntity.erase_from_storage()`
+- Only add the `LAUNCHER` category if "Show in App Library" is enabled
+
 ## 3.1.0
 - Fix wall, floor and ceiling collision shapes with Jolt physics
 - Add option to enable permissions necessary for sharing of Meta's spatial anchors
