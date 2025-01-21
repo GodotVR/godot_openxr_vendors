@@ -78,6 +78,7 @@
 #include "classes/openxr_fb_spatial_entity_batch.h"
 #include "classes/openxr_fb_spatial_entity_query.h"
 #include "classes/openxr_fb_spatial_entity_user.h"
+#include "classes/openxr_hybrid_app.h"
 #include "classes/openxr_meta_passthrough_color_lut.h"
 
 using namespace godot;
@@ -187,6 +188,9 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			ClassDB::register_class<OpenXRFbPassthroughGeometry>();
 			ClassDB::register_class<OpenXRMetaPassthroughColorLut>();
 
+			ClassDB::register_class<OpenXRHybridApp>();
+			Engine::get_singleton()->register_singleton("OpenXRHybridApp", OpenXRHybridApp::get_singleton());
+
 			OpenXRFbHandTrackingAimExtensionWrapper::get_singleton()->add_project_setting();
 		} break;
 
@@ -219,6 +223,24 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 }
 
 void terminate_plugin_module(ModuleInitializationLevel p_level) {
+	switch (p_level) {
+		case MODULE_INITIALIZATION_LEVEL_CORE:
+			break;
+
+		case MODULE_INITIALIZATION_LEVEL_SERVERS:
+			break;
+
+		case MODULE_INITIALIZATION_LEVEL_SCENE: {
+			Engine::get_singleton()->unregister_singleton("OpenXRHybridApp");
+			memdelete(OpenXRHybridApp::get_singleton());
+		} break;
+
+		case MODULE_INITIALIZATION_LEVEL_EDITOR:
+			break;
+
+		case MODULE_INITIALIZATION_LEVEL_MAX:
+			break;
+	}
 }
 
 void add_plugin_project_settings() {
@@ -256,6 +278,22 @@ void add_plugin_project_settings() {
 		property_info["name"] = collision_shape_2d_thickness;
 		property_info["type"] = Variant::Type::FLOAT;
 		property_info["hint"] = PROPERTY_HINT_NONE;
+		project_settings->add_property_info(property_info);
+	}
+
+	{
+		String hybrid_app_setting = "xr/openxr/hybrid_app";
+		if (!project_settings->has_setting(hybrid_app_setting)) {
+			project_settings->set_setting(hybrid_app_setting, OpenXRHybridApp::HYBRID_MODE_NONE);
+		}
+
+		project_settings->set_initial_value(hybrid_app_setting, OpenXRHybridApp::HYBRID_MODE_NONE);
+		project_settings->set_as_basic(hybrid_app_setting, false);
+		Dictionary property_info;
+		property_info["name"] = hybrid_app_setting;
+		property_info["type"] = Variant::Type::INT;
+		property_info["hint"] = PROPERTY_HINT_ENUM;
+		property_info["hint_string"] = "Disabled,Start As Immersive,Start As Panel";
 		project_settings->add_property_info(property_info);
 	}
 }

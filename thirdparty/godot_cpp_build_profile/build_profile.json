@@ -7,6 +7,7 @@
         "CollisionShape3D",
         "ConcavePolygonShape3D",
         "Curve",
+        "DisplayServer",
         "EditorExportPlatform",
         "EditorExportPlatformAndroid",
         "EditorExportPlugin",

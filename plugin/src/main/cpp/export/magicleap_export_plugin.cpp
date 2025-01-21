@@ -76,10 +76,11 @@ TypedArray<Dictionary> MagicleapEditorExportPlugin::_get_export_options(const Re
 }
 
 Dictionary MagicleapEditorExportPlugin::_get_export_options_overrides(const Ref<godot::EditorExportPlatform> &p_platform) const {
-	Dictionary overrides;
 	if (!_supports_platform(p_platform)) {
-		return overrides;
+		return Dictionary();
 	}
+
+	Dictionary overrides = OpenXREditorExportPlugin::_get_export_options_overrides(p_platform);
 
 	if (!_is_vendor_plugin_enabled()) {
 		overrides["magicleap_xr_features/hand_tracking"] = MANIFEST_FALSE_VALUE;

@@ -280,6 +280,11 @@ PackedStringArray MetaEditorExportPlugin::_get_export_features(const Ref<EditorE
 		features.append(EYE_GAZE_INTERACTION_FEATURE);
 	}
 
+	// Add a feature to indicate that this is a hybrid app.
+	if (_is_openxr_enabled() && _get_hybrid_app_setting_value() != HYBRID_TYPE_DISABLED) {
+		features.append(HYBRID_APP_FEATURE);
+	}
+
 	return features;
 }
 
@@ -473,6 +478,40 @@ String MetaEditorExportPlugin::_get_android_manifest_application_element_content
 	if ((int)ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/environment_blend_mode") != XRInterface::XR_ENV_BLEND_MODE_OPAQUE) {
 		// Show the splash screen in passthrough, if the user launches it from passthrough.
 		contents += "        <meta-data android:name=\"com.oculus.ossplash.background\" android:value=\"passthrough-contextual\" />\n";
+	}
+
+	HybridType hybrid_type = _get_hybrid_app_setting_value();
+	if (hybrid_type != HYBRID_TYPE_DISABLED) {
+		ProjectSettings *project_settings = ProjectSettings::get_singleton();
+
+		contents += vformat(
+				"        <activity android:name=\"org.godotengine.openxr.vendors.GodotPanelApp\" "
+				"android:process=\":GodotPanelApp\" "
+				"android:theme=\"@style/GodotPanelAppSplashTheme\" "
+				"android:launchMode=\"singleInstancePerTask\" "
+				"android:exported=\"true\" "
+				"android:excludeFromRecents=\"%s\" "
+				"android:screenOrientation=\"%s\" "
+				"android:resizeableActivity=\"%s\" "
+				"android:configChanges=\"orientation|keyboardHidden|screenSize|smallestScreenSize|density|keyboard|navigation|screenLayout|uiMode\" "
+				"tools:ignore=\"UnusedAttribute\">\n",
+				_bool_to_string(_get_bool_option("package/exclude_from_recents")),
+				_get_android_orientation_label((DisplayServer::ScreenOrientation)(int)project_settings->get_setting_with_override("display/window/handheld/orientation")),
+				_bool_to_string(project_settings->get_setting_with_override("display/window/size/resizable")));
+
+		contents +=
+				"          <intent-filter>\n"
+				"            <action android:name=\"android.intent.action.MAIN\" />\n"
+				"            <category android:name=\"android.intent.category.DEFAULT\" />\n"
+				"            <category android:name=\"com.oculus.intent.category.2D\" />\n";
+
+		if (hybrid_type == HYBRID_TYPE_START_AS_PANEL) {
+			contents += "            <category android:name=\"android.intent.category.LAUNCHER\" />\n";
+		}
+
+		contents +=
+				"          </intent-filter>\n"
+				"        </activity>\n";
 	}
 
 	return contents;
