@@ -10,6 +10,8 @@ var hand_tracking_source: Array[OpenXRInterface.HandTrackedSource]
 @onready var left_controller_model: OpenXRFbRenderModel = $XROrigin3D/LeftHand/LeftControllerFbRenderModel
 @onready var right_controller_model: OpenXRFbRenderModel = $XROrigin3D/RightHand/RightControllerFbRenderModel
 
+var first_frame = false
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	xr_interface = XRServer.find_interface("OpenXR")
@@ -29,6 +31,10 @@ func _on_session_stopping() -> void:
 		# session automatically, and in that case, we want to quit.
 		get_tree().quit()
 
+func _process(_delta: float) -> void:
+	if !first_frame:
+		first_frame = true
+		Engine.get_singleton("OpenXRMetaEnvironmentDepthExtensionWrapper").initialize_depth()
 
 func _physics_process(_delta: float) -> void:
 	for hand in OpenXRInterface.HAND_MAX:
