@@ -9,6 +9,46 @@ ext {
 
 apply from: "../scripts/publish-module.gradle"
 
+def khronosOpenxrLoaderAarDir = file("${buildDir}/temp/khronos_openxr_loader_aar")
+def khronosOpenxrLoaderTargetDir = file("${buildDir}/temp/khronos_openxr_sdk")
+
+task extractKhronosOpenxrLoader {
+    def khronosOpenxrLoader = configurations.detachedConfiguration(dependencies.create("org.khronos.openxr:openxr_loader_for_android:$versions.openxrVersion"))
+
+    doLast {
+        khronosOpenxrLoaderAarDir.mkdirs()
+
+        copy {
+            from zipTree(khronosOpenxrLoader.singleFile)
+            into khronosOpenxrLoaderAarDir
+        }
+    }
+}
+
+task copyKhronosOpenxrLoader(dependsOn: extractKhronosOpenxrLoader) {
+    def khronosOpenxrLoaderTargetDirArm64 = file("${khronosOpenxrLoaderTargetDir}/arm64-v8a/arm64-v8a")
+    def khronosOpenxrLoaderTargetDirX86_64 = file("${khronosOpenxrLoaderTargetDir}/x86_64/x86_64")
+
+    doLast {
+        khronosOpenxrLoaderTargetDirArm64.mkdirs()
+        khronosOpenxrLoaderTargetDirX86_64.mkdirs()
+
+        copy {
+            from "${khronosOpenxrLoaderAarDir}/prefab/modules/openxr_loader/libs/android.arm64-v8a/libopenxr_loader.so"
+            into khronosOpenxrLoaderTargetDirArm64
+        }
+        copy {
+            from "${khronosOpenxrLoaderAarDir}/prefab/modules/openxr_loader/libs/android.x86_64/libopenxr_loader.so"
+            into khronosOpenxrLoaderTargetDirX86_64
+        }
+    }
+}
+
+task cleanKhronosOpenxrLoader(type: Delete) {
+    delete khronosOpenxrLoaderAarDir
+    delete khronosOpenxrLoaderTargetDir
+}
+
 android {
     compileSdk versions.compileSdk
     ndkVersion versions.ndkVersion
@@ -28,7 +68,6 @@ android {
     externalNativeBuild {
         cmake {
             path file('CMakeLists.txt')
-            version versions.cmakeVersion
         }
     }
 
@@ -42,27 +81,12 @@ android {
                 //noinspection ChromeOsAbiSupport
                 abiFilters 'arm64-v8a', 'x86_64'
             }
-            externalNativeBuild {
-                cmake {
-                    arguments "-DFLAVOR=khronos"
-                }
-            }
         }
         lynx {
             dimension "vendor"
-            externalNativeBuild {
-                cmake {
-                    arguments "-DFLAVOR=lynx"
-                }
-            }
         }
         magicleap {
             dimension "vendor"
-            externalNativeBuild {
-                cmake {
-                    arguments "-DFLAVOR=magicleap"
-                }
-            }
             ndk {
                 //noinspection ChromeOsAbiSupport
                 abiFilters 'arm64-v8a', 'x86_64'
@@ -70,20 +94,36 @@ android {
         }
         meta {
             dimension "vendor"
-            externalNativeBuild {
-                cmake {
-                    arguments "-DFLAVOR=meta"
-                }
-            }
         }
         pico {
             dimension "vendor"
-            externalNativeBuild {
-                cmake {
-                    arguments "-DFLAVOR=pico"
-                }
-            }
         }
+    }
+
+    sourceSets {
+        debug.jniLibs.srcDirs += ['src/main/libs/debug/arm64-v8a']
+        release.jniLibs.srcDirs += ['src/main/libs/release/arm64-v8a']
+
+        khronos.jniLibs.srcDirs += [
+                "${khronosOpenxrLoaderTargetDir}/arm64-v8a",
+                "${khronosOpenxrLoaderTargetDir}/x86_64",
+        ]
+        khronosDebug.jniLibs.srcDirs += ['src/main/libs/debug/x86_64']
+        khronosRelease.jniLibs.srcDirs += ['src/main/libs/release/x86_64']
+
+        lynx.jniLibs.srcDirs += ['../thirdparty/lynx_openxr_sdk']
+
+        magicleap.jniLibs.srcDirs += [
+                "${khronosOpenxrLoaderTargetDir}/arm64-v8a",
+                "${khronosOpenxrLoaderTargetDir}/x86_64",
+        ]
+        magicleapDebug.jniLibs.srcDirs += ['src/main/libs/debug/x86_64']
+        magicleapRelease.jniLibs.srcDirs += ['src/main/libs/release/x86_64']
+
+        metaDebug.jniLibs.srcDirs += ['../thirdparty/ovr_openxr_mobile_sdk/OpenXR/Libs/Android/Debug']
+        metaRelease.jniLibs.srcDirs += ['../thirdparty/ovr_openxr_mobile_sdk/OpenXR/Libs/Android/Release']
+
+        pico.jniLibs.srcDirs += ["${khronosOpenxrLoaderTargetDir}/arm64-v8a"]
     }
 
     packagingOptions {
@@ -126,15 +166,15 @@ android {
         }
     }
 
-    buildFeatures {
-        prefab true
-        prefabPublishing true
-    }
-
-    prefab {
-        godotopenxrvendors {
-            headers "src/main/cpp/include"
+    tasks.matching { it.name.contains("CMake") || it.name.contains("externalNativeBuild") }.all { task ->
+        def taskPrefix = ""
+        if (project.path != ":") {
+            taskPrefix = project.path + ":"
         }
+
+        // Disable the externalNativeBuild* and *CMake* tasks as they would cause build failures since
+        // the cmake build files are only setup for editing support.
+        gradle.startParameter.excludedTaskNames += taskPrefix + task.name
     }
 }
 
@@ -143,15 +183,6 @@ dependencies {
 
     implementation "androidx.fragment:fragment:$versions.fragmentVersion"
     implementation "androidx.core:core-splashscreen:$versions.splashscreenVersion"
-
-    // Khronos dependencies
-    khronosImplementation "org.khronos.openxr:openxr_loader_for_android:$versions.openxrVersion"
-
-    // Magicleap dependencies
-    magicleapImplementation "org.khronos.openxr:openxr_loader_for_android:$versions.openxrVersion"
-
-    // Pico dependencies
-    picoImplementation "org.khronos.openxr:openxr_loader_for_android:$versions.openxrVersion"
 }
 
 task cleanAssets(type: Delete) {
@@ -185,7 +216,10 @@ task copyGdExtensionConfigToAssets(type: Copy) {
 
 preBuild.dependsOn(copyGdExtensionConfigToAssets)
 assemble.dependsOn(copyGdExtensionConfigToAssets)
+preBuild.dependsOn(copyKhronosOpenxrLoader)
+assemble.dependsOn(copyKhronosOpenxrLoader)
 assemble.finalizedBy(copyDebugAARToAddons)
 assemble.finalizedBy(copyReleaseAARToAddons)
 clean.dependsOn(cleanAssets)
 clean.dependsOn(cleanCxx)
+clean.dependsOn(cleanKhronosOpenxrLoader)
