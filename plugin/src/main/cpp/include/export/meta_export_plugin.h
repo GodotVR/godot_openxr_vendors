@@ -83,6 +83,8 @@ public:
 	String _get_android_manifest_application_element_contents(const Ref<EditorExportPlatform> &platform, bool debug) const override;
 	String _get_android_manifest_element_contents(const Ref<EditorExportPlatform> &platform, bool debug) const override;
 
+	virtual void _export_begin(const PackedStringArray &p_features, bool p_is_debug, const String &p_path, uint32_t p_flags) override;
+
 protected:
 	static void _bind_methods();
 
@@ -104,6 +106,7 @@ private:
 	Dictionary _use_overlay_keyboard_option;
 	Dictionary _use_experimental_features_option;
 	Dictionary _boundary_mode_option;
+	Dictionary _instant_splash_screen_option;
 	Dictionary _support_quest_1_option;
 	Dictionary _support_quest_2_option;
 	Dictionary _support_quest_3_option;
