@@ -43,7 +43,9 @@ func _ready() -> void:
 	fb_passthrough.set_passthrough_filter(OpenXRFbPassthroughExtensionWrapper.PASSTHROUGH_FILTER_DISABLED)
 
 	var color_map_mat := color_map_mesh.get_surface_override_material(0)
-	color_map_mat.albedo_texture = color_map
+	var color_map_gradient_texture = GradientTexture2D.new()
+	color_map_gradient_texture.gradient = color_map
+	color_map_mat.albedo_texture = color_map_gradient_texture
 
 	var curve_texture := CurveTexture.new()
 	curve_texture.curve = mono_map
