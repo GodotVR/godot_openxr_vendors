@@ -46,6 +46,7 @@ static const char *PICO_VENDOR_NAME = "pico";
 static const char *LYNX_VENDOR_NAME = "lynx";
 static const char *KHRONOS_VENDOR_NAME = "khronos";
 static const char *MAGICLEAP_VENDOR_NAME = "magicleap";
+static const char *ANDROID_VENDOR_NAME = "android";
 
 static const char *VENDORS_LIST[] = {
 	META_VENDOR_NAME,
@@ -53,6 +54,7 @@ static const char *VENDORS_LIST[] = {
 	LYNX_VENDOR_NAME,
 	KHRONOS_VENDOR_NAME,
 	MAGICLEAP_VENDOR_NAME,
+	ANDROID_VENDOR_NAME,
 };
 
 // Set of custom feature tags supported by the plugin
@@ -115,6 +117,8 @@ protected:
 	Dictionary _get_vendor_toggle_option(const String &vendor_name) const;
 
 	HybridType _get_hybrid_app_setting_value() const;
+
+	String _get_opening_activity_tag_for_panel_app() const;
 
 	bool _is_openxr_enabled() const;
 

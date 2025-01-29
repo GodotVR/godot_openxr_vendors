@@ -88,11 +88,30 @@ Dictionary OpenXREditorExportPlugin::_get_vendor_toggle_option(const String &ven
 			"",
 			PROPERTY_USAGE_DEFAULT,
 			false,
-			false);
+			true);
 }
 
 OpenXREditorExportPlugin::HybridType OpenXREditorExportPlugin::_get_hybrid_app_setting_value() const {
 	return (HybridType)(int)ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/hybrid_app");
+}
+
+String OpenXREditorExportPlugin::_get_opening_activity_tag_for_panel_app() const {
+	ProjectSettings *project_settings = ProjectSettings::get_singleton();
+
+	return vformat(
+			"        <activity android:name=\"org.godotengine.openxr.vendors.GodotPanelApp\" "
+			"android:process=\":GodotPanelApp\" "
+			"android:theme=\"@style/GodotPanelAppSplashTheme\" "
+			"android:launchMode=\"singleInstancePerTask\" "
+			"android:exported=\"true\" "
+			"android:excludeFromRecents=\"%s\" "
+			"android:screenOrientation=\"%s\" "
+			"android:resizeableActivity=\"%s\" "
+			"android:configChanges=\"orientation|keyboardHidden|screenSize|smallestScreenSize|density|keyboard|navigation|screenLayout|uiMode\" "
+			"tools:ignore=\"UnusedAttribute\">\n",
+			_bool_to_string(_get_bool_option("package/exclude_from_recents")),
+			_get_android_orientation_label((DisplayServer::ScreenOrientation)(int)project_settings->get_setting_with_override("display/window/handheld/orientation")),
+			_bool_to_string(project_settings->get_setting_with_override("display/window/size/resizable")));
 }
 
 bool OpenXREditorExportPlugin::_is_openxr_enabled() const {

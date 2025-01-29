@@ -58,7 +58,7 @@ PicoEditorExportPlugin::PicoEditorExportPlugin() {
 			PROPERTY_HINT_ENUM,
 			"No,Yes",
 			PROPERTY_USAGE_DEFAULT,
-			pico::MANIFEST_FALSE_VALUE,
+			MANIFEST_FALSE_VALUE,
 			false);
 
 	_face_tracking_option = _generate_export_option(
@@ -68,7 +68,7 @@ PicoEditorExportPlugin::PicoEditorExportPlugin() {
 			PROPERTY_HINT_ENUM,
 			"No,Face only,Lipsync only,Hybrid",
 			PROPERTY_USAGE_DEFAULT,
-			pico::FACE_TRACKING_NONE_VALUE,
+			FACE_TRACKING_NONE_VALUE,
 			false);
 
 	_hand_tracking_option = _generate_export_option(
@@ -78,7 +78,7 @@ PicoEditorExportPlugin::PicoEditorExportPlugin() {
 			PROPERTY_HINT_ENUM,
 			"No,Low frequency,High frequency (60Hz)",
 			PROPERTY_USAGE_DEFAULT,
-			pico::HAND_TRACKING_NONE_VALUE,
+			HAND_TRACKING_NONE_VALUE,
 			false);
 }
 
@@ -104,8 +104,8 @@ bool PicoEditorExportPlugin::_is_eye_tracking_enabled() const {
 		return false;
 	}
 
-	int eye_tracking_option_value = _get_int_option("pico_xr_features/eye_tracking", pico::MANIFEST_FALSE_VALUE);
-	return eye_tracking_option_value == pico::MANIFEST_TRUE_VALUE;
+	int eye_tracking_option_value = _get_int_option("pico_xr_features/eye_tracking", MANIFEST_FALSE_VALUE);
+	return eye_tracking_option_value == MANIFEST_TRUE_VALUE;
 }
 
 PackedStringArray PicoEditorExportPlugin::_get_export_features(const Ref<EditorExportPlatform> &platform, bool debug) const {
@@ -129,24 +129,24 @@ String PicoEditorExportPlugin::_get_export_option_warning(const Ref<EditorExport
 
 	bool openxr_enabled = _is_openxr_enabled();
 	if (option == "pico_xr_features/eye_tracking") {
-		if (!openxr_enabled && _get_int_option(option, pico::MANIFEST_FALSE_VALUE) == pico::MANIFEST_TRUE_VALUE) {
+		if (!openxr_enabled && _get_int_option(option, MANIFEST_FALSE_VALUE) == MANIFEST_TRUE_VALUE) {
 			return "\"Eye tracking\" requires \"XR Mode\" to be \"OpenXR\".\n";
 		}
 	} else if (option == "pico_xr_features/face_tracking") {
-		int face_tracking = _get_int_option(option, pico::FACE_TRACKING_NONE_VALUE);
-		if (!openxr_enabled && face_tracking > pico::FACE_TRACKING_NONE_VALUE) {
+		int face_tracking = _get_int_option(option, FACE_TRACKING_NONE_VALUE);
+		if (!openxr_enabled && face_tracking > FACE_TRACKING_NONE_VALUE) {
 			return "\"Face tracking\" requires \"XR Mode\" to be \"OpenXR\".\n";
 		}
 		bool record_audio = _get_bool_option("permissions/record_audio");
-		if (!record_audio && face_tracking == pico::FACE_TRACKING_LIPSYNCONLY_VALUE) {
+		if (!record_audio && face_tracking == FACE_TRACKING_LIPSYNCONLY_VALUE) {
 			return "\"Lipsync face tracking\" requires \"Record Audio\" to be checked.\n";
 		}
-		if (!record_audio && face_tracking == pico::FACE_TRACKING_HYBRID_VALUE) {
+		if (!record_audio && face_tracking == FACE_TRACKING_HYBRID_VALUE) {
 			return "\"Hybrid face tracking\" requires \"Record Audio\" to be checked.\n";
 		}
 	} else if (option == "pico_xr_features/hand_tracking") {
-		int hand_tracking = _get_int_option(option, pico::HAND_TRACKING_NONE_VALUE);
-		if (!openxr_enabled && hand_tracking > pico::HAND_TRACKING_NONE_VALUE) {
+		int hand_tracking = _get_int_option(option, HAND_TRACKING_NONE_VALUE);
+		if (!openxr_enabled && hand_tracking > HAND_TRACKING_NONE_VALUE) {
 			return "\"Hand tracking\" requires \"XR Mode\" to be \"OpenXR\".\n";
 		}
 	}
@@ -166,8 +166,8 @@ String PicoEditorExportPlugin::_get_android_manifest_element_contents(const Ref<
 	}
 
 	// Face tracking
-	int face_tracking = _get_int_option("pico_xr_features/face_tracking", pico::FACE_TRACKING_NONE_VALUE);
-	if (face_tracking == pico::FACE_TRACKING_FACEONLY_VALUE || face_tracking == pico::FACE_TRACKING_HYBRID_VALUE) {
+	int face_tracking = _get_int_option("pico_xr_features/face_tracking", FACE_TRACKING_NONE_VALUE);
+	if (face_tracking == FACE_TRACKING_FACEONLY_VALUE || face_tracking == FACE_TRACKING_HYBRID_VALUE) {
 		contents += "    <uses-permission android:name=\"com.picovr.permission.FACE_TRACKING\" />\n";
 	}
 
@@ -186,17 +186,17 @@ String PicoEditorExportPlugin::_get_android_manifest_application_element_content
 	}
 
 	// Face tracking
-	int face_tracking = _get_int_option("pico_xr_features/face_tracking", pico::FACE_TRACKING_NONE_VALUE);
-	if (face_tracking > pico::FACE_TRACKING_NONE_VALUE) {
+	int face_tracking = _get_int_option("pico_xr_features/face_tracking", FACE_TRACKING_NONE_VALUE);
+	if (face_tracking > FACE_TRACKING_NONE_VALUE) {
 		contents += "        <meta-data tools:node=\"replace\" android:name=\"picovr.software.face_tracking\" android:value=\"1\" />\n";
 	}
 
 	//Hand tracking
-	int hand_tracking = _get_int_option("pico_xr_features/hand_tracking", pico::HAND_TRACKING_NONE_VALUE);
-	if (hand_tracking > pico::HAND_TRACKING_NONE_VALUE) {
+	int hand_tracking = _get_int_option("pico_xr_features/hand_tracking", HAND_TRACKING_NONE_VALUE);
+	if (hand_tracking > HAND_TRACKING_NONE_VALUE) {
 		contents += "        <meta-data tools:node=\"replace\" android:name=\"handtracking\" android:value=\"1\" />\n";
 	}
-	if (hand_tracking > pico::HAND_TRACKING_LOWFREQUENCY_VALUE) {
+	if (hand_tracking > HAND_TRACKING_LOWFREQUENCY_VALUE) {
 		contents += "        <meta-data tools:node=\"replace\" android:name=\"Hand_Tracking_HighFrequency\" android:value=\"1\" />\n";
 	}
 

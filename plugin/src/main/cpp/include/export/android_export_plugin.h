@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  pico_editor_plugin.h                                                  */
+/*  android_export_plugin.h                                               */
 /**************************************************************************/
 /*                       This file is part of:                            */
 /*                              GODOT XR                                  */
@@ -35,46 +35,44 @@
 
 using namespace godot;
 
-class PicoEditorExportPlugin : public OpenXREditorExportPlugin {
-	GDCLASS(PicoEditorExportPlugin, OpenXREditorExportPlugin)
+class AndroidEditorExportPlugin : public OpenXREditorExportPlugin {
+	GDCLASS(AndroidEditorExportPlugin, OpenXREditorExportPlugin)
 
-	static const int MANIFEST_FALSE_VALUE = 0;
-	static const int MANIFEST_TRUE_VALUE = 1;
-
-	static const int FACE_TRACKING_NONE_VALUE = 0;
-	static const int FACE_TRACKING_FACEONLY_VALUE = 1;
-	static const int FACE_TRACKING_LIPSYNCONLY_VALUE = 2;
-	static const int FACE_TRACKING_HYBRID_VALUE = 3;
+	static const int EYE_TRACKING_NONE_VALUE = 0;
+	static const int EYE_TRACKING_OPTIONAL_VALUE = 1;
+	static const int EYE_TRACKING_REQUIRED_VALUE = 2;
 
 	static const int HAND_TRACKING_NONE_VALUE = 0;
-	static const int HAND_TRACKING_LOWFREQUENCY_VALUE = 1;
-	static const int HAND_TRACKING_HIGHFREQUENCY_VALUE = 2;
+	static const int HAND_TRACKING_OPTIONAL_VALUE = 1;
+	static const int HAND_TRACKING_REQUIRED_VALUE = 2;
 
 public:
-	PicoEditorExportPlugin();
+	AndroidEditorExportPlugin();
 
 	TypedArray<Dictionary> _get_export_options(const Ref<EditorExportPlatform> &platform) const override;
+
+	Dictionary _get_export_options_overrides(const Ref<EditorExportPlatform> &p_platform) const override;
 
 	PackedStringArray _get_export_features(const Ref<EditorExportPlatform> &platform, bool debug) const override;
 
 	String _get_export_option_warning(const Ref<EditorExportPlatform> &platform, const String &option) const override;
 
-	String _get_android_manifest_element_contents(const Ref<EditorExportPlatform> &platform, bool debug) const override;
+	String _get_android_manifest_activity_element_contents(const Ref<EditorExportPlatform> &platform, bool debug) const override;
 	String _get_android_manifest_application_element_contents(const Ref<EditorExportPlatform> &platform, bool debug) const override;
+	String _get_android_manifest_element_contents(const Ref<EditorExportPlatform> &platform, bool debug) const override;
 
 protected:
 	static void _bind_methods();
 
 	Dictionary _eye_tracking_option;
-	Dictionary _face_tracking_option;
 	Dictionary _hand_tracking_option;
 
 private:
 	bool _is_eye_tracking_enabled() const;
 };
 
-class PicoEditorPlugin : public EditorPlugin {
-	GDCLASS(PicoEditorPlugin, EditorPlugin)
+class AndroidEditorPlugin : public EditorPlugin {
+	GDCLASS(AndroidEditorPlugin, EditorPlugin)
 
 public:
 	void _enter_tree() override;
@@ -84,5 +82,5 @@ protected:
 	static void _bind_methods();
 
 private:
-	Ref<PicoEditorExportPlugin> pico_export_plugin;
+	Ref<AndroidEditorExportPlugin> android_export_plugin;
 };
