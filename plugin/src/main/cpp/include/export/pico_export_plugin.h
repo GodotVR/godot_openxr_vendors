@@ -35,22 +35,20 @@
 
 using namespace godot;
 
-namespace pico {
-static const int MANIFEST_FALSE_VALUE = 0;
-static const int MANIFEST_TRUE_VALUE = 1;
-
-static const int FACE_TRACKING_NONE_VALUE = 0;
-static const int FACE_TRACKING_FACEONLY_VALUE = 1;
-static const int FACE_TRACKING_LIPSYNCONLY_VALUE = 2;
-static const int FACE_TRACKING_HYBRID_VALUE = 3;
-
-static const int HAND_TRACKING_NONE_VALUE = 0;
-static const int HAND_TRACKING_LOWFREQUENCY_VALUE = 1;
-static const int HAND_TRACKING_HIGHFREQUENCY_VALUE = 2;
-} //namespace pico
-
 class PicoEditorExportPlugin : public OpenXREditorExportPlugin {
 	GDCLASS(PicoEditorExportPlugin, OpenXREditorExportPlugin)
+
+	static const int MANIFEST_FALSE_VALUE = 0;
+	static const int MANIFEST_TRUE_VALUE = 1;
+
+	static const int FACE_TRACKING_NONE_VALUE = 0;
+	static const int FACE_TRACKING_FACEONLY_VALUE = 1;
+	static const int FACE_TRACKING_LIPSYNCONLY_VALUE = 2;
+	static const int FACE_TRACKING_HYBRID_VALUE = 3;
+
+	static const int HAND_TRACKING_NONE_VALUE = 0;
+	static const int HAND_TRACKING_LOWFREQUENCY_VALUE = 1;
+	static const int HAND_TRACKING_HIGHFREQUENCY_VALUE = 2;
 
 public:
 	PicoEditorExportPlugin();
