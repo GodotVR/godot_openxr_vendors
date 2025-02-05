@@ -114,6 +114,22 @@ String OpenXREditorExportPlugin::_get_opening_activity_tag_for_panel_app() const
 			_bool_to_string(project_settings->get_setting_with_override("display/window/size/resizable")));
 }
 
+String OpenXREditorExportPlugin::_get_common_activity_intent_filter_contents() const {
+	String contents;
+
+	if (_get_bool_option("package/show_in_app_library")) {
+		contents += R"(
+						<category android:name="android.intent.category.LAUNCHER" />
+)";
+	}
+	if (_get_bool_option("package/show_as_launcher_app")) {
+		contents += R"(
+						<category android:name="android.intent.category.HOME" />
+)";
+	}
+	return contents;
+}
+
 bool OpenXREditorExportPlugin::_is_openxr_enabled() const {
 	return _get_int_option("xr_features/xr_mode", REGULAR_MODE_VALUE) == OPENXR_MODE_VALUE;
 }
@@ -264,12 +280,7 @@ String OpenXREditorExportPlugin::_get_android_manifest_activity_element_contents
 					<category android:name="org.khronos.openxr.intent.category.IMMERSIVE_HMD" />
 )";
 
-	if (_get_bool_option("package/show_in_app_library")) {
-		contents += R"(
-						<category android:name="android.intent.category.LAUNCHER" />
-)";
-	}
-
+	contents += _get_common_activity_intent_filter_contents();
 	contents += R"(
 				</intent-filter>
 )";
