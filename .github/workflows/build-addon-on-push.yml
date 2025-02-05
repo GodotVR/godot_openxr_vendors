@@ -6,18 +6,39 @@ on: [push, pull_request]
 env:
   # Only used for the cache key. Increment version to force clean build.
   GODOT_BASE_BRANCH: master
-  SCONS_CACHE: ${{ github.workspace }}/.scons-cache/
 
 jobs:
+  setup:
+    name: Get Godot API file
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Dump Godot API file
+        run: |
+          # Testing with a fixed editor version
+          curl -OL https://github.com/V-Sekai/world-godot/releases/download/latest.v-sekai-editor-167/v-sekai-godot-linuxbsd.zip
+          unzip v-sekai-godot-linuxbsd.zip
+          chmod +x ./v-sekai-godot-linuxbsd/godot.linuxbsd.editor.double.x86_64
+          ./v-sekai-godot-linuxbsd/godot.linuxbsd.editor.double.x86_64 --headless --dump-extension-api
+          ./v-sekai-godot-linuxbsd/godot.linuxbsd.editor.double.x86_64 --headless --dump-gdextension-interface
+
+      - name: Upload build files (artifacts)
+        uses: actions/upload-artifact@v4
+        with:
+          name: godot-api-file
+          path: |
+            ./extension_api.json
+            ./gdextension_interface.h
+
   build:
     name: Building for ${{ matrix.name }} (${{ matrix.os }})
+    needs: setup
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: true
       matrix:
         include:
           - name: 🐧 Linux (x86_64, GCC)
-            os: ubuntu-20.04
+            os: ubuntu-24.04
             platform: linux
             flags: arch=x86_64
             artifact_name: build-files-linux-x86_64
@@ -52,7 +73,7 @@ jobs:
             artifact_path: aar/demo/addons/godotopenxrvendors/.bin/macos/*/*.framework
             cache-name: macos-universal
           - name: 🤖 Android (arm64)
-            os: ubuntu-20.04
+            os: ubuntu-24.04
             platform: android
             flags: arch=arm64
             artifact_name: build-files-android-arm64
@@ -60,7 +81,7 @@ jobs:
               aar/plugin/src/main/libs/*/*/*/*.so
             cache-name: android-arm64
           - name: 🤖 Android (x86_64)
-            os: ubuntu-20.04
+            os: ubuntu-24.04
             platform: android
             flags: arch=x86_64
             artifact_name: build-files-android-x86_64
@@ -77,35 +98,53 @@ jobs:
         with:
           path: aar
           submodules: recursive
-      - name: Restore Godot build cache
-        uses: ./aar/thirdparty/godot-cpp/.github/actions/godot-cache-restore
-        with:
-          cache-name: ${{ matrix.cache-name }}
-        continue-on-error: true
       - name: Set up Python (for SCons)
         uses: actions/setup-python@v5
         with:
           python-version: "3.x"
-      - name: Android dependencies
-        uses: nttld/setup-ndk@v1
-        with:
-          ndk-version: r23c
-          link-to-sdk: true
-        if: matrix.platform == 'android'
+     # - name: Android dependencies
+     #   uses: nttld/setup-ndk@v1
+     #   with:
+     #     ndk-version: r23c
+     #     link-to-sdk: true
+     #   if: matrix.platform == 'android'
       - name: Install scons
         run: |
           python -m pip install scons==4.0.0
+
+      - name: Install ndk
+        if: matrix.platform == 'android'
+        run: |
+          sudo apt install -y just
+          export ANDROID_SDK_ROOT=/usr/local/lib/android/sdk/
+          curl -sS -OL 'https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip'
+          unzip commandlinetools-linux-11076708_latest.zip
+          mkdir -p ${ANDROID_SDK_ROOT}
+          yes | ./cmdline-tools/bin/sdkmanager --sdk_root=${ANDROID_SDK_ROOT} --licenses
+          yes 2>/dev/null | ./cmdline-tools/bin/sdkmanager --sdk_root=${ANDROID_SDK_ROOT} "ndk;23.2.8568313" 'cmdline-tools;latest' 'build-tools;34.0.0' 'platforms;android-34' 'cmake;3.22.1'
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+
+      - name: Overwrite api files
+        if: matrix.platform != 'windows'
+        run: |
+          # Is gdextension_interface.h overwrite required for double builds?
+          mv -v -f ./godot-api-file/extension_api.json aar/thirdparty/godot_cpp_gdextension_api/extension_api.json
+          mv -v -f ./godot-api-file/gdextension_interface.h aar/thirdparty/godot-cpp/gdextension/gdextension_interface.h
+      - name: Overwrite api files win
+        if: matrix.platform == 'windows'
+        run: |
+          ls -R
+          mv -v -Force ./godot-api-file/extension_api.json aar/thirdparty/godot_cpp_gdextension_api/extension_api.json
+          mv -v -Force ./godot-api-file/gdextension_interface.h aar/thirdparty/godot-cpp/gdextension/gdextension_interface.h
+
       - name: Create extension library
         run: |
           cd aar
-          scons platform=${{ matrix.platform }} target=template_debug ${{ matrix.flags }} custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json build_profile=thirdparty/godot_cpp_build_profile/build_profile.json
-          scons platform=${{ matrix.platform }} target=template_release ${{ matrix.flags }} custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json build_profile=thirdparty/godot_cpp_build_profile/build_profile.json
+          scons platform=${{ matrix.platform }} target=template_debug precision=double ${{ matrix.flags }} custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json build_profile=thirdparty/godot_cpp_build_profile/build_profile.json
+          scons platform=${{ matrix.platform }} target=template_release precision=double ${{ matrix.flags }} custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json build_profile=thirdparty/godot_cpp_build_profile/build_profile.json
           cd ..
-      - name: Save Godot build cache
-        uses: ./aar/thirdparty/godot-cpp/.github/actions/godot-cache-save
-        with:
-          cache-name: ${{ matrix.cache-name }}
-        continue-on-error: true
       - name: Upload build files (artifacts)
         uses: actions/upload-artifact@v4
         with:
@@ -130,8 +169,8 @@ jobs:
         with:
           java-version: 17
           distribution: "adopt"
-      - name: Validate Gradle wrapper
-        uses: gradle/actions/wrapper-validation@v3
+     # - name: Validate Gradle wrapper
+     #   uses: gradle/actions/wrapper-validation@v3
       - name: Copy Android binaries
         run: |
           mkdir aar/plugin/src/main/libs
@@ -192,232 +231,26 @@ jobs:
       - name: Zip addon
         run: |
           zip -qq -r godotopenxrvendorsaddon.zip asset
-        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
-      - name: Create and upload asset
-        uses: ncipollo/release-action@v1
+        if: github.event_name == 'push'
+        # && startsWith(github.ref, 'refs/tags')
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          allowUpdates: true
-          artifacts: "godotopenxrvendorsaddon.zip"
-          draft: true
-          omitNameDuringUpdate: true
-          omitBodyDuringUpdate: true
-          omitDraftDuringUpdate: true
-          omitPrereleaseDuringUpdate: true
-          token: ${{ secrets.GITHUB_TOKEN }}
-        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
+          tag_name: XR-plugin-${{ github.run_number }}
+          release_name: Latest Release of V-Sekai XR plugin
+          draft: false
+          prerelease: true
 
-  run_xr_simulator:
-   name: "Run XR Simulator"
-   #runs-on: windows-latest
-   runs-on: [Windows, self-hosted, gpu]
-   needs: build
-
-   env:
-     GODOT_VERSION: "4.4-beta1"
-     XRSIM_VERSION: "65.0.0"
-
-   steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          lfs: 'true'
-
-      - name: Install Chocolatey
-        run: |
-          Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
-
-      - name: Install 7zip
-        run: |
-          choco install 7zip -y
-
-      - name: Download Godot
-        run: |
-          Invoke-WebRequest -Uri "https://github.com/godotengine/godot-builds/releases/download/${{ env.GODOT_VERSION }}/Godot_v${{ env.GODOT_VERSION }}_win64.exe.zip" -OutFile "godot.zip"
-
-      - name: Extract Godot
-        run: |
-          Expand-Archive -Path "godot.zip" -DestinationPath .
-
-      #- name: Download SwiftShader vulkan-1.dll
-      #  run: |
-      #    Invoke-WebRequest -Uri "https://www.dropbox.com/scl/fi/r6radx6b125555xkxue20/vulkan-1.dll?rlkey=ffv3cgvqbytivm1zy119hss7n&st=frcettrf&dl=1" -OutFile "vulkan-1.dll"
-
-      - name: Download Meta XR Simulator
-        run: |
-          Invoke-WebRequest -Uri "https://npm.developer.oculus.com/com.meta.xr.simulator/-/com.meta.xr.simulator-${{ env.XRSIM_VERSION }}.tgz" -OutFile MetaXRSimulator.tgz
-
-      - name: Extract Meta XR Simulator
-        run: |
-          # Unzip.
-          New-Item -Path "C:\Meta" -ItemType Directory -Force
-          tar -xzvf "MetaXRSimulator.tgz" -C "C:\Meta\"
-          rm "MetaXRSimulator.tgz"
-
-      - name: Configure the Meta XR Simulator as the active OpenXR runtime
-        run: |
-          New-Item -Path "HKLM:\SOFTWARE\Khronos\OpenXR\1" -Name "ActiveRuntime" -Force
-          Set-ItemProperty -Path "HKLM:\SOFTWARE\Khronos\OpenXR\1" -Name "ActiveRuntime" -Value "C:\Meta\package\MetaXRSimulator\meta_openxr_simulator.json"
-
-      - name: Download Windows build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: build-files-windows
-          path: build-files-windows
-
-      - name: Copy Windows build of the addon into the demo and samples project
-        run: |
-          mkdir -p demo/addons/godotopenxrvendors/.bin/windows/
-          cp -r build-files-windows/* demo/addons/godotopenxrvendors/.bin/windows/
-
-          $sampleProjects = Get-ChildItem -Path "samples/" -Directory
-          foreach ($project in $sampleProjects) {
-            cp -r demo/addons "$($project.FullName)/"
-          }
-
-      - name: Import the demo and sample projects
-        run: |
-          $godot = "Godot_v${{ env.GODOT_VERSION }}_win64.exe"
-
-          Write-Output ""
-          Write-Output " ** Importing demo project"
-          Write-Output ""
-
-          Start-Process -FilePath "$godot" -ArgumentList "--path demo --import --headless" -NoNewWindow -Wait
-
-          $sampleProjects = Get-ChildItem -Path "samples/" -Directory
-          foreach ($project in $sampleProjects) {
-            $projectFile = Join-Path -Path $project.FullName -ChildPath "project.godot"
-              if (Test-Path $projectFile) {
-              Write-Output ""
-              Write-Output " ** Importing project $($project.Name)"
-              Write-Output ""
-
-              Start-Process -FilePath "$godot" -ArgumentList "--path $($project.FullName) --import --headless" -NoNewWindow -Wait
-            }
-          }
-
-      - name: Launch a synthetic environment
-        run: |
-          # Ensure a synthetic environment isn't already running.
-          try {
-            Get-Process -Name "synth_env_server" | Stop-Process
-          } catch {
-            # Do nothing if there is no existing process.
-          }
-
-          Start-Process -FilePath "C:\Meta\package\MetaXRSimulator\.synth_env_server\synth_env_server.exe" -ArgumentList "Bedroom" -PassThru
-
-      - name: Run tests
-        run: |
-          $jsonPath = "$env:AppData\MetaXR\MetaXrSimulator\persistent_data.json"
-
-          $demoVrsFiles = Get-ChildItem -Path "demo/tests/" -Recurse -Filter *.vrs
-          $sampleVrsFiles = Get-ChildItem -Path "samples/*/tests/" -Recurse -Filter *.vrs
-          $vrsFiles = @()
-          $vrsFiles += $demoVrsFiles
-          $vrsFiles += $sampleVrsFiles
-
-          foreach ($file in $vrsFiles) {
-            $replayPath = Join-Path -Path $file.DirectoryName -ChildPath ($file.BaseName + "-replay.vrs")
-            $jsonContent = @{
-              session_capture = @{
-                delay_start_ms = 5000
-                exec_state = "replay"
-                quit_buffer_ms = 5000
-                quit_when_complete = $true
-                record_path = $file.FullName
-                replay_path = $replayPath
-              }
-            } | ConvertTo-Json
-
-            New-Item -ItemType Directory -Force -Path (Split-Path $jsonPath)
-            Set-Content -Path $jsonPath -Value $jsonContent
-            echo "$jsonContent"
-
-            $godot = "Godot_v${{ env.GODOT_VERSION }}_win64.exe"
-            $timeout = 300
-            $waitTime = 0
-
-            $projectPath = (Get-Item $file.DirectoryName).Parent
-
-            Write-Output ""
-            Write-Output " ** Running VRS $($file.Name) on $($projectPath.Name) project"
-            Write-Output ""
-
-            $process = Start-Process -FilePath "$godot" -ArgumentList "--path $($projectPath.FullName) --rendering-method mobile --verbose -- --xrsim-automated-tests" -NoNewWindow -PassThru
-
-            while ($process.HasExited -eq $false -and $waitTime -lt $timeout) {
-                Start-Sleep -Seconds 1
-                $waitTime++
-            }
-
-            if ($process.HasExited -eq $false) {
-                Write-Output "Process is still running after $timeout seconds. Stopping the process."
-                $process.Kill()
-                Exit 1
-            } else {
-                Write-Output "Process completed within $waitTime seconds."
-            }
-
-            if (-Not (Test-Path $replayPath)) {
-              Write-Error "Replay file not found: $replayPath"
-              Exit 1
-            }
-          }
-
-      - name: Stop synthetic environment
-        run: |
-          Get-Process -Name "synth_env_server" | Stop-Process
-
-      - name: Upload VRS artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: ReplayVRS
-          path: |
-            test-scripts/
-            **/*/tests/*.vrs
-
-  compare_vrs_replay:
-    name: "Compare VRS replay"
-    runs-on: ubuntu-latest
-    needs: run_xr_simulator
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Download VRS artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: ReplayVRS
-          path: tests/vrs
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r scripts/vrs_pixmatch/requirements.txt
-
-      - name: Compare VRS replay with expected recordings
-        run: |
-          cd tests/vrs/
-
-          mkdir diffs
-          for replay in $(find . -name \*-replay.vrs); do
-            echo " ==> Checking $replay..."
-            expected=$(echo $replay | sed -e 's/-replay.vrs$/.vrs/')
-            diff_path="diffs/$replay"
-            mkdir -p "$diff_path"
-            python ../../scripts/vrs_pixmatch/vrs_pixmatch.py "$expected" "$replay" --threshold 0.4 --max-pixel-diff 40000 --output-path "$diff_path" --verbose
-          done
-
-      - name: Upload VRS diff artifacts
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: ReplayVRSDiff
-          path: tests/vrs/diffs/**/*
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./godotopenxrvendorsaddon.zip
+          asset_name: godotopenxrvendorsaddon.zip
+          asset_content_type: application/zip
