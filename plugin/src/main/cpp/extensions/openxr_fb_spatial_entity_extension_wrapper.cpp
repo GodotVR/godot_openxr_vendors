@@ -166,8 +166,13 @@ bool OpenXRFbSpatialEntityExtensionWrapper::create_spatial_anchor(const Transfor
 	Quaternion quat = Quaternion(p_transform.basis);
 	Vector3 pos = p_transform.origin;
 	XrPosef pose = {
-		{ quat.x, quat.y, quat.z, quat.w }, // orientation
-		{ pos.x, pos.y, pos.z }, // position
+		{ static_cast<float>(quat.x),
+				static_cast<float>(quat.y),
+				static_cast<float>(quat.z),
+				static_cast<float>(quat.w) }, // orientation
+		{ static_cast<float>(pos.x),
+				static_cast<float>(pos.y),
+				static_cast<float>(pos.z) } // position
 	};
 
 	XrSpatialAnchorCreateInfoFB info = {
