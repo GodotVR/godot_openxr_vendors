@@ -161,33 +161,42 @@ bool OpenXRFbSpatialEntityExtensionWrapper::_on_event_polled(const void *event) 
 }
 
 bool OpenXRFbSpatialEntityExtensionWrapper::create_spatial_anchor(const Transform3D &p_transform, SpatialAnchorCreatedCallback p_callback, void *p_userdata) {
-	XrAsyncRequestIdFB request_id = 0;
+    XrAsyncRequestIdFB request_id = 0;
 
-	Quaternion quat = Quaternion(p_transform.basis);
-	Vector3 pos = p_transform.origin;
-	XrPosef pose = {
-		{ quat.x, quat.y, quat.z, quat.w }, // orientation
-		{ pos.x, pos.y, pos.z }, // position
-	};
+    Quaternion quat = Quaternion(p_transform.basis);
+    Vector3 pos = p_transform.origin;
+    XrPosef pose = {
+        {
+            static_cast<float>(quat.x),
+            static_cast<float>(quat.y),
+            static_cast<float>(quat.z),
+            static_cast<float>(quat.w)
+        },
+        {
+            static_cast<float>(pos.x),
+            static_cast<float>(pos.y),
+            static_cast<float>(pos.z)
+        }
+    };
 
-	XrSpatialAnchorCreateInfoFB info = {
-		XR_TYPE_SPATIAL_ANCHOR_CREATE_INFO_FB, // type
-		nullptr, // next
-		reinterpret_cast<XrSpace>(get_openxr_api()->get_play_space()), // space
-		pose, // poseInSpace
-		get_openxr_api()->get_predicted_display_time(), // time
-	};
+    XrSpatialAnchorCreateInfoFB info = {
+        XR_TYPE_SPATIAL_ANCHOR_CREATE_INFO_FB, // type
+        nullptr, // next
+        reinterpret_cast<XrSpace>(get_openxr_api()->get_play_space()), // space
+        pose, // poseInSpace
+        get_openxr_api()->get_predicted_display_time(), // time
+    };
 
-	const XrResult result = xrCreateSpatialAnchorFB(SESSION, &info, &request_id);
-	if (!XR_SUCCEEDED(result)) {
-		WARN_PRINT("xrCreateSpatialAnchorFB failed!");
-		WARN_PRINT(get_openxr_api()->get_error_string(result));
-		p_callback(result, nullptr, nullptr, p_userdata);
-		return false;
-	}
+    const XrResult result = xrCreateSpatialAnchorFB(SESSION, &info, &request_id);
+    if (!XR_SUCCEEDED(result)) {
+        WARN_PRINT("xrCreateSpatialAnchorFB failed!");
+        WARN_PRINT(get_openxr_api()->get_error_string(result));
+        p_callback(result, nullptr, nullptr, p_userdata);
+        return false;
+    }
 
-	spatial_anchor_creation_info[request_id] = SpatialAnchorCreationInfo(p_callback, p_userdata);
-	return true;
+    spatial_anchor_creation_info[request_id] = SpatialAnchorCreationInfo(p_callback, p_userdata);
+    return true;
 }
 
 void OpenXRFbSpatialEntityExtensionWrapper::on_spatial_anchor_created(const XrEventDataSpatialAnchorCreateCompleteFB *event) {
