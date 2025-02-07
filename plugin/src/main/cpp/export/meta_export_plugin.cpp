@@ -554,12 +554,7 @@ String MetaEditorExportPlugin::_get_android_manifest_activity_element_contents(c
 					<category android:name="org.khronos.openxr.intent.category.IMMERSIVE_HMD" />
 )";
 
-	if (_get_bool_option("package/show_in_app_library")) {
-		contents += R"(
-						<category android:name="android.intent.category.LAUNCHER" />
-)";
-	}
-
+	contents += _get_common_activity_intent_filter_contents();
 	contents += R"(
 				</intent-filter>
 )";

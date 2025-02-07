@@ -118,6 +118,8 @@ protected:
 
 	String _get_opening_activity_tag_for_panel_app() const;
 
+	String _get_common_activity_intent_filter_contents() const;
+
 	bool _is_openxr_enabled() const;
 
 	bool _get_bool_option(const String &option) const;
