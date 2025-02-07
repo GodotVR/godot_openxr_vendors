@@ -31,6 +31,7 @@ task clean(type: Delete) {
     dependsOn 'cleanAddon'
     dependsOn 'cleanBuildFromSamples'
     dependsOn 'cleanZippedSamples'
+    dependsOn 'cleanScons'
 
     dependsOn ':plugin:clean'
 }
@@ -53,11 +54,10 @@ task buildPlugin {
     finalizedBy "copyBuildToSamples"
 }
 
-/**
- * Build the scons artifacts for the project
+/*
+ * Find scons executable path
  */
-task buildSconsArtifacts {
-    // Find scons' executable path
+def getSconsExecutableFile() {
     File sconsExecutableFile = null
     def sconsName = "scons"
     def sconsExts = (org.gradle.internal.os.OperatingSystem.current().isWindows()
@@ -81,51 +81,108 @@ task buildSconsArtifacts {
         }
     }
 
+    return sconsExecutableFile
+}
+
+def createSconsTasks(File sconsExecutableFile, boolean clean) {
+    def defaultArgs = [
+        "--directory=.",
+        "custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json",
+        "build_profile=thirdparty/godot_cpp_build_profile/build_profile.json",
+    ]
+
+    if (clean) {
+        defaultArgs << "-c"
+    }
+
+    def taskPrefix = (clean ? "clean" : "build")
+
+    // Android.
+    tasks.create(name: "${taskPrefix}GodotOpenXRVendorsAndroidArm64Debug", type: Exec) {
+        executable sconsExecutableFile.absolutePath
+        args defaultArgs + ["platform=android", "target=template_debug", "arch=arm64"]
+    }
+    tasks.create(name: "${taskPrefix}GodotOpenXRVendorsAndroidArm64Release", type: Exec) {
+        executable sconsExecutableFile.absolutePath
+        args defaultArgs + ["platform=android", "target=template_release", "arch=arm64"]
+    }
+    tasks.create(name: "${taskPrefix}GodotOpenXRVendorsAndroidX86_64Debug", type: Exec) {
+        executable sconsExecutableFile.absolutePath
+        args defaultArgs + ["platform=android", "target=template_debug", "arch=x86_64"]
+    }
+    tasks.create(name: "${taskPrefix}GodotOpenXRVendorsAndroidX86_64Release", type: Exec) {
+        executable sconsExecutableFile.absolutePath
+        args defaultArgs + ["platform=android", "target=template_release", "arch=x86_64"]
+    }
+
+    // Desktop.
+    tasks.create(name: "${taskPrefix}GodotOpenXRVendorsDesktopDebug", type: Exec) {
+        executable sconsExecutableFile.absolutePath
+        args defaultArgs + ["target=template_debug"]
+    }
+    tasks.create(name: "${taskPrefix}GodotOpenXRVendorsDesktopRelease", type: Exec) {
+        executable sconsExecutableFile.absolutePath
+        args defaultArgs + ["target=template_release"]
+    }
+}
+
+/**
+ * Build the scons artifacts for the project
+ */
+task buildSconsArtifacts {
+    File sconsExecutableFile = getSconsExecutableFile()
+
     // Using `doFirst` so the exception doesn't happen until this task actually runs.
     doFirst {
         if (sconsExecutableFile == null) {
-            throw new GradleException("Unable to find executable path for the '$sconsName' command.")
+            throw new GradleException("Unable to find executable path for the 'scons' command.")
         } else {
-            logger.debug("Found executable path for $sconsName: ${sconsExecutableFile.absolutePath}")
+            logger.debug("Found executable path for scons: ${sconsExecutableFile.absolutePath}")
         }
     }
 
     if (sconsExecutableFile != null) {
-        // Build the GDExtension library for Android.
-        tasks.create(name: "buildGodotOpenXRVendorsAndroidArm64Debug", type: Exec) {
-            executable sconsExecutableFile.absolutePath
-            args "--directory=.", "platform=android", "target=template_debug", "arch=arm64", "custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json", "build_profile=thirdparty/godot_cpp_build_profile/build_profile.json"
-        }
-        tasks.create(name: "buildGodotOpenXRVendorsAndroidArm64Release", type: Exec) {
-            executable sconsExecutableFile.absolutePath
-            args "--directory=.", "platform=android", "target=template_release", "arch=arm64", "custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json", "build_profile=thirdparty/godot_cpp_build_profile/build_profile.json"
-        }
-        tasks.create(name: "buildGodotOpenXRVendorsAndroidX86_64Debug", type: Exec) {
-            executable sconsExecutableFile.absolutePath
-            args "--directory=.", "platform=android", "target=template_debug", "arch=x86_64", "custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json", "build_profile=thirdparty/godot_cpp_build_profile/build_profile.json"
-        }
-        tasks.create(name: "buildGodotOpenXRVendorsAndroidX86_64Release", type: Exec) {
-            executable sconsExecutableFile.absolutePath
-            args "--directory=.", "platform=android", "target=template_release", "arch=x86_64", "custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json", "build_profile=thirdparty/godot_cpp_build_profile/build_profile.json"
-        }
+        createSconsTasks(sconsExecutableFile, false)
 
+        // Android.
         dependsOn 'buildGodotOpenXRVendorsAndroidArm64Debug'
         dependsOn 'buildGodotOpenXRVendorsAndroidArm64Release'
         dependsOn 'buildGodotOpenXRVendorsAndroidX86_64Debug'
         dependsOn 'buildGodotOpenXRVendorsAndroidX86_64Release'
 
-        // Build the GDExtension library for desktop.
-        tasks.create(name: "buildGodotOpenXRVendorsDesktopDebug", type: Exec) {
-            executable sconsExecutableFile.absolutePath
-            args "--directory=.", "target=template_debug", "custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json", "build_profile=thirdparty/godot_cpp_build_profile/build_profile.json"
-        }
-        tasks.create(name: "buildGodotOpenXRVendorsDesktopRelease", type: Exec) {
-            executable sconsExecutableFile.absolutePath
-            args "--directory=.", "target=template_release", "custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json", "build_profile=thirdparty/godot_cpp_build_profile/build_profile.json"
-        }
-
+        // Desktop.
         dependsOn 'buildGodotOpenXRVendorsDesktopDebug'
         dependsOn 'buildGodotOpenXRVendorsDesktopRelease'
+    }
+}
+
+/**
+ * Scons clean for the project
+ */
+task cleanScons {
+    File sconsExecutableFile = getSconsExecutableFile()
+
+    // Using `doFirst` so the exception doesn't happen until this task actually runs.
+    doFirst {
+        if (sconsExecutableFile == null) {
+            throw new GradleException("Unable to find executable path for the 'scons' command.")
+        } else {
+            logger.debug("Found executable path for scons: ${sconsExecutableFile.absolutePath}")
+        }
+    }
+
+    if (sconsExecutableFile != null) {
+        createSconsTasks(sconsExecutableFile, true)
+
+        // Android.
+        dependsOn 'cleanGodotOpenXRVendorsAndroidArm64Debug'
+        dependsOn 'cleanGodotOpenXRVendorsAndroidArm64Release'
+        dependsOn 'cleanGodotOpenXRVendorsAndroidX86_64Debug'
+        dependsOn 'cleanGodotOpenXRVendorsAndroidX86_64Release'
+
+        // Desktop.
+        dependsOn 'cleanGodotOpenXRVendorsDesktopDebug'
+        dependsOn 'cleanGodotOpenXRVendorsDesktopRelease'
     }
 }
 
