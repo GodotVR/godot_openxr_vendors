@@ -87,7 +87,7 @@ Dictionary OpenXREditorExportPlugin::_get_vendor_toggle_option(const String &ven
 			"",
 			PROPERTY_USAGE_DEFAULT,
 			false,
-			false);
+			true);
 }
 
 bool OpenXREditorExportPlugin::_is_openxr_enabled() const {
