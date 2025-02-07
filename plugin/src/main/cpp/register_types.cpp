@@ -48,6 +48,7 @@
 #include "extensions/openxr_fb_android_surface_swapchain_create_extension_wrapper.h"
 #include "extensions/openxr_fb_body_tracking_extension_wrapper.h"
 #include "extensions/openxr_fb_composition_layer_alpha_blend_extension_wrapper.h"
+#include "extensions/openxr_fb_composition_layer_image_layout_extension_wrapper.h"
 #include "extensions/openxr_fb_composition_layer_secure_content_extension_wrapper.h"
 #include "extensions/openxr_fb_composition_layer_settings_extension_wrapper.h"
 #include "extensions/openxr_fb_face_tracking_extension_wrapper.h"
@@ -146,6 +147,9 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 
 			ClassDB::register_class<OpenXRFbCompositionLayerAlphaBlendExtensionWrapper>();
 			OpenXRFbCompositionLayerAlphaBlendExtensionWrapper::get_singleton()->register_extension_wrapper();
+
+			ClassDB::register_class<OpenXRFbCompositionLayerImageLayoutExtensionWrapper>();
+			OpenXRFbCompositionLayerImageLayoutExtensionWrapper::get_singleton()->register_extension_wrapper();
 
 			ClassDB::register_class<OpenXRFbCompositionLayerSettingsExtensionWrapper>();
 			OpenXRFbCompositionLayerSettingsExtensionWrapper::get_singleton()->register_extension_wrapper();
