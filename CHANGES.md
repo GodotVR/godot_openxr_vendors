@@ -1,5 +1,9 @@
 # Change history for the Godot OpenXR loaders asset
 
+## 3.1.2
+- Fix passthrough sample color map display bug
+- Fix the issue preventing overridden vendor options from being updated
+
 ## 3.1.1
 - Emit correct signal from `OpenXRFbSpatialEntity.erase_from_storage()`
 - Only add the `LAUNCHER` category if "Show in App Library" is enabled
