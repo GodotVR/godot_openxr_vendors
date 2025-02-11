@@ -31,7 +31,6 @@ package org.godotengine.openxr.vendors
 
 import android.os.Bundle
 import android.util.Log
-import androidx.annotation.CallSuper
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import org.godotengine.godot.GodotActivity
 import org.godotengine.godot.BuildConfig
@@ -61,10 +60,9 @@ class GodotPanelApp : GodotActivity() {
 		super.onCreate(savedInstanceState)
 	}
 
-	@CallSuper
-	protected override fun updateCommandLineParams(args: Array<String>) {
-		// Force XR to be turned off and discard other params.
-		super.updateCommandLineParams(arrayOf("--xr_mode_regular", "--xr-mode", "off"))
+	override fun getCommandLine(): MutableList<String> {
+		// Force XR to be turned off.
+		return mutableListOf("--xr_mode_regular", "--xr-mode", "off")
 	}
 
 	override fun supportsFeature(featureTag: String): Boolean {
