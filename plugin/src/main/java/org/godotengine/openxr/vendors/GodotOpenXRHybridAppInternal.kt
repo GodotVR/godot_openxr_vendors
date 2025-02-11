@@ -76,9 +76,9 @@ class GodotOpenXRHybridAppInternal(godot: Godot?) : GodotPlugin(godot) {
 	fun hybridAppSwitchTo(mode: Int, data: String = ""): Boolean {
 		if (hybridMode == mode) return false
 
-		if (!isNativeXRDevice()) return false
-
 		val context = getActivity() ?: return false
+
+		if (!isNativeXRDevice(context)) return false
 
 		val activityName = if (mode == IMMERSIVE_MODE) IMMERSIVE_ACTIVITY else PANEL_ACTIVITY
 		val newInstance = Intent()
