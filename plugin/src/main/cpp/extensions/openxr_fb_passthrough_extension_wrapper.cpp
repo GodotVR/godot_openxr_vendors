@@ -438,7 +438,11 @@ XrGeometryInstanceFB OpenXRFbPassthroughExtensionWrapper::create_geometry_instan
 	vertices.resize(vertex_array.size());
 	for (int j = 0; j < vertex_array.size(); j++) {
 		Vector3 vertex = vertex_array[j];
-		vertices[j] = { vertex.x, vertex.y, vertex.z };
+		vertices[j] = {
+			static_cast<float>(vertex.x),
+			static_cast<float>(vertex.y),
+			static_cast<float>(vertex.z)
+		};
 	}
 
 	Array index_array = surface_arrays[Mesh::ARRAY_INDEX];
@@ -472,10 +476,23 @@ XrGeometryInstanceFB OpenXRFbPassthroughExtensionWrapper::create_geometry_instan
 	Quaternion quat = transform.basis.get_rotation_quaternion();
 	Vector3 scale = transform.basis.get_scale();
 
-	XrQuaternionf xr_orientation = { quat.x, quat.y, quat.z, quat.w };
-	XrVector3f xr_position = { transform.origin.x, transform.origin.y, transform.origin.z };
+	XrQuaternionf xr_orientation = {
+		static_cast<float>(quat.x),
+		static_cast<float>(quat.y),
+		static_cast<float>(quat.z),
+		static_cast<float>(quat.w)
+	};
+	XrVector3f xr_position = {
+		static_cast<float>(transform.origin.x),
+		static_cast<float>(transform.origin.y),
+		static_cast<float>(transform.origin.z)
+	};
 	XrPosef xr_pose = { xr_orientation, xr_position };
-	XrVector3f xr_scale = { scale.x, scale.y, scale.z };
+	XrVector3f xr_scale = {
+		static_cast<float>(scale.x),
+		static_cast<float>(scale.y),
+		static_cast<float>(scale.z)
+	};
 
 	XrGeometryInstanceFB geometry_instance = XR_NULL_HANDLE;
 	XrGeometryInstanceCreateInfoFB geometry_instance_info = {
@@ -504,10 +521,23 @@ void OpenXRFbPassthroughExtensionWrapper::set_geometry_instance_transform(XrGeom
 	Quaternion quat = transform.basis.get_rotation_quaternion();
 	Vector3 scale = transform.basis.get_scale();
 
-	XrQuaternionf xr_orientation = { quat.x, quat.y, quat.z, quat.w };
-	XrVector3f xr_position = { transform.origin.x, transform.origin.y, transform.origin.z };
+	XrQuaternionf xr_orientation = {
+		static_cast<float>(quat.x),
+		static_cast<float>(quat.y),
+		static_cast<float>(quat.z),
+		static_cast<float>(quat.w)
+	};
+	XrVector3f xr_position = {
+		static_cast<float>(transform.origin.x),
+		static_cast<float>(transform.origin.y),
+		static_cast<float>(transform.origin.z)
+	};
 	XrPosef xr_pose = { xr_orientation, xr_position };
-	XrVector3f xr_scale = { scale.x, scale.y, scale.z };
+	XrVector3f xr_scale = {
+		static_cast<float>(scale.x),
+		static_cast<float>(scale.y),
+		static_cast<float>(scale.z)
+	};
 
 	XrGeometryInstanceTransformFB xr_transform = {
 		XR_TYPE_GEOMETRY_INSTANCE_TRANSFORM_FB, // type
