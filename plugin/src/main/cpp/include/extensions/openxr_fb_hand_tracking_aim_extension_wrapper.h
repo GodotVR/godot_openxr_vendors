@@ -34,6 +34,7 @@
 #include <godot_cpp/classes/open_xr_extension_wrapper_extension.hpp>
 #include <godot_cpp/classes/open_xr_interface.hpp>
 #include <godot_cpp/classes/xr_positional_tracker.hpp>
+#include <godot_cpp/classes/project_settings.hpp>
 
 #include <map>
 
@@ -62,7 +63,7 @@ public:
 
 	void _on_process() override;
 
-	void add_project_setting();
+	static void add_project_setting(ProjectSettings *project_settings);
 
 	static OpenXRFbHandTrackingAimExtensionWrapper *get_singleton();
 
