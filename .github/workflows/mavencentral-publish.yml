@@ -5,6 +5,7 @@ on:
   release:
     # We'll run this workflow when a new GitHub release is created
     types: [published]
+  workflow_dispatch: {}
 
 jobs:
   publish:
