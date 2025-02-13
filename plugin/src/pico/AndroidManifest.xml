@@ -24,8 +24,9 @@
 
         <!-- Enable VR mode on Pico headsets -->
         <meta-data android:name="pvr.app.type" android:value="vr" />
-        <meta-data android:name="pvr.sdk.version" android:value="OpenXR" />";
-        <meta-data android:name="pvr.display.orientation" android:value="180" />";
+        <meta-data android:name="pvr.sdk.version" android:value="OpenXR" />
+        <meta-data android:name="pvr.display.orientation" android:value="180" />
+        <meta-data android:name="pxr.sdk.version_code" android:value="5800" />
     </application>
 
 </manifest>
