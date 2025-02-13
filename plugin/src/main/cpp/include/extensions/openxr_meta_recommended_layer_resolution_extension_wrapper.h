@@ -32,6 +32,7 @@
 
 #include <openxr/openxr.h>
 #include <godot_cpp/classes/open_xr_extension_wrapper_extension.hpp>
+#include <godot_cpp/classes/project_settings.hpp>
 #include <map>
 
 #include "util.h"
@@ -54,7 +55,7 @@ public:
 	void _on_pre_render() override;
 	void _on_state_ready() override;
 
-	void add_project_setting();
+	static void add_project_setting(ProjectSettings *project_settings);
 
 protected:
 	static void _bind_methods();
