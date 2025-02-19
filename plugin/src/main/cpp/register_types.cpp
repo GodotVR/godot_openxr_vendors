@@ -108,28 +108,45 @@ static bool global_bool_get(const String &p_name) {
 }
 
 static void add_plugin_core_settings() {
-	ProjectSettings *project_settings = ProjectSettings::get_singleton();
-	if (project_settings == nullptr) {
-		return;
-	}
+    ProjectSettings *project_settings = ProjectSettings::get_singleton();
+    if (project_settings == nullptr) {
+        return;
+    }
 
-	define_global_bool(project_settings, "xr/openxr/openxr/hybrid_app", false);
+    define_global_bool(project_settings, "xr/openxr/openxr/hybrid_app", false);
 
-	define_global_bool(project_settings, "xr/openxr/extensions/fb_body_tracking", true);
-	define_global_bool(project_settings, "xr/openxr/extensions/fb_composition_layer_alpha_blend", true);
-	define_global_bool(project_settings, "xr/openxr/extensions/fb_composition_layer_secure_content", true);
-	define_global_bool(project_settings, "xr/openxr/extensions/fb_composition_layer_settings", true);
-	define_global_bool(project_settings, "xr/openxr/extensions/fb_face_tracking", true);
-	define_global_bool(project_settings, "xr/openxr/extensions/fb_hand_tracking_aim", true);
-	define_global_bool(project_settings, "xr/openxr/extensions/fb_hand_tracking_capsules", true);
-	define_global_bool(project_settings, "xr/openxr/extensions/fb_hand_tracking_mesh", true);
-	define_global_bool(project_settings, "xr/openxr/extensions/fb_passthrough", true);
-	define_global_bool(project_settings, "xr/openxr/extensions/fb_render_model", true);
-	define_global_bool(project_settings, "xr/openxr/extensions/fb_scene_capture", true);
-	define_global_bool(project_settings, "xr/openxr/extensions/fb_scene", true);
-	define_global_bool(project_settings, "xr/openxr/extensions/fb_spatial", true);
-	define_global_bool(project_settings, "xr/openxr/extensions/htc_facial_tracking", true);
-	define_global_bool(project_settings, "xr/openxr/extensions/htc_passthrough", true);
+    // Meta/FB Base Features
+    define_global_bool(project_settings, "xr/openxr/extensions/meta/body_tracking", true);
+    define_global_bool(project_settings, "xr/openxr/extensions/meta/face_tracking", true);
+
+    // Meta/FB Hand Tracking Suite
+    define_global_bool(project_settings, "xr/openxr/extensions/meta/hand_tracking/aim", true);
+    define_global_bool(project_settings, "xr/openxr/extensions/meta/hand_tracking/capsules", true);
+    define_global_bool(project_settings, "xr/openxr/extensions/meta/hand_tracking/mesh", true);
+
+    // Meta/FB Composition & Rendering
+    define_global_bool(project_settings, "xr/openxr/extensions/meta/composition/alpha_blend", true);
+    define_global_bool(project_settings, "xr/openxr/extensions/meta/composition/secure_content", true);
+    define_global_bool(project_settings, "xr/openxr/extensions/meta/composition/layer_settings", true);
+    define_global_bool(project_settings, "xr/openxr/extensions/meta/recommended_layer_resolution", true);
+    define_global_bool(project_settings, "xr/openxr/extensions/meta/android_surface_swapchain", true);
+
+    // Meta/FB Scene & Spatial Features
+    define_global_bool(project_settings, "xr/openxr/extensions/meta/spatial/core", true);
+    define_global_bool(project_settings, "xr/openxr/extensions/meta/spatial/sharing", true);
+    define_global_bool(project_settings, "xr/openxr/extensions/meta/spatial/storage_batch", true);
+    define_global_bool(project_settings, "xr/openxr/extensions/meta/spatial/user", true);
+    define_global_bool(project_settings, "xr/openxr/extensions/meta/spatial/mesh", true);
+    define_global_bool(project_settings, "xr/openxr/extensions/meta/scene/capture", true);
+    define_global_bool(project_settings, "xr/openxr/extensions/meta/scene/core", true);
+
+    // Meta/FB Passthrough & Models
+    define_global_bool(project_settings, "xr/openxr/extensions/meta/passthrough", true);
+    define_global_bool(project_settings, "xr/openxr/extensions/meta/render_model", true);
+
+    // HTC Extensions
+    define_global_bool(project_settings, "xr/openxr/extensions/htc/facial_tracking", true);
+    define_global_bool(project_settings, "xr/openxr/extensions/htc/passthrough", true);
 }
 
 void add_plugin_project_settings() {
@@ -179,78 +196,6 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 		case MODULE_INITIALIZATION_LEVEL_CORE: {
 			add_plugin_core_settings();
 
-			ClassDB::register_class<OpenXRFbPassthroughExtensionWrapper>();
-			OpenXRFbPassthroughExtensionWrapper::get_singleton()->register_extension_wrapper();
-
-			ClassDB::register_class<OpenXRFbRenderModelExtensionWrapper>();
-			OpenXRFbRenderModelExtensionWrapper::get_singleton()->register_extension_wrapper();
-
-			ClassDB::register_class<OpenXRFbSceneCaptureExtensionWrapper>();
-			OpenXRFbSceneCaptureExtensionWrapper::get_singleton()->register_extension_wrapper();
-
-			ClassDB::register_class<OpenXRFbSpatialEntityExtensionWrapper>();
-			OpenXRFbSpatialEntityExtensionWrapper::get_singleton()->register_extension_wrapper();
-
-			ClassDB::register_class<OpenXRFbSpatialEntitySharingExtensionWrapper>();
-			OpenXRFbSpatialEntitySharingExtensionWrapper::get_singleton()->register_extension_wrapper();
-
-			ClassDB::register_class<OpenXRFbSpatialEntityStorageExtensionWrapper>();
-			OpenXRFbSpatialEntityStorageExtensionWrapper::get_singleton()->register_extension_wrapper();
-
-			ClassDB::register_class<OpenXRFbSpatialEntityStorageBatchExtensionWrapper>();
-			OpenXRFbSpatialEntityStorageBatchExtensionWrapper::get_singleton()->register_extension_wrapper();
-
-			ClassDB::register_class<OpenXRFbSpatialEntityQueryExtensionWrapper>();
-			OpenXRFbSpatialEntityQueryExtensionWrapper::get_singleton()->register_extension_wrapper();
-
-			ClassDB::register_class<OpenXRFbSpatialEntityContainerExtensionWrapper>();
-			OpenXRFbSpatialEntityContainerExtensionWrapper::get_singleton()->register_extension_wrapper();
-
-			ClassDB::register_class<OpenXRFbSpatialEntityUserExtensionWrapper>();
-			OpenXRFbSpatialEntityUserExtensionWrapper::get_singleton()->register_extension_wrapper();
-
-			ClassDB::register_class<OpenXRMetaRecommendedLayerResolutionExtensionWrapper>();
-			OpenXRMetaRecommendedLayerResolutionExtensionWrapper::get_singleton()->register_extension_wrapper();
-
-			ClassDB::register_class<OpenXRMetaSpatialEntityMeshExtensionWrapper>();
-			OpenXRMetaSpatialEntityMeshExtensionWrapper::get_singleton()->register_extension_wrapper();
-
-			ClassDB::register_class<OpenXRFbSceneExtensionWrapper>();
-			OpenXRFbSceneExtensionWrapper::get_singleton()->register_extension_wrapper();
-
-			ClassDB::register_class<OpenXRFbFaceTrackingExtensionWrapper>();
-			OpenXRFbFaceTrackingExtensionWrapper::get_singleton()->register_extension_wrapper();
-
-			ClassDB::register_class<OpenXRFbBodyTrackingExtensionWrapper>();
-			OpenXRFbBodyTrackingExtensionWrapper::get_singleton()->register_extension_wrapper();
-
-			ClassDB::register_class<OpenXRFbHandTrackingMeshExtensionWrapper>();
-			OpenXRFbHandTrackingMeshExtensionWrapper::get_singleton()->register_extension_wrapper();
-
-			ClassDB::register_class<OpenXRFbHandTrackingAimExtensionWrapper>();
-			OpenXRFbHandTrackingAimExtensionWrapper::get_singleton()->register_extension_wrapper();
-
-			ClassDB::register_class<OpenXRFbHandTrackingCapsulesExtensionWrapper>();
-			OpenXRFbHandTrackingCapsulesExtensionWrapper::get_singleton()->register_extension_wrapper();
-
-			ClassDB::register_class<OpenXRFbCompositionLayerSecureContentExtensionWrapper>();
-			OpenXRFbCompositionLayerSecureContentExtensionWrapper::get_singleton()->register_extension_wrapper();
-
-			ClassDB::register_class<OpenXRFbCompositionLayerAlphaBlendExtensionWrapper>();
-			OpenXRFbCompositionLayerAlphaBlendExtensionWrapper::get_singleton()->register_extension_wrapper();
-
-			ClassDB::register_class<OpenXRFbCompositionLayerSettingsExtensionWrapper>();
-			OpenXRFbCompositionLayerSettingsExtensionWrapper::get_singleton()->register_extension_wrapper();
-
-			ClassDB::register_class<OpenXRFbAndroidSurfaceSwapchainCreateExtensionWrapper>();
-			OpenXRFbAndroidSurfaceSwapchainCreateExtensionWrapper::get_singleton()->register_extension_wrapper();
-
-			ClassDB::register_class<OpenXRHtcFacialTrackingExtensionWrapper>();
-			OpenXRHtcFacialTrackingExtensionWrapper::get_singleton()->register_extension_wrapper();
-
-			ClassDB::register_class<OpenXRHtcPassthroughExtensionWrapper>();
-			OpenXRHtcPassthroughExtensionWrapper::get_singleton()->register_extension_wrapper();
-
 		} break;
 
 		case MODULE_INITIALIZATION_LEVEL_SERVERS:
@@ -261,6 +206,17 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 
 			// Register classes
 			// Always register these classes, even if the extensions are disabled
+			ClassDB::register_class<OpenXRFbSpatialEntitySharingExtensionWrapper>();
+			ClassDB::register_class<OpenXRFbSpatialEntityStorageBatchExtensionWrapper>();
+			ClassDB::register_class<OpenXRFbSpatialEntityUserExtensionWrapper>();
+			ClassDB::register_class<OpenXRMetaRecommendedLayerResolutionExtensionWrapper>();
+			ClassDB::register_class<OpenXRMetaSpatialEntityMeshExtensionWrapper>();
+			ClassDB::register_class<OpenXRFbFaceTrackingExtensionWrapper>();
+			ClassDB::register_class<OpenXRFbHandTrackingMeshExtensionWrapper>();
+			ClassDB::register_class<OpenXRFbCompositionLayerSecureContentExtensionWrapper>();
+			ClassDB::register_class<OpenXRFbCompositionLayerAlphaBlendExtensionWrapper>();
+			ClassDB::register_class<OpenXRFbAndroidSurfaceSwapchainCreateExtensionWrapper>();
+
 			ClassDB::register_class<OpenXRFbHandTrackingMesh>();
 			ClassDB::register_class<OpenXRFbPassthroughGeometry>();
 			ClassDB::register_class<OpenXRFbRenderModel>();
@@ -273,51 +229,103 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			ClassDB::register_class<OpenXRMetaPassthroughColorLut>();
 			ClassDB::register_class<OpenXRHybridApp>();
 
+			Engine* eng = Engine::get_singleton();
+
 			if (global_bool_get("xr/openxr/extensions/fb_passthrough")) {
-				Engine::get_singleton()->register_singleton("OpenXRFbPassthroughExtensionWrapper", OpenXRFbPassthroughExtensionWrapper::get_singleton());
+				eng->register_singleton("OpenXRFbPassthroughExtensionWrapper", OpenXRFbPassthroughExtensionWrapper::get_singleton());
 			}
 
 			if (global_bool_get("xr/openxr/extensions/fb_render_model")) {
-				Engine::get_singleton()->register_singleton("OpenXRFbRenderModelExtensionWrapper", OpenXRFbRenderModelExtensionWrapper::get_singleton());
+				eng->register_singleton("OpenXRFbRenderModelExtensionWrapper", OpenXRFbRenderModelExtensionWrapper::get_singleton());
 			}
 
 			if (global_bool_get("xr/openxr/extensions/fb_scene_capture")) {
-				Engine::get_singleton()->register_singleton("OpenXRFbSceneCaptureExtensionWrapper", OpenXRFbSceneCaptureExtensionWrapper::get_singleton());
+				eng->register_singleton("OpenXRFbSceneCaptureExtensionWrapper", OpenXRFbSceneCaptureExtensionWrapper::get_singleton());
 			}
 
 			if (global_bool_get("xr/openxr/extensions/fb_spatial")) {
-				Engine::get_singleton()->register_singleton("OpenXRFbSpatialEntityExtensionWrapper", OpenXRFbSpatialEntityExtensionWrapper::get_singleton());
-				Engine::get_singleton()->register_singleton("OpenXRFbSpatialEntityStorageExtensionWrapper", OpenXRFbSpatialEntityStorageExtensionWrapper::get_singleton());
-				Engine::get_singleton()->register_singleton("OpenXRFbSpatialEntityQueryExtensionWrapper", OpenXRFbSpatialEntityQueryExtensionWrapper::get_singleton());
-				Engine::get_singleton()->register_singleton("OpenXRFbSpatialEntityContainerExtensionWrapper", OpenXRFbSpatialEntityContainerExtensionWrapper::get_singleton());
+				eng->register_singleton("OpenXRFbSpatialEntityExtensionWrapper", OpenXRFbSpatialEntityExtensionWrapper::get_singleton());
+				eng->register_singleton("OpenXRFbSpatialEntityStorageExtensionWrapper", OpenXRFbSpatialEntityStorageExtensionWrapper::get_singleton());
+				eng->register_singleton("OpenXRFbSpatialEntityQueryExtensionWrapper", OpenXRFbSpatialEntityQueryExtensionWrapper::get_singleton());
+				eng->register_singleton("OpenXRFbSpatialEntityContainerExtensionWrapper", OpenXRFbSpatialEntityContainerExtensionWrapper::get_singleton());
 			}
 
 			if (global_bool_get("xr/openxr/extensions/fb_scene")) {
-				Engine::get_singleton()->register_singleton("OpenXRFbSceneExtensionWrapper", OpenXRFbSceneExtensionWrapper::get_singleton());
+				eng->register_singleton("OpenXRFbSceneExtensionWrapper", OpenXRFbSceneExtensionWrapper::get_singleton());
 			}
 
 			if (global_bool_get("xr/openxr/extensions/fb_hand_tracking_aim")) {
-				Engine::get_singleton()->register_singleton("OpenXRFbHandTrackingAimExtensionWrapper", OpenXRFbHandTrackingAimExtensionWrapper::get_singleton());
+				eng->register_singleton("OpenXRFbHandTrackingAimExtensionWrapper", OpenXRFbHandTrackingAimExtensionWrapper::get_singleton());
 			}
 
 			if (global_bool_get("xr/openxr/extensions/fb_hand_tracking_capsules")) {
-				Engine::get_singleton()->register_singleton("OpenXRFbHandTrackingCapsulesExtensionWrapper", OpenXRFbHandTrackingCapsulesExtensionWrapper::get_singleton());
+				eng->register_singleton("OpenXRFbHandTrackingCapsulesExtensionWrapper", OpenXRFbHandTrackingCapsulesExtensionWrapper::get_singleton());
 			}
 
 			if (global_bool_get("xr/openxr/extensions/fb_composition_layer_settings")) {
-				Engine::get_singleton()->register_singleton("OpenXRFbCompositionLayerSettingsExtensionWrapper", OpenXRFbCompositionLayerSettingsExtensionWrapper::get_singleton());
+				eng->register_singleton("OpenXRFbCompositionLayerSettingsExtensionWrapper", OpenXRFbCompositionLayerSettingsExtensionWrapper::get_singleton());
 			}
 
 			if (global_bool_get("xr/openxr/extensions/htc_facial_tracking")) {
-				Engine::get_singleton()->register_singleton("OpenXRHtcFacialTrackingExtensionWrapper", OpenXRHtcFacialTrackingExtensionWrapper::get_singleton());
+				eng->register_singleton("OpenXRHtcFacialTrackingExtensionWrapper", OpenXRHtcFacialTrackingExtensionWrapper::get_singleton());
 			}
 
 			if (global_bool_get("xr/openxr/extensions/htc_passthrough")) {
-				Engine::get_singleton()->register_singleton("OpenXRHtcPassthroughExtensionWrapper", OpenXRHtcPassthroughExtensionWrapper::get_singleton());
+				eng->register_singleton("OpenXRHtcPassthroughExtensionWrapper", OpenXRHtcPassthroughExtensionWrapper::get_singleton());
 			}
 
 			if (global_bool_get("xr/openxr/hybrid_app")) {
-				Engine::get_singleton()->register_singleton("OpenXRHybridApp", OpenXRHybridApp::get_singleton());
+				eng->register_singleton("OpenXRHybridApp", OpenXRHybridApp::get_singleton());
+			}
+
+			if (global_bool_get("xr/openxr/extensions/meta/spatial/sharing")) {
+				eng->register_singleton("OpenXRFbSpatialEntitySharingExtensionWrapper", 
+					OpenXRFbSpatialEntitySharingExtensionWrapper::get_singleton());
+			}
+			
+			if (global_bool_get("xr/openxr/extensions/meta/spatial/storage_batch")) {
+				eng->register_singleton("OpenXRFbSpatialEntityStorageBatchExtensionWrapper", 
+					OpenXRFbSpatialEntityStorageBatchExtensionWrapper::get_singleton());
+			}
+			
+			if (global_bool_get("xr/openxr/extensions/meta/spatial/user")) {
+				eng->register_singleton("OpenXRFbSpatialEntityUserExtensionWrapper", 
+					OpenXRFbSpatialEntityUserExtensionWrapper::get_singleton());
+			}
+			
+			if (global_bool_get("xr/openxr/extensions/meta/recommended_layer_resolution")) {
+				eng->register_singleton("OpenXRMetaRecommendedLayerResolutionExtensionWrapper", 
+					OpenXRMetaRecommendedLayerResolutionExtensionWrapper::get_singleton());
+			}
+			
+			if (global_bool_get("xr/openxr/extensions/meta/spatial/mesh")) {
+				eng->register_singleton("OpenXRMetaSpatialEntityMeshExtensionWrapper", 
+					OpenXRMetaSpatialEntityMeshExtensionWrapper::get_singleton());
+			}
+			
+			if (global_bool_get("xr/openxr/extensions/meta/face_tracking")) {
+				eng->register_singleton("OpenXRFbFaceTrackingExtensionWrapper", 
+					OpenXRFbFaceTrackingExtensionWrapper::get_singleton());
+			}
+			
+			if (global_bool_get("xr/openxr/extensions/meta/hand_tracking/mesh")) {
+				eng->register_singleton("OpenXRFbHandTrackingMeshExtensionWrapper", 
+					OpenXRFbHandTrackingMeshExtensionWrapper::get_singleton());
+			}
+			
+			if (global_bool_get("xr/openxr/extensions/meta/composition/secure_content")) {
+				eng->register_singleton("OpenXRFbCompositionLayerSecureContentExtensionWrapper", 
+					OpenXRFbCompositionLayerSecureContentExtensionWrapper::get_singleton());
+			}
+			
+			if (global_bool_get("xr/openxr/extensions/meta/composition/alpha_blend")) {
+				eng->register_singleton("OpenXRFbCompositionLayerAlphaBlendExtensionWrapper", 
+					OpenXRFbCompositionLayerAlphaBlendExtensionWrapper::get_singleton());
+			}
+			
+			if (global_bool_get("xr/openxr/extensions/meta/android_surface_swapchain")) {
+				eng->register_singleton("OpenXRFbAndroidSurfaceSwapchainCreateExtensionWrapper", 
+					OpenXRFbAndroidSurfaceSwapchainCreateExtensionWrapper::get_singleton());
 			}
 		} break;
 
