@@ -110,7 +110,7 @@ void OpenXRMetaRecommendedLayerResolutionExtensionWrapper::_on_pre_render() {
 
 void OpenXRMetaRecommendedLayerResolutionExtensionWrapper::_on_state_ready() {
 	ProjectSettings *project_settings = ProjectSettings::get_singleton();
-	bool is_project_setting_enabled = (bool)project_settings->get_setting_with_override("xr/openxr/extensions/recommended_layer_resolution");
+	bool is_project_setting_enabled = (bool)project_settings->get_setting_with_override("xr/xrvendor/recommended_layer_resolution");
 	if (!is_project_setting_enabled) {
 		meta_recommended_layer_resolution_ext = false;
 		return;
@@ -131,7 +131,7 @@ bool OpenXRMetaRecommendedLayerResolutionExtensionWrapper::initialize_meta_recom
 }
 
 void OpenXRMetaRecommendedLayerResolutionExtensionWrapper::add_project_setting(ProjectSettings *project_settings) {
-	String p_name = "xr/openxr/extensions/recommended_layer_resolution";
+	String p_name = "xr/xrvendor/recommended_layer_resolution";
 	if (!project_settings->has_setting(p_name)) {
 		project_settings->set_setting(p_name, false);
 	}

@@ -270,7 +270,7 @@ PackedStringArray MetaEditorExportPlugin::_get_supported_devices() const {
 }
 
 bool MetaEditorExportPlugin::_is_eye_tracking_enabled() const {
-	bool eye_tracking_project_setting_enabled = ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/extensions/eye_gaze_interaction");
+	bool eye_tracking_project_setting_enabled = ProjectSettings::get_singleton()->get_setting_with_override("xr/xrvendor/eye_gaze_interaction");
 	if (!eye_tracking_project_setting_enabled) {
 		return false;
 	}
@@ -305,7 +305,7 @@ String MetaEditorExportPlugin::_get_export_option_warning(const Ref<EditorExport
 
 	bool openxr_enabled = _is_openxr_enabled();
 	if (option == "meta_xr_features/eye_tracking") {
-		bool eye_tracking_project_setting_enabled = ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/extensions/eye_gaze_interaction");
+		bool eye_tracking_project_setting_enabled = ProjectSettings::get_singleton()->get_setting_with_override("xr/xrvendor/eye_gaze_interaction");
 		int eye_tracking_option_value = _get_int_option("meta_xr_features/eye_tracking", EYE_TRACKING_NONE_VALUE);
 		if (eye_tracking_option_value > EYE_TRACKING_NONE_VALUE && !eye_tracking_project_setting_enabled) {
 			return "\"Eye Tracking\" project setting must be enabled!\n";
