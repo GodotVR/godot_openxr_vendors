@@ -99,7 +99,7 @@ TypedArray<Dictionary> PicoEditorExportPlugin::_get_export_options(const Ref<Edi
 }
 
 bool PicoEditorExportPlugin::_is_eye_tracking_enabled() const {
-	bool eye_tracking_project_setting_enabled = ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/extensions/eye_gaze_interaction");
+	bool eye_tracking_project_setting_enabled = ProjectSettings::get_singleton()->get_setting_with_override("xr/xrvendor/eye_gaze_interaction");
 	if (!eye_tracking_project_setting_enabled) {
 		return false;
 	}
