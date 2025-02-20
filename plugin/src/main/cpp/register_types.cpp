@@ -357,6 +357,145 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 	}
 }
 
+static void cleanup_singletons() {
+	Engine* eng = Engine::get_singleton();
+	if (eng == nullptr) {
+		return;
+	}
+
+	// Core/Hybrid App
+	if (eng->has_singleton("OpenXRHybridApp")) {
+		eng->unregister_singleton("OpenXRHybridApp");
+		memdelete(OpenXRHybridApp::get_singleton());
+	}
+
+	// Meta/FB Passthrough & Models
+	if (eng->has_singleton("OpenXRFbPassthroughExtensionWrapper")) {
+		eng->unregister_singleton("OpenXRFbPassthroughExtensionWrapper");
+		memdelete(OpenXRFbPassthroughExtensionWrapper::get_singleton());
+	}
+
+	if (eng->has_singleton("OpenXRFbRenderModelExtensionWrapper")) {
+		eng->unregister_singleton("OpenXRFbRenderModelExtensionWrapper");
+		memdelete(OpenXRFbRenderModelExtensionWrapper::get_singleton());
+	}
+
+	// Meta/FB Scene Capture
+	if (eng->has_singleton("OpenXRFbSceneCaptureExtensionWrapper")) {
+		eng->unregister_singleton("OpenXRFbSceneCaptureExtensionWrapper");
+		memdelete(OpenXRFbSceneCaptureExtensionWrapper::get_singleton());
+	}
+
+	// Meta/FB Spatial
+	if (eng->has_singleton("OpenXRFbSpatialEntityExtensionWrapper")) {
+		eng->unregister_singleton("OpenXRFbSpatialEntityExtensionWrapper");
+		memdelete(OpenXRFbSpatialEntityExtensionWrapper::get_singleton());
+	}
+
+	if (eng->has_singleton("OpenXRFbSpatialEntityStorageExtensionWrapper")) {
+		eng->unregister_singleton("OpenXRFbSpatialEntityStorageExtensionWrapper");
+		memdelete(OpenXRFbSpatialEntityStorageExtensionWrapper::get_singleton());
+	}
+
+	if (eng->has_singleton("OpenXRFbSpatialEntityQueryExtensionWrapper")) {
+		eng->unregister_singleton("OpenXRFbSpatialEntityQueryExtensionWrapper");
+		memdelete(OpenXRFbSpatialEntityQueryExtensionWrapper::get_singleton());
+	}
+
+	if (eng->has_singleton("OpenXRFbSpatialEntityContainerExtensionWrapper")) {
+		eng->unregister_singleton("OpenXRFbSpatialEntityContainerExtensionWrapper");
+		memdelete(OpenXRFbSpatialEntityContainerExtensionWrapper::get_singleton());
+	}
+
+	if (eng->has_singleton("OpenXRFbSpatialEntitySharingExtensionWrapper")) {
+		eng->unregister_singleton("OpenXRFbSpatialEntitySharingExtensionWrapper");
+		memdelete(OpenXRFbSpatialEntitySharingExtensionWrapper::get_singleton());
+	}
+
+	if (eng->has_singleton("OpenXRFbSpatialEntityStorageBatchExtensionWrapper")) {
+		eng->unregister_singleton("OpenXRFbSpatialEntityStorageBatchExtensionWrapper");
+		memdelete(OpenXRFbSpatialEntityStorageBatchExtensionWrapper::get_singleton());
+	}
+
+	if (eng->has_singleton("OpenXRFbSpatialEntityUserExtensionWrapper")) {
+		eng->unregister_singleton("OpenXRFbSpatialEntityUserExtensionWrapper");
+		memdelete(OpenXRFbSpatialEntityUserExtensionWrapper::get_singleton());
+	}
+
+	// Meta/FB Scene
+	if (eng->has_singleton("OpenXRFbSceneExtensionWrapper")) {
+		eng->unregister_singleton("OpenXRFbSceneExtensionWrapper");
+		memdelete(OpenXRFbSceneExtensionWrapper::get_singleton());
+	}
+
+	// Meta/FB Hand Tracking
+	if (eng->has_singleton("OpenXRFbHandTrackingAimExtensionWrapper")) {
+		eng->unregister_singleton("OpenXRFbHandTrackingAimExtensionWrapper");
+		memdelete(OpenXRFbHandTrackingAimExtensionWrapper::get_singleton());
+	}
+
+	if (eng->has_singleton("OpenXRFbHandTrackingCapsulesExtensionWrapper")) {
+		eng->unregister_singleton("OpenXRFbHandTrackingCapsulesExtensionWrapper");
+		memdelete(OpenXRFbHandTrackingCapsulesExtensionWrapper::get_singleton());
+	}
+
+	if (eng->has_singleton("OpenXRFbHandTrackingMeshExtensionWrapper")) {
+		eng->unregister_singleton("OpenXRFbHandTrackingMeshExtensionWrapper");
+		memdelete(OpenXRFbHandTrackingMeshExtensionWrapper::get_singleton());
+	}
+
+	// Meta/FB Face Tracking
+	if (eng->has_singleton("OpenXRFbFaceTrackingExtensionWrapper")) {
+		eng->unregister_singleton("OpenXRFbFaceTrackingExtensionWrapper");
+		memdelete(OpenXRFbFaceTrackingExtensionWrapper::get_singleton());
+	}
+
+	// Meta/FB Composition Layer
+	if (eng->has_singleton("OpenXRFbCompositionLayerSettingsExtensionWrapper")) {
+		eng->unregister_singleton("OpenXRFbCompositionLayerSettingsExtensionWrapper");
+		memdelete(OpenXRFbCompositionLayerSettingsExtensionWrapper::get_singleton());
+	}
+
+	if (eng->has_singleton("OpenXRFbCompositionLayerSecureContentExtensionWrapper")) {
+		eng->unregister_singleton("OpenXRFbCompositionLayerSecureContentExtensionWrapper");
+		memdelete(OpenXRFbCompositionLayerSecureContentExtensionWrapper::get_singleton());
+	}
+
+	if (eng->has_singleton("OpenXRFbCompositionLayerAlphaBlendExtensionWrapper")) {
+		eng->unregister_singleton("OpenXRFbCompositionLayerAlphaBlendExtensionWrapper");
+		memdelete(OpenXRFbCompositionLayerAlphaBlendExtensionWrapper::get_singleton());
+	}
+
+	// Meta Recommended Layer Resolution
+	if (eng->has_singleton("OpenXRMetaRecommendedLayerResolutionExtensionWrapper")) {
+		eng->unregister_singleton("OpenXRMetaRecommendedLayerResolutionExtensionWrapper");
+		memdelete(OpenXRMetaRecommendedLayerResolutionExtensionWrapper::get_singleton());
+	}
+
+	// Meta Spatial Entity Mesh
+	if (eng->has_singleton("OpenXRMetaSpatialEntityMeshExtensionWrapper")) {
+		eng->unregister_singleton("OpenXRMetaSpatialEntityMeshExtensionWrapper");
+		memdelete(OpenXRMetaSpatialEntityMeshExtensionWrapper::get_singleton());
+	}
+
+	// HTC Extensions
+	if (eng->has_singleton("OpenXRHtcFacialTrackingExtensionWrapper")) {
+		eng->unregister_singleton("OpenXRHtcFacialTrackingExtensionWrapper");
+		memdelete(OpenXRHtcFacialTrackingExtensionWrapper::get_singleton());
+	}
+
+	if (eng->has_singleton("OpenXRHtcPassthroughExtensionWrapper")) {
+		eng->unregister_singleton("OpenXRHtcPassthroughExtensionWrapper");
+		memdelete(OpenXRHtcPassthroughExtensionWrapper::get_singleton());
+	}
+
+	// Android Surface
+	if (eng->has_singleton("OpenXRFbAndroidSurfaceSwapchainCreateExtensionWrapper")) {
+		eng->unregister_singleton("OpenXRFbAndroidSurfaceSwapchainCreateExtensionWrapper");
+		memdelete(OpenXRFbAndroidSurfaceSwapchainCreateExtensionWrapper::get_singleton());
+	}
+}
+
 void terminate_plugin_module(ModuleInitializationLevel p_level) {
 	switch (p_level) {
 		case MODULE_INITIALIZATION_LEVEL_CORE:
@@ -365,10 +504,9 @@ void terminate_plugin_module(ModuleInitializationLevel p_level) {
 		case MODULE_INITIALIZATION_LEVEL_SERVERS:
 			break;
 
-		case MODULE_INITIALIZATION_LEVEL_SCENE: {
-			Engine::get_singleton()->unregister_singleton("OpenXRHybridApp");
-			memdelete(OpenXRHybridApp::get_singleton());
-		} break;
+		case MODULE_INITIALIZATION_LEVEL_SCENE:
+			cleanup_singletons();
+		break;
 
 		case MODULE_INITIALIZATION_LEVEL_EDITOR:
 			break;
