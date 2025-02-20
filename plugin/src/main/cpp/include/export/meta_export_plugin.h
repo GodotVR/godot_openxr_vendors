@@ -38,27 +38,21 @@ using namespace godot;
 class MetaEditorExportPlugin : public OpenXREditorExportPlugin {
 	GDCLASS(MetaEditorExportPlugin, OpenXREditorExportPlugin)
 
-	static const int EYE_TRACKING_NONE_VALUE = 0;
 	static const int EYE_TRACKING_OPTIONAL_VALUE = 1;
 	static const int EYE_TRACKING_REQUIRED_VALUE = 2;
 
-	static const int FACE_TRACKING_NONE_VALUE = 0;
 	static const int FACE_TRACKING_OPTIONAL_VALUE = 1;
 	static const int FACE_TRACKING_REQUIRED_VALUE = 2;
 
-	static const int BODY_TRACKING_NONE_VALUE = 0;
 	static const int BODY_TRACKING_OPTIONAL_VALUE = 1;
 	static const int BODY_TRACKING_REQUIRED_VALUE = 2;
 
-	static const int PASSTHROUGH_NONE_VALUE = 0;
 	static const int PASSTHROUGH_OPTIONAL_VALUE = 1;
 	static const int PASSTHROUGH_REQUIRED_VALUE = 2;
 
-	static const int RENDER_MODEL_NONE_VALUE = 0;
 	static const int RENDER_MODEL_OPTIONAL_VALUE = 1;
 	static const int RENDER_MODEL_REQUIRED_VALUE = 2;
 
-	static const int HAND_TRACKING_NONE_VALUE = 0;
 	static const int HAND_TRACKING_OPTIONAL_VALUE = 1;
 	static const int HAND_TRACKING_REQUIRED_VALUE = 2;
 
@@ -76,6 +70,8 @@ public:
 	PackedStringArray _get_export_features(const Ref<EditorExportPlatform> &platform, bool debug) const override;
 
 	String _get_export_option_warning(const Ref<EditorExportPlatform> &platform, const String &option) const override;
+	bool _get_export_option_visibility(const Ref<EditorExportPlatform> &p_platform, const String &p_option) const override;
+	bool _should_update_export_options(const Ref<EditorExportPlatform> &p_platform) const override;
 
 	String _get_android_manifest_activity_element_contents(const Ref<EditorExportPlatform> &platform, bool debug) const override;
 	String _get_android_manifest_application_element_contents(const Ref<EditorExportPlatform> &platform, bool debug) const override;
@@ -89,8 +85,6 @@ protected:
 private:
 	PackedStringArray _get_supported_devices() const;
 
-	bool _is_eye_tracking_enabled() const;
-
 	Dictionary _eye_tracking_option;
 	Dictionary _face_tracking_option;
 	Dictionary _body_tracking_option;
@@ -98,9 +92,6 @@ private:
 	Dictionary _hand_tracking_frequency_option;
 	Dictionary _passthrough_option;
 	Dictionary _render_model_option;
-	Dictionary _use_anchor_api_option;
-	Dictionary _use_anchor_sharing_option;
-	Dictionary _use_scene_api_option;
 	Dictionary _use_overlay_keyboard_option;
 	Dictionary _use_experimental_features_option;
 	Dictionary _boundary_mode_option;
@@ -109,6 +100,12 @@ private:
 	Dictionary _support_quest_2_option;
 	Dictionary _support_quest_3_option;
 	Dictionary _support_quest_pro_option;
+
+	mutable bool _should_update_options = false;
+
+	void _project_settings_changed() {
+		_should_update_options = true;
+	}
 };
 
 class MetaEditorPlugin : public EditorPlugin {

@@ -52,9 +52,6 @@ public:
 	void _on_instance_created(uint64_t p_instance) override;
 	void _on_instance_destroyed() override;
 	void _on_pre_render() override;
-	void _on_state_ready() override;
-
-	void add_project_setting();
 
 protected:
 	static void _bind_methods();

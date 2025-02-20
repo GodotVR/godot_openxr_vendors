@@ -73,6 +73,8 @@ public:
 
 	void set_scale_override(float p_scale);
 	float get_scale_override() const;
+
+	virtual PackedStringArray _get_configuration_warnings() const override;
 };
 } //namespace godot
 

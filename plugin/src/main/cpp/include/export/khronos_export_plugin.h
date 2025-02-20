@@ -63,9 +63,7 @@ protected:
 	}
 
 	Dictionary _khronos_vendors_option;
-	Dictionary _hand_tracking_option;
 	Dictionary _tracker_option;
-	Dictionary _eye_tracking_option;
 	Dictionary _lip_expression_option;
 };
 

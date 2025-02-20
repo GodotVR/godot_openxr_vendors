@@ -57,36 +57,36 @@ MetaEditorExportPlugin::MetaEditorExportPlugin() {
 			"",
 			Variant::Type::INT,
 			PROPERTY_HINT_ENUM,
-			"None,Optional,Required",
+			"Optional:1,Required:2",
 			PROPERTY_USAGE_DEFAULT,
-			EYE_TRACKING_NONE_VALUE,
+			EYE_TRACKING_OPTIONAL_VALUE,
 			false);
 	_face_tracking_option = _generate_export_option(
 			"meta_xr_features/face_tracking",
 			"",
 			Variant::Type::INT,
 			PROPERTY_HINT_ENUM,
-			"None,Optional,Required",
+			"Optional:1,Required:2",
 			PROPERTY_USAGE_DEFAULT,
-			FACE_TRACKING_NONE_VALUE,
+			FACE_TRACKING_OPTIONAL_VALUE,
 			false);
 	_body_tracking_option = _generate_export_option(
 			"meta_xr_features/body_tracking",
 			"",
 			Variant::Type::INT,
 			PROPERTY_HINT_ENUM,
-			"None,Optional,Required",
+			"Optional:1,Required:2",
 			PROPERTY_USAGE_DEFAULT,
-			BODY_TRACKING_NONE_VALUE,
+			BODY_TRACKING_OPTIONAL_VALUE,
 			false);
 	_hand_tracking_option = _generate_export_option(
 			"meta_xr_features/hand_tracking",
 			"",
 			Variant::Type::INT,
 			PROPERTY_HINT_ENUM,
-			"None,Optional,Required",
+			"Optional:1,Required:2",
 			PROPERTY_USAGE_DEFAULT,
-			HAND_TRACKING_NONE_VALUE,
+			HAND_TRACKING_OPTIONAL_VALUE,
 			false);
 	_hand_tracking_frequency_option = _generate_export_option(
 			"meta_xr_features/hand_tracking_frequency",
@@ -102,45 +102,18 @@ MetaEditorExportPlugin::MetaEditorExportPlugin() {
 			"",
 			Variant::Type::INT,
 			PROPERTY_HINT_ENUM,
-			"None,Optional,Required",
+			"Optional:1,Required:2",
 			PROPERTY_USAGE_DEFAULT,
-			PASSTHROUGH_NONE_VALUE,
+			PASSTHROUGH_OPTIONAL_VALUE,
 			false);
 	_render_model_option = _generate_export_option(
 			"meta_xr_features/render_model",
 			"",
 			Variant::Type::INT,
 			PROPERTY_HINT_ENUM,
-			"None,Optional,Required",
+			"Optional:1,Required:2",
 			PROPERTY_USAGE_DEFAULT,
-			RENDER_MODEL_NONE_VALUE,
-			false);
-	_use_anchor_api_option = _generate_export_option(
-			"meta_xr_features/use_anchor_api",
-			"",
-			Variant::Type::BOOL,
-			PROPERTY_HINT_NONE,
-			"",
-			PROPERTY_USAGE_DEFAULT,
-			false,
-			false);
-	_use_anchor_sharing_option = _generate_export_option(
-			"meta_xr_features/use_anchor_sharing",
-			"",
-			Variant::Type::BOOL,
-			PROPERTY_HINT_NONE,
-			"",
-			PROPERTY_USAGE_DEFAULT,
-			false,
-			false);
-	_use_scene_api_option = _generate_export_option(
-			"meta_xr_features/use_scene_api",
-			"",
-			Variant::Type::BOOL,
-			PROPERTY_HINT_NONE,
-			"",
-			PROPERTY_USAGE_DEFAULT,
-			false,
+			RENDER_MODEL_OPTIONAL_VALUE,
 			false);
 	_use_overlay_keyboard_option = _generate_export_option(
 			"meta_xr_features/use_overlay_keyboard",
@@ -214,6 +187,8 @@ MetaEditorExportPlugin::MetaEditorExportPlugin() {
 			PROPERTY_USAGE_DEFAULT,
 			true,
 			false);
+
+	ProjectSettings::get_singleton()->connect("settings_changed", callable_mp(this, &MetaEditorExportPlugin::_project_settings_changed));
 }
 
 void MetaEditorExportPlugin::_bind_methods() {}
@@ -232,9 +207,6 @@ TypedArray<Dictionary> MetaEditorExportPlugin::_get_export_options(const Ref<Edi
 	export_options.append(_hand_tracking_frequency_option);
 	export_options.append(_passthrough_option);
 	export_options.append(_render_model_option);
-	export_options.append(_use_anchor_api_option);
-	export_options.append(_use_anchor_sharing_option);
-	export_options.append(_use_scene_api_option);
 	export_options.append(_use_overlay_keyboard_option);
 	export_options.append(_use_experimental_features_option);
 	export_options.append(_boundary_mode_option);
@@ -269,16 +241,6 @@ PackedStringArray MetaEditorExportPlugin::_get_supported_devices() const {
 	return supported_devices;
 }
 
-bool MetaEditorExportPlugin::_is_eye_tracking_enabled() const {
-	bool eye_tracking_project_setting_enabled = ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/extensions/eye_gaze_interaction");
-	if (!eye_tracking_project_setting_enabled) {
-		return false;
-	}
-
-	int eye_tracking_option_value = _get_int_option("meta_xr_features/eye_tracking", EYE_TRACKING_NONE_VALUE);
-	return eye_tracking_option_value > EYE_TRACKING_NONE_VALUE;
-}
-
 PackedStringArray MetaEditorExportPlugin::_get_export_features(const Ref<EditorExportPlatform> &platform, bool debug) const {
 	PackedStringArray features;
 	if (!_supports_platform(platform) || !_is_vendor_plugin_enabled()) {
@@ -286,7 +248,7 @@ PackedStringArray MetaEditorExportPlugin::_get_export_features(const Ref<EditorE
 	}
 
 	// Add the eye tracking feature if necessary
-	if (_is_eye_tracking_enabled()) {
+	if ((bool)ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/extensions/eye_gaze_interaction")) {
 		features.append(EYE_GAZE_INTERACTION_FEATURE);
 	}
 
@@ -303,44 +265,32 @@ String MetaEditorExportPlugin::_get_export_option_warning(const Ref<EditorExport
 		return "";
 	}
 
+	ProjectSettings *project_settings = ProjectSettings::get_singleton();
+
 	bool openxr_enabled = _is_openxr_enabled();
 	if (option == "meta_xr_features/eye_tracking") {
-		bool eye_tracking_project_setting_enabled = ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/extensions/eye_gaze_interaction");
-		int eye_tracking_option_value = _get_int_option("meta_xr_features/eye_tracking", EYE_TRACKING_NONE_VALUE);
-		if (eye_tracking_option_value > EYE_TRACKING_NONE_VALUE && !eye_tracking_project_setting_enabled) {
-			return "\"Eye Tracking\" project setting must be enabled!\n";
+		if (!openxr_enabled && (bool)project_settings->get_setting_with_override("xr/openxr/extensions/eye_gaze_interaction")) {
+			return "\"Eye Tracking\" requires \"XR Mode\" to be \"OpenXR\".\n";
 		}
 	} else if (option == "meta_xr_features/face_tracking") {
-		if (!openxr_enabled && _get_int_option(option, FACE_TRACKING_NONE_VALUE) > FACE_TRACKING_NONE_VALUE) {
+		if (!openxr_enabled && (bool)project_settings->get_setting_with_override("xr/openxr/extensions/meta/face_tracking")) {
 			return "\"Face Tracking\" requires \"XR Mode\" to be \"OpenXR\".\n";
 		}
 	} else if (option == "meta_xr_features/body_tracking") {
-		if (!openxr_enabled && _get_int_option(option, BODY_TRACKING_NONE_VALUE) > BODY_TRACKING_NONE_VALUE) {
+		if (!openxr_enabled && (bool)project_settings->get_setting_with_override("xr/openxr/extensions/meta/body_tracking")) {
 			return "\"Body Tracking\" requires \"XR Mode\" to be \"OpenXR\".\n";
 		}
 	} else if (option == "meta_xr_features/hand_tracking") {
-		if (!openxr_enabled && _get_int_option(option, HAND_TRACKING_NONE_VALUE) > HAND_TRACKING_NONE_VALUE) {
+		if (!openxr_enabled && (bool)project_settings->get_setting_with_override("xr/openxr/extensions/hand_tracking")) {
 			return "\"Hand Tracking\" requires \"XR Mode\" to be \"OpenXR\".\n";
 		}
 	} else if (option == "meta_xr_features/passthrough") {
-		if (!openxr_enabled && _get_int_option(option, PASSTHROUGH_NONE_VALUE) > PASSTHROUGH_NONE_VALUE) {
+		if (!openxr_enabled && (bool)project_settings->get_setting_with_override("xr/openxr/extensions/meta/passthrough")) {
 			return "\"Passthrough\" requires \"XR Mode\" to be \"OpenXR\".\n";
 		}
 	} else if (option == "meta_xr_features/render_model") {
-		if (!openxr_enabled && _get_int_option(option, RENDER_MODEL_NONE_VALUE) > RENDER_MODEL_NONE_VALUE) {
+		if (!openxr_enabled && (bool)project_settings->get_setting_with_override("xr/openxr/extensions/meta/render_model")) {
 			return "\"Render Model\" requires \"XR Mode\" to be \"OpenXR\".\n";
-		}
-	} else if (option == "meta_xr_features/use_anchor_api") {
-		if (!openxr_enabled && _get_bool_option(option)) {
-			return "\"Use anchor API\" is only valid when \"XR Mode\" is \"OpenXR\".\n";
-		}
-	} else if (option == "meta_xr_features/use_anchor_sharing") {
-		if (!openxr_enabled && _get_bool_option(option)) {
-			return "\"Use anchor sharing\" is only valid when \"XR Mode\" is \"OpenXR\".\n";
-		}
-	} else if (option == "meta_xr_features/use_scene_api") {
-		if (!openxr_enabled && _get_bool_option(option)) {
-			return "\"Use scene API\" is only valid when \"XR Mode\" is \"OpenXR\".\n";
 		}
 	} else if (option == "meta_xr_features/use_experimental_features") {
 		if (!openxr_enabled && _get_bool_option(option)) {
@@ -359,95 +309,127 @@ String MetaEditorExportPlugin::_get_export_option_warning(const Ref<EditorExport
 	return OpenXREditorExportPlugin::_get_export_option_warning(platform, option);
 }
 
+bool MetaEditorExportPlugin::_get_export_option_visibility(const Ref<EditorExportPlatform> &p_platform, const String &p_option) const {
+	if (p_option == "meta_xr_features/eye_tracking") {
+		return (bool)ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/extensions/eye_gaze_interaction");
+	} else if (p_option == "meta_xr_features/face_tracking") {
+		return (bool)ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/extensions/meta/face_tracking");
+	} else if (p_option == "meta_xr_features/body_tracking") {
+		return (bool)ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/extensions/meta/body_tracking");
+	} else if (p_option == "meta_xr_features/hand_tracking" || p_option == "meta_xr_features/hand_tracking_frequency") {
+		return (bool)ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/extensions/hand_tracking");
+	} else if (p_option == "meta_xr_features/passthrough") {
+		return (bool)ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/extensions/meta/passthrough");
+	} else if (p_option == "meta_xr_features/render_model") {
+		return (bool)ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/extensions/meta/render_model");
+	}
+
+	return true;
+}
+
+bool MetaEditorExportPlugin::_should_update_export_options(const Ref<EditorExportPlatform> &p_platform) const {
+	if (!_supports_platform(p_platform)) {
+		return false;
+	}
+
+	if (_should_update_options) {
+		_should_update_options = false;
+		return true;
+	}
+
+	return false;
+}
+
 String MetaEditorExportPlugin::_get_android_manifest_element_contents(const Ref<EditorExportPlatform> &platform, bool debug) const {
 	String contents;
 	if (!_supports_platform(platform) || !_is_vendor_plugin_enabled()) {
 		return contents;
 	}
 
+	ProjectSettings *project_settings = ProjectSettings::get_singleton();
+
 	// Check for eye tracking
-	if (_is_eye_tracking_enabled()) {
+	if ((bool)project_settings->get_setting_with_override("xr/openxr/extensions/eye_gaze_interaction")) {
 		contents += "    <uses-permission android:name=\"com.oculus.permission.EYE_TRACKING\" />\n";
 
-		int eye_tracking_value = _get_int_option("meta_xr_features/eye_tracking", EYE_TRACKING_NONE_VALUE);
-		if (eye_tracking_value == EYE_TRACKING_OPTIONAL_VALUE) {
-			contents += "    <uses-feature android:name=\"oculus.software.eye_tracking\" android:required=\"false\" />\n";
-		} else if (eye_tracking_value == EYE_TRACKING_REQUIRED_VALUE) {
+		int eye_tracking_value = _get_int_option("meta_xr_features/eye_tracking", EYE_TRACKING_OPTIONAL_VALUE);
+		if (eye_tracking_value == EYE_TRACKING_REQUIRED_VALUE) {
 			contents += "    <uses-feature android:name=\"oculus.software.eye_tracking\" android:required=\"true\" />\n";
+		} else {
+			contents += "    <uses-feature android:name=\"oculus.software.eye_tracking\" android:required=\"false\" />\n";
 		}
 	}
 
 	// Check for face tracking
-	int face_tracking_value = _get_int_option("meta_xr_features/face_tracking", FACE_TRACKING_NONE_VALUE);
-	if (face_tracking_value > FACE_TRACKING_NONE_VALUE) {
+	if ((bool)project_settings->get_setting_with_override("xr/openxr/extensions/meta/face_tracking")) {
 		contents += "    <uses-permission android:name=\"com.oculus.permission.FACE_TRACKING\" />\n";
 
-		if (face_tracking_value == FACE_TRACKING_OPTIONAL_VALUE) {
-			contents += "    <uses-feature tools:node=\"replace\" android:name=\"oculus.software.face_tracking\" android:required=\"false\" />\n";
-		} else if (face_tracking_value == FACE_TRACKING_REQUIRED_VALUE) {
+		int face_tracking_value = _get_int_option("meta_xr_features/face_tracking", FACE_TRACKING_OPTIONAL_VALUE);
+		if (face_tracking_value == FACE_TRACKING_REQUIRED_VALUE) {
 			contents += "    <uses-feature tools:node=\"replace\" android:name=\"oculus.software.face_tracking\" android:required=\"true\" />\n";
+		} else {
+			contents += "    <uses-feature tools:node=\"replace\" android:name=\"oculus.software.face_tracking\" android:required=\"false\" />\n";
 		}
 	}
 
 	// Check for body tracking
-	int body_tracking_value = _get_int_option("meta_xr_features/body_tracking", BODY_TRACKING_NONE_VALUE);
-	if (body_tracking_value > BODY_TRACKING_NONE_VALUE) {
+	if ((bool)project_settings->get_setting_with_override("xr/openxr/extensions/meta/body_tracking")) {
 		contents += "    <uses-permission android:name=\"com.oculus.permission.BODY_TRACKING\" />\n";
 
-		if (body_tracking_value == BODY_TRACKING_OPTIONAL_VALUE) {
-			contents += "    <uses-feature tools:node=\"replace\" android:name=\"com.oculus.software.body_tracking\" android:required=\"false\" />\n";
-		} else if (body_tracking_value == BODY_TRACKING_REQUIRED_VALUE) {
+		int body_tracking_value = _get_int_option("meta_xr_features/body_tracking", BODY_TRACKING_OPTIONAL_VALUE);
+		if (body_tracking_value == BODY_TRACKING_REQUIRED_VALUE) {
 			contents += "    <uses-feature tools:node=\"replace\" android:name=\"com.oculus.software.body_tracking\" android:required=\"true\" />\n";
+		} else {
+			contents += "    <uses-feature tools:node=\"replace\" android:name=\"com.oculus.software.body_tracking\" android:required=\"false\" />\n";
 		}
 	}
 
 	// Check for hand tracking
-	int hand_tracking_value = _get_int_option("meta_xr_features/hand_tracking", HAND_TRACKING_NONE_VALUE);
-	if (hand_tracking_value > HAND_TRACKING_NONE_VALUE) {
+	if ((bool)project_settings->get_setting_with_override("xr/openxr/extensions/hand_tracking")) {
 		contents += "    <uses-permission android:name=\"com.oculus.permission.HAND_TRACKING\" />\n";
 
-		if (hand_tracking_value == HAND_TRACKING_OPTIONAL_VALUE) {
-			contents += "    <uses-feature tools:node=\"replace\" android:name=\"oculus.software.handtracking\" android:required=\"false\" />\n";
-		} else if (hand_tracking_value == HAND_TRACKING_REQUIRED_VALUE) {
+		int hand_tracking_value = _get_int_option("meta_xr_features/hand_tracking", HAND_TRACKING_OPTIONAL_VALUE);
+		if (hand_tracking_value == HAND_TRACKING_REQUIRED_VALUE) {
 			contents += "    <uses-feature tools:node=\"replace\" android:name=\"oculus.software.handtracking\" android:required=\"true\" />\n";
+		} else {
+			contents += "    <uses-feature tools:node=\"replace\" android:name=\"oculus.software.handtracking\" android:required=\"false\" />\n";
 		}
 	}
 
 	// Check for passthrough
-	int passthrough_mode = _get_int_option("meta_xr_features/passthrough", PASSTHROUGH_NONE_VALUE);
-	if (passthrough_mode == PASSTHROUGH_OPTIONAL_VALUE) {
-		contents += "    <uses-feature tools:node=\"replace\" android:name=\"com.oculus.feature.PASSTHROUGH\" android:required=\"false\" />\n";
-	} else if (passthrough_mode == PASSTHROUGH_REQUIRED_VALUE) {
-		contents += "    <uses-feature tools:node=\"replace\" android:name=\"com.oculus.feature.PASSTHROUGH\" android:required=\"true\" />\n";
+	if ((bool)project_settings->get_setting_with_override("xr/openxr/extensions/meta/passthrough")) {
+		int passthrough_mode = _get_int_option("meta_xr_features/passthrough", PASSTHROUGH_OPTIONAL_VALUE);
+		if (passthrough_mode == PASSTHROUGH_REQUIRED_VALUE) {
+			contents += "    <uses-feature tools:node=\"replace\" android:name=\"com.oculus.feature.PASSTHROUGH\" android:required=\"true\" />\n";
+		} else {
+			contents += "    <uses-feature tools:node=\"replace\" android:name=\"com.oculus.feature.PASSTHROUGH\" android:required=\"false\" />\n";
+		}
 	}
 
 	// Check for render model
-	int render_model_value = _get_int_option("meta_xr_features/render_model", RENDER_MODEL_NONE_VALUE);
-	if (render_model_value > RENDER_MODEL_NONE_VALUE) {
+	if ((bool)project_settings->get_setting_with_override("xr/openxr/extensions/meta/render_model")) {
 		contents += "    <uses-permission android:name=\"com.oculus.permission.RENDER_MODEL\" />\n";
 
-		if (render_model_value == RENDER_MODEL_OPTIONAL_VALUE) {
-			contents += "    <uses-feature tools:node=\"replace\" android:name=\"com.oculus.feature.RENDER_MODEL\" android:required=\"false\" />\n";
-		} else if (render_model_value == RENDER_MODEL_REQUIRED_VALUE) {
+		int render_model_value = _get_int_option("meta_xr_features/render_model", RENDER_MODEL_OPTIONAL_VALUE);
+		if (render_model_value == RENDER_MODEL_REQUIRED_VALUE) {
 			contents += "    <uses-feature tools:node=\"replace\" android:name=\"com.oculus.feature.RENDER_MODEL\" android:required=\"true\" />\n";
+		} else {
+			contents += "    <uses-feature tools:node=\"replace\" android:name=\"com.oculus.feature.RENDER_MODEL\" android:required=\"false\" />\n";
 		}
 	}
 
 	// Check for anchor api
-	bool use_anchor_api = _get_bool_option("meta_xr_features/use_anchor_api");
-	if (use_anchor_api) {
+	if ((bool)project_settings->get_setting_with_override("xr/openxr/extensions/meta/anchor_api")) {
 		contents += "    <uses-permission android:name=\"com.oculus.permission.USE_ANCHOR_API\" />\n";
 	}
 
 	// Check for anchor sharing
-	bool use_anchor_sharing = _get_bool_option("meta_xr_features/use_anchor_sharing");
-	if (use_anchor_sharing) {
+	if ((bool)project_settings->get_setting_with_override("xr/openxr/extensions/meta/anchor_sharing")) {
 		contents += "    <uses-permission android:name=\"com.oculus.permission.IMPORT_EXPORT_IOT_MAP_DATA\" />\n";
 	}
 
 	// Check for scene api
-	bool use_scene_api = _get_bool_option("meta_xr_features/use_scene_api");
-	if (use_scene_api) {
+	if ((bool)project_settings->get_setting_with_override("xr/openxr/extensions/meta/scene_api")) {
 		contents += "    <uses-permission android:name=\"com.oculus.permission.USE_SCENE\" />\n";
 	}
 
@@ -493,11 +475,12 @@ String MetaEditorExportPlugin::_get_android_manifest_application_element_content
 		return contents;
 	}
 
+	ProjectSettings *project_settings = ProjectSettings::get_singleton();
+
 	const String supported_devices = String("|").join(_get_supported_devices());
 	contents += "        <meta-data tools:node=\"replace\" android:name=\"com.oculus.supportedDevices\" android:value=\"" + supported_devices + "\" />\n";
 
-	bool hand_tracking_enabled = _get_int_option("meta_xr_features/hand_tracking", HAND_TRACKING_NONE_VALUE) > HAND_TRACKING_NONE_VALUE;
-	if (hand_tracking_enabled) {
+	if ((bool)project_settings->get_setting_with_override("xr/openxr/extensions/hand_tracking")) {
 		int hand_tracking_frequency = _get_int_option("meta_xr_features/hand_tracking_frequency", HAND_TRACKING_FREQUENCY_LOW_VALUE);
 		const String hand_tracking_frequency_label = (hand_tracking_frequency == HAND_TRACKING_FREQUENCY_LOW_VALUE) ? "LOW" : "HIGH";
 		contents += "        <meta-data tools:node=\"replace\" android:name=\"com.oculus.handtracking.frequency\" android:value=\"" + hand_tracking_frequency_label + "\" />\n";
@@ -509,7 +492,7 @@ String MetaEditorExportPlugin::_get_android_manifest_application_element_content
 		contents += "        <meta-data android:name=\"com.oculus.ossplash\" android:value=\"true\"/>\n";
 	}
 
-	if ((int)ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/environment_blend_mode") != XRInterface::XR_ENV_BLEND_MODE_OPAQUE) {
+	if ((int)project_settings->get_setting_with_override("xr/openxr/environment_blend_mode") != XRInterface::XR_ENV_BLEND_MODE_OPAQUE) {
 		// Show the splash screen in passthrough, if the user launches it from passthrough.
 		contents += "        <meta-data android:name=\"com.oculus.ossplash.background\" android:value=\"passthrough-contextual\" />\n";
 	}

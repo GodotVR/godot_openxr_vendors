@@ -31,9 +31,11 @@
 
 #include "extensions/openxr_fb_render_model_extension_wrapper.h"
 
+#include <godot_cpp/classes/engine.hpp>
 #include <godot_cpp/classes/gltf_document.hpp>
 #include <godot_cpp/classes/gltf_state.hpp>
 #include <godot_cpp/classes/open_xr_interface.hpp>
+#include <godot_cpp/classes/project_settings.hpp>
 #include <godot_cpp/classes/xr_server.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
 
@@ -119,8 +121,24 @@ void OpenXRFbRenderModel::_notification(int p_what) {
 			if (OpenXRFbRenderModelExtensionWrapper::get_singleton()->is_openxr_session_active()) {
 				load_render_model();
 			}
+			if (Engine::get_singleton()->is_editor_hint()) {
+				ProjectSettings::get_singleton()->connect("settings_changed", callable_mp((Node *)this, &Node::update_configuration_warnings));
+			}
+		} break;
+		case NOTIFICATION_EXIT_TREE: {
+			if (Engine::get_singleton()->is_editor_hint()) {
+				ProjectSettings::get_singleton()->disconnect("settings_changed", callable_mp((Node *)this, &Node::update_configuration_warnings));
+			}
 		} break;
 	}
+}
+
+PackedStringArray OpenXRFbRenderModel::_get_configuration_warnings() const {
+	PackedStringArray warnings;
+	if (!ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/extensions/meta/render_model")) {
+		warnings.push_back("The render model extension isn't enabled in project settings. Please enable `xr/openxr/extensions/meta/render_model` to use this node.");
+	}
+	return warnings;
 }
 
 void OpenXRFbRenderModel::_bind_methods() {

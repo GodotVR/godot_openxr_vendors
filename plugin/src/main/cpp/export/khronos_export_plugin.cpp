@@ -29,6 +29,8 @@
 
 #include "export/khronos_export_plugin.h"
 
+#include <godot_cpp/classes/project_settings.hpp>
+
 using namespace godot;
 
 void KhronosEditorPlugin::_bind_methods() {}
@@ -59,26 +61,8 @@ KhronosEditorExportPlugin::KhronosEditorExportPlugin() {
 			KHRONOS_VENDOR_OTHER,
 			true);
 
-	_hand_tracking_option = _generate_export_option(
-			"khronos_xr_features/htc/hand_tracking",
-			"",
-			Variant::Type::INT,
-			PROPERTY_HINT_ENUM,
-			"No,Yes",
-			PROPERTY_USAGE_DEFAULT,
-			MANIFEST_FALSE_VALUE,
-			false);
 	_tracker_option = _generate_export_option(
 			"khronos_xr_features/htc/tracker",
-			"",
-			Variant::Type::INT,
-			PROPERTY_HINT_ENUM,
-			"No,Yes",
-			PROPERTY_USAGE_DEFAULT,
-			MANIFEST_FALSE_VALUE,
-			false);
-	_eye_tracking_option = _generate_export_option(
-			"khronos_xr_features/htc/eye_tracking",
 			"",
 			Variant::Type::INT,
 			PROPERTY_HINT_ENUM,
@@ -108,9 +92,7 @@ TypedArray<Dictionary> KhronosEditorExportPlugin::_get_export_options(const Ref<
 	export_options.append(_get_vendor_toggle_option());
 	export_options.append(_khronos_vendors_option);
 
-	export_options.append(_hand_tracking_option);
 	export_options.append(_tracker_option);
-	export_options.append(_eye_tracking_option);
 	export_options.append(_lip_expression_option);
 
 	return export_options;
@@ -129,9 +111,7 @@ Dictionary KhronosEditorExportPlugin::_get_export_options_overrides(const Ref<go
 
 	if (!_is_vendor_plugin_enabled() || !_is_khronos_htc_enabled()) {
 		// Overrides with the options' default values.
-		overrides["khronos_xr_features/htc/hand_tracking"] = MANIFEST_FALSE_VALUE;
 		overrides["khronos_xr_features/htc/tracker"] = MANIFEST_FALSE_VALUE;
-		overrides["khronos_xr_features/htc/eye_tracking"] = MANIFEST_FALSE_VALUE;
 		overrides["khronos_xr_features/htc/lip_expression"] = MANIFEST_FALSE_VALUE;
 	}
 
@@ -146,7 +126,7 @@ PackedStringArray KhronosEditorExportPlugin::_get_export_features(const Ref<Edit
 
 	if (_is_khronos_htc_enabled()) {
 		// Add the eye tracking feature if necessary
-		if (_get_int_option("khronos_xr_features/htc/eye_tracking", MANIFEST_FALSE_VALUE) == MANIFEST_TRUE_VALUE) {
+		if ((bool)ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/extensions/eye_gaze_interaction")) {
 			features.append(EYE_GAZE_INTERACTION_FEATURE);
 		}
 	}
@@ -161,17 +141,9 @@ String KhronosEditorExportPlugin::_get_export_option_warning(const Ref<EditorExp
 
 	bool openxr_enabled = _is_openxr_enabled();
 	if (_is_khronos_htc_enabled()) {
-		if (option == "khronos_xr_features/htc/hand_tracking") {
-			if (!openxr_enabled && _get_int_option(option, MANIFEST_FALSE_VALUE) == MANIFEST_TRUE_VALUE) {
-				return "\"Hand Tracking\" requires \"XR Mode\" to be \"OpenXR\".\n";
-			}
-		} else if (option == "khronos_xr_features/htc/tracker") {
+		if (option == "khronos_xr_features/htc/tracker") {
 			if (!openxr_enabled && _get_int_option(option, MANIFEST_FALSE_VALUE) == MANIFEST_TRUE_VALUE) {
 				return "\"Tracker\" requires \"XR Mode\" to be \"OpenXR\".\n";
-			}
-		} else if (option == "khronos_xr_features/htc/eye_tracking") {
-			if (!openxr_enabled && _get_int_option(option, MANIFEST_FALSE_VALUE) == MANIFEST_TRUE_VALUE) {
-				return "\"Eye tracking\" requires \"XR Mode\" to be \"OpenXR\".\n";
 			}
 		} else if (option == "khronos_xr_features/htc/lip_expression") {
 			if (!openxr_enabled && _get_int_option(option, MANIFEST_FALSE_VALUE) == MANIFEST_TRUE_VALUE) {
@@ -221,9 +193,11 @@ String KhronosEditorExportPlugin::_get_android_manifest_element_contents(const R
 		return contents;
 	}
 
+	ProjectSettings *project_settings = ProjectSettings::get_singleton();
+
 	if (_is_khronos_htc_enabled()) {
 		// Check for hand tracking
-		if (_get_int_option("khronos_xr_features/htc/hand_tracking", MANIFEST_FALSE_VALUE) == MANIFEST_TRUE_VALUE) {
+		if ((bool)project_settings->get_setting_with_override("xr/openxr/extensions/hand_tracking")) {
 			contents += "    <uses-feature tools:node=\"replace\" android:name=\"wave.feature.handtracking\" android:required=\"true\" />\n";
 		}
 
@@ -233,7 +207,7 @@ String KhronosEditorExportPlugin::_get_android_manifest_element_contents(const R
 		}
 
 		// Check for eye tracking
-		if (_get_int_option("khronos_xr_features/htc/eye_tracking", MANIFEST_FALSE_VALUE) == MANIFEST_TRUE_VALUE) {
+		if ((bool)project_settings->get_setting_with_override("xr/openxr/extensions/eye_gaze_interaction")) {
 			contents += "    <uses-feature tools:node=\"replace\" android:name=\"wave.feature.eyetracking\" android:required=\"true\" />\n";
 		}
 
