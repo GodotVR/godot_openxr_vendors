@@ -102,14 +102,6 @@ void OpenXRFbHandTrackingMeshExtensionWrapper::_on_instance_destroyed() {
 	cleanup();
 }
 
-void OpenXRFbHandTrackingMeshExtensionWrapper::_on_state_ready() {
-	// It would be great to not even request the extension, but the ProjectSettings singleton isn't available early enough.
-	bool is_project_setting_enabled = (bool)ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/extensions/hand_tracking");
-	if (!is_project_setting_enabled) {
-		fb_hand_tracking_mesh_ext = false;
-	}
-}
-
 uint64_t OpenXRFbHandTrackingMeshExtensionWrapper::_set_hand_joint_locations_and_get_next_pointer(int32_t p_hand_index, void *p_next_pointer) {
 	if (!fb_hand_tracking_mesh_ext) {
 		return reinterpret_cast<uint64_t>(p_next_pointer);
