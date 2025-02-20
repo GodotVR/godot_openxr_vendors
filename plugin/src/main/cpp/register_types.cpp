@@ -67,6 +67,7 @@
 #include "extensions/openxr_fb_spatial_entity_user_extension_wrapper.h"
 #include "extensions/openxr_htc_facial_tracking_extension_wrapper.h"
 #include "extensions/openxr_htc_passthrough_extension_wrapper.h"
+#include "extensions/openxr_meta_environment_depth_extension_wrapper.h"
 #include "extensions/openxr_meta_recommended_layer_resolution_extension_wrapper.h"
 #include "extensions/openxr_meta_spatial_entity_mesh_extension_wrapper.h"
 
@@ -126,6 +127,9 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			ClassDB::register_class<OpenXRFbSceneExtensionWrapper>();
 			OpenXRFbSceneExtensionWrapper::get_singleton()->register_extension_wrapper();
 
+			ClassDB::register_class<OpenXRMetaEnvironmentDepthExtensionWrapper>();
+			OpenXRMetaEnvironmentDepthExtensionWrapper::get_singleton()->register_extension_wrapper();
+
 			ClassDB::register_class<OpenXRFbFaceTrackingExtensionWrapper>();
 			OpenXRFbFaceTrackingExtensionWrapper::get_singleton()->register_extension_wrapper();
 
@@ -175,6 +179,7 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			Engine::get_singleton()->register_singleton("OpenXRFbSpatialEntityQueryExtensionWrapper", OpenXRFbSpatialEntityQueryExtensionWrapper::get_singleton());
 			Engine::get_singleton()->register_singleton("OpenXRFbSpatialEntityContainerExtensionWrapper", OpenXRFbSpatialEntityContainerExtensionWrapper::get_singleton());
 			Engine::get_singleton()->register_singleton("OpenXRFbSceneExtensionWrapper", OpenXRFbSceneExtensionWrapper::get_singleton());
+			Engine::get_singleton()->register_singleton("OpenXRMetaEnvironmentDepthExtensionWrapper", OpenXRMetaEnvironmentDepthExtensionWrapper::get_singleton());
 			Engine::get_singleton()->register_singleton("OpenXRFbHandTrackingAimExtensionWrapper", OpenXRFbHandTrackingAimExtensionWrapper::get_singleton());
 			Engine::get_singleton()->register_singleton("OpenXRFbHandTrackingCapsulesExtensionWrapper", OpenXRFbHandTrackingCapsulesExtensionWrapper::get_singleton());
 			Engine::get_singleton()->register_singleton("OpenXRFbCompositionLayerSettingsExtensionWrapper", OpenXRFbCompositionLayerSettingsExtensionWrapper::get_singleton());
@@ -220,6 +225,8 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			ClassDB::register_class<MagicleapEditorExportPlugin>();
 			ClassDB::register_class<MagicleapEditorPlugin>();
 			EditorPlugins::add_by_type<MagicleapEditorPlugin>();
+
+			OpenXRMetaEnvironmentDepthExtensionWrapper::get_singleton()->setup_global_uniforms();
 		} break;
 
 		case MODULE_INITIALIZATION_LEVEL_MAX:

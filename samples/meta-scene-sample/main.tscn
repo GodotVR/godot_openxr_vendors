@@ -1,6 +1,7 @@
-[gd_scene load_steps=10 format=3 uid="uid://cqsodpswgup8w"]
+[gd_scene load_steps=13 format=3 uid="uid://cqsodpswgup8w"]
 
-[ext_resource type="Script" path="res://main.gd" id="1_fsva1"]
+[ext_resource type="Script" uid="uid://cwkywsytgrqre" path="res://main.gd" id="1_fsva1"]
+[ext_resource type="Shader" uid="uid://g0pbukh0wi3i" path="res://depth_test.gdshader" id="2_lquwl"]
 [ext_resource type="PackedScene" uid="uid://bcjp8kcgde4cs" path="res://scene_anchor.tscn" id="4_3u3ah"]
 [ext_resource type="PackedScene" uid="uid://bwo5nq0clfe3c" path="res://scene_global_mesh.tscn" id="5_7ikgf"]
 [ext_resource type="PackedScene" uid="uid://dsfd7xrm6o50p" path="res://spatial_anchor.tscn" id="5_g7mio"]
@@ -16,6 +17,14 @@ sky_material = SubResource("ProceduralSkyMaterial_0x6cv")
 background_mode = 1
 background_color = Color(0.3, 0.3, 0.3, 1)
 sky = SubResource("Sky_dqyx0")
+
+[sub_resource type="BoxMesh" id="BoxMesh_7mycd"]
+size = Vector3(0.1, 0.1, 0.1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_272bh"]
+render_priority = 0
+shader = ExtResource("2_lquwl")
+shader_parameter/albedo = Color(0.87, 0.2871, 0.2871, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_d27jm"]
 size = Vector3(0.01, 0.01, 5)
@@ -65,6 +74,11 @@ transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, -0.
 pixel_size = 0.001
 text = "[A] Place Floating Anchor
 [Trigger] Place/Remove Anchors"
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/RightHand"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.45519e-11, 1.45519e-11, -0.25)
+mesh = SubResource("BoxMesh_7mycd")
+surface_material_override/0 = SubResource("ShaderMaterial_272bh")
 
 [node name="RightHandPointer" type="XRController3D" parent="XROrigin3D"]
 tracker = &"right_hand"

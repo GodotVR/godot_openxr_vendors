@@ -17,6 +17,8 @@ var selected_spatial_anchor_node: Node3D = null
 
 const SPATIAL_ANCHORS_FILE = "user://openxr_fb_spatial_anchors.json"
 
+var _setup := false
+
 const COLORS = [
 	"#FF0000", # Red
 	"#00FF00", # Green
@@ -35,8 +37,21 @@ func _ready():
 
 
 func _on_openxr_session_begun() -> void:
+	if _setup:
+		return
+	_setup = true
+
 	load_spatial_anchors_from_file()
 	enable_passthrough(true)
+
+	var environment_depth = Engine.get_singleton("OpenXRMetaEnvironmentDepthExtensionWrapper")
+	if environment_depth:
+		print("Supports environment depth: ", environment_depth.is_environment_depth_supported())
+		print("Supports hand removal: ", environment_depth.is_hand_removal_supported())
+
+		await get_tree().create_timer(2.0).timeout
+		environment_depth.start_environment_depth()
+		print("Environment depth started: ", environment_depth.is_environment_depth_started())
 
 
 func load_spatial_anchors_from_file() -> void:
