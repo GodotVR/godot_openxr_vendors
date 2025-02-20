@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="OpenXRMetaEnvironmentDepthExtensionWrapper" inherits="OpenXRExtensionWrapperExtension" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		Wraps the [code]XR_META_environment_depth[/code] extension.
+	</brief_description>
+	<description>
+		Wraps the [code]XR_META_environment_depth[/code] extension.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="get_hand_removal_enabled" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] if hand removal is enabled; otherwise, [code]false[/code].
+			</description>
+		</method>
+		<method name="is_environment_depth_started">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] if environment depth has been started; otherwise, [code]false[/code].
+			</description>
+		</method>
+		<method name="is_environment_depth_supported">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] if environment depth is supported; otherwise, [code]false[/code].
+			</description>
+		</method>
+		<method name="is_hand_removal_supported">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] if hand removal is supported; otherwise, [code]false[/code].
+			</description>
+		</method>
+		<method name="set_hand_removal_enabled">
+			<return type="void" />
+			<param index="0" name="enable" type="bool" />
+			<description>
+				Enables or disables hand removal.
+				When enabled, the runtime will attempt to remove the user's hands from the environment depth data. However, this will only work if hand tracking is enabled and the user isn't using controllers.
+			</description>
+		</method>
+		<method name="start_environment_depth">
+			<return type="void" />
+			<description>
+				Starts environment depth.
+			</description>
+		</method>
+		<method name="stop_environment_depth">
+			<return type="void" />
+			<description>
+				Stops environment depth.
+			</description>
+		</method>
+	</methods>
+	<signals>
+		<signal name="openxr_meta_environment_depth_started">
+			<description>
+				Emitted after environment depth successfully starts.
+			</description>
+		</signal>
+		<signal name="openxr_meta_environment_depth_stopped">
+			<description>
+				Emitted after environment depth successfully stops.
+			</description>
+		</signal>
+	</signals>
+</class>

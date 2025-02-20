@@ -1,9 +1,12 @@
 extends StartXR
 
-var hand_tracking_source: Array[OpenXRInterface.HandTrackedSource]
+const ENVIRONMENT_DEPTH_MATERIAL = preload("res://environment_depth_material.tres")
+const BLUE_MATERIAL = preload("res://blue_material.tres")
+
 var passthrough_enabled: bool = false
 var scene_and_spatial_anchors_displayed: bool = true
 var selected_spatial_anchor_node: Node3D = null
+var global_environment_depth_enabled: bool = true
 
 @onready var left_hand: XRController3D = $XROrigin3D/LeftHand
 @onready var right_hand: XRController3D = $XROrigin3D/RightHand
@@ -14,8 +17,12 @@ var selected_spatial_anchor_node: Node3D = null
 @onready var world_environment: WorldEnvironment = $WorldEnvironment
 @onready var scene_manager: OpenXRFbSceneManager = $XROrigin3D/OpenXRFbSceneManager
 @onready var spatial_anchor_manager: OpenXRFbSpatialAnchorManager = $XROrigin3D/OpenXRFbSpatialAnchorManager
+@onready var environment_depth_node: OpenXRMetaEnvironmentDepth = $XROrigin3D/XRCamera3D/OpenXRMetaEnvironmentDepth
+@onready var depth_testing_mesh: MeshInstance3D = $XROrigin3D/RightHand/DepthTestingMesh
 
 const SPATIAL_ANCHORS_FILE = "user://openxr_fb_spatial_anchors.json"
+
+var _setup := false
 
 const COLORS = [
 	"#FF0000", # Red
@@ -33,10 +40,25 @@ func _ready():
 	if xr_interface and xr_interface.is_initialized():
 		xr_interface.session_begun.connect(_on_openxr_session_begun)
 
+	for render_model in [%LeftControllerFbRenderModel, %RightControllerFbRenderModel]:
+		render_model.openxr_fb_render_model_loaded.connect(_on_openxr_fb_render_model_loaded.bind(render_model))
+
 
 func _on_openxr_session_begun() -> void:
+	if _setup:
+		return
+	_setup = true
+
 	load_spatial_anchors_from_file()
 	enable_passthrough(true)
+
+	var environment_depth = Engine.get_singleton("OpenXRMetaEnvironmentDepthExtensionWrapper")
+	if environment_depth:
+		print("Supports environment depth: ", environment_depth.is_environment_depth_supported())
+		print("Supports hand removal: ", environment_depth.is_hand_removal_supported())
+		if environment_depth.is_environment_depth_supported():
+			environment_depth.start_environment_depth()
+			print("Environment depth started: ", environment_depth.is_environment_depth_started())
 
 
 func load_spatial_anchors_from_file() -> void:
@@ -80,6 +102,14 @@ func _on_spatial_anchor_tracked(_anchor_node: XRAnchor3D, _spatial_entity: OpenX
 
 func _on_spatial_anchor_untracked(_anchor_node: XRAnchor3D, _spatial_entity: OpenXRFbSpatialEntity) -> void:
 	save_spatial_anchors_to_file()
+
+
+func _on_openxr_fb_render_model_loaded(render_model: OpenXRFbRenderModel) -> void:
+	for mesh_instance in render_model.find_children("*", "MeshInstance3D", true, false):
+		for i in range(mesh_instance.mesh.get_surface_count()):
+			var material: Material = mesh_instance.mesh.surface_get_material(i)
+			# Make sure these render before the depth buffer is filled with environment depth info.
+			material.render_priority = -100
 
 
 func enable_passthrough(enable: bool) -> void:
@@ -177,6 +207,11 @@ func _on_right_hand_button_pressed(name: String) -> void:
 	elif name == "ax_button":
 		var anchor_transform := right_hand.transform
 		spatial_anchor_manager.create_anchor(anchor_transform, { color = COLORS[randi() % COLORS.size()] })
+	elif name == "by_button":
+		global_environment_depth_enabled = not global_environment_depth_enabled
+
+		environment_depth_node.visible = global_environment_depth_enabled
+		depth_testing_mesh.set_surface_override_material(0, BLUE_MATERIAL if global_environment_depth_enabled else ENVIRONMENT_DEPTH_MATERIAL)
 
 
 func _on_scene_manager_scene_capture_completed(success: bool) -> void:
