@@ -62,8 +62,6 @@ public:
 
 	void _on_process() override;
 
-	void add_project_setting();
-
 	static OpenXRFbHandTrackingAimExtensionWrapper *get_singleton();
 
 	OpenXRFbHandTrackingAimExtensionWrapper();

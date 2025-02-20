@@ -25,3 +25,5 @@ textures/vram_compression/import_etc2_astc=true
 
 openxr/enabled=true
 shaders/enabled=true
+openxr/extensions/meta/render_model=true
+openxr/extensions/meta/passthrough=true

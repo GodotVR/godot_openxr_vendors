@@ -40,3 +40,5 @@ openxr/extensions/hand_tracking_unobstructed_data_source=true
 openxr/extensions/hand_tracking_controller_data_source=true
 openxr/extensions/eye_gaze_interaction=true
 shaders/enabled=true
+openxr/extensions/meta/hand_tracking_mesh=true
+openxr/extensions/meta/render_model=true
