@@ -7,5 +7,6 @@ Manual
     :maxdepth: 1
     :name: toc-manual
 
+    hybrid_apps
     meta/index
 

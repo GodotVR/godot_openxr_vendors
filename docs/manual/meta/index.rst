@@ -10,5 +10,6 @@ Meta
     composition_layers
     hand_tracking
     passthrough
+    recommended_layer_resolution
     scene_manager
     spatial_anchors

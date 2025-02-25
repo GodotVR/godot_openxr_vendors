@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="OpenXRHybridApp" inherits="Object" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		Used to query/update an app's hybrid app state.
+	</brief_description>
+	<description>
+		Used to query/update an app's hybrid app state.
+		A hybrid app is an application capable of swapping between an immersive 3D mode and a 2D panel mode.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="get_launch_data" qualifiers="const">
+			<return type="String" />
+			<description>
+				Gets the [code]data[/code] string that was passed to [method switch_mode].
+			</description>
+		</method>
+		<method name="get_mode" qualifiers="const">
+			<return type="int" enum="OpenXRHybridApp.HybridMode" />
+			<description>
+				Gets the current hybrid app mode.
+			</description>
+		</method>
+		<method name="is_hybrid_app" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] if application is a hybrid app.
+			</description>
+		</method>
+		<method name="switch_mode">
+			<return type="bool" />
+			<param index="0" name="mode" type="int" enum="OpenXRHybridApp.HybridMode" />
+			<param index="1" name="data" type="String" default="&quot;&quot;" />
+			<description>
+				Switches the application to the specified hybrid app mode.
+				The [param data] string will be accessible via [method get_launch_data] upon switching hybrid app modes.
+			</description>
+		</method>
+	</methods>
+	<constants>
+		<constant name="HYBRID_MODE_NONE" value="-1" enum="HybridMode">
+			Disable hybrid app functionality.
+		</constant>
+		<constant name="HYBRID_MODE_IMMERSIVE" value="0" enum="HybridMode">
+			3D immersive hybrid app mode.
+		</constant>
+		<constant name="HYBRID_MODE_PANEL" value="1" enum="HybridMode">
+			2D panel hybird app mode.
+		</constant>
+	</constants>
+</class>
