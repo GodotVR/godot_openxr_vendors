@@ -182,8 +182,10 @@ void OpenXRFbPassthroughExtensionWrapper::_on_instance_created(uint64_t p_instan
 void OpenXRFbPassthroughExtensionWrapper::_on_session_created(uint64_t p_session) {
 	XrSession session = (XrSession)p_session;
 	if (fb_passthrough_ext) {
-		// If it's already supported, then we don't want to emulate it.
-		if (get_openxr_api()->is_environment_blend_mode_alpha_supported() != OpenXRAPIExtension::OPENXR_ALPHA_BLEND_MODE_SUPPORT_NONE) {
+		// If another extension is already emulating alpha blend mode, then we don't attempt to.
+		if (get_openxr_api()->is_environment_blend_mode_alpha_supported() == OpenXRAPIExtension::OPENXR_ALPHA_BLEND_MODE_SUPPORT_EMULATING) {
+			// Act as if the extension is not enabled.
+			fb_passthrough_ext = false;
 			return;
 		}
 
