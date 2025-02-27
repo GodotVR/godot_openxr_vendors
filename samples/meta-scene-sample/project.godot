@@ -34,3 +34,7 @@ openxr/reference_space=1
 openxr/extensions/eye_gaze_interaction=true
 shaders/enabled=true
 openxr/extensions/hand_tracking_aim=true
+openxr/extensions/fb_passthrough=true
+openxr/extensions/fb_render_model=true
+openxr/extensions/fb_anchor_api=true
+openxr/extensions/fb_scene_api=true

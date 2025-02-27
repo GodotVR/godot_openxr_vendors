@@ -84,80 +84,127 @@
 
 using namespace godot;
 
+static void _add_bool_project_setting(ProjectSettings *p_project_settings, const String &p_name, bool p_default_value) {
+	if (!p_project_settings->has_setting(p_name)) {
+		p_project_settings->set_setting(p_name, p_default_value);
+	}
+
+	p_project_settings->set_initial_value(p_name, p_default_value);
+	p_project_settings->set_as_basic(p_name, false);
+	Dictionary property_info;
+	property_info["name"] = p_name;
+	property_info["type"] = Variant::Type::BOOL;
+	property_info["hint"] = PROPERTY_HINT_NONE;
+	p_project_settings->add_property_info(property_info);
+}
+
+static inline bool _get_bool_project_setting(const String &p_name) {
+	return (bool)ProjectSettings::get_singleton()->get_setting_with_override(p_name);
+}
+
 void initialize_plugin_module(ModuleInitializationLevel p_level) {
 	switch (p_level) {
 		case MODULE_INITIALIZATION_LEVEL_CORE: {
+			add_plugin_project_settings();
+
 			ClassDB::register_class<OpenXRFbPassthroughExtensionWrapper>();
-			OpenXRFbPassthroughExtensionWrapper::get_singleton()->register_extension_wrapper();
-
 			ClassDB::register_class<OpenXRFbRenderModelExtensionWrapper>();
-			OpenXRFbRenderModelExtensionWrapper::get_singleton()->register_extension_wrapper();
-
 			ClassDB::register_class<OpenXRFbSceneCaptureExtensionWrapper>();
-			OpenXRFbSceneCaptureExtensionWrapper::get_singleton()->register_extension_wrapper();
-
 			ClassDB::register_class<OpenXRFbSpatialEntityExtensionWrapper>();
-			OpenXRFbSpatialEntityExtensionWrapper::get_singleton()->register_extension_wrapper();
-
 			ClassDB::register_class<OpenXRFbSpatialEntitySharingExtensionWrapper>();
-			OpenXRFbSpatialEntitySharingExtensionWrapper::get_singleton()->register_extension_wrapper();
-
 			ClassDB::register_class<OpenXRFbSpatialEntityStorageExtensionWrapper>();
-			OpenXRFbSpatialEntityStorageExtensionWrapper::get_singleton()->register_extension_wrapper();
-
 			ClassDB::register_class<OpenXRFbSpatialEntityStorageBatchExtensionWrapper>();
-			OpenXRFbSpatialEntityStorageBatchExtensionWrapper::get_singleton()->register_extension_wrapper();
-
 			ClassDB::register_class<OpenXRFbSpatialEntityQueryExtensionWrapper>();
-			OpenXRFbSpatialEntityQueryExtensionWrapper::get_singleton()->register_extension_wrapper();
-
 			ClassDB::register_class<OpenXRFbSpatialEntityContainerExtensionWrapper>();
-			OpenXRFbSpatialEntityContainerExtensionWrapper::get_singleton()->register_extension_wrapper();
-
 			ClassDB::register_class<OpenXRFbSpatialEntityUserExtensionWrapper>();
-			OpenXRFbSpatialEntityUserExtensionWrapper::get_singleton()->register_extension_wrapper();
-
 			ClassDB::register_class<OpenXRMetaRecommendedLayerResolutionExtensionWrapper>();
-			OpenXRMetaRecommendedLayerResolutionExtensionWrapper::get_singleton()->register_extension_wrapper();
-
 			ClassDB::register_class<OpenXRMetaSpatialEntityMeshExtensionWrapper>();
-			OpenXRMetaSpatialEntityMeshExtensionWrapper::get_singleton()->register_extension_wrapper();
-
 			ClassDB::register_class<OpenXRFbSceneExtensionWrapper>();
-			OpenXRFbSceneExtensionWrapper::get_singleton()->register_extension_wrapper();
-
 			ClassDB::register_class<OpenXRFbFaceTrackingExtensionWrapper>();
-			OpenXRFbFaceTrackingExtensionWrapper::get_singleton()->register_extension_wrapper();
-
 			ClassDB::register_class<OpenXRFbBodyTrackingExtensionWrapper>();
-			OpenXRFbBodyTrackingExtensionWrapper::get_singleton()->register_extension_wrapper();
-
 			ClassDB::register_class<OpenXRFbHandTrackingMeshExtensionWrapper>();
-			OpenXRFbHandTrackingMeshExtensionWrapper::get_singleton()->register_extension_wrapper();
-
 			ClassDB::register_class<OpenXRFbHandTrackingAimExtensionWrapper>();
-			OpenXRFbHandTrackingAimExtensionWrapper::get_singleton()->register_extension_wrapper();
-
 			ClassDB::register_class<OpenXRFbHandTrackingCapsulesExtensionWrapper>();
-			OpenXRFbHandTrackingCapsulesExtensionWrapper::get_singleton()->register_extension_wrapper();
-
 			ClassDB::register_class<OpenXRFbCompositionLayerSecureContentExtensionWrapper>();
-			OpenXRFbCompositionLayerSecureContentExtensionWrapper::get_singleton()->register_extension_wrapper();
-
 			ClassDB::register_class<OpenXRFbCompositionLayerAlphaBlendExtensionWrapper>();
-			OpenXRFbCompositionLayerAlphaBlendExtensionWrapper::get_singleton()->register_extension_wrapper();
-
 			ClassDB::register_class<OpenXRFbCompositionLayerSettingsExtensionWrapper>();
-			OpenXRFbCompositionLayerSettingsExtensionWrapper::get_singleton()->register_extension_wrapper();
-
 			ClassDB::register_class<OpenXRFbAndroidSurfaceSwapchainCreateExtensionWrapper>();
+			ClassDB::register_class<OpenXRHtcFacialTrackingExtensionWrapper>();
+			ClassDB::register_class<OpenXRHtcPassthroughExtensionWrapper>();
+
+			if (_get_bool_project_setting("xr/openxr/extensions/fb_passthrough")) {
+				OpenXRFbPassthroughExtensionWrapper::get_singleton()->register_extension_wrapper();
+			}
+
+			if (_get_bool_project_setting("xr/openxr/extensions/fb_render_model")) {
+				OpenXRFbRenderModelExtensionWrapper::get_singleton()->register_extension_wrapper();
+			}
+
+			// Three settings to match the three permissions for the Android manifest.
+			bool fb_anchor_api = _get_bool_project_setting("xr/openxr/extensions/fb_anchor_api");
+			bool fb_anchor_sharing = _get_bool_project_setting("xr/openxr/extensions/fb_anchor_sharing");
+			bool fb_scene_api = _get_bool_project_setting("xr/openxr/extensions/fb_scene_api");
+			if (fb_anchor_api || fb_anchor_sharing || fb_scene_api) {
+				// There are needed by all of them.
+				OpenXRFbSpatialEntityExtensionWrapper::get_singleton()->register_extension_wrapper();
+				OpenXRFbSpatialEntityStorageExtensionWrapper::get_singleton()->register_extension_wrapper();
+				OpenXRFbSpatialEntityStorageBatchExtensionWrapper::get_singleton()->register_extension_wrapper();
+				OpenXRFbSpatialEntityQueryExtensionWrapper::get_singleton()->register_extension_wrapper();
+				OpenXRFbSpatialEntityContainerExtensionWrapper::get_singleton()->register_extension_wrapper();
+
+				if (fb_scene_api) {
+					OpenXRFbSceneExtensionWrapper::get_singleton()->register_extension_wrapper();
+					OpenXRFbSceneCaptureExtensionWrapper::get_singleton()->register_extension_wrapper();
+					OpenXRMetaSpatialEntityMeshExtensionWrapper::get_singleton()->register_extension_wrapper();
+				}
+
+				if (fb_anchor_sharing) {
+					OpenXRFbSpatialEntitySharingExtensionWrapper::get_singleton()->register_extension_wrapper();
+					OpenXRFbSpatialEntityUserExtensionWrapper::get_singleton()->register_extension_wrapper();
+				}
+			}
+
+			if (_get_bool_project_setting("xr/openxr/extensions/recommended_layer_resolution")) {
+				OpenXRMetaRecommendedLayerResolutionExtensionWrapper::get_singleton()->register_extension_wrapper();
+			}
+
+			if (_get_bool_project_setting("xr/openxr/extensions/fb_face_tracking")) {
+				OpenXRFbFaceTrackingExtensionWrapper::get_singleton()->register_extension_wrapper();
+			}
+
+			if (_get_bool_project_setting("xr/openxr/extensions/fb_body_tracking")) {
+				OpenXRFbBodyTrackingExtensionWrapper::get_singleton()->register_extension_wrapper();
+			}
+
+			// All of the hand tracking extensions depend on the Godot hand tracking setting being set first.
+			if (_get_bool_project_setting("xr/openxr/extensions/hand_tracking")) {
+				if (_get_bool_project_setting("xr/openxr/extensions/hand_tracking_mesh")) {
+					OpenXRFbHandTrackingMeshExtensionWrapper::get_singleton()->register_extension_wrapper();
+				}
+
+				if (_get_bool_project_setting("xr/openxr/extensions/hand_tracking_aim")) {
+					OpenXRFbHandTrackingAimExtensionWrapper::get_singleton()->register_extension_wrapper();
+				}
+
+				if (_get_bool_project_setting("xr/openxr/extensions/hand_tracking_capsules")) {
+					OpenXRFbHandTrackingCapsulesExtensionWrapper::get_singleton()->register_extension_wrapper();
+				}
+			}
+
+			// @todo I'm worried about gating these with a project setting. These add settings to composition layers,
+			//       and I worry users will be confused that they enable those settings and they do nothing.
+			OpenXRFbCompositionLayerSecureContentExtensionWrapper::get_singleton()->register_extension_wrapper();
+			OpenXRFbCompositionLayerAlphaBlendExtensionWrapper::get_singleton()->register_extension_wrapper();
+			OpenXRFbCompositionLayerSettingsExtensionWrapper::get_singleton()->register_extension_wrapper();
 			OpenXRFbAndroidSurfaceSwapchainCreateExtensionWrapper::get_singleton()->register_extension_wrapper();
 
-			ClassDB::register_class<OpenXRHtcFacialTrackingExtensionWrapper>();
-			OpenXRHtcFacialTrackingExtensionWrapper::get_singleton()->register_extension_wrapper();
+			if (_get_bool_project_setting("xr/openxr/extensions/htc_face_tracking")) {
+				OpenXRHtcFacialTrackingExtensionWrapper::get_singleton()->register_extension_wrapper();
+			}
 
-			ClassDB::register_class<OpenXRHtcPassthroughExtensionWrapper>();
-			OpenXRHtcPassthroughExtensionWrapper::get_singleton()->register_extension_wrapper();
+			if (_get_bool_project_setting("xr/openxr/extensions/htc_passthrough")) {
+				OpenXRHtcPassthroughExtensionWrapper::get_singleton()->register_extension_wrapper();
+			}
 
 		} break;
 
@@ -165,8 +212,6 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			break;
 
 		case MODULE_INITIALIZATION_LEVEL_SCENE: {
-			add_plugin_project_settings();
-
 			Engine::get_singleton()->register_singleton("OpenXRFbPassthroughExtensionWrapper", OpenXRFbPassthroughExtensionWrapper::get_singleton());
 			Engine::get_singleton()->register_singleton("OpenXRFbRenderModelExtensionWrapper", OpenXRFbRenderModelExtensionWrapper::get_singleton());
 			Engine::get_singleton()->register_singleton("OpenXRFbSceneCaptureExtensionWrapper", OpenXRFbSceneCaptureExtensionWrapper::get_singleton());
@@ -194,9 +239,6 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 
 			ClassDB::register_class<OpenXRHybridApp>();
 			Engine::get_singleton()->register_singleton("OpenXRHybridApp", OpenXRHybridApp::get_singleton());
-
-			OpenXRFbHandTrackingAimExtensionWrapper::get_singleton()->add_project_setting();
-			OpenXRMetaRecommendedLayerResolutionExtensionWrapper::get_singleton()->add_project_setting();
 		} break;
 
 		case MODULE_INITIALIZATION_LEVEL_EDITOR: {
@@ -236,6 +278,20 @@ void terminate_plugin_module(ModuleInitializationLevel p_level) {
 			break;
 
 		case MODULE_INITIALIZATION_LEVEL_SCENE: {
+			Engine::get_singleton()->unregister_singleton("OpenXRFbPassthroughExtensionWrapper");
+			Engine::get_singleton()->unregister_singleton("OpenXRFbRenderModelExtensionWrapper");
+			Engine::get_singleton()->unregister_singleton("OpenXRFbSceneCaptureExtensionWrapper");
+			Engine::get_singleton()->unregister_singleton("OpenXRFbSpatialEntityExtensionWrapper");
+			Engine::get_singleton()->unregister_singleton("OpenXRFbSpatialEntityStorageExtensionWrapper");
+			Engine::get_singleton()->unregister_singleton("OpenXRFbSpatialEntityQueryExtensionWrapper");
+			Engine::get_singleton()->unregister_singleton("OpenXRFbSpatialEntityContainerExtensionWrapper");
+			Engine::get_singleton()->unregister_singleton("OpenXRFbSceneExtensionWrapper");
+			Engine::get_singleton()->unregister_singleton("OpenXRFbHandTrackingAimExtensionWrapper");
+			Engine::get_singleton()->unregister_singleton("OpenXRFbHandTrackingCapsulesExtensionWrapper");
+			Engine::get_singleton()->unregister_singleton("OpenXRFbCompositionLayerSettingsExtensionWrapper");
+			Engine::get_singleton()->unregister_singleton("OpenXRHtcFacialTrackingExtensionWrapper");
+			Engine::get_singleton()->unregister_singleton("OpenXRHtcPassthroughExtensionWrapper");
+
 			Engine::get_singleton()->unregister_singleton("OpenXRHybridApp");
 			memdelete(OpenXRHybridApp::get_singleton());
 		} break;
@@ -254,37 +310,9 @@ void add_plugin_project_settings() {
 		return;
 	}
 
-	{
-		// Add the 'automatically_request_runtime_permissions' project setting
-		String request_permissions_setting = "xr/openxr/extensions/automatically_request_runtime_permissions";
-		if (!project_settings->has_setting(request_permissions_setting)) {
-			// Default value is `true` to match prior plugin behavior
-			project_settings->set_setting(request_permissions_setting, true);
-		}
+	// Multi-vendor stuff first.
 
-		project_settings->set_initial_value(request_permissions_setting, true);
-		project_settings->set_as_basic(request_permissions_setting, false);
-		Dictionary property_info;
-		property_info["name"] = request_permissions_setting;
-		property_info["type"] = Variant::Type::BOOL;
-		property_info["hint"] = PROPERTY_HINT_NONE;
-		project_settings->add_property_info(property_info);
-	}
-
-	{
-		String collision_shape_2d_thickness = "xr/openxr/extensions/meta_scene_api/collision_shape_2d_thickness";
-		if (!project_settings->has_setting(collision_shape_2d_thickness)) {
-			project_settings->set_setting(collision_shape_2d_thickness, 0.1);
-		}
-
-		project_settings->set_initial_value(collision_shape_2d_thickness, 0.1);
-		project_settings->set_as_basic(collision_shape_2d_thickness, false);
-		Dictionary property_info;
-		property_info["name"] = collision_shape_2d_thickness;
-		property_info["type"] = Variant::Type::FLOAT;
-		property_info["hint"] = PROPERTY_HINT_NONE;
-		project_settings->add_property_info(property_info);
-	}
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/automatically_request_runtime_permissions", true);
 
 	{
 		String hybrid_app_setting = "xr/openxr/hybrid_app";
@@ -299,6 +327,43 @@ void add_plugin_project_settings() {
 		property_info["type"] = Variant::Type::INT;
 		property_info["hint"] = PROPERTY_HINT_ENUM;
 		property_info["hint_string"] = "Disabled:-1,Start As Immersive:0,Start As Panel:1";
+		project_settings->add_property_info(property_info);
+	}
+
+	// @todo Should these settings denote the vendor name? I think "yes" so the new ones do.
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/hand_tracking_aim", false);
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/hand_tracking_mesh", false);
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/hand_tracking_capsules", false);
+
+	// @todo Or, do we just have "passthrough" which means both "fb_passthrough" and "htc_passthrough"?
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/htc_passthrough", false);
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/htc_face_tracking", false);
+
+	// @todo Should we call this "advanced passthrough" to distinguish from ALPHA_BLEND?
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/fb_passthrough", false);
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/fb_render_model", false);
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/fb_anchor_api", false);
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/fb_anchor_sharing", false);
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/fb_scene_api", false);
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/fb_face_tracking", false);
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/fb_body_tracking", false);
+
+	// @todo Should this setting be called "dynamic resolution"? ("recommended layer resolution" is from the extension name, but all Meta docs call it "dynamic resolution")
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/recommended_layer_resolution", false);
+
+	{
+		// @todo how to name this to match the extension setting above? (it's "fb_spatial_entity")
+		String collision_shape_2d_thickness = "xr/openxr/extensions/meta_scene_api/collision_shape_2d_thickness";
+		if (!project_settings->has_setting(collision_shape_2d_thickness)) {
+			project_settings->set_setting(collision_shape_2d_thickness, 0.1);
+		}
+
+		project_settings->set_initial_value(collision_shape_2d_thickness, 0.1);
+		project_settings->set_as_basic(collision_shape_2d_thickness, false);
+		Dictionary property_info;
+		property_info["name"] = collision_shape_2d_thickness;
+		property_info["type"] = Variant::Type::FLOAT;
+		property_info["hint"] = PROPERTY_HINT_NONE;
 		project_settings->add_property_info(property_info);
 	}
 }
