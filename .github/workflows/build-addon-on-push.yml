@@ -150,7 +150,7 @@ jobs:
       - name: Adding vendor licences
         run: |
           mkdir -p asset/addons/godotopenxrvendors/meta/
-          cp aar/thirdparty/ovr_openxr_mobile_sdk/LICENSE.txt asset/addons/godotopenxrvendors/meta/
+          cp aar/thirdparty/khronos_openxr_sdk/LICENSE asset/addons/godotopenxrvendors/meta/LICENSE
 
           mkdir -p asset/addons/godotopenxrvendors/pico/
           cp aar/thirdparty/khronos_openxr_sdk/LICENSE asset/addons/godotopenxrvendors/pico/LICENSE

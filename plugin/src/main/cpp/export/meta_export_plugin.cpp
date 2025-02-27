@@ -394,9 +394,9 @@ String MetaEditorExportPlugin::_get_android_manifest_element_contents(const Ref<
 	if (body_tracking_value > BODY_TRACKING_NONE_VALUE) {
 		contents += "    <uses-permission android:name=\"com.oculus.permission.BODY_TRACKING\" />\n";
 
-		if (body_tracking_value == FACE_TRACKING_OPTIONAL_VALUE) {
+		if (body_tracking_value == BODY_TRACKING_OPTIONAL_VALUE) {
 			contents += "    <uses-feature tools:node=\"replace\" android:name=\"com.oculus.software.body_tracking\" android:required=\"false\" />\n";
-		} else if (body_tracking_value == FACE_TRACKING_REQUIRED_VALUE) {
+		} else if (body_tracking_value == BODY_TRACKING_REQUIRED_VALUE) {
 			contents += "    <uses-feature tools:node=\"replace\" android:name=\"com.oculus.software.body_tracking\" android:required=\"true\" />\n";
 		}
 	}
