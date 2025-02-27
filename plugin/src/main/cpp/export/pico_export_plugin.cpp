@@ -119,6 +119,11 @@ PackedStringArray PicoEditorExportPlugin::_get_export_features(const Ref<EditorE
 		features.append(EYE_GAZE_INTERACTION_FEATURE);
 	}
 
+	// Add a feature to indicate that this is a hybrid app.
+	if (_is_openxr_enabled() && _get_hybrid_app_setting_value() != HYBRID_TYPE_DISABLED) {
+		features.append(HYBRID_APP_FEATURE);
+	}
+
 	return features;
 }
 
@@ -198,6 +203,26 @@ String PicoEditorExportPlugin::_get_android_manifest_application_element_content
 	}
 	if (hand_tracking > HAND_TRACKING_LOWFREQUENCY_VALUE) {
 		contents += "        <meta-data tools:node=\"replace\" android:name=\"Hand_Tracking_HighFrequency\" android:value=\"1\" />\n";
+	}
+
+	HybridType hybrid_type = _get_hybrid_app_setting_value();
+	if (hybrid_type != HYBRID_TYPE_DISABLED) {
+		contents += "        <meta-data tools:node=\"replace\" android:name=\"pvr.app.type\" android:value=\"2d\" />\n";
+
+		contents += _get_opening_activity_tag_for_panel_app();
+
+		contents +=
+				"          <intent-filter>\n"
+				"            <action android:name=\"android.intent.action.MAIN\" />\n"
+				"            <category android:name=\"android.intent.category.DEFAULT\" />\n";
+
+		if (hybrid_type == HYBRID_TYPE_START_AS_PANEL) {
+			contents += "            <category android:name=\"android.intent.category.LAUNCHER\" />\n";
+		}
+
+		contents +=
+				"          </intent-filter>\n"
+				"        </activity>\n";
 	}
 
 	return contents;

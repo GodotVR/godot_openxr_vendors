@@ -22,6 +22,9 @@
         <meta-data android:name="org.godotengine.plugin.v2.GodotOpenXRPico"
             android:value="org.godotengine.openxr.vendors.pico.GodotOpenXRPico" />
 
+        <meta-data android:name="org.godotengine.plugin.v2.GodotOpenXRHybridAppInternal"
+            android:value="org.godotengine.openxr.vendors.GodotOpenXRHybridAppInternal" />
+
         <!-- Enable VR mode on Pico headsets -->
         <meta-data android:name="pvr.app.type" android:value="vr" />
         <meta-data android:name="pvr.sdk.version" android:value="OpenXR" />
