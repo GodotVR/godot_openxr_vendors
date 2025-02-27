@@ -298,7 +298,7 @@ void add_plugin_project_settings() {
 		property_info["name"] = hybrid_app_setting;
 		property_info["type"] = Variant::Type::INT;
 		property_info["hint"] = PROPERTY_HINT_ENUM;
-		property_info["hint_string"] = "Disabled,Start As Immersive,Start As Panel";
+		property_info["hint_string"] = "Disabled:-1,Start As Immersive:0,Start As Panel:1";
 		project_settings->add_property_info(property_info);
 	}
 }
