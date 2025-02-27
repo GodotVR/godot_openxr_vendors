@@ -94,6 +94,10 @@ android {
         }
         meta {
             dimension "vendor"
+            ndk {
+                //noinspection ChromeOsAbiSupport
+                abiFilters 'arm64-v8a', 'x86_64'
+            }
         }
         pico {
             dimension "vendor"
@@ -120,8 +124,12 @@ android {
         magicleapDebug.jniLibs.srcDirs += ['src/main/libs/debug/x86_64']
         magicleapRelease.jniLibs.srcDirs += ['src/main/libs/release/x86_64']
 
-        metaDebug.jniLibs.srcDirs += ['../thirdparty/ovr_openxr_mobile_sdk/OpenXR/Libs/Android/Debug']
-        metaRelease.jniLibs.srcDirs += ['../thirdparty/ovr_openxr_mobile_sdk/OpenXR/Libs/Android/Release']
+        meta.jniLibs.srcDirs += [
+                "${khronosOpenxrLoaderTargetDir}/arm64-v8a",
+                "${khronosOpenxrLoaderTargetDir}/x86_64",
+        ]
+        metaDebug.jniLibs.srcDirs += ['src/main/libs/debug/x86_64']
+        metaRelease.jniLibs.srcDirs += ['src/main/libs/release/x86_64']
 
         pico.jniLibs.srcDirs += ["${khronosOpenxrLoaderTargetDir}/arm64-v8a"]
     }
