@@ -111,7 +111,7 @@ android {
         khronosDebug.jniLibs.srcDirs += ['src/main/libs/debug/x86_64']
         khronosRelease.jniLibs.srcDirs += ['src/main/libs/release/x86_64']
 
-        lynx.jniLibs.srcDirs += ['../thirdparty/lynx_openxr_sdk']
+        lynx.jniLibs.srcDirs += ["${khronosOpenxrLoaderTargetDir}/arm64-v8a"]
 
         magicleap.jniLibs.srcDirs += [
                 "${khronosOpenxrLoaderTargetDir}/arm64-v8a",
