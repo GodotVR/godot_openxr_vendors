@@ -1,5 +1,21 @@
 # Change history for the Godot OpenXR loaders asset
 
+## 4.0.0
+
+- Support making hybrid apps for Meta headsets
+- Add support for `XR_FB_android_surface_swapchain_create`
+- Implement `XR_META_recommended_layer_resolution`
+- Remove CMake from the build process
+- Implement instant splash screen for Meta headsets
+- Avoid casting errors when building with `precision=double`
+- Add missing Pico store manifest
+- Add support for `XR_FB_composition_layer_image_layout`
+- Update demo and samples for Godot 4.4
+
+## 3.1.2
+- Fix passthrough sample color map display bug
+- Fix the issue preventing overridden vendor options from being updated
+
 ## 3.1.1
 - Emit correct signal from `OpenXRFbSpatialEntity.erase_from_storage()`
 - Only add the `LAUNCHER` category if "Show in App Library" is enabled
