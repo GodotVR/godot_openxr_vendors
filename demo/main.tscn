@@ -1,6 +1,6 @@
 [gd_scene load_steps=10 format=3 uid="uid://cqsodpswgup8w"]
 
-[ext_resource type="Script" path="res://main.gd" id="1_fsva1"]
+[ext_resource type="Script" uid="uid://rkp4t7eqnc0o" path="res://main.gd" id="1_fsva1"]
 [ext_resource type="Material" uid="uid://bdwh0vc86hsdb" path="res://assets/hand_silhouette_outline_mat.tres" id="7_tpkib"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_0x6cv"]

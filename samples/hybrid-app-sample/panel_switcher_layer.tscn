@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://cmi82uvhfxvde"]
 
 [ext_resource type="PackedScene" uid="uid://cxqmpcugad575" path="res://panel_switcher.tscn" id="1_lcel8"]
-[ext_resource type="Script" uid="uid://b25cdd44tnjga" path="res://panel_switcher_layer.gd" id="1_nry1d"]
+[ext_resource type="Script" uid="uid://benw6k53tyumx" path="res://panel_switcher_layer.gd" id="1_nry1d"]
 
 [sub_resource type="QuadMesh" id="QuadMesh_nry1d"]
 size = Vector2(0.015, 0.015)

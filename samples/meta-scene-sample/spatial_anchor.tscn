@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://dsfd7xrm6o50p"]
 
-[ext_resource type="Script" path="res://spatial_anchor.gd" id="1_dengx"]
+[ext_resource type="Script" uid="uid://cx4le35kmk2n2" path="res://spatial_anchor.gd" id="1_dengx"]
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_gayi3"]
 top_radius = 0.0
