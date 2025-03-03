@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://v75csjjxgtpx"]
 
-[ext_resource type="Script" path="res://example_panel.gd" id="1_tdwln"]
+[ext_resource type="Script" uid="uid://bo1lexc1atsms" path="res://example_panel.gd" id="1_tdwln"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_8sbod"]
 

@@ -1,9 +1,9 @@
 [gd_scene load_steps=35 format=3 uid="uid://cyfhw445f4w0v"]
 
-[ext_resource type="Script" path="res://main.gd" id="1_37itx"]
+[ext_resource type="Script" uid="uid://c5t8v7uqjf1ia" path="res://main.gd" id="1_37itx"]
 [ext_resource type="Material" uid="uid://becyo36svkmbm" path="res://hand_material.tres" id="3_5ytic"]
-[ext_resource type="Shader" path="res://pinch_strength.gdshader" id="3_d314f"]
-[ext_resource type="Script" path="res://raycast.gd" id="4_rjdwo"]
+[ext_resource type="Shader" uid="uid://bg1r3fw2y1m3o" path="res://pinch_strength.gdshader" id="3_d314f"]
+[ext_resource type="Script" uid="uid://brtqnlvt0usuj" path="res://raycast.gd" id="4_rjdwo"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_tvdja"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)

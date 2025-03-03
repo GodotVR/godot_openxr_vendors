@@ -1,10 +1,10 @@
 [gd_scene load_steps=22 format=3 uid="uid://cyfhw445f4w0v"]
 
-[ext_resource type="Script" path="res://main.gd" id="1_37itx"]
-[ext_resource type="Script" path="res://geometry.gd" id="2_8k6m3"]
+[ext_resource type="Script" uid="uid://ctq73ap14cvuj" path="res://main.gd" id="1_37itx"]
+[ext_resource type="Script" uid="uid://ln6a1tdtlyhw" path="res://geometry.gd" id="2_8k6m3"]
 [ext_resource type="Image" uid="uid://2lbwmk1bk7o7" path="res://color-lut-orange-64.png" id="2_s3045"]
 [ext_resource type="Image" uid="uid://bygo836c781rj" path="res://color-lut-inverted-32.png" id="3_sehed"]
-[ext_resource type="Script" path="res://raycast.gd" id="4_rjdwo"]
+[ext_resource type="Script" uid="uid://d4jdeswct78c7" path="res://raycast.gd" id="4_rjdwo"]
 [ext_resource type="PackedScene" uid="uid://c5cdxjhbriaec" path="res://slider.tscn" id="5_d0odt"]
 
 [sub_resource type="Gradient" id="Gradient_aloay"]
