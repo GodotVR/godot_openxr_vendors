@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  GodotOpenXRPico.kt                                                    */
+/*  Constants.kt                                                          */
 /**************************************************************************/
 /*                       This file is part of:                            */
 /*                              GODOT XR                                  */
@@ -27,51 +27,46 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-package org.godotengine.openxr.vendors.pico
+@file:JvmName("Constants")
 
-import org.godotengine.godot.Godot
-import org.godotengine.godot.utils.PermissionsUtil
-import org.godotengine.openxr.vendors.GodotOpenXR
+package org.godotengine.openxr.vendors
 
-/**
- * Godot plugin for the Pico OpenXR loader.
- */
-class GodotOpenXRPico(godot: Godot?) : GodotOpenXR(godot) {
-    companion object {
-        private const val EYE_TRACKING_PERMISSION = "com.picovr.permission.EYE_TRACKING"
-        private const val FACE_TRACKING_PERMISSION = "com.picovr.permission.FACE_TRACKING"
-    }
+// Set of supported vendors
+internal const val META_VENDOR_NAME = "meta"
+internal const val PICO_VENDOR_NAME = "pico"
+internal const val LYNX_VENDOR_NAME = "lynx"
+internal const val KHRONOS_VENDOR_NAME = "khronos"
+internal const val MAGICLEAP_VENDOR_NAME = "magicleap"
 
-    override fun getPluginName(): String {
-        return "GodotOpenXRPico"
-    }
+// Feature tags
+internal const val EYE_GAZE_INTERACTION_FEATURE_TAG = "PERMISSION_XR_EXT_eye_gaze_interaction"
 
-    override fun getPluginPermissionsToEnable(): MutableList<String> {
-        val permissionsToRequest = super.getPluginPermissionsToEnable()
+// Meta permissions
+internal const val META_BODY_TRACKING_PERMISSION = "com.oculus.permission.BODY_TRACKING"
+internal const val META_EYE_TRACKING_PERMISSION = "com.oculus.permission.EYE_TRACKING"
+internal const val META_FACE_TRACKING_PERMISSION = "com.oculus.permission.FACE_TRACKING"
+internal const val META_SCENE_PERMISSION = "com.oculus.permission.USE_SCENE"
 
-        // Request the eye tracking permission if it's included in the manifest
-        if (PermissionsUtil.hasManifestPermission(activity, EYE_TRACKING_PERMISSION)) {
-            permissionsToRequest.add(EYE_TRACKING_PERMISSION)
-        }
-        // Request the face tracking permission if it's included in the manifest
-        if (PermissionsUtil.hasManifestPermission(activity, FACE_TRACKING_PERMISSION)) {
-            permissionsToRequest.add(FACE_TRACKING_PERMISSION)
-        }
+internal val META_PERMISSIONS_LIST = listOf(
+    META_BODY_TRACKING_PERMISSION,
+    META_EYE_TRACKING_PERMISSION,
+    META_FACE_TRACKING_PERMISSION,
+    META_SCENE_PERMISSION,
+)
 
-        return permissionsToRequest
-    }
+// Pico permissions
+internal const val PICO_EYE_TRACKING_PERMISSION = "com.picovr.permission.EYE_TRACKING"
+internal const val PICO_FACE_TRACKING_PERMISSION = "com.picovr.permission.FACE_TRACKING"
 
-    override fun supportsFeature(featureTag: String): Boolean {
-        if ("PERMISSION_XR_EXT_eye_gaze_interaction" == featureTag) {
-            val grantedPermissions = godot?.getGrantedPermissions()
-            if (grantedPermissions != null) {
-                for (permission in grantedPermissions) {
-                    if (EYE_TRACKING_PERMISSION == permission) {
-                        return true
-                    }
-                }
-            }
-        }
-        return false
+internal val PICO_PERMISSIONS_LIST = listOf(
+    PICO_EYE_TRACKING_PERMISSION,
+    PICO_FACE_TRACKING_PERMISSION,
+)
+
+internal fun getVendorPermissions(vendorName: String): List<String> {
+    return when (vendorName) {
+        META_VENDOR_NAME -> META_PERMISSIONS_LIST
+        PICO_VENDOR_NAME -> PICO_PERMISSIONS_LIST
+        else -> emptyList()
     }
 }

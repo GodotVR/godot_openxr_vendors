@@ -13,10 +13,6 @@
 
     <application>
         <meta-data
-            android:name="org.godotengine.plugin.v2.GodotOpenXRMeta"
-            android:value="org.godotengine.openxr.vendors.meta.GodotOpenXRMeta" />
-
-        <meta-data
             android:name="org.godotengine.plugin.v2.GodotOpenXRHybridAppInternal"
             android:value="org.godotengine.openxr.vendors.GodotOpenXRHybridAppInternal" />
 

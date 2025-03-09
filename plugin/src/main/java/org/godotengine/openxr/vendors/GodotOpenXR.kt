@@ -36,11 +36,24 @@ import org.godotengine.godot.plugin.GodotPlugin
 import org.godotengine.godot.utils.PermissionsUtil
 
 /**
- * Base class for the Godot OpenXR plugin.
+ * Godot OpenXR plugin.
+ *
+ * When using OpenXR for your application on Android make sure that
+ * the IMMERSIVE_HMD category is added to your activities intent-filter.
+ *
+ * <intent-filter>
+ * <action android:name="android.intent.action.MAIN"></action>
+ * <category android:name="android.intent.category.LAUNCHER"></category>
+ * <category android:name="org.khronos.openxr.intent.category.IMMERSIVE_HMD"></category>
+ * </intent-filter>
+ *
+ * more details can be found here:
+ * https://registry.khronos.org/OpenXR/specs/1.0/html/xrspec.html#android-runtime-category
+ *
  */
-abstract class GodotOpenXR(godot: Godot?) : GodotPlugin(godot) {
+class GodotOpenXR(godot: Godot?) : GodotPlugin(godot) {
 	companion object {
-		protected val TAG = GodotOpenXR::class.java.simpleName
+		private val TAG = GodotOpenXR::class.java.simpleName
 
 		init {
 			try {
@@ -54,6 +67,8 @@ abstract class GodotOpenXR(godot: Godot?) : GodotPlugin(godot) {
 			}
 		}
 	}
+
+	final override fun getPluginName() = "GodotOpenXR"
 
 	override fun getPluginGDExtensionLibrariesPaths() = setOf("res://addons/godotopenxrvendors/plugin.gdextension")
 
@@ -78,7 +93,55 @@ abstract class GodotOpenXR(godot: Godot?) : GodotPlugin(godot) {
 		}
 	}
 
-	protected open fun getPluginPermissionsToEnable(): MutableList<String> {
-		return mutableListOf()
+	private fun getPluginPermissionsToEnable(): MutableList<String> {
+		val permissionsToEnable = mutableListOf<String>()
+		// Go through the list of permissions, and request the ones that are included in the
+		// manifest.
+		val vendorPermissions = getVendorPermissions(BuildConfig.FLAVOR)
+		for (permission in vendorPermissions) {
+			if (PermissionsUtil.hasManifestPermission(activity, permission)) {
+				permissionsToEnable.add(permission)
+			}
+		}
+
+		return permissionsToEnable
+	}
+
+	override fun supportsFeature(featureTag: String): Boolean {
+		when (BuildConfig.FLAVOR) {
+			KHRONOS_VENDOR_NAME -> {
+				if (EYE_GAZE_INTERACTION_FEATURE_TAG == featureTag) {
+					/* HTC doesn't require permission, if other headsets that use the Khronos loader do, we need to figure out how to tell them apart... */
+					return true
+				}
+			}
+
+			META_VENDOR_NAME -> {
+				if (EYE_GAZE_INTERACTION_FEATURE_TAG == featureTag) {
+					val grantedPermissions = godot?.getGrantedPermissions()
+					if (grantedPermissions != null) {
+						for (permission in grantedPermissions) {
+							if (META_EYE_TRACKING_PERMISSION == permission) {
+								return true
+							}
+						}
+					}
+				}
+			}
+
+			PICO_VENDOR_NAME -> {
+				if (EYE_GAZE_INTERACTION_FEATURE_TAG == featureTag) {
+					val grantedPermissions = godot?.getGrantedPermissions()
+					if (grantedPermissions != null) {
+						for (permission in grantedPermissions) {
+							if (PICO_EYE_TRACKING_PERMISSION == permission) {
+								return true
+							}
+						}
+					}
+				}
+			}
+		}
+		return super.supportsFeature(featureTag)
 	}
 }
