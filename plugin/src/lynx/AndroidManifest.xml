@@ -16,10 +16,6 @@
     </queries>
 
     <application>
-        <meta-data
-            android:name="org.godotengine.plugin.v2.GodotOpenXRLynx"
-            android:value="org.godotengine.openxr.vendors.lynx.GodotOpenXRLynx" />
-
         <meta-data android:name="handtracking" android:value="1" />
     </application>
 

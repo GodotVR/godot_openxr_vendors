@@ -18,10 +18,4 @@
         <provider android:authorities="org.khronos.openxr.runtime_broker;org.khronos.openxr.system_runtime_broker" />
     </queries>
 
-    <application>
-        <meta-data
-            android:name="org.godotengine.plugin.v2.GodotOpenXRMagicleap"
-            android:value="org.godotengine.openxr.vendors.magicleap.GodotOpenXRMagicleap" />
-    </application>
-
 </manifest>

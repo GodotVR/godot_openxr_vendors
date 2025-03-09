@@ -71,6 +71,10 @@ android {
         }
     }
 
+    buildFeatures {
+        buildConfig = true
+    }
+
     namespace = "org.godotengine.openxr.vendors"
 
     flavorDimensions = ["vendor"]
