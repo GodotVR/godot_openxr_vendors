@@ -291,19 +291,32 @@ void add_plugin_project_settings() {
 	}
 
 	{
-		String hybrid_app_setting = "xr/openxr/hybrid_app";
-		if (!project_settings->has_setting(hybrid_app_setting)) {
-			project_settings->set_setting(hybrid_app_setting, OpenXRHybridApp::HYBRID_MODE_NONE);
+		String hybrid_app_enabled_setting = "xr/hybrid_app/enabled";
+		if (!project_settings->has_setting(hybrid_app_enabled_setting)) {
+			project_settings->set_setting(hybrid_app_enabled_setting, false);
 		}
 
-		project_settings->set_initial_value(hybrid_app_setting, OpenXRHybridApp::HYBRID_MODE_NONE);
-		project_settings->set_as_basic(hybrid_app_setting, false);
-		Dictionary property_info;
-		property_info["name"] = hybrid_app_setting;
-		property_info["type"] = Variant::Type::INT;
-		property_info["hint"] = PROPERTY_HINT_ENUM;
-		property_info["hint_string"] = "Disabled:-1,Start As Immersive:0,Start As Panel:1";
-		project_settings->add_property_info(property_info);
+		project_settings->set_initial_value(hybrid_app_enabled_setting, false);
+		project_settings->set_as_basic(hybrid_app_enabled_setting, true);
+		Dictionary hybrid_app_enabled_property_info;
+		hybrid_app_enabled_property_info["name"] = hybrid_app_enabled_setting;
+		hybrid_app_enabled_property_info["type"] = Variant::Type::BOOL;
+		hybrid_app_enabled_property_info["hint"] = PROPERTY_HINT_NONE;
+		project_settings->add_property_info(hybrid_app_enabled_property_info);
+
+		String hybrid_app_launch_mode_setting = "xr/hybrid_app/launch_mode";
+		if (!project_settings->has_setting(hybrid_app_launch_mode_setting)) {
+			project_settings->set_setting(hybrid_app_launch_mode_setting, OpenXRHybridApp::HYBRID_MODE_IMMERSIVE);
+		}
+
+		project_settings->set_initial_value(hybrid_app_launch_mode_setting, OpenXRHybridApp::HYBRID_MODE_IMMERSIVE);
+		project_settings->set_as_basic(hybrid_app_launch_mode_setting, true);
+		Dictionary hybrid_app_launch_mode_property_info;
+		hybrid_app_launch_mode_property_info["name"] = hybrid_app_launch_mode_setting;
+		hybrid_app_launch_mode_property_info["type"] = Variant::Type::INT;
+		hybrid_app_launch_mode_property_info["hint"] = PROPERTY_HINT_ENUM;
+		hybrid_app_launch_mode_property_info["hint_string"] = "Start As Immersive:0,Start As Panel:1";
+		project_settings->add_property_info(hybrid_app_launch_mode_property_info);
 	}
 }
 

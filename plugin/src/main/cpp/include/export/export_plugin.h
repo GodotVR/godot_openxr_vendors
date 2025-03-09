@@ -29,6 +29,8 @@
 
 #pragma once
 
+#include "classes/openxr_hybrid_app.h"
+
 #include <godot_cpp/classes/display_server.hpp>
 #include <godot_cpp/classes/editor_export_platform.hpp>
 #include <godot_cpp/classes/editor_export_plugin.hpp>
@@ -70,12 +72,6 @@ class OpenXREditorExportPlugin : public EditorExportPlugin {
 	GDCLASS(OpenXREditorExportPlugin, EditorExportPlugin)
 
 public:
-	enum HybridType {
-		HYBRID_TYPE_DISABLED,
-		HYBRID_TYPE_START_AS_IMMERSIVE,
-		HYBRID_TYPE_START_AS_PANEL,
-	};
-
 	OpenXREditorExportPlugin();
 
 	String _get_name() const override;
@@ -114,7 +110,8 @@ protected:
 
 	Dictionary _get_vendor_toggle_option(const String &vendor_name) const;
 
-	HybridType _get_hybrid_app_setting_value() const;
+	bool _is_hybrid_app_enabled() const;
+	OpenXRHybridApp::HybridMode _get_hybrid_app_launch_mode() const;
 
 	String _get_opening_activity_tag_for_panel_app() const;
 
