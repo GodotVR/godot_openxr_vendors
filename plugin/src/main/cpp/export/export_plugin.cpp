@@ -91,8 +91,15 @@ Dictionary OpenXREditorExportPlugin::_get_vendor_toggle_option(const String &ven
 			true);
 }
 
-OpenXREditorExportPlugin::HybridType OpenXREditorExportPlugin::_get_hybrid_app_setting_value() const {
-	return (HybridType)(int)ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/hybrid_app");
+bool OpenXREditorExportPlugin::_is_hybrid_app_enabled() const {
+	return ProjectSettings::get_singleton()->get_setting_with_override("xr/hybrid_app/enabled");
+}
+
+OpenXRHybridApp::HybridMode OpenXREditorExportPlugin::_get_hybrid_app_launch_mode() const {
+	if (!_is_hybrid_app_enabled()) {
+		return OpenXRHybridApp::HYBRID_MODE_NONE;
+	}
+	return (OpenXRHybridApp::HybridMode)(int)ProjectSettings::get_singleton()->get_setting_with_override("xr/hybrid_app/launch_mode");
 }
 
 String OpenXREditorExportPlugin::_get_opening_activity_tag_for_panel_app() const {
@@ -125,6 +132,12 @@ String OpenXREditorExportPlugin::_get_common_activity_intent_filter_contents() c
 	if (_get_bool_option("package/show_as_launcher_app")) {
 		contents += R"(
 						<category android:name="android.intent.category.HOME" />
+)";
+	}
+
+	if (_is_hybrid_app_enabled()) {
+		contents += R"(
+						<category android:name="org.godotengine.xr.hybrid.IMMERSIVE" />
 )";
 	}
 	return contents;
@@ -198,11 +211,11 @@ Dictionary OpenXREditorExportPlugin::_get_export_options_overrides(const Ref<Edi
 		return overrides;
 	}
 
-	HybridType hybrid_type = _get_hybrid_app_setting_value();
-	if (hybrid_type != HYBRID_TYPE_DISABLED) {
+	OpenXRHybridApp::HybridMode hybrid_launch_mode = _get_hybrid_app_launch_mode();
+	if (hybrid_launch_mode != OpenXRHybridApp::HYBRID_MODE_NONE) {
 		// Unless this is a hybrid app that launches as a panel, then we want to force this option on.
 		// Otherwise, it needs to be off, so that the panel activity can be the one that's launched by default.
-		overrides["package/show_in_app_library"] = (hybrid_type != HYBRID_TYPE_START_AS_PANEL);
+		overrides["package/show_in_app_library"] = (hybrid_launch_mode != OpenXRHybridApp::HYBRID_MODE_PANEL);
 	}
 
 	return overrides;

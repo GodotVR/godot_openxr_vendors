@@ -19,7 +19,7 @@ ext {
 
     // Parse the release version from the gradle project properties (e.g: -Prelease_version=<version>)
     getReleaseVersion = { ->
-        final String defaultVersion = "3.1.0-dev-SNAPSHOT"
+        final String defaultVersion = "4.0.0-dev-SNAPSHOT"
 
         String releaseVersion = project.hasProperty("release_version") ? project.property("release_version") : defaultVersion
         if (releaseVersion == null || releaseVersion.isEmpty()) {

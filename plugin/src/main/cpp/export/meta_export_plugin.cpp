@@ -291,7 +291,7 @@ PackedStringArray MetaEditorExportPlugin::_get_export_features(const Ref<EditorE
 	}
 
 	// Add a feature to indicate that this is a hybrid app.
-	if (_is_openxr_enabled() && _get_hybrid_app_setting_value() != HYBRID_TYPE_DISABLED) {
+	if (_is_openxr_enabled() && _is_hybrid_app_enabled()) {
 		features.append(HYBRID_APP_FEATURE);
 	}
 
@@ -514,17 +514,18 @@ String MetaEditorExportPlugin::_get_android_manifest_application_element_content
 		contents += "        <meta-data android:name=\"com.oculus.ossplash.background\" android:value=\"passthrough-contextual\" />\n";
 	}
 
-	HybridType hybrid_type = _get_hybrid_app_setting_value();
-	if (hybrid_type != HYBRID_TYPE_DISABLED) {
+	OpenXRHybridApp::HybridMode hybrid_launch_mode = _get_hybrid_app_launch_mode();
+	if (hybrid_launch_mode != OpenXRHybridApp::HYBRID_MODE_NONE) {
 		contents += _get_opening_activity_tag_for_panel_app();
 
 		contents +=
 				"          <intent-filter>\n"
 				"            <action android:name=\"android.intent.action.MAIN\" />\n"
 				"            <category android:name=\"android.intent.category.DEFAULT\" />\n"
+				"            <category android:name=\"org.godotengine.xr.hybrid.PANEL\" />\n"
 				"            <category android:name=\"com.oculus.intent.category.2D\" />\n";
 
-		if (hybrid_type == HYBRID_TYPE_START_AS_PANEL) {
+		if (hybrid_launch_mode == OpenXRHybridApp::HYBRID_MODE_PANEL) {
 			contents += "            <category android:name=\"android.intent.category.LAUNCHER\" />\n";
 		}
 
@@ -544,6 +545,8 @@ String MetaEditorExportPlugin::_get_android_manifest_activity_element_contents(c
 	String contents = R"(
 				<intent-filter>
 					<action android:name="android.intent.action.MAIN" />
+
+					<category android:name="android.intent.category.DEFAULT" />
 
 					<!-- Enable access to OpenXR on Oculus mobile devices, no-op on other Android
 					platforms. -->
