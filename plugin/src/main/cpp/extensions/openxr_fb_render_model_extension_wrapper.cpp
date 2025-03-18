@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  openxr_fb_scene_capture_extension_wrapper.cpp                         */
+/*  openxr_fb_render_model_extension_wrapper.cpp                          */
 /**************************************************************************/
 /*                       This file is part of:                            */
 /*                              GODOT XR                                  */
