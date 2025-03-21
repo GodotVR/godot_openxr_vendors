@@ -13,7 +13,10 @@
 
     <queries>
         <intent>
-            <action android:name="org.khronos.openxr.OpenXRRuntimeService"/>
+            <action android:name="org.khronos.openxr.OpenXRRuntimeService" />
+        </intent>
+        <intent>
+            <action android:name="org.khronos.openxr.OpenXRApiLayerService" />
         </intent>
         <provider android:authorities="org.khronos.openxr.runtime_broker;org.khronos.openxr.system_runtime_broker" />
     </queries>
