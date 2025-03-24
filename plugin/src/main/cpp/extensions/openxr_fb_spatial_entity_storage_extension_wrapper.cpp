@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  openxr_fb_spatial_entity_query_extension_wrapper.cpp                  */
+/*  openxr_fb_spatial_entity_storage_extension_wrapper.cpp                  */
 /**************************************************************************/
 /*                       This file is part of:                            */
 /*                              GODOT XR                                  */
@@ -57,7 +57,7 @@ OpenXRFbSpatialEntityStorageExtensionWrapper::~OpenXRFbSpatialEntityStorageExten
 }
 
 void OpenXRFbSpatialEntityStorageExtensionWrapper::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("is_spatial_entity_query_supported"), &OpenXRFbSpatialEntityStorageExtensionWrapper::is_spatial_entity_query_supported);
+	ClassDB::bind_method(D_METHOD("is_spatial_entity_storage_supported"), &OpenXRFbSpatialEntityStorageExtensionWrapper::is_spatial_entity_storage_supported);
 }
 
 void OpenXRFbSpatialEntityStorageExtensionWrapper::cleanup() {
@@ -77,7 +77,7 @@ void OpenXRFbSpatialEntityStorageExtensionWrapper::_on_instance_created(uint64_t
 	if (fb_spatial_entity_storage_ext) {
 		bool result = initialize_fb_spatial_entity_storage_extension((XrInstance)instance);
 		if (!result) {
-			UtilityFunctions::print("Failed to initialize fb_spatial_entity_query extension");
+			UtilityFunctions::print("Failed to initialize fb_spatial_entity_storage extension");
 			fb_spatial_entity_storage_ext = false;
 		}
 	}
