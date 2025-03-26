@@ -108,7 +108,7 @@ String OpenXREditorExportPlugin::_get_opening_activity_tag_for_panel_app() const
 	return vformat(
 			"        <activity android:name=\"org.godotengine.openxr.vendors.GodotPanelApp\" "
 			"android:process=\":GodotPanelApp\" "
-			"android:theme=\"@style/GodotPanelAppSplashTheme\" "
+			"android:theme=\"@style/GodotAppSplashTheme\" "
 			"android:launchMode=\"singleInstancePerTask\" "
 			"android:exported=\"true\" "
 			"android:excludeFromRecents=\"%s\" "
