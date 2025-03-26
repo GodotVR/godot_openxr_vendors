@@ -48,6 +48,7 @@
 #include "extensions/openxr_fb_android_surface_swapchain_create_extension_wrapper.h"
 #include "extensions/openxr_fb_body_tracking_extension_wrapper.h"
 #include "extensions/openxr_fb_composition_layer_alpha_blend_extension_wrapper.h"
+#include "extensions/openxr_fb_composition_layer_depth_test_extension_wrapper.h"
 #include "extensions/openxr_fb_composition_layer_image_layout_extension_wrapper.h"
 #include "extensions/openxr_fb_composition_layer_secure_content_extension_wrapper.h"
 #include "extensions/openxr_fb_composition_layer_settings_extension_wrapper.h"
@@ -145,6 +146,9 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			ClassDB::register_class<OpenXRFbCompositionLayerSecureContentExtensionWrapper>();
 			OpenXRFbCompositionLayerSecureContentExtensionWrapper::get_singleton()->register_extension_wrapper();
 
+			ClassDB::register_class<OpenXRFbCompositionLayerDepthTestExtensionWrapper>();
+			OpenXRFbCompositionLayerDepthTestExtensionWrapper::get_singleton()->register_extension_wrapper();
+
 			ClassDB::register_class<OpenXRFbCompositionLayerAlphaBlendExtensionWrapper>();
 			OpenXRFbCompositionLayerAlphaBlendExtensionWrapper::get_singleton()->register_extension_wrapper();
 
@@ -181,6 +185,7 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			Engine::get_singleton()->register_singleton("OpenXRFbSceneExtensionWrapper", OpenXRFbSceneExtensionWrapper::get_singleton());
 			Engine::get_singleton()->register_singleton("OpenXRFbHandTrackingAimExtensionWrapper", OpenXRFbHandTrackingAimExtensionWrapper::get_singleton());
 			Engine::get_singleton()->register_singleton("OpenXRFbHandTrackingCapsulesExtensionWrapper", OpenXRFbHandTrackingCapsulesExtensionWrapper::get_singleton());
+			Engine::get_singleton()->register_singleton("OpenXRFbCompositionLayerDepthTestExtensionWrapper", OpenXRFbCompositionLayerSettingsExtensionWrapper::get_singleton());
 			Engine::get_singleton()->register_singleton("OpenXRFbCompositionLayerSettingsExtensionWrapper", OpenXRFbCompositionLayerSettingsExtensionWrapper::get_singleton());
 			Engine::get_singleton()->register_singleton("OpenXRHtcFacialTrackingExtensionWrapper", OpenXRHtcFacialTrackingExtensionWrapper::get_singleton());
 			Engine::get_singleton()->register_singleton("OpenXRHtcPassthroughExtensionWrapper", OpenXRHtcPassthroughExtensionWrapper::get_singleton());
