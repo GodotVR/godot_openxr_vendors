@@ -60,6 +60,7 @@
 #include "extensions/openxr_fb_render_model_extension_wrapper.h"
 #include "extensions/openxr_fb_scene_capture_extension_wrapper.h"
 #include "extensions/openxr_fb_scene_extension_wrapper.h"
+#include "extensions/openxr_fb_space_warp_extension_wrapper.h"
 #include "extensions/openxr_fb_spatial_entity_container_extension_wrapper.h"
 #include "extensions/openxr_fb_spatial_entity_extension_wrapper.h"
 #include "extensions/openxr_fb_spatial_entity_query_extension_wrapper.h"
@@ -128,6 +129,9 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			ClassDB::register_class<OpenXRFbSceneExtensionWrapper>();
 			OpenXRFbSceneExtensionWrapper::get_singleton()->register_extension_wrapper();
 
+			ClassDB::register_class<OpenXRFbSpaceWarpExtensionWrapper>();
+			OpenXRFbSpaceWarpExtensionWrapper::get_singleton()->register_extension_wrapper();
+
 			ClassDB::register_class<OpenXRFbFaceTrackingExtensionWrapper>();
 			OpenXRFbFaceTrackingExtensionWrapper::get_singleton()->register_extension_wrapper();
 
@@ -183,6 +187,7 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			Engine::get_singleton()->register_singleton("OpenXRFbSpatialEntityQueryExtensionWrapper", OpenXRFbSpatialEntityQueryExtensionWrapper::get_singleton());
 			Engine::get_singleton()->register_singleton("OpenXRFbSpatialEntityContainerExtensionWrapper", OpenXRFbSpatialEntityContainerExtensionWrapper::get_singleton());
 			Engine::get_singleton()->register_singleton("OpenXRFbSceneExtensionWrapper", OpenXRFbSceneExtensionWrapper::get_singleton());
+			Engine::get_singleton()->register_singleton("OpenXRFbSpaceWarpExtensionWrapper", OpenXRFbSpaceWarpExtensionWrapper::get_singleton());
 			Engine::get_singleton()->register_singleton("OpenXRFbHandTrackingAimExtensionWrapper", OpenXRFbHandTrackingAimExtensionWrapper::get_singleton());
 			Engine::get_singleton()->register_singleton("OpenXRFbHandTrackingCapsulesExtensionWrapper", OpenXRFbHandTrackingCapsulesExtensionWrapper::get_singleton());
 			Engine::get_singleton()->register_singleton("OpenXRFbCompositionLayerDepthTestExtensionWrapper", OpenXRFbCompositionLayerSettingsExtensionWrapper::get_singleton());
@@ -206,6 +211,7 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 
 			OpenXRFbHandTrackingAimExtensionWrapper::get_singleton()->add_project_setting();
 			OpenXRMetaRecommendedLayerResolutionExtensionWrapper::get_singleton()->add_project_setting();
+			OpenXRFbSpaceWarpExtensionWrapper::get_singleton()->add_project_setting();
 		} break;
 
 		case MODULE_INITIALIZATION_LEVEL_EDITOR: {
