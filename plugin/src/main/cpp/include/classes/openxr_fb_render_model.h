@@ -59,6 +59,8 @@ public:
 
 	bool has_render_model_node();
 	Node3D *get_render_model_node();
+
+	virtual PackedStringArray _get_configuration_warnings() const override;
 };
 } //namespace godot
 
