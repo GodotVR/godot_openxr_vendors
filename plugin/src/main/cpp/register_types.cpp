@@ -86,6 +86,70 @@
 
 using namespace godot;
 
+void add_plugin_project_settings(ProjectSettings *project_settings) {
+	{
+		// Add the 'automatically_request_runtime_permissions' project setting
+		String request_permissions_setting = "xr/openxr/extensions/automatically_request_runtime_permissions";
+		if (!project_settings->has_setting(request_permissions_setting)) {
+			// Default value is `true` to match prior plugin behavior
+			project_settings->set_setting(request_permissions_setting, true);
+		}
+
+		project_settings->set_initial_value(request_permissions_setting, true);
+		project_settings->set_as_basic(request_permissions_setting, false);
+		Dictionary property_info;
+		property_info["name"] = request_permissions_setting;
+		property_info["type"] = Variant::Type::BOOL;
+		property_info["hint"] = PROPERTY_HINT_NONE;
+		project_settings->add_property_info(property_info);
+	}
+
+	{
+		String collision_shape_2d_thickness = "xr/openxr/extensions/meta_scene_api/collision_shape_2d_thickness";
+		if (!project_settings->has_setting(collision_shape_2d_thickness)) {
+			project_settings->set_setting(collision_shape_2d_thickness, 0.1);
+		}
+
+		project_settings->set_initial_value(collision_shape_2d_thickness, 0.1);
+		project_settings->set_as_basic(collision_shape_2d_thickness, false);
+		Dictionary property_info;
+		property_info["name"] = collision_shape_2d_thickness;
+		property_info["type"] = Variant::Type::FLOAT;
+		property_info["hint"] = PROPERTY_HINT_NONE;
+		project_settings->add_property_info(property_info);
+	}
+
+	{
+		String hybrid_app_enabled_setting = "xr/hybrid_app/enabled";
+		if (!project_settings->has_setting(hybrid_app_enabled_setting)) {
+			project_settings->set_setting(hybrid_app_enabled_setting, false);
+		}
+
+		project_settings->set_initial_value(hybrid_app_enabled_setting, false);
+		project_settings->set_as_basic(hybrid_app_enabled_setting, true);
+		Dictionary hybrid_app_enabled_property_info;
+		hybrid_app_enabled_property_info["name"] = hybrid_app_enabled_setting;
+		hybrid_app_enabled_property_info["type"] = Variant::Type::BOOL;
+		hybrid_app_enabled_property_info["hint"] = PROPERTY_HINT_NONE;
+		project_settings->add_property_info(hybrid_app_enabled_property_info);
+
+		String hybrid_app_launch_mode_setting = "xr/hybrid_app/launch_mode";
+		if (!project_settings->has_setting(hybrid_app_launch_mode_setting)) {
+			project_settings->set_setting(hybrid_app_launch_mode_setting, OpenXRHybridApp::HYBRID_MODE_IMMERSIVE);
+		}
+
+		project_settings->set_initial_value(hybrid_app_launch_mode_setting, OpenXRHybridApp::HYBRID_MODE_IMMERSIVE);
+		project_settings->set_as_basic(hybrid_app_launch_mode_setting, true);
+		Dictionary hybrid_app_launch_mode_property_info;
+		hybrid_app_launch_mode_property_info["name"] = hybrid_app_launch_mode_setting;
+		hybrid_app_launch_mode_property_info["type"] = Variant::Type::INT;
+		hybrid_app_launch_mode_property_info["hint"] = PROPERTY_HINT_ENUM;
+		hybrid_app_launch_mode_property_info["hint_string"] = "Start As Immersive:0,Start As Panel:1";
+		project_settings->add_property_info(hybrid_app_launch_mode_property_info);
+	}
+}
+
+
 void initialize_plugin_module(ModuleInitializationLevel p_level) {
 	switch (p_level) {
 		case MODULE_INITIALIZATION_LEVEL_CORE: {
@@ -173,7 +237,12 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			break;
 
 		case MODULE_INITIALIZATION_LEVEL_SCENE: {
-			add_plugin_project_settings();
+			ProjectSettings *project_settings = ProjectSettings::get_singleton();
+			if (project_settings == nullptr) {
+				return;
+			}
+
+			add_plugin_project_settings(project_settings);
 
 			Engine::get_singleton()->register_singleton("OpenXRFbPassthroughExtensionWrapper", OpenXRFbPassthroughExtensionWrapper::get_singleton());
 			Engine::get_singleton()->register_singleton("OpenXRFbRenderModelExtensionWrapper", OpenXRFbRenderModelExtensionWrapper::get_singleton());
@@ -204,8 +273,8 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			ClassDB::register_class<OpenXRHybridApp>();
 			Engine::get_singleton()->register_singleton("OpenXRHybridApp", OpenXRHybridApp::get_singleton());
 
-			OpenXRFbHandTrackingAimExtensionWrapper::get_singleton()->add_project_setting();
-			OpenXRMetaRecommendedLayerResolutionExtensionWrapper::get_singleton()->add_project_setting();
+			OpenXRFbHandTrackingAimExtensionWrapper::add_project_setting(project_settings);
+			OpenXRMetaRecommendedLayerResolutionExtensionWrapper::add_project_setting(project_settings);
 		} break;
 
 		case MODULE_INITIALIZATION_LEVEL_EDITOR: {
@@ -257,73 +326,6 @@ void terminate_plugin_module(ModuleInitializationLevel p_level) {
 	}
 }
 
-void add_plugin_project_settings() {
-	ProjectSettings *project_settings = ProjectSettings::get_singleton();
-	if (project_settings == nullptr) {
-		return;
-	}
-
-	{
-		// Add the 'automatically_request_runtime_permissions' project setting
-		String request_permissions_setting = "xr/openxr/extensions/automatically_request_runtime_permissions";
-		if (!project_settings->has_setting(request_permissions_setting)) {
-			// Default value is `true` to match prior plugin behavior
-			project_settings->set_setting(request_permissions_setting, true);
-		}
-
-		project_settings->set_initial_value(request_permissions_setting, true);
-		project_settings->set_as_basic(request_permissions_setting, false);
-		Dictionary property_info;
-		property_info["name"] = request_permissions_setting;
-		property_info["type"] = Variant::Type::BOOL;
-		property_info["hint"] = PROPERTY_HINT_NONE;
-		project_settings->add_property_info(property_info);
-	}
-
-	{
-		String collision_shape_2d_thickness = "xr/openxr/extensions/meta_scene_api/collision_shape_2d_thickness";
-		if (!project_settings->has_setting(collision_shape_2d_thickness)) {
-			project_settings->set_setting(collision_shape_2d_thickness, 0.1);
-		}
-
-		project_settings->set_initial_value(collision_shape_2d_thickness, 0.1);
-		project_settings->set_as_basic(collision_shape_2d_thickness, false);
-		Dictionary property_info;
-		property_info["name"] = collision_shape_2d_thickness;
-		property_info["type"] = Variant::Type::FLOAT;
-		property_info["hint"] = PROPERTY_HINT_NONE;
-		project_settings->add_property_info(property_info);
-	}
-
-	{
-		String hybrid_app_enabled_setting = "xr/hybrid_app/enabled";
-		if (!project_settings->has_setting(hybrid_app_enabled_setting)) {
-			project_settings->set_setting(hybrid_app_enabled_setting, false);
-		}
-
-		project_settings->set_initial_value(hybrid_app_enabled_setting, false);
-		project_settings->set_as_basic(hybrid_app_enabled_setting, true);
-		Dictionary hybrid_app_enabled_property_info;
-		hybrid_app_enabled_property_info["name"] = hybrid_app_enabled_setting;
-		hybrid_app_enabled_property_info["type"] = Variant::Type::BOOL;
-		hybrid_app_enabled_property_info["hint"] = PROPERTY_HINT_NONE;
-		project_settings->add_property_info(hybrid_app_enabled_property_info);
-
-		String hybrid_app_launch_mode_setting = "xr/hybrid_app/launch_mode";
-		if (!project_settings->has_setting(hybrid_app_launch_mode_setting)) {
-			project_settings->set_setting(hybrid_app_launch_mode_setting, OpenXRHybridApp::HYBRID_MODE_IMMERSIVE);
-		}
-
-		project_settings->set_initial_value(hybrid_app_launch_mode_setting, OpenXRHybridApp::HYBRID_MODE_IMMERSIVE);
-		project_settings->set_as_basic(hybrid_app_launch_mode_setting, true);
-		Dictionary hybrid_app_launch_mode_property_info;
-		hybrid_app_launch_mode_property_info["name"] = hybrid_app_launch_mode_setting;
-		hybrid_app_launch_mode_property_info["type"] = Variant::Type::INT;
-		hybrid_app_launch_mode_property_info["hint"] = PROPERTY_HINT_ENUM;
-		hybrid_app_launch_mode_property_info["hint_string"] = "Start As Immersive:0,Start As Panel:1";
-		project_settings->add_property_info(hybrid_app_launch_mode_property_info);
-	}
-}
 
 extern "C" {
 GDExtensionBool GDE_EXPORT plugin_library_init(GDExtensionInterfaceGetProcAddress p_get_proc_address, GDExtensionClassLibraryPtr p_library, GDExtensionInitialization *r_initialization) {

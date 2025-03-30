@@ -38,6 +38,10 @@
 
 using namespace godot;
 
+namespace godot {
+    class ProjectSettings;
+}
+
 class OpenXRMetaRecommendedLayerResolutionExtensionWrapper : public OpenXRExtensionWrapperExtension {
 	GDCLASS(OpenXRMetaRecommendedLayerResolutionExtensionWrapper, OpenXRExtensionWrapperExtension);
 
@@ -54,7 +58,7 @@ public:
 	void _on_pre_render() override;
 	void _on_state_ready() override;
 
-	void add_project_setting();
+	static void add_project_setting(ProjectSettings *project_settings);
 
 protected:
 	static void _bind_methods();

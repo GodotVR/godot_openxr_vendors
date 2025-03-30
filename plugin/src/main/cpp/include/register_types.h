@@ -35,5 +35,3 @@ using namespace godot;
 
 void initialize_plugin_module(ModuleInitializationLevel p_level);
 void terminate_plugin_module(ModuleInitializationLevel p_level);
-
-void add_plugin_project_settings();

@@ -131,17 +131,17 @@ bool OpenXRMetaRecommendedLayerResolutionExtensionWrapper::initialize_meta_recom
 	return true;
 }
 
-void OpenXRMetaRecommendedLayerResolutionExtensionWrapper::add_project_setting() {
+void OpenXRMetaRecommendedLayerResolutionExtensionWrapper::add_project_setting(ProjectSettings *project_settings) {
 	String p_name = "xr/openxr/extensions/recommended_layer_resolution";
-	if (!ProjectSettings::get_singleton()->has_setting(p_name)) {
-		ProjectSettings::get_singleton()->set_setting(p_name, false);
+	if (!project_settings->has_setting(p_name)) {
+		project_settings->set_setting(p_name, false);
 	}
 
-	ProjectSettings::get_singleton()->set_initial_value(p_name, false);
-	ProjectSettings::get_singleton()->set_as_basic(p_name, true);
+	project_settings->set_initial_value(p_name, false);
+	project_settings->set_as_basic(p_name, true);
 	Dictionary property_info;
 	property_info["name"] = p_name;
 	property_info["type"] = Variant::Type::BOOL;
 	property_info["hint"] = PROPERTY_HINT_NONE;
-	ProjectSettings::get_singleton()->add_property_info(property_info);
+	project_settings->add_property_info(property_info);
 }
