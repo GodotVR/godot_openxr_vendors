@@ -43,18 +43,10 @@ public:
 
 	TypedArray<Dictionary> _get_export_options(const Ref<EditorExportPlatform> &platform) const override;
 
-	Dictionary _get_export_options_overrides(const Ref<EditorExportPlatform> &p_platform) const override;
-
-	PackedStringArray _get_export_features(const Ref<EditorExportPlatform> &platform, bool debug) const override;
-
-	String _get_export_option_warning(const Ref<EditorExportPlatform> &platform, const String &option) const override;
-
 	String _get_android_manifest_element_contents(const Ref<EditorExportPlatform> &platform, bool debug) const override;
 
 protected:
 	static void _bind_methods();
-
-	Dictionary _ml2_hand_tracking_option;
 };
 
 class MagicleapEditorPlugin : public EditorPlugin {

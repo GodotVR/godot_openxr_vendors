@@ -31,6 +31,9 @@ textures/vram_compression/import_etc2_astc=true
 
 openxr/enabled=true
 openxr/reference_space=1
-openxr/extensions/eye_gaze_interaction=true
 shaders/enabled=true
-openxr/extensions/hand_tracking_aim=true
+openxr/extensions/meta/hand_tracking_aim=true
+openxr/extensions/meta/passthrough=true
+openxr/extensions/meta/render_model=true
+openxr/extensions/meta/anchor_api=true
+openxr/extensions/meta/scene_api=true

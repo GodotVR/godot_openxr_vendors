@@ -47,7 +47,6 @@ public:
 	godot::Dictionary _get_requested_extensions() override;
 
 	void _on_instance_destroyed() override;
-	void _on_state_ready() override;
 
 	uint64_t _set_hand_joint_locations_and_get_next_pointer(int32_t p_hand_index, void *p_next_pointer) override;
 

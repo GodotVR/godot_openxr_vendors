@@ -46,7 +46,6 @@ class PicoEditorExportPlugin : public OpenXREditorExportPlugin {
 	static const int FACE_TRACKING_LIPSYNCONLY_VALUE = 2;
 	static const int FACE_TRACKING_HYBRID_VALUE = 3;
 
-	static const int HAND_TRACKING_NONE_VALUE = 0;
 	static const int HAND_TRACKING_LOWFREQUENCY_VALUE = 1;
 	static const int HAND_TRACKING_HIGHFREQUENCY_VALUE = 2;
 
@@ -58,6 +57,8 @@ public:
 	PackedStringArray _get_export_features(const Ref<EditorExportPlatform> &platform, bool debug) const override;
 
 	String _get_export_option_warning(const Ref<EditorExportPlatform> &platform, const String &option) const override;
+	bool _get_export_option_visibility(const Ref<EditorExportPlatform> &p_platform, const String &p_option) const override;
+	bool _should_update_export_options(const Ref<EditorExportPlatform> &p_platform) const override;
 
 	String _get_android_manifest_element_contents(const Ref<EditorExportPlatform> &platform, bool debug) const override;
 	String _get_android_manifest_application_element_contents(const Ref<EditorExportPlatform> &platform, bool debug) const override;
@@ -65,12 +66,17 @@ public:
 protected:
 	static void _bind_methods();
 
-	Dictionary _eye_tracking_option;
+private:
 	Dictionary _face_tracking_option;
 	Dictionary _hand_tracking_option;
 
-private:
 	bool _is_eye_tracking_enabled() const;
+
+	mutable bool _should_update_options = false;
+
+	void _project_settings_changed() {
+		_should_update_options = true;
+	}
 };
 
 class PicoEditorPlugin : public EditorPlugin {

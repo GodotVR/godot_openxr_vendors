@@ -109,15 +109,6 @@ void OpenXRMetaRecommendedLayerResolutionExtensionWrapper::_on_pre_render() {
 	get_openxr_api()->set_render_region(Rect2i(Point2i(0, 0), render_region_size));
 }
 
-void OpenXRMetaRecommendedLayerResolutionExtensionWrapper::_on_state_ready() {
-	ProjectSettings *project_settings = ProjectSettings::get_singleton();
-	bool is_project_setting_enabled = (bool)project_settings->get_setting_with_override("xr/openxr/extensions/recommended_layer_resolution");
-	if (!is_project_setting_enabled) {
-		meta_recommended_layer_resolution_ext = false;
-		return;
-	}
-}
-
 void OpenXRMetaRecommendedLayerResolutionExtensionWrapper::_bind_methods() {
 }
 
@@ -129,19 +120,4 @@ bool OpenXRMetaRecommendedLayerResolutionExtensionWrapper::initialize_meta_recom
 	GDEXTENSION_INIT_XR_FUNC_V(xrGetRecommendedLayerResolutionMETA);
 
 	return true;
-}
-
-void OpenXRMetaRecommendedLayerResolutionExtensionWrapper::add_project_setting() {
-	String p_name = "xr/openxr/extensions/recommended_layer_resolution";
-	if (!ProjectSettings::get_singleton()->has_setting(p_name)) {
-		ProjectSettings::get_singleton()->set_setting(p_name, false);
-	}
-
-	ProjectSettings::get_singleton()->set_initial_value(p_name, false);
-	ProjectSettings::get_singleton()->set_as_basic(p_name, true);
-	Dictionary property_info;
-	property_info["name"] = p_name;
-	property_info["type"] = Variant::Type::BOOL;
-	property_info["hint"] = PROPERTY_HINT_NONE;
-	ProjectSettings::get_singleton()->add_property_info(property_info);
 }

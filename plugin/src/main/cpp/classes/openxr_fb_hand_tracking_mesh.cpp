@@ -31,6 +31,8 @@
 
 #include "extensions/openxr_fb_hand_tracking_mesh_extension_wrapper.h"
 
+#include <godot_cpp/classes/engine.hpp>
+#include <godot_cpp/classes/project_settings.hpp>
 #include <godot_cpp/classes/xr_hand_modifier3d.hpp>
 #include <godot_cpp/classes/xr_hand_tracker.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
@@ -108,12 +110,32 @@ float OpenXRFbHandTrackingMesh::get_scale_override() const {
 	return OpenXRFbHandTrackingMeshExtensionWrapper::get_singleton()->get_scale_override(hand);
 }
 
+PackedStringArray OpenXRFbHandTrackingMesh::_get_configuration_warnings() const {
+	PackedStringArray warnings;
+	if (!ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/extensions/meta/hand_tracking_mesh")) {
+		warnings.push_back("The hand tracking mesh extension isn't enabled in project settings. Please enable `xr/openxr/extensions/meta/hand_tracking_mesh` to use this node.");
+	}
+	return warnings;
+}
+
 void OpenXRFbHandTrackingMesh::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_POSTINITIALIZE: {
-			OpenXRFbHandTrackingMeshExtensionWrapper::get_singleton()->enable_fetch_hand_mesh_data();
-			OpenXRFbHandTrackingMeshExtensionWrapper::get_singleton()->connect("openxr_fb_hand_tracking_mesh_data_fetched", callable_mp(this, &OpenXRFbHandTrackingMesh::setup_hand_mesh));
-			OpenXRFbHandTrackingMeshExtensionWrapper::get_singleton()->construct_skeleton(this);
+			if (ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/extensions/meta/hand_tracking_mesh")) {
+				OpenXRFbHandTrackingMeshExtensionWrapper::get_singleton()->enable_fetch_hand_mesh_data();
+				OpenXRFbHandTrackingMeshExtensionWrapper::get_singleton()->connect("openxr_fb_hand_tracking_mesh_data_fetched", callable_mp(this, &OpenXRFbHandTrackingMesh::setup_hand_mesh));
+				OpenXRFbHandTrackingMeshExtensionWrapper::get_singleton()->construct_skeleton(this);
+			}
+		} break;
+		case NOTIFICATION_ENTER_TREE: {
+			if (Engine::get_singleton()->is_editor_hint()) {
+				ProjectSettings::get_singleton()->connect("settings_changed", callable_mp((Node *)this, &Node::update_configuration_warnings));
+			}
+		} break;
+		case NOTIFICATION_EXIT_TREE: {
+			if (Engine::get_singleton()->is_editor_hint()) {
+				ProjectSettings::get_singleton()->disconnect("settings_changed", callable_mp((Node *)this, &Node::update_configuration_warnings));
+			}
 		} break;
 	}
 }

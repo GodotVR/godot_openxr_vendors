@@ -86,86 +86,150 @@
 
 using namespace godot;
 
+struct ExtensionSingleton {
+	String class_name;
+	OpenXRExtensionWrapperExtension *extension;
+};
+
+static Vector<OpenXRExtensionWrapperExtension *> extensions_registered;
+static Vector<ExtensionSingleton> extensions_singletons;
+
+static inline void _register_extension_with_openxr(OpenXRExtensionWrapperExtension *p_extension) {
+	p_extension->register_extension_wrapper();
+	extensions_registered.push_back(p_extension);
+}
+
+static inline void _register_extension_as_singleton(OpenXRExtensionWrapperExtension *p_extension) {
+	String class_name = p_extension->get_class();
+	Engine::get_singleton()->register_singleton(class_name, p_extension);
+	extensions_singletons.push_back({ class_name, p_extension });
+}
+
+static void _add_bool_project_setting(ProjectSettings *p_project_settings, const String &p_name, bool p_default_value) {
+	if (!p_project_settings->has_setting(p_name)) {
+		p_project_settings->set_setting(p_name, p_default_value);
+	}
+
+	p_project_settings->set_initial_value(p_name, p_default_value);
+	p_project_settings->set_as_basic(p_name, false);
+	Dictionary property_info;
+	property_info["name"] = p_name;
+	property_info["type"] = Variant::Type::BOOL;
+	property_info["hint"] = PROPERTY_HINT_NONE;
+	p_project_settings->add_property_info(property_info);
+}
+
+static inline bool _get_bool_project_setting(const String &p_name) {
+	return (bool)ProjectSettings::get_singleton()->get_setting_with_override(p_name);
+}
+
 void initialize_plugin_module(ModuleInitializationLevel p_level) {
 	switch (p_level) {
 		case MODULE_INITIALIZATION_LEVEL_CORE: {
+			add_plugin_project_settings();
+
 			ClassDB::register_class<OpenXRFbPassthroughExtensionWrapper>();
-			OpenXRFbPassthroughExtensionWrapper::get_singleton()->register_extension_wrapper();
-
 			ClassDB::register_class<OpenXRFbRenderModelExtensionWrapper>();
-			OpenXRFbRenderModelExtensionWrapper::get_singleton()->register_extension_wrapper();
-
 			ClassDB::register_class<OpenXRFbSceneCaptureExtensionWrapper>();
-			OpenXRFbSceneCaptureExtensionWrapper::get_singleton()->register_extension_wrapper();
-
 			ClassDB::register_class<OpenXRFbSpatialEntityExtensionWrapper>();
-			OpenXRFbSpatialEntityExtensionWrapper::get_singleton()->register_extension_wrapper();
-
 			ClassDB::register_class<OpenXRFbSpatialEntitySharingExtensionWrapper>();
-			OpenXRFbSpatialEntitySharingExtensionWrapper::get_singleton()->register_extension_wrapper();
-
 			ClassDB::register_class<OpenXRFbSpatialEntityStorageExtensionWrapper>();
-			OpenXRFbSpatialEntityStorageExtensionWrapper::get_singleton()->register_extension_wrapper();
-
 			ClassDB::register_class<OpenXRFbSpatialEntityStorageBatchExtensionWrapper>();
-			OpenXRFbSpatialEntityStorageBatchExtensionWrapper::get_singleton()->register_extension_wrapper();
-
 			ClassDB::register_class<OpenXRFbSpatialEntityQueryExtensionWrapper>();
-			OpenXRFbSpatialEntityQueryExtensionWrapper::get_singleton()->register_extension_wrapper();
-
 			ClassDB::register_class<OpenXRFbSpatialEntityContainerExtensionWrapper>();
-			OpenXRFbSpatialEntityContainerExtensionWrapper::get_singleton()->register_extension_wrapper();
-
 			ClassDB::register_class<OpenXRFbSpatialEntityUserExtensionWrapper>();
-			OpenXRFbSpatialEntityUserExtensionWrapper::get_singleton()->register_extension_wrapper();
-
 			ClassDB::register_class<OpenXRMetaRecommendedLayerResolutionExtensionWrapper>();
-			OpenXRMetaRecommendedLayerResolutionExtensionWrapper::get_singleton()->register_extension_wrapper();
-
 			ClassDB::register_class<OpenXRMetaSpatialEntityMeshExtensionWrapper>();
-			OpenXRMetaSpatialEntityMeshExtensionWrapper::get_singleton()->register_extension_wrapper();
-
 			ClassDB::register_class<OpenXRFbSceneExtensionWrapper>();
-			OpenXRFbSceneExtensionWrapper::get_singleton()->register_extension_wrapper();
-
 			ClassDB::register_class<OpenXRFbFaceTrackingExtensionWrapper>();
-			OpenXRFbFaceTrackingExtensionWrapper::get_singleton()->register_extension_wrapper();
-
 			ClassDB::register_class<OpenXRFbBodyTrackingExtensionWrapper>();
-			OpenXRFbBodyTrackingExtensionWrapper::get_singleton()->register_extension_wrapper();
-
 			ClassDB::register_class<OpenXRFbHandTrackingMeshExtensionWrapper>();
-			OpenXRFbHandTrackingMeshExtensionWrapper::get_singleton()->register_extension_wrapper();
-
 			ClassDB::register_class<OpenXRFbHandTrackingAimExtensionWrapper>();
-			OpenXRFbHandTrackingAimExtensionWrapper::get_singleton()->register_extension_wrapper();
-
 			ClassDB::register_class<OpenXRFbHandTrackingCapsulesExtensionWrapper>();
-			OpenXRFbHandTrackingCapsulesExtensionWrapper::get_singleton()->register_extension_wrapper();
-
 			ClassDB::register_class<OpenXRFbCompositionLayerSecureContentExtensionWrapper>();
-			OpenXRFbCompositionLayerSecureContentExtensionWrapper::get_singleton()->register_extension_wrapper();
-
 			ClassDB::register_class<OpenXRFbCompositionLayerDepthTestExtensionWrapper>();
-			OpenXRFbCompositionLayerDepthTestExtensionWrapper::get_singleton()->register_extension_wrapper();
-
 			ClassDB::register_class<OpenXRFbCompositionLayerAlphaBlendExtensionWrapper>();
-			OpenXRFbCompositionLayerAlphaBlendExtensionWrapper::get_singleton()->register_extension_wrapper();
-
 			ClassDB::register_class<OpenXRFbCompositionLayerImageLayoutExtensionWrapper>();
-			OpenXRFbCompositionLayerImageLayoutExtensionWrapper::get_singleton()->register_extension_wrapper();
-
 			ClassDB::register_class<OpenXRFbCompositionLayerSettingsExtensionWrapper>();
-			OpenXRFbCompositionLayerSettingsExtensionWrapper::get_singleton()->register_extension_wrapper();
-
 			ClassDB::register_class<OpenXRFbAndroidSurfaceSwapchainCreateExtensionWrapper>();
-			OpenXRFbAndroidSurfaceSwapchainCreateExtensionWrapper::get_singleton()->register_extension_wrapper();
-
 			ClassDB::register_class<OpenXRHtcFacialTrackingExtensionWrapper>();
-			OpenXRHtcFacialTrackingExtensionWrapper::get_singleton()->register_extension_wrapper();
-
 			ClassDB::register_class<OpenXRHtcPassthroughExtensionWrapper>();
-			OpenXRHtcPassthroughExtensionWrapper::get_singleton()->register_extension_wrapper();
+
+			if (_get_bool_project_setting("xr/openxr/extensions/meta/passthrough")) {
+				_register_extension_with_openxr(OpenXRFbPassthroughExtensionWrapper::get_singleton());
+			}
+
+			if (_get_bool_project_setting("xr/openxr/extensions/meta/render_model")) {
+				_register_extension_with_openxr(OpenXRFbRenderModelExtensionWrapper::get_singleton());
+			}
+
+			// Three settings to match the three permissions for the Android manifest.
+			bool meta_anchor_api = _get_bool_project_setting("xr/openxr/extensions/meta/anchor_api");
+			bool meta_anchor_sharing = _get_bool_project_setting("xr/openxr/extensions/meta/anchor_sharing");
+			bool meta_scene_api = _get_bool_project_setting("xr/openxr/extensions/meta/scene_api");
+			if (meta_anchor_api || meta_anchor_sharing || meta_scene_api) {
+				// There are needed by all of them.
+				_register_extension_with_openxr(OpenXRFbSpatialEntityExtensionWrapper::get_singleton());
+				_register_extension_with_openxr(OpenXRFbSpatialEntityStorageExtensionWrapper::get_singleton());
+				_register_extension_with_openxr(OpenXRFbSpatialEntityStorageBatchExtensionWrapper::get_singleton());
+				_register_extension_with_openxr(OpenXRFbSpatialEntityQueryExtensionWrapper::get_singleton());
+				_register_extension_with_openxr(OpenXRFbSpatialEntityContainerExtensionWrapper::get_singleton());
+
+				if (meta_scene_api) {
+					_register_extension_with_openxr(OpenXRFbSceneExtensionWrapper::get_singleton());
+					_register_extension_with_openxr(OpenXRFbSceneCaptureExtensionWrapper::get_singleton());
+					_register_extension_with_openxr(OpenXRMetaSpatialEntityMeshExtensionWrapper::get_singleton());
+				}
+
+				if (meta_anchor_sharing) {
+					_register_extension_with_openxr(OpenXRFbSpatialEntitySharingExtensionWrapper::get_singleton());
+					_register_extension_with_openxr(OpenXRFbSpatialEntityUserExtensionWrapper::get_singleton());
+				}
+			}
+
+			if (_get_bool_project_setting("xr/openxr/extensions/meta/dynamic_resolution")) {
+				_register_extension_with_openxr(OpenXRMetaRecommendedLayerResolutionExtensionWrapper::get_singleton());
+			}
+
+			if (_get_bool_project_setting("xr/openxr/extensions/meta/face_tracking")) {
+				_register_extension_with_openxr(OpenXRFbFaceTrackingExtensionWrapper::get_singleton());
+			}
+
+			if (_get_bool_project_setting("xr/openxr/extensions/meta/body_tracking")) {
+				_register_extension_with_openxr(OpenXRFbBodyTrackingExtensionWrapper::get_singleton());
+			}
+
+			// All of the hand tracking extensions depend on the Godot hand tracking setting being set first.
+			if (_get_bool_project_setting("xr/openxr/extensions/hand_tracking")) {
+				if (_get_bool_project_setting("xr/openxr/extensions/meta/hand_tracking_mesh")) {
+					_register_extension_with_openxr(OpenXRFbHandTrackingMeshExtensionWrapper::get_singleton());
+				}
+
+				if (_get_bool_project_setting("xr/openxr/extensions/meta/hand_tracking_aim")) {
+					_register_extension_with_openxr(OpenXRFbHandTrackingAimExtensionWrapper::get_singleton());
+				}
+
+				if (_get_bool_project_setting("xr/openxr/extensions/meta/hand_tracking_capsules")) {
+					_register_extension_with_openxr(OpenXRFbHandTrackingCapsulesExtensionWrapper::get_singleton());
+				}
+			}
+
+			if (_get_bool_project_setting("xr/openxr/extensions/meta/composition_layer_settings")) {
+				_register_extension_with_openxr(OpenXRFbCompositionLayerSecureContentExtensionWrapper::get_singleton());
+				_register_extension_with_openxr(OpenXRFbCompositionLayerAlphaBlendExtensionWrapper::get_singleton());
+				_register_extension_with_openxr(OpenXRFbCompositionLayerSettingsExtensionWrapper::get_singleton());
+				_register_extension_with_openxr(OpenXRFbAndroidSurfaceSwapchainCreateExtensionWrapper::get_singleton());
+				_register_extension_with_openxr(OpenXRFbCompositionLayerDepthTestExtensionWrapper::get_singleton());
+				_register_extension_with_openxr(OpenXRFbCompositionLayerImageLayoutExtensionWrapper::get_singleton());
+			}
+
+			if (_get_bool_project_setting("xr/openxr/extensions/htc/face_tracking")) {
+				_register_extension_with_openxr(OpenXRHtcFacialTrackingExtensionWrapper::get_singleton());
+			}
+
+			if (_get_bool_project_setting("xr/openxr/extensions/htc/passthrough")) {
+				_register_extension_with_openxr(OpenXRHtcPassthroughExtensionWrapper::get_singleton());
+			}
 
 		} break;
 
@@ -173,22 +237,18 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			break;
 
 		case MODULE_INITIALIZATION_LEVEL_SCENE: {
-			add_plugin_project_settings();
-
-			Engine::get_singleton()->register_singleton("OpenXRFbPassthroughExtensionWrapper", OpenXRFbPassthroughExtensionWrapper::get_singleton());
-			Engine::get_singleton()->register_singleton("OpenXRFbRenderModelExtensionWrapper", OpenXRFbRenderModelExtensionWrapper::get_singleton());
-			Engine::get_singleton()->register_singleton("OpenXRFbSceneCaptureExtensionWrapper", OpenXRFbSceneCaptureExtensionWrapper::get_singleton());
-			Engine::get_singleton()->register_singleton("OpenXRFbSpatialEntityExtensionWrapper", OpenXRFbSpatialEntityExtensionWrapper::get_singleton());
-			Engine::get_singleton()->register_singleton("OpenXRFbSpatialEntityStorageExtensionWrapper", OpenXRFbSpatialEntityStorageExtensionWrapper::get_singleton());
-			Engine::get_singleton()->register_singleton("OpenXRFbSpatialEntityQueryExtensionWrapper", OpenXRFbSpatialEntityQueryExtensionWrapper::get_singleton());
-			Engine::get_singleton()->register_singleton("OpenXRFbSpatialEntityContainerExtensionWrapper", OpenXRFbSpatialEntityContainerExtensionWrapper::get_singleton());
-			Engine::get_singleton()->register_singleton("OpenXRFbSceneExtensionWrapper", OpenXRFbSceneExtensionWrapper::get_singleton());
-			Engine::get_singleton()->register_singleton("OpenXRFbHandTrackingAimExtensionWrapper", OpenXRFbHandTrackingAimExtensionWrapper::get_singleton());
-			Engine::get_singleton()->register_singleton("OpenXRFbHandTrackingCapsulesExtensionWrapper", OpenXRFbHandTrackingCapsulesExtensionWrapper::get_singleton());
-			Engine::get_singleton()->register_singleton("OpenXRFbCompositionLayerDepthTestExtensionWrapper", OpenXRFbCompositionLayerSettingsExtensionWrapper::get_singleton());
-			Engine::get_singleton()->register_singleton("OpenXRFbCompositionLayerSettingsExtensionWrapper", OpenXRFbCompositionLayerSettingsExtensionWrapper::get_singleton());
-			Engine::get_singleton()->register_singleton("OpenXRHtcFacialTrackingExtensionWrapper", OpenXRHtcFacialTrackingExtensionWrapper::get_singleton());
-			Engine::get_singleton()->register_singleton("OpenXRHtcPassthroughExtensionWrapper", OpenXRHtcPassthroughExtensionWrapper::get_singleton());
+			_register_extension_as_singleton(OpenXRFbPassthroughExtensionWrapper::get_singleton());
+			_register_extension_as_singleton(OpenXRFbRenderModelExtensionWrapper::get_singleton());
+			_register_extension_as_singleton(OpenXRFbSceneCaptureExtensionWrapper::get_singleton());
+			_register_extension_as_singleton(OpenXRFbSpatialEntityExtensionWrapper::get_singleton());
+			_register_extension_as_singleton(OpenXRFbSpatialEntityStorageExtensionWrapper::get_singleton());
+			_register_extension_as_singleton(OpenXRFbSpatialEntityQueryExtensionWrapper::get_singleton());
+			_register_extension_as_singleton(OpenXRFbSpatialEntityContainerExtensionWrapper::get_singleton());
+			_register_extension_as_singleton(OpenXRFbSceneExtensionWrapper::get_singleton());
+			_register_extension_as_singleton(OpenXRFbHandTrackingAimExtensionWrapper::get_singleton());
+			_register_extension_as_singleton(OpenXRFbHandTrackingCapsulesExtensionWrapper::get_singleton());
+			_register_extension_as_singleton(OpenXRHtcFacialTrackingExtensionWrapper::get_singleton());
+			_register_extension_as_singleton(OpenXRHtcPassthroughExtensionWrapper::get_singleton());
 
 			ClassDB::register_class<OpenXRFbRenderModel>();
 			ClassDB::register_class<OpenXRFbHandTrackingMesh>();
@@ -203,9 +263,6 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 
 			ClassDB::register_class<OpenXRHybridApp>();
 			Engine::get_singleton()->register_singleton("OpenXRHybridApp", OpenXRHybridApp::get_singleton());
-
-			OpenXRFbHandTrackingAimExtensionWrapper::get_singleton()->add_project_setting();
-			OpenXRMetaRecommendedLayerResolutionExtensionWrapper::get_singleton()->add_project_setting();
 		} break;
 
 		case MODULE_INITIALIZATION_LEVEL_EDITOR: {
@@ -245,6 +302,18 @@ void terminate_plugin_module(ModuleInitializationLevel p_level) {
 			break;
 
 		case MODULE_INITIALIZATION_LEVEL_SCENE: {
+			for (const ExtensionSingleton &extension_singleton : extensions_singletons) {
+				Engine::get_singleton()->unregister_singleton(extension_singleton.class_name);
+
+				// Any extensions that were registered with OpenXRAPI will get cleaned up by OpenXRAPI,
+				// however, we'll need to make sure that those that weren't get cleaned up properly.
+				if (!extensions_registered.has(extension_singleton.extension)) {
+					memdelete(extension_singleton.extension);
+				}
+			}
+			extensions_singletons.clear();
+			extensions_registered.clear();
+
 			Engine::get_singleton()->unregister_singleton("OpenXRHybridApp");
 			memdelete(OpenXRHybridApp::get_singleton());
 		} break;
@@ -263,37 +332,7 @@ void add_plugin_project_settings() {
 		return;
 	}
 
-	{
-		// Add the 'automatically_request_runtime_permissions' project setting
-		String request_permissions_setting = "xr/openxr/extensions/automatically_request_runtime_permissions";
-		if (!project_settings->has_setting(request_permissions_setting)) {
-			// Default value is `true` to match prior plugin behavior
-			project_settings->set_setting(request_permissions_setting, true);
-		}
-
-		project_settings->set_initial_value(request_permissions_setting, true);
-		project_settings->set_as_basic(request_permissions_setting, false);
-		Dictionary property_info;
-		property_info["name"] = request_permissions_setting;
-		property_info["type"] = Variant::Type::BOOL;
-		property_info["hint"] = PROPERTY_HINT_NONE;
-		project_settings->add_property_info(property_info);
-	}
-
-	{
-		String collision_shape_2d_thickness = "xr/openxr/extensions/meta_scene_api/collision_shape_2d_thickness";
-		if (!project_settings->has_setting(collision_shape_2d_thickness)) {
-			project_settings->set_setting(collision_shape_2d_thickness, 0.1);
-		}
-
-		project_settings->set_initial_value(collision_shape_2d_thickness, 0.1);
-		project_settings->set_as_basic(collision_shape_2d_thickness, false);
-		Dictionary property_info;
-		property_info["name"] = collision_shape_2d_thickness;
-		property_info["type"] = Variant::Type::FLOAT;
-		property_info["hint"] = PROPERTY_HINT_NONE;
-		project_settings->add_property_info(property_info);
-	}
+	// Multi-vendor stuff first.
 
 	{
 		String hybrid_app_enabled_setting = "xr/hybrid_app/enabled";
@@ -323,6 +362,39 @@ void add_plugin_project_settings() {
 		hybrid_app_launch_mode_property_info["hint_string"] = "Start As Immersive:0,Start As Panel:1";
 		project_settings->add_property_info(hybrid_app_launch_mode_property_info);
 	}
+
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/htc/passthrough", false);
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/htc/face_tracking", false);
+
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/passthrough", false);
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/face_tracking", false);
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/body_tracking", false);
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/hand_tracking_aim", false);
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/hand_tracking_mesh", false);
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/hand_tracking_capsules", false);
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/render_model", false);
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/anchor_api", false);
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/anchor_sharing", false);
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/scene_api", false);
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/composition_layer_settings", true);
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/dynamic_resolution", true);
+
+	{
+		String collision_shape_2d_thickness = "xr/openxr/extensions/meta/scene_api/collision_shape_2d_thickness";
+		if (!project_settings->has_setting(collision_shape_2d_thickness)) {
+			project_settings->set_setting(collision_shape_2d_thickness, 0.1);
+		}
+
+		project_settings->set_initial_value(collision_shape_2d_thickness, 0.1);
+		project_settings->set_as_basic(collision_shape_2d_thickness, false);
+		Dictionary property_info;
+		property_info["name"] = collision_shape_2d_thickness;
+		property_info["type"] = Variant::Type::FLOAT;
+		property_info["hint"] = PROPERTY_HINT_NONE;
+		project_settings->add_property_info(property_info);
+	}
+
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/automatically_request_runtime_permissions", true);
 }
 
 extern "C" {

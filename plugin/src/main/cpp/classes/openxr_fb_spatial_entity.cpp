@@ -357,7 +357,7 @@ Node3D *OpenXRFbSpatialEntity::create_collision_shape() const {
 		ProjectSettings *project_settings = ProjectSettings::get_singleton();
 		ERR_FAIL_NULL_V(project_settings, nullptr);
 
-		float collision_shape_2d_thickness = project_settings->get_setting_with_override("xr/openxr/extensions/meta_scene_api/collision_shape_2d_thickness");
+		float collision_shape_2d_thickness = project_settings->get_setting_with_override("xr/openxr/extensions/meta/scene_api/collision_shape_2d_thickness");
 
 		Ref<BoxShape3D> box_shape;
 		box_shape.instantiate();
