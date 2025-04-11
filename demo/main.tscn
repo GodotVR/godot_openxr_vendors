@@ -1,6 +1,8 @@
-[gd_scene load_steps=10 format=3 uid="uid://cqsodpswgup8w"]
+[gd_scene load_steps=12 format=3 uid="uid://cqsodpswgup8w"]
 
 [ext_resource type="Script" uid="uid://rkp4t7eqnc0o" path="res://main.gd" id="1_fsva1"]
+[ext_resource type="Script" uid="uid://tu2v2kg8lrh1" path="res://hand_controller.gd" id="2_1bvp3"]
+[ext_resource type="Script" uid="uid://174ia6ge6xmi" path="res://hand_mesh.gd" id="2_h2yge"]
 [ext_resource type="Material" uid="uid://bdwh0vc86hsdb" path="res://assets/hand_silhouette_outline_mat.tres" id="7_tpkib"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_0x6cv"]
@@ -48,27 +50,30 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.352791, 0)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.460909, 0.388594, -0.241118)
 tracker = &"left_hand"
 pose = &"grip"
+script = ExtResource("2_1bvp3")
 
-[node name="LeftHandMesh" type="MeshInstance3D" parent="XROrigin3D/LeftHand"]
+[node name="HandCube" type="MeshInstance3D" parent="XROrigin3D/LeftHand"]
 visible = false
 mesh = SubResource("BoxMesh_3kt6b")
 
-[node name="LeftControllerFbRenderModel" type="OpenXRFbRenderModel" parent="XROrigin3D/LeftHand"]
+[node name="ControllerFbRenderModel" type="OpenXRFbRenderModel" parent="XROrigin3D/LeftHand"]
 
 [node name="RightHand" type="XRController3D" parent="XROrigin3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.478861, 0.468292, -0.241097)
 tracker = &"right_hand"
 pose = &"grip"
+script = ExtResource("2_1bvp3")
 
-[node name="RightHandMesh" type="MeshInstance3D" parent="XROrigin3D/RightHand"]
+[node name="HandCube" type="MeshInstance3D" parent="XROrigin3D/RightHand"]
 visible = false
 mesh = SubResource("BoxMesh_ey3x4")
 
-[node name="RightControllerFbRenderModel" type="OpenXRFbRenderModel" parent="XROrigin3D/RightHand"]
+[node name="ControllerFbRenderModel" type="OpenXRFbRenderModel" parent="XROrigin3D/RightHand"]
 render_model_type = 1
 
 [node name="LeftHandTracker" type="XRNode3D" parent="XROrigin3D"]
 tracker = &"/user/hand_tracker/left"
+script = ExtResource("2_h2yge")
 
 [node name="LeftHandModel" type="OpenXRFbHandTrackingMesh" parent="XROrigin3D/LeftHandTracker"]
 material = ExtResource("7_tpkib")
@@ -77,6 +82,7 @@ material = ExtResource("7_tpkib")
 
 [node name="RightHandTracker" type="XRNode3D" parent="XROrigin3D"]
 tracker = &"/user/hand_tracker/right"
+script = ExtResource("2_h2yge")
 
 [node name="RightHandModel" type="OpenXRFbHandTrackingMesh" parent="XROrigin3D/RightHandTracker"]
 hand = 1
@@ -113,6 +119,3 @@ hand_tracker = &"/user/hand_tracker/right"
 
 [node name="Floor" type="MeshInstance3D" parent="."]
 mesh = SubResource("PlaneMesh_mjcgt")
-
-[connection signal="openxr_fb_render_model_loaded" from="XROrigin3D/LeftHand/LeftControllerFbRenderModel" to="." method="_on_left_controller_fb_render_model_render_model_loaded"]
-[connection signal="openxr_fb_render_model_loaded" from="XROrigin3D/RightHand/RightControllerFbRenderModel" to="." method="_on_right_controller_fb_render_model_render_model_loaded"]
