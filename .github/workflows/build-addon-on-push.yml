@@ -17,7 +17,7 @@ jobs:
       matrix:
         include:
           - name: 🐧 Linux (x86_64, GCC)
-            os: ubuntu-20.04
+            os: ubuntu-22.04
             platform: linux
             flags: arch=x86_64
             artifact_name: build-files-linux-x86_64
@@ -25,14 +25,14 @@ jobs:
             cache-name: linux-x86_64
           # Not sure how to cross compile these
           # - name: Linux (arm64)
-          #   os: ubuntu-20.04
+          #   os: ubuntu-22.04
           #   platform: linux
           #   flags: arch=arm64
           #   artifact_name: build-files-linux-arm64
           #   artifact_path: aar/demo/addons/godotopenxrvendors/.bin/linux/*/*/*.so
           #   cache-name: linux-arm64
           # - name: Linux (rv64)
-          #  os: ubuntu-20.04
+          #  os: ubuntu-22.04
           #  platform: linux
           #  flags: arch=rv64
           #  artifact_name: build-files-linux-rv64
@@ -52,7 +52,7 @@ jobs:
             artifact_path: aar/demo/addons/godotopenxrvendors/.bin/macos/*/*.framework
             cache-name: macos-universal
           - name: 🤖 Android (arm64)
-            os: ubuntu-20.04
+            os: ubuntu-22.04
             platform: android
             flags: arch=arm64
             artifact_name: build-files-android-arm64
@@ -60,7 +60,7 @@ jobs:
               aar/plugin/src/main/libs/*/*/*/*.so
             cache-name: android-arm64
           - name: 🤖 Android (x86_64)
-            os: ubuntu-20.04
+            os: ubuntu-22.04
             platform: android
             flags: arch=x86_64
             artifact_name: build-files-android-x86_64
@@ -115,7 +115,7 @@ jobs:
 
   asset:
     name: Assembling the asset
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs: build
 
     steps:
