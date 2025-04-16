@@ -6,16 +6,7 @@
         horizonos:minSdkVersion="69"
         horizonos:targetSdkVersion="69" />
 
-    <uses-feature
-        android:name="android.hardware.vr.headtracking"
-        android:required="true"
-        android:version="1"/>
-
     <application>
-        <meta-data
-            android:name="org.godotengine.plugin.v2.GodotOpenXRHybridAppInternal"
-            android:value="org.godotengine.openxr.vendors.GodotOpenXRHybridAppInternal" />
-
         <meta-data
             android:name="com.oculus.supportedDevices"
             android:value="quest2|questpro|quest3" />
