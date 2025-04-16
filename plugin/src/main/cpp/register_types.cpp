@@ -214,12 +214,27 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 				}
 			}
 
-			if (_get_bool_project_setting("xr/openxr/extensions/meta/composition_layer_settings")) {
+			if (_get_bool_project_setting("xr/openxr/extensions/meta/composition_layer_secure_content")) {
 				_register_extension_with_openxr(OpenXRFbCompositionLayerSecureContentExtensionWrapper::get_singleton());
+			}
+
+			if (_get_bool_project_setting("xr/openxr/extensions/meta/composition_layer_alpha_blend")) {
 				_register_extension_with_openxr(OpenXRFbCompositionLayerAlphaBlendExtensionWrapper::get_singleton());
+			}
+
+			if (_get_bool_project_setting("xr/openxr/extensions/meta/composition_layer_settings")) {
 				_register_extension_with_openxr(OpenXRFbCompositionLayerSettingsExtensionWrapper::get_singleton());
+			}
+
+			if (_get_bool_project_setting("xr/openxr/extensions/meta/composition_layer_android_surface_swapchain_create")) {
 				_register_extension_with_openxr(OpenXRFbAndroidSurfaceSwapchainCreateExtensionWrapper::get_singleton());
+			}
+
+			if (_get_bool_project_setting("xr/openxr/extensions/meta/composition_layer_depth_test")) {
 				_register_extension_with_openxr(OpenXRFbCompositionLayerDepthTestExtensionWrapper::get_singleton());
+			}
+
+			if (_get_bool_project_setting("xr/openxr/extensions/meta/composition_layer_image_layout")) {
 				_register_extension_with_openxr(OpenXRFbCompositionLayerImageLayoutExtensionWrapper::get_singleton());
 			}
 
@@ -376,7 +391,12 @@ void add_plugin_project_settings() {
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/anchor_api", false);
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/anchor_sharing", false);
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/scene_api", false);
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/composition_layer_secure_content", true);
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/composition_layer_alpha_blend", true);
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/composition_layer_settings", true);
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/composition_layer_android_surface_swapchain_create", true);
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/composition_layer_depth_test", true);
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/composition_layer_image_layout", true);
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/dynamic_resolution", true);
 
 	{
