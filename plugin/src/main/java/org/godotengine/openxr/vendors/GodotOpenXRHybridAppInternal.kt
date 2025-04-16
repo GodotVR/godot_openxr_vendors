@@ -46,7 +46,7 @@ import org.godotengine.godot.utils.isNativeXRDevice
  * A plugin used internally for hybrid apps.
  */
 class GodotOpenXRHybridAppInternal(godot: Godot?) : GodotPlugin(godot) {
-	companion object {
+	internal companion object {
 		private val TAG = GodotOpenXRHybridAppInternal::class.java.simpleName
 
 		private const val EXTRA_HYBRID_LAUNCH_DATA = "godot_openxr_vendors_hybrid_launch_data"
@@ -144,7 +144,7 @@ class GodotOpenXRHybridAppInternal(godot: Godot?) : GodotPlugin(godot) {
 		}
 	}
 
-	private var hybridMode = HybridMode.IMMERSIVE
+	private val hybridMode: HybridMode by lazy { getHybridMode(activity) }
 	private var hybridLaunchData: String = ""
 
 	override fun getPluginName() = "GodotOpenXRHybridAppInternal"
@@ -154,13 +154,8 @@ class GodotOpenXRHybridAppInternal(godot: Godot?) : GodotPlugin(godot) {
 		return null
 	}
 
-	override fun onGodotSetupCompleted() {
-		super.onGodotSetupCompleted()
-		hybridMode = getHybridMode(activity)
-	}
-
 	@UsedByGodot
-	fun hybridAppSwitchTo(modeValue: Int, data: String = ""): Boolean {
+	private fun hybridAppSwitchTo(modeValue: Int, data: String = ""): Boolean {
 		val mode = HybridMode.fromNative(modeValue)
 		if (hybridMode == mode) return false
 
@@ -239,7 +234,7 @@ class GodotOpenXRHybridAppInternal(godot: Godot?) : GodotPlugin(godot) {
 	}
 
 	@UsedByGodot
-	fun getHybridAppLaunchData(): String {
+	private fun getHybridAppLaunchData(): String {
 		return hybridLaunchData
 	}
 }

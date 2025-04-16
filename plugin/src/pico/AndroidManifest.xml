@@ -1,21 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Tell the system this app works in either 3dof or 6dof mode -->
-    <uses-feature
-        android:name="android.hardware.vr.headtracking"
-        android:required="true"
-        android:version="1"/>
-
-    <!-- Permissions needed by OpenXR -->
-    <uses-permission android:name="org.khronos.openxr.permission.OPENXR" />
-    <uses-permission android:name="org.khronos.openxr.permission.OPENXR_SYSTEM" />
-
-    <queries>
-        <intent>
-            <action android:name="org.khronos.openxr.OpenXRRuntimeService"/>
-        </intent>
-        <provider android:authorities="org.khronos.openxr.runtime_broker;org.khronos.openxr.system_runtime_broker" />
-    </queries>
 
     <application>
         <!-- Enable VR mode on Pico headsets -->
