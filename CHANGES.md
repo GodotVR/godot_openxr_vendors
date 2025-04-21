@@ -11,6 +11,13 @@
 - Add missing Pico store manifest
 - Add support for `XR_FB_composition_layer_image_layout`
 - Update demo and samples for Godot 4.4
+- Switch Meta and Lynx to the Khronos loader
+- Fix `OpenXRFbSpatialEntityStorageExtensionWrapper` typos
+- Add support for `XR_FB_composition_layer_depth_test`
+- Use project settings to avoid enabling unneeded OpenXR extensions
+- Passthrough extensions should override real alpha blend mode, if enabled
+- Update the main manifest with the latest from the Khronos OpenXR loader AAR
+- Improve hand tracking related code in demo project
 
 ## 3.1.2
 - Fix passthrough sample color map display bug
