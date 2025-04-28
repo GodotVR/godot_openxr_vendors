@@ -102,6 +102,7 @@ uint64_t OpenXRFbCompositionLayerSecureContentExtensionWrapper::_set_viewport_co
 		} break;
 	};
 
+	secure_content->next = p_next_pointer;
 	return reinterpret_cast<uint64_t>(secure_content);
 }
 

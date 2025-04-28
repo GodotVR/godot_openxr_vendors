@@ -82,7 +82,7 @@ uint64_t OpenXRFbCompositionLayerImageLayoutExtensionWrapper::_set_viewport_comp
 	if (!layer_structs.has(layer)) {
 		layer_structs[layer] = {
 			XR_TYPE_COMPOSITION_LAYER_IMAGE_LAYOUT_FB, // type
-			nullptr, // next
+			p_next_pointer, // next
 		};
 	}
 

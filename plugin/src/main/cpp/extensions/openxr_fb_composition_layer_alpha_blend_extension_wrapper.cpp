@@ -183,6 +183,7 @@ uint64_t OpenXRFbCompositionLayerAlphaBlendExtensionWrapper::_set_viewport_compo
 		} break;
 	}
 
+	alpha_blend->next = p_next_pointer;
 	return reinterpret_cast<uint64_t>(alpha_blend);
 }
 
