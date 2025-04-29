@@ -141,6 +141,7 @@ uint64_t OpenXRFbCompositionLayerSettingsExtensionWrapper::_set_viewport_composi
 		return reinterpret_cast<uint64_t>(p_next_pointer);
 	}
 
+	settings->next = p_next_pointer;
 	return reinterpret_cast<uint64_t>(settings);
 }
 

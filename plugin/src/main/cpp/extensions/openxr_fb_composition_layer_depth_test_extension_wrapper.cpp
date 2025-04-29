@@ -90,6 +90,7 @@ uint64_t OpenXRFbCompositionLayerDepthTestExtensionWrapper::_set_viewport_compos
 	}
 
 	XrCompositionLayerDepthTestFB *depth_test = layer_structs.getptr(layer);
+	depth_test->next = p_next_pointer;
 	return reinterpret_cast<uint64_t>(depth_test);
 }
 
