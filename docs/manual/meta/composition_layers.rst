@@ -45,6 +45,12 @@ or to let the OpenXR runtime toggle between options automatically.
 
 When automatic layer filtering is enabled, the runtime will only swap between disabled supersampling/sharpening, and the modes indicated by the ``options`` property.
 
+This OpenXR extension is enabled by default, but it can be disabled if desired. In **Project Settings**, navigate to the **OpenXR** section.
+The **Composition Layer Settings** setting should be found under **Extensions** in the **Meta** subcategory.
+This setting is only visible when **Advanced Settings** are enabled.
+
+.. image:: img/composition_layers/filter_settings_project_setting.png
+
 Alpha Blend
 -----------
 

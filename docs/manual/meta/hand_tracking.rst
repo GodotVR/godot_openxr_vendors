@@ -9,13 +9,19 @@ Meta Hand Tracking
 The Godot OpenXR Vendors plugin supports a number of Meta OpenXR extensions related to hand tracking; this tutorial serves as a tour of
 these extensions with an explanation of how they might be used.
 
-To use any of the Meta hand tracking OpenXR extensions, ensure the hand tracking Meta XR feature is enabled in export settings.
+Project Settings
+----------------
 
-.. image:: img/hand_tracking/hand_tracking_export_setting.png
-
-The OpenXR hand tracking setting must also be enabled in project settings, this is enabled by default.
+To use any of the Meta hand tracking OpenXR extensions, the OpenXR hand tracking setting must be enabled in project settings.
+The extension setting can be found in **Project Settings** under the **OpenXR** section,
+the **Hand Tracking** setting should be listed under **Extensions**.
 
 .. image:: img/hand_tracking/hand_tracking_project_setting.png
+
+All of the extensions discussed in this tutorial also have corresponding project settings that must be enabled on top of hand tracking.
+They can be found under the **Meta** subcategory of **Extensions**, and are only visible with **Advanced Settings** enabled.
+
+.. image:: img/hand_tracking/hand_tracking_extensions_project_settings.png
 
 Hand Mesh
 ---------
@@ -106,10 +112,7 @@ Hand Tracking Aim
 -----------------
 
 The ``XR_FB_hand_tracking_aim`` extension provides simple gesture recognition, for example, firing a signal when
-the user touches their index finger to their thumb. To enable hand tracking aim, open up **Project Settings**, go to **OpenXR**
-settings, and enable ``hand_tracking_aim``, which should be listed below **Extensions**.
-
-.. image:: img/hand_tracking/hand_aim_project_setting.png
+the user touches their index finger to their thumb.
 
 The hand tracking aim extension uses signals from `XRController3D <https://docs.godotengine.org/en/stable/classes/class_xrcontroller3d.html>`_
 to communicate the gesture data. Assigning the ``tracker`` of the ``XRController3D`` to either ``/user/fbhandaim/left``

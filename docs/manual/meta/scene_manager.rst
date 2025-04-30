@@ -10,6 +10,14 @@ Meta Scene Manager
 The Scene Manager provides you information about the space you are currently in. This includes the scanned mesh of the room (on Quest 3) as well as things like walls, doors, or tables.
 In case you are starting on a new project, please first follow `this guide <https://docs.godotengine.org/en/stable/tutorials/xr/setting_up_xr.html>`_ to set up your project for XR.
 
+Project Settings
+-----------------
+
+In order to utilize the Scene Manager, you'll have to enable the feature. Open up **Project Settings** and navigate to the **OpenXR** section.
+The **Scene API** setting should be found under **Extensions** in the **Meta** subcategory. This setting is only visible when **Advanced Settings** are enabled.
+
+.. image:: img/scene_manager/scene_api_project_setting.png
+
 Adding the Scene Manager Node
 ------------------------------
 
@@ -25,10 +33,6 @@ The :ref:`Auto Create <class_openxrfbscenemanager_property_auto_create>` option 
 The **Scenes** section in the options allows you to individually assign a scene to a kind of spatial entity which can help in separating the logic.
 
 .. image:: img/scene_manager/scene_manager_options.png
-
-Next, head over to the Export Settings and make sure that in the **Meta XR Features** the ``Use Anchor API`` and ``Use Scene API`` options are enabled.
-
-.. image:: img/scene_manager/export_settings.png
 
 Creating Spatial Entities
 -------------------------

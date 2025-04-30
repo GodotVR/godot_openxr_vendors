@@ -11,12 +11,11 @@ Hybrid apps are applications capable of swapping between an immersive 3D mode an
 Project Settings
 ----------------
 
-To make a hybrid app, the feature must be enabled in your project settings. The setting can be found in **Project Settings** under the **OpenXR** section.
-The **Hybrid App** setting should be visible if **Advanced Settings** are enabled.
+To make a hybrid app, the feature must be enabled in your project settings. The setting can be found in **Project Settings** under the **XR** -> **Hybrid App** section.
 
 .. image:: img/hybrid_apps/hybrid_apps_project_setting.png
 
-By default, hybrid app functionality is disabled. Selecting either of the other options will enable hybrid app features and determine the app's starting mode.
+By default, hybrid app functionality is disabled. Check the **Enabled** box and set the starting mode of the hybrid app with the **Launch Mode** setting.
 
 Switching Modes
 ---------------

@@ -8,6 +8,6 @@ Project Settings
 ----------------
 
 Dynamic Resolution is enabled by default. The extension setting can be found in **Project Settings** under the **OpenXR** section.
-The **Dynamic Resolution** setting should be listed under **Extensions**.
+The **Dynamic Resolution** setting should be listed under **Extensions** in the **Meta** subcategory.
 
 .. image:: img/dynamic_resolution/dynamic_resolution_project_setting.png
