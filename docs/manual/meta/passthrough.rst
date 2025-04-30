@@ -4,13 +4,13 @@ Meta Passthrough
 If your project requires the user to see their physical environment, you'll need to use the headset's passthrough functionality.
 The Godot OpenXR Vendors Plugin provides access to several passthrough modes and filters supported on the Meta Quest, all of which will be broken down in this tutorial.
 
-Export Settings
+Project Settings
 -----------------
 
-In order to utilize passthrough, you'll first have to enable the feature in your project's Export Settings. Open up **Export Settings**, navigate to **Meta XR Features**,
-and locate the **Passthrough** setting. Changing this to either **Optional** or **Required** will allow a user's headset to utilize passthrough if permission is granted.
+In order to utilize passthrough, you'll have to enable the feature. Open up **Project Settings** and navigate to the **OpenXR** section.
+The **Passthrough** setting should be found under **Extensions** in the **Meta** subcategory. This setting is only visible when **Advanced Settings** are enabled.
 
-.. image:: img/passthrough/passthrough_export_settings.png
+.. image:: img/passthrough/passthrough_project_setting.png
 
 .. _reconstruction-passthrough:
 Reconstruction Passthrough

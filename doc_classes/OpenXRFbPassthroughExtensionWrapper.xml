@@ -143,7 +143,7 @@
 			<description>
 				Sets the current passthrough filter to [constant PASSTHROUGH_FILTER_MONO_MAP], which will use the given curve to replace each input luminance value in the passthrough imagery with a grayscale color value.
 				[b]Note:[/b] Only one passthrough filter can be enabled at a time.
-				</description>
+			</description>
 		</method>
 		<method name="set_passthrough_filter">
 			<return type="void" />

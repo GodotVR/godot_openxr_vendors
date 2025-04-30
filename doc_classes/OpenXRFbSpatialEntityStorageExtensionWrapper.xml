@@ -9,7 +9,7 @@
 	<tutorials>
 	</tutorials>
 	<methods>
-		<method name="is_spatial_entity_query_supported">
+		<method name="is_spatial_entity_storage_supported">
 			<return type="bool" />
 			<description>
 				Checks if this extension is enabled.

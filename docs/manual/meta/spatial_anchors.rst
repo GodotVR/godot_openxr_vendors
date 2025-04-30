@@ -10,16 +10,22 @@ Meta Spatial Anchors
 The :ref:`OpenXRFbSpatialAnchorManager <class_openxrfbspatialanchormanager>` node provides an
 easy-to-use way to interact with Meta's Spatial Anchors. This tutorial walks through the basic features
 of the node such as placing/removing spatial anchors, and saving/loading them to/from a file.
-To begin, ensure the ``use_anchor_api`` property in **Export Settings** under **Meta XR Features** is enabled.
 
-.. image:: img/spatial_anchors/spatial_anchor_export_setting.png
 
-Then, add an ``OpenXRFbSpatialAnchorManager`` node as a child of `XROrigin3D <https://docs.godotengine.org/en/stable/classes/class_xrorigin3d.html>`_.
+Project Settings
+-----------------
 
-.. image:: img/spatial_anchors/spatial_anchor_manager_node.png
+In order to utilize Spatial Anchors, you'll have to enable the feature. Open up **Project Settings** and navigate to the **OpenXR** section.
+The **Anchor API** setting should be found under **Extensions** in the **Meta** subcategory. This setting is only visible when **Advanced Settings** are enabled.
+
+.. image:: img/spatial_anchors/anchor_api_project_setting.png
 
 Creating Spatial Anchors
 ------------------------
+
+First, add an ``OpenXRFbSpatialAnchorManager`` node as a child of `XROrigin3D <https://docs.godotengine.org/en/stable/classes/class_xrorigin3d.html>`_.
+
+.. image:: img/spatial_anchors/spatial_anchor_manager_node.png
 
 To place spatial anchors, the manager node's :ref:`scene <class_openxrfbspatialanchormanager_property_scene>`
 property should be set to the desired "spatial anchor scene" to be instantiated.
