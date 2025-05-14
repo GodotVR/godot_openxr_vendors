@@ -69,6 +69,7 @@
 #include "extensions/openxr_fb_spatial_entity_user_extension_wrapper.h"
 #include "extensions/openxr_htc_facial_tracking_extension_wrapper.h"
 #include "extensions/openxr_htc_passthrough_extension_wrapper.h"
+#include "extensions/openxr_meta_boundary_visibility_extension_wrapper.h"
 #include "extensions/openxr_meta_recommended_layer_resolution_extension_wrapper.h"
 #include "extensions/openxr_meta_spatial_entity_mesh_extension_wrapper.h"
 
@@ -155,6 +156,10 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			ClassDB::register_class<OpenXRHtcFacialTrackingExtensionWrapper>();
 			ClassDB::register_class<OpenXRHtcPassthroughExtensionWrapper>();
 
+#ifdef META_HEADERS_ENABLED
+			ClassDB::register_class<OpenXRMetaBoundaryVisibilityExtensionWrapper>();
+#endif // META_HEADERS_ENABLED
+
 			if (_get_bool_project_setting("xr/openxr/extensions/meta/passthrough")) {
 				_register_extension_with_openxr(OpenXRFbPassthroughExtensionWrapper::get_singleton());
 			}
@@ -223,6 +228,12 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 				_register_extension_with_openxr(OpenXRFbCompositionLayerImageLayoutExtensionWrapper::get_singleton());
 			}
 
+#ifdef META_HEADERS_ENABLED
+			if (_get_bool_project_setting("xr/openxr/extensions/meta/boundary_visibility")) {
+				_register_extension_with_openxr(OpenXRMetaBoundaryVisibilityExtensionWrapper::get_singleton());
+			}
+#endif // META_HEADERS_ENABLED
+
 			if (_get_bool_project_setting("xr/openxr/extensions/htc/face_tracking")) {
 				_register_extension_with_openxr(OpenXRHtcFacialTrackingExtensionWrapper::get_singleton());
 			}
@@ -249,6 +260,10 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			_register_extension_as_singleton(OpenXRFbHandTrackingCapsulesExtensionWrapper::get_singleton());
 			_register_extension_as_singleton(OpenXRHtcFacialTrackingExtensionWrapper::get_singleton());
 			_register_extension_as_singleton(OpenXRHtcPassthroughExtensionWrapper::get_singleton());
+
+#ifdef META_HEADERS_ENABLED
+			_register_extension_as_singleton(OpenXRMetaBoundaryVisibilityExtensionWrapper::get_singleton());
+#endif // META_HEADERS_ENABLED
 
 			ClassDB::register_class<OpenXRFbRenderModel>();
 			ClassDB::register_class<OpenXRFbHandTrackingMesh>();
@@ -378,6 +393,10 @@ void add_plugin_project_settings() {
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/scene_api", false);
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/composition_layer_settings", true);
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/dynamic_resolution", true);
+
+#ifdef META_HEADERS_ENABLED
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/boundary_visibility", false);
+#endif // META_HEADERS_ENABLED
 
 	{
 		String collision_shape_2d_thickness = "xr/openxr/extensions/meta/scene_api/collision_shape_2d_thickness";

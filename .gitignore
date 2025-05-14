@@ -23,6 +23,7 @@ local.properties
 *.lib
 
 # Misc
+compile_commands.json
 .DS_Store
 /plugin/src/gen/
 /plugin/src/main/libs
