@@ -433,6 +433,14 @@ String MetaEditorExportPlugin::_get_android_manifest_element_contents(const Ref<
 		contents += "    <uses-permission android:name=\"com.oculus.permission.USE_SCENE\" />\n";
 	}
 
+// @todo GH Issue 304: Remove check for meta headers when feature becomes part of OpenXR spec.
+#ifdef META_HEADERS_ENABLED
+	// Check for boundary visibility
+	if ((bool)project_settings->get_setting_with_override("xr/openxr/extensions/meta/boundary_visibility")) {
+		contents += "    <uses-permission android:name=\"com.oculus.permission.BOUNDARY_VISIBILITY\" />\n";
+	}
+#endif // META_HEADERS_ENABLED
+
 	// Check for overlay keyboard
 	bool use_overlay_keyboard_option = _get_bool_option("meta_xr_features/use_overlay_keyboard");
 	if (use_overlay_keyboard_option) {
