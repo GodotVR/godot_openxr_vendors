@@ -283,6 +283,7 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			_register_extension_as_singleton(OpenXRFbSceneExtensionWrapper::get_singleton());
 			_register_extension_as_singleton(OpenXRFbHandTrackingAimExtensionWrapper::get_singleton());
 			_register_extension_as_singleton(OpenXRFbHandTrackingCapsulesExtensionWrapper::get_singleton());
+			_register_extension_as_singleton(OpenXRFbBodyTrackingExtensionWrapper::get_singleton());
 			_register_extension_as_singleton(OpenXRHtcFacialTrackingExtensionWrapper::get_singleton());
 			_register_extension_as_singleton(OpenXRHtcPassthroughExtensionWrapper::get_singleton());
 

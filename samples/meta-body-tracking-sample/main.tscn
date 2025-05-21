@@ -93,22 +93,19 @@ bones/25/name = "RightLittleTip"
 hand_tracker = &"/user/hand_tracker/right"
 
 [node name="Floor" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.059405804, 0)
 mesh = SubResource("PlaneMesh_mjcgt")
 
-[node name="AvatarOffset" type="Node3D" parent="Floor"]
+[node name="AvatarOffset" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1)
 
-[node name="Avatar" type="XRNode3D" parent="Floor/AvatarOffset"]
-tracker = &"/user/body_tracker"
+[node name="Test-Kun" parent="AvatarOffset" instance=ExtResource("4_b317s")]
 
-[node name="Test-Kun" parent="Floor/AvatarOffset/Avatar" instance=ExtResource("4_b317s")]
-transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0, 0)
-
-[node name="XRBodyModifier3D" type="XRBodyModifier3D" parent="Floor/AvatarOffset/Avatar/Test-Kun/Armature/GeneralSkeleton" index="2"]
+[node name="XRBodyModifier3D" type="XRBodyModifier3D" parent="AvatarOffset/Test-Kun/Armature/GeneralSkeleton" index="2"]
 transform = Transform3D(1, 0, 1.74846e-07, 0, 1, 0, -1.74846e-07, 0, 1, -8.74228e-08, 0, -1)
 bone_update = 1
 
-[node name="XRFaceModifier3D" type="XRFaceModifier3D" parent="Floor/AvatarOffset/Avatar"]
+[node name="XRFaceModifier3D" type="XRFaceModifier3D" parent="AvatarOffset"]
 target = NodePath("../Test-Kun/Armature/GeneralSkeleton/Body")
 
-[editable path="Floor/AvatarOffset/Avatar/Test-Kun"]
+[editable path="AvatarOffset/Test-Kun"]
