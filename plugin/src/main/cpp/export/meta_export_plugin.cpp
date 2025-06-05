@@ -459,6 +459,12 @@ String MetaEditorExportPlugin::_get_android_manifest_element_contents(const Ref<
 		contents += "    <uses-feature tools:node=\"replace\" android:name=\"com.oculus.feature.BOUNDARYLESS_APP\" android:required=\"true\" />\n";
 	}
 
+	// Add camera permissions if needed.
+	if (_get_bool_option("permissions/camera")) {
+		contents += "    <uses-permission android:name=\"horizonos.permission.HEADSET_CAMERA\"/>\n";
+		contents += "    <uses-feature android:name=\"android.hardware.camera2.any\" android:required=\"false\"/>\n";
+	}
+
 	return contents;
 }
 
