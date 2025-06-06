@@ -70,6 +70,7 @@
 #include "extensions/openxr_htc_facial_tracking_extension_wrapper.h"
 #include "extensions/openxr_htc_passthrough_extension_wrapper.h"
 #include "extensions/openxr_meta_boundary_visibility_extension_wrapper.h"
+#include "extensions/openxr_meta_environment_depth_extension_wrapper.h"
 #include "extensions/openxr_meta_recommended_layer_resolution_extension_wrapper.h"
 #include "extensions/openxr_meta_spatial_entity_mesh_extension_wrapper.h"
 
@@ -83,6 +84,7 @@
 #include "classes/openxr_fb_spatial_entity_query.h"
 #include "classes/openxr_fb_spatial_entity_user.h"
 #include "classes/openxr_hybrid_app.h"
+#include "classes/openxr_meta_environment_depth.h"
 #include "classes/openxr_meta_passthrough_color_lut.h"
 
 using namespace godot;
@@ -244,6 +246,14 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 				_register_extension_with_openxr(OpenXRHtcPassthroughExtensionWrapper::get_singleton());
 			}
 
+			// Only works with Godot 4.5 or later.
+			if (godot::internal::godot_version.minor >= 5) {
+				ClassDB::register_class<OpenXRMetaEnvironmentDepthExtensionWrapper>();
+				if (_get_bool_project_setting("xr/openxr/extensions/meta/environment_depth")) {
+					_register_extension_with_openxr(OpenXRMetaEnvironmentDepthExtensionWrapper::get_singleton());
+				}
+			}
+
 		} break;
 
 		case MODULE_INITIALIZATION_LEVEL_SERVERS:
@@ -281,6 +291,12 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 
 			ClassDB::register_class<OpenXRHybridApp>();
 			Engine::get_singleton()->register_singleton("OpenXRHybridApp", OpenXRHybridApp::get_singleton());
+
+			// Only works with Godot 4.5 or later.
+			if (godot::internal::godot_version.minor >= 5) {
+				ClassDB::register_class<OpenXRMetaEnvironmentDepth>();
+				_register_extension_as_singleton(OpenXRMetaEnvironmentDepthExtensionWrapper::get_singleton());
+			}
 		} break;
 
 		case MODULE_INITIALIZATION_LEVEL_EDITOR: {
@@ -304,6 +320,11 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			ClassDB::register_class<MagicleapEditorExportPlugin>();
 			ClassDB::register_class<MagicleapEditorPlugin>();
 			EditorPlugins::add_by_type<MagicleapEditorPlugin>();
+
+			// Only works with Godot 4.5 or later.
+			if (godot::internal::godot_version.minor >= 5) {
+				callable_mp(OpenXRMetaEnvironmentDepthExtensionWrapper::get_singleton(), &OpenXRMetaEnvironmentDepthExtensionWrapper::setup_global_uniforms).call_deferred();
+			}
 		} break;
 
 		case MODULE_INITIALIZATION_LEVEL_MAX:
@@ -394,6 +415,7 @@ void add_plugin_project_settings() {
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/anchor_api", false);
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/anchor_sharing", false);
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/scene_api", false);
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/environment_depth", false);
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/composition_layer_settings", true);
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/dynamic_resolution", true);
 
