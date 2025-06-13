@@ -60,6 +60,7 @@
 #include "extensions/openxr_fb_render_model_extension_wrapper.h"
 #include "extensions/openxr_fb_scene_capture_extension_wrapper.h"
 #include "extensions/openxr_fb_scene_extension_wrapper.h"
+#include "extensions/openxr_fb_space_warp_extension_wrapper.h"
 #include "extensions/openxr_fb_spatial_entity_container_extension_wrapper.h"
 #include "extensions/openxr_fb_spatial_entity_extension_wrapper.h"
 #include "extensions/openxr_fb_spatial_entity_query_extension_wrapper.h"
@@ -244,6 +245,14 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 				_register_extension_with_openxr(OpenXRHtcPassthroughExtensionWrapper::get_singleton());
 			}
 
+			// Only works with Godot 4.5 or later.
+			if (godot::internal::godot_version.minor >= 5) {
+				ClassDB::register_class<OpenXRFbSpaceWarpExtensionWrapper>();
+				if (_get_bool_project_setting("xr/openxr/extensions/meta/application_space_warp")) {
+					_register_extension_with_openxr(OpenXRFbSpaceWarpExtensionWrapper::get_singleton());
+				}
+			}
+
 		} break;
 
 		case MODULE_INITIALIZATION_LEVEL_SERVERS:
@@ -281,6 +290,11 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 
 			ClassDB::register_class<OpenXRHybridApp>();
 			Engine::get_singleton()->register_singleton("OpenXRHybridApp", OpenXRHybridApp::get_singleton());
+
+			// Only works with Godot 4.5 or later.
+			if (godot::internal::godot_version.minor >= 5) {
+				_register_extension_as_singleton(OpenXRFbSpaceWarpExtensionWrapper::get_singleton());
+			}
 		} break;
 
 		case MODULE_INITIALIZATION_LEVEL_EDITOR: {
@@ -396,6 +410,11 @@ void add_plugin_project_settings() {
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/scene_api", false);
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/composition_layer_settings", true);
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/dynamic_resolution", true);
+
+	// Only works with Godot 4.5 or later.
+	if (godot::internal::godot_version.minor >= 5) {
+		_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/application_space_warp", false);
+	}
 
 // @todo GH Issue 304: Remove check for meta headers when feature becomes part of OpenXR spec.
 #ifdef META_HEADERS_ENABLED
