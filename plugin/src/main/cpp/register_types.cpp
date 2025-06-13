@@ -47,6 +47,7 @@
 
 #include "extensions/openxr_fb_android_surface_swapchain_create_extension_wrapper.h"
 #include "extensions/openxr_fb_body_tracking_extension_wrapper.h"
+#include "extensions/openxr_fb_color_space_extension_wrapper.h"
 #include "extensions/openxr_fb_composition_layer_alpha_blend_extension_wrapper.h"
 #include "extensions/openxr_fb_composition_layer_depth_test_extension_wrapper.h"
 #include "extensions/openxr_fb_composition_layer_image_layout_extension_wrapper.h"
@@ -134,6 +135,7 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 
 			ClassDB::register_class<OpenXRFbPassthroughExtensionWrapper>();
 			ClassDB::register_class<OpenXRFbRenderModelExtensionWrapper>();
+			ClassDB::register_class<OpenXRFbColorSpaceExtensionWrapper>();
 			ClassDB::register_class<OpenXRFbSceneCaptureExtensionWrapper>();
 			ClassDB::register_class<OpenXRFbSpatialEntityExtensionWrapper>();
 			ClassDB::register_class<OpenXRFbSpatialEntitySharingExtensionWrapper>();
@@ -170,6 +172,10 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 
 			if (_get_bool_project_setting("xr/openxr/extensions/meta/render_model")) {
 				_register_extension_with_openxr(OpenXRFbRenderModelExtensionWrapper::get_singleton());
+			}
+
+			if (_get_bool_project_setting("xr/openxr/extensions/meta/color_space")) {
+				_register_extension_with_openxr(OpenXRFbColorSpaceExtensionWrapper::get_singleton());
 			}
 
 			// Three settings to match the three permissions for the Android manifest.
@@ -268,6 +274,7 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 		case MODULE_INITIALIZATION_LEVEL_SCENE: {
 			_register_extension_as_singleton(OpenXRFbPassthroughExtensionWrapper::get_singleton());
 			_register_extension_as_singleton(OpenXRFbRenderModelExtensionWrapper::get_singleton());
+			_register_extension_as_singleton(OpenXRFbColorSpaceExtensionWrapper::get_singleton());
 			_register_extension_as_singleton(OpenXRFbSceneCaptureExtensionWrapper::get_singleton());
 			_register_extension_as_singleton(OpenXRFbSpatialEntityExtensionWrapper::get_singleton());
 			_register_extension_as_singleton(OpenXRFbSpatialEntityStorageExtensionWrapper::get_singleton());
@@ -423,6 +430,7 @@ void add_plugin_project_settings() {
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/anchor_api", false);
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/anchor_sharing", false);
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/scene_api", false);
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/color_space", true);
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/composition_layer_settings", true);
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/dynamic_resolution", true);
 
@@ -449,6 +457,22 @@ void add_plugin_project_settings() {
 		property_info["name"] = collision_shape_2d_thickness;
 		property_info["type"] = Variant::Type::FLOAT;
 		property_info["hint"] = PROPERTY_HINT_NONE;
+		project_settings->add_property_info(property_info);
+	}
+
+	{
+		String starting_color_space = "xr/openxr/extensions/meta/color_space/starting_color_space";
+		if (!project_settings->has_setting(starting_color_space)) {
+			project_settings->set_setting(starting_color_space, 0);
+		}
+
+		project_settings->set_initial_value(starting_color_space, 0);
+		project_settings->set_as_basic(starting_color_space, false);
+		Dictionary property_info;
+		property_info["name"] = starting_color_space;
+		property_info["type"] = Variant::Type::INT;
+		property_info["hint"] = PROPERTY_HINT_ENUM;
+		property_info["hint_string"] = "Runtime Default:0,Unmanaged:1,REC2020:2,REC709:3,Rift CV1:4,Rift S:5,Quest:6,P3:7,Adobe RGB:8";
 		project_settings->add_property_info(property_info);
 	}
 
