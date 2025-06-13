@@ -38,6 +38,7 @@
 #include <godot_cpp/godot.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
 
+#include "export/android_xr_export_plugin.h"
 #include "export/export_plugin.h"
 #include "export/khronos_export_plugin.h"
 #include "export/lynx_export_plugin.h"
@@ -309,6 +310,10 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 
 		case MODULE_INITIALIZATION_LEVEL_EDITOR: {
 			ClassDB::register_class<OpenXREditorExportPlugin>();
+
+			ClassDB::register_class<AndroidXREditorExportPlugin>();
+			ClassDB::register_class<AndroidXREditorPlugin>();
+			EditorPlugins::add_by_type<AndroidXREditorPlugin>();
 
 			ClassDB::register_class<KhronosEditorExportPlugin>();
 			ClassDB::register_class<KhronosEditorPlugin>();
