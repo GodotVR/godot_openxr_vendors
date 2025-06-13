@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  util.cpp                                                              */
+/*  openxr_meta_environment_depth.h                                       */
 /**************************************************************************/
 /*                       This file is part of:                            */
 /*                              GODOT XR                                  */
@@ -27,33 +27,39 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "util.h"
+#pragma once
 
-#include <openxr/internal/xr_linear.h>
-#include <openxr/openxr.h>
-#include <stdio.h>
-#include <godot_cpp/variant/projection.hpp>
+#include <godot_cpp/classes/visual_instance3d.hpp>
 
-using namespace godot;
+namespace godot {
+class OpenXRMetaEnvironmentDepth : public VisualInstance3D {
+	GDCLASS(OpenXRMetaEnvironmentDepth, VisualInstance3D);
 
-StringName OpenXRUtilities::uuid_to_string_name(const XrUuid &p_uuid) {
-	const uint8_t *data = p_uuid.data;
-	char uuid_str[37];
+	void _update_visibility();
 
-	sprintf(uuid_str, "%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x",
-			data[0], data[1], data[2], data[3],
-			data[4], data[5],
-			data[6], data[7],
-			data[8], data[9],
-			data[10], data[11], data[12], data[13], data[14], data[15]);
+	void _on_openxr_session_begun();
+	void _on_openxr_session_stopping();
+	void _on_environment_depth_started();
+	void _on_environment_depth_stopped();
 
-	return StringName(uuid_str);
-}
+protected:
+	void _notification(int p_what);
 
-void OpenXRUtilities::xrMatrix4x4f_to_godot_projection(XrMatrix4x4f *m, godot::Projection &p) {
-	for (int j = 0; j < 4; j++) {
-		for (int i = 0; i < 4; i++) {
-			p.columns[j][i] = m->m[j * 4 + i];
-		}
-	}
-}
+	static void _bind_methods();
+
+public:
+	PackedStringArray _get_configuration_warnings() const override;
+
+	void set_render_priority(int p_render_priority);
+	int get_render_priority() const;
+
+	void set_reprojection_offset_scale(float p_offset_exponent);
+	float get_reprojection_offset_scale() const;
+
+	void set_reprojection_offset_exponent(float p_offset_exponent);
+	float get_reprojection_offset_exponent() const;
+
+	OpenXRMetaEnvironmentDepth();
+	~OpenXRMetaEnvironmentDepth();
+};
+}; // namespace godot

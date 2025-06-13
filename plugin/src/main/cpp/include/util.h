@@ -33,6 +33,7 @@
 #include <godot_cpp/variant/string_name.hpp>
 
 struct XrUuid;
+struct XrMatrix4x4f;
 
 #define UNPACK(...) __VA_ARGS__
 
@@ -126,6 +127,7 @@ struct XrUuid;
 
 namespace OpenXRUtilities {
 godot::StringName uuid_to_string_name(const XrUuid &p_uuid);
-};
+void xrMatrix4x4f_to_godot_projection(XrMatrix4x4f *m, godot::Projection &p);
+}; //namespace OpenXRUtilities
 
 #endif // UTIL_H
