@@ -29,6 +29,8 @@
 
 #include "editor_plugin.h"
 
+#include <godot_cpp/classes/project_settings.hpp>
+
 #include "export/khronos_export_plugin.h"
 #include "export/lynx_export_plugin.h"
 #include "export/magicleap_export_plugin.h"
@@ -72,6 +74,32 @@ void OpenXRVendorsEditorPlugin::_exit_tree() {
 		remove_export_plugin(export_plugin);
 	}
 	export_plugins.clear();
+}
+
+PackedStringArray OpenXRVendorsEditorPlugin::_run_scene(const String &p_scene, const PackedStringArray &p_args) {
+	if (!ProjectSettings::get_singleton()->get_setting_with_override("xr/hybrid_app/enabled")) {
+		return p_args;
+	}
+
+	// If the XR mode is set explicitly, then let it be.
+	if (p_args.find("--xr-mode") != -1) {
+		return p_args;
+	}
+
+	OpenXRHybridApp::HybridMode hybrid_mode = (OpenXRHybridApp::HybridMode)(int)ProjectSettings::get_singleton()->get_setting_with_override("xr/hybrid_app/launch_mode");
+	PackedStringArray new_args = p_args;
+
+	if (hybrid_mode == OpenXRHybridApp::HYBRID_MODE_IMMERSIVE) {
+		new_args.push_back("--xr-mode");
+		new_args.push_back("on");
+		new_args.push_back("--xr_mode_openxr");
+	} else if (hybrid_mode == OpenXRHybridApp::HYBRID_MODE_PANEL) {
+		new_args.push_back("--xr-mode");
+		new_args.push_back("off");
+		new_args.push_back("--xr_mode_regular");
+	}
+
+	return new_args;
 }
 
 OpenXRVendorsEditorPlugin::OpenXRVendorsEditorPlugin() {

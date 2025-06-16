@@ -48,5 +48,7 @@ public:
 	void _enter_tree() override;
 	void _exit_tree() override;
 
+	PackedStringArray _run_scene(const String &p_scene, const PackedStringArray &p_args) override;
+
 	OpenXRVendorsEditorPlugin();
 };
