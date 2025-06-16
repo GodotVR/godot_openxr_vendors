@@ -40,6 +40,8 @@ class OpenXRHybridApp : public Object {
 
 	static OpenXRHybridApp *singleton;
 
+	bool is_hybrid_app_enabled() const;
+
 protected:
 	static void _bind_methods();
 
