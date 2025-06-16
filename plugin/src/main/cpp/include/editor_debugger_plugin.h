@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  openxr_hybrid_app.h                                                   */
+/*  editor_debugger_plugin.h                                              */
 /**************************************************************************/
 /*                       This file is part of:                            */
 /*                              GODOT XR                                  */
@@ -29,39 +29,24 @@
 
 #pragma once
 
-#include <godot_cpp/classes/object.hpp>
-#include <godot_cpp/core/binder_common.hpp>
+#include <godot_cpp/classes/editor_debugger_plugin.hpp>
 
 using namespace godot;
 
-// Singleton providing an API for hybrid apps.
-class OpenXRHybridApp : public Object {
-	GDCLASS(OpenXRHybridApp, Object);
+class OpenXRVendorsEditorDebuggerPlugin : public EditorDebuggerPlugin {
+	GDCLASS(OpenXRVendorsEditorDebuggerPlugin, EditorDebuggerPlugin)
 
-	static OpenXRHybridApp *singleton;
-
-	bool is_hybrid_app_enabled() const;
+	PackedStringArray override_arguments;
 
 protected:
 	static void _bind_methods();
 
 public:
-	enum HybridMode {
-		HYBRID_MODE_NONE = -1,
-		HYBRID_MODE_IMMERSIVE = 0,
-		HYBRID_MODE_PANEL = 1,
-	};
+	virtual bool _has_capture(const String &p_capture) const override;
+	virtual bool _capture(const String &p_message, const Array &p_data, int32_t p_session_id) override;
 
-	static OpenXRHybridApp *get_singleton();
+	inline const PackedStringArray &get_override_arguments() const { return override_arguments; }
+	inline void clear_override_arguments() { override_arguments.clear(); }
 
-	bool is_hybrid_app() const;
-	HybridMode get_mode() const;
-
-	bool switch_mode(HybridMode p_mode, const String &p_data);
-	String get_launch_data() const;
-
-	OpenXRHybridApp();
-	virtual ~OpenXRHybridApp();
+	OpenXRVendorsEditorDebuggerPlugin();
 };
-
-VARIANT_ENUM_CAST(OpenXRHybridApp::HybridMode);

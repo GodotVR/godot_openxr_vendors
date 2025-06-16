@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  openxr_hybrid_app.h                                                   */
+/*  editor_debugger_plugin.cpp                                                     */
 /**************************************************************************/
 /*                       This file is part of:                            */
 /*                              GODOT XR                                  */
@@ -27,41 +27,27 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#pragma once
+#include "editor_debugger_plugin.h"
 
-#include <godot_cpp/classes/object.hpp>
-#include <godot_cpp/core/binder_common.hpp>
+#include <godot_cpp/classes/editor_interface.hpp>
 
-using namespace godot;
+void OpenXRVendorsEditorDebuggerPlugin::_bind_methods() {
+}
 
-// Singleton providing an API for hybrid apps.
-class OpenXRHybridApp : public Object {
-	GDCLASS(OpenXRHybridApp, Object);
+bool OpenXRVendorsEditorDebuggerPlugin::_has_capture(const String &p_capture) const {
+	return p_capture == "godot_openxr_vendors";
+}
 
-	static OpenXRHybridApp *singleton;
+bool OpenXRVendorsEditorDebuggerPlugin::_capture(const String &p_message, const Array &p_data, int32_t p_session_id) {
+	if (p_message == "godot_openxr_vendors:request_run_scene") {
+		ERR_FAIL_COND_V(p_data.size() != 2, false);
+		override_arguments = p_data[1];
+		callable_mp(EditorInterface::get_singleton(), &EditorInterface::play_custom_scene).call_deferred(p_data[0]);
+		return true;
+	}
 
-	bool is_hybrid_app_enabled() const;
+	return false;
+}
 
-protected:
-	static void _bind_methods();
-
-public:
-	enum HybridMode {
-		HYBRID_MODE_NONE = -1,
-		HYBRID_MODE_IMMERSIVE = 0,
-		HYBRID_MODE_PANEL = 1,
-	};
-
-	static OpenXRHybridApp *get_singleton();
-
-	bool is_hybrid_app() const;
-	HybridMode get_mode() const;
-
-	bool switch_mode(HybridMode p_mode, const String &p_data);
-	String get_launch_data() const;
-
-	OpenXRHybridApp();
-	virtual ~OpenXRHybridApp();
-};
-
-VARIANT_ENUM_CAST(OpenXRHybridApp::HybridMode);
+OpenXRVendorsEditorDebuggerPlugin::OpenXRVendorsEditorDebuggerPlugin() {
+}

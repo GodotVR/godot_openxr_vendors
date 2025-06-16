@@ -41,6 +41,7 @@
 #include <godot_cpp/classes/http_request.hpp>
 #include <godot_cpp/classes/line_edit.hpp>
 #include <godot_cpp/classes/popup_menu.hpp>
+#include <godot_cpp/classes/project_settings.hpp>
 #include <godot_cpp/classes/scene_tree.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
 
@@ -93,6 +94,9 @@ void OpenXRVendorsEditorPlugin::_notification(uint32_t p_what) {
 			Ref<PicoEditorExportPlugin> pico_export_plugin;
 			pico_export_plugin.instantiate();
 			_add_export_plugin(pico_export_plugin);
+
+			debugger_plugin.instantiate();
+			add_debugger_plugin(debugger_plugin);
 		} break;
 
 		case NOTIFICATION_EXIT_TREE: {
@@ -102,6 +106,9 @@ void OpenXRVendorsEditorPlugin::_notification(uint32_t p_what) {
 				remove_export_plugin(export_plugin);
 			}
 			export_plugins.clear();
+
+			remove_debugger_plugin(debugger_plugin);
+			debugger_plugin.unref();
 		} break;
 	}
 }
@@ -284,6 +291,39 @@ void OpenXRVendorsEditorPlugin::open_export_dialog() {
 	}
 
 	project_menu->emit_signal("id_pressed", item_id);
+}
+
+PackedStringArray OpenXRVendorsEditorPlugin::_run_scene(const String &p_scene, const PackedStringArray &p_args) const {
+	if (!ProjectSettings::get_singleton()->get_setting_with_override("xr/hybrid_app/enabled")) {
+		return p_args;
+	}
+
+	// If the XR mode is set explicitly, then let it be.
+	if (p_args.find("--xr-mode") != -1) {
+		return p_args;
+	}
+
+	const PackedStringArray &override_arguments = debugger_plugin->get_override_arguments();
+
+	PackedStringArray new_args = p_args;
+	if (override_arguments.size() > 0) {
+		new_args.append_array(override_arguments);
+		debugger_plugin->clear_override_arguments();
+	} else {
+		OpenXRHybridApp::HybridMode hybrid_mode = (OpenXRHybridApp::HybridMode)(int)ProjectSettings::get_singleton()->get_setting_with_override("xr/hybrid_app/launch_mode");
+
+		if (hybrid_mode == OpenXRHybridApp::HYBRID_MODE_IMMERSIVE) {
+			new_args.push_back("--xr-mode");
+			new_args.push_back("on");
+			new_args.push_back("--xr_mode_openxr");
+		} else if (hybrid_mode == OpenXRHybridApp::HYBRID_MODE_PANEL) {
+			new_args.push_back("--xr-mode");
+			new_args.push_back("off");
+			new_args.push_back("--xr_mode_regular");
+		}
+	}
+
+	return new_args;
 }
 
 OpenXRVendorsEditorPlugin::OpenXRVendorsEditorPlugin() {

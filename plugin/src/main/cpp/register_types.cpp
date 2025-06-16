@@ -430,6 +430,7 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 		case MODULE_INITIALIZATION_LEVEL_EDITOR: {
 			GDREGISTER_INTERNAL_CLASS(OpenXRVendorsEditorPlugin);
 			GDREGISTER_INTERNAL_CLASS(OpenXRVendorsEditorExportPlugin);
+			GDREGISTER_INTERNAL_CLASS(OpenXRVendorsEditorDebuggerPlugin);
 
 			GDREGISTER_INTERNAL_CLASS(XrProjectSetupDialog);
 
