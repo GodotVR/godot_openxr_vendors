@@ -95,6 +95,14 @@ jobs:
       - name: Install scons
         run: |
           python -m pip install scons==4.0.0
+      - name: Apply godot-cpp patches
+        run: |
+          cd aar/thirdparty/godot-cpp
+          for f in ../godot_cpp_patches/*.patch; do
+            patch -p1 < $f
+          done
+          cd ../..
+        if: matrix.platform != 'windows'
       - name: Create extension library
         run: |
           cd aar
