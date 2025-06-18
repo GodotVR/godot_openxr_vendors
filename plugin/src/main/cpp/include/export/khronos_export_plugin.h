@@ -38,8 +38,8 @@ using namespace godot;
 static const int KHRONOS_VENDOR_OTHER = 0;
 static const int KHRONOS_VENDOR_HTC = 1;
 
-class KhronosEditorExportPlugin : public OpenXREditorExportPlugin {
-	GDCLASS(KhronosEditorExportPlugin, OpenXREditorExportPlugin)
+class KhronosEditorExportPlugin : public OpenXRVendorsEditorExportPlugin {
+	GDCLASS(KhronosEditorExportPlugin, OpenXRVendorsEditorExportPlugin)
 
 public:
 	KhronosEditorExportPlugin();
@@ -65,18 +65,4 @@ protected:
 	Dictionary _khronos_vendors_option;
 	Dictionary _tracker_option;
 	Dictionary _lip_expression_option;
-};
-
-class KhronosEditorPlugin : public EditorPlugin {
-	GDCLASS(KhronosEditorPlugin, EditorPlugin)
-
-public:
-	void _enter_tree() override;
-	void _exit_tree() override;
-
-protected:
-	static void _bind_methods();
-
-private:
-	Ref<KhronosEditorExportPlugin> khronos_export_plugin;
 };

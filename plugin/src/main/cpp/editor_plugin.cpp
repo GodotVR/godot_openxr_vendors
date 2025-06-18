@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  magicleap_editor_plugin.h                                             */
+/*  editor_plugin.cpp                                                     */
 /**************************************************************************/
 /*                       This file is part of:                            */
 /*                              GODOT XR                                  */
@@ -27,24 +27,52 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#pragma once
+#include "editor_plugin.h"
 
-#include <godot_cpp/classes/editor_plugin.hpp>
-
-#include "export_plugin.h"
+#include "export/khronos_export_plugin.h"
+#include "export/lynx_export_plugin.h"
+#include "export/magicleap_export_plugin.h"
+#include "export/meta_export_plugin.h"
+#include "export/pico_export_plugin.h"
 
 using namespace godot;
 
-class MagicleapEditorExportPlugin : public OpenXRVendorsEditorExportPlugin {
-	GDCLASS(MagicleapEditorExportPlugin, OpenXRVendorsEditorExportPlugin)
+void OpenXRVendorsEditorPlugin::_add_export_plugin(const Ref<EditorExportPlugin> &p_plugin) {
+	add_export_plugin(p_plugin);
+	export_plugins.push_back(p_plugin);
+}
 
-public:
-	MagicleapEditorExportPlugin();
+void OpenXRVendorsEditorPlugin::_bind_methods() {
+}
 
-	TypedArray<Dictionary> _get_export_options(const Ref<EditorExportPlatform> &platform) const override;
+void OpenXRVendorsEditorPlugin::_enter_tree() {
+	Ref<KhronosEditorExportPlugin> khronos_export_plugin;
+	khronos_export_plugin.instantiate();
+	_add_export_plugin(khronos_export_plugin);
 
-	String _get_android_manifest_element_contents(const Ref<EditorExportPlatform> &platform, bool debug) const override;
+	Ref<LynxEditorExportPlugin> lynx_export_plugin;
+	lynx_export_plugin.instantiate();
+	_add_export_plugin(lynx_export_plugin);
 
-protected:
-	static void _bind_methods();
-};
+	Ref<MagicleapEditorExportPlugin> magicleap_export_plugin;
+	magicleap_export_plugin.instantiate();
+	_add_export_plugin(magicleap_export_plugin);
+
+	Ref<MetaEditorExportPlugin> meta_export_plugin;
+	meta_export_plugin.instantiate();
+	_add_export_plugin(meta_export_plugin);
+
+	Ref<PicoEditorExportPlugin> pico_export_plugin;
+	pico_export_plugin.instantiate();
+	_add_export_plugin(pico_export_plugin);
+}
+
+void OpenXRVendorsEditorPlugin::_exit_tree() {
+	for (const Ref<EditorExportPlugin> &export_plugin : export_plugins) {
+		remove_export_plugin(export_plugin);
+	}
+	export_plugins.clear();
+}
+
+OpenXRVendorsEditorPlugin::OpenXRVendorsEditorPlugin() {
+}

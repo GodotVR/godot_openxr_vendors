@@ -33,21 +33,6 @@
 
 using namespace godot;
 
-void MagicleapEditorPlugin::_bind_methods() {}
-
-void MagicleapEditorPlugin::_enter_tree() {
-	// Initialize the editor export plugin
-	magicleap_export_plugin.instantiate();
-	add_export_plugin(magicleap_export_plugin);
-}
-
-void MagicleapEditorPlugin::_exit_tree() {
-	// Clean up the editor export plugin
-	remove_export_plugin(magicleap_export_plugin);
-
-	magicleap_export_plugin.unref();
-}
-
 MagicleapEditorExportPlugin::MagicleapEditorExportPlugin() {
 	set_vendor_name(MAGICLEAP_VENDOR_NAME);
 }

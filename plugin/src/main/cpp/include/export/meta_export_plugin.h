@@ -35,8 +35,8 @@
 
 using namespace godot;
 
-class MetaEditorExportPlugin : public OpenXREditorExportPlugin {
-	GDCLASS(MetaEditorExportPlugin, OpenXREditorExportPlugin)
+class MetaEditorExportPlugin : public OpenXRVendorsEditorExportPlugin {
+	GDCLASS(MetaEditorExportPlugin, OpenXRVendorsEditorExportPlugin)
 
 	static const int EYE_TRACKING_OPTIONAL_VALUE = 1;
 	static const int EYE_TRACKING_REQUIRED_VALUE = 2;
@@ -106,18 +106,4 @@ private:
 	void _project_settings_changed() {
 		_should_update_options = true;
 	}
-};
-
-class MetaEditorPlugin : public EditorPlugin {
-	GDCLASS(MetaEditorPlugin, EditorPlugin)
-
-public:
-	void _enter_tree() override;
-	void _exit_tree() override;
-
-protected:
-	static void _bind_methods();
-
-private:
-	Ref<MetaEditorExportPlugin> meta_export_plugin;
 };

@@ -68,11 +68,11 @@ static const int MANIFEST_FALSE_VALUE = 0;
 static const int MANIFEST_TRUE_VALUE = 1;
 
 /// Base class for the vendor editor export plugin
-class OpenXREditorExportPlugin : public EditorExportPlugin {
-	GDCLASS(OpenXREditorExportPlugin, EditorExportPlugin)
+class OpenXRVendorsEditorExportPlugin : public EditorExportPlugin {
+	GDCLASS(OpenXRVendorsEditorExportPlugin, EditorExportPlugin)
 
 public:
-	OpenXREditorExportPlugin();
+	OpenXRVendorsEditorExportPlugin();
 
 	String _get_name() const override;
 

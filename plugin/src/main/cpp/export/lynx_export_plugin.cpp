@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  lynx_editor_plugin.cpp                                                */
+/*  lynx_export_plugin.cpp                                                */
 /**************************************************************************/
 /*                       This file is part of:                            */
 /*                              GODOT XR                                  */
@@ -31,18 +31,9 @@
 
 using namespace godot;
 
-void LynxEditorPlugin::_bind_methods() {}
-
-void LynxEditorPlugin::_enter_tree() {
-	// Initialize the editor export plugin
-	lynx_export_plugin.instantiate();
-	lynx_export_plugin->set_vendor_name(LYNX_VENDOR_NAME);
-	add_export_plugin(lynx_export_plugin);
+void LynxEditorExportPlugin::_bind_methods() {
 }
 
-void LynxEditorPlugin::_exit_tree() {
-	// Clean up the editor export plugin
-	remove_export_plugin(lynx_export_plugin);
-
-	lynx_export_plugin.unref();
+LynxEditorExportPlugin::LynxEditorExportPlugin() {
+	set_vendor_name(LYNX_VENDOR_NAME);
 }

@@ -34,12 +34,12 @@
 
 using namespace godot;
 
-OpenXREditorExportPlugin::OpenXREditorExportPlugin() :
+OpenXRVendorsEditorExportPlugin::OpenXRVendorsEditorExportPlugin() :
 		_plugin_version(PLUGIN_VERSION) {}
 
-void OpenXREditorExportPlugin::_bind_methods() {}
+void OpenXRVendorsEditorExportPlugin::_bind_methods() {}
 
-Dictionary OpenXREditorExportPlugin::_generate_export_option(const String &name, const String &class_name,
+Dictionary OpenXRVendorsEditorExportPlugin::_generate_export_option(const String &name, const String &class_name,
 		Variant::Type type,
 		PropertyHint property_hint,
 		const String &hint_string,
@@ -62,24 +62,24 @@ Dictionary OpenXREditorExportPlugin::_generate_export_option(const String &name,
 	return export_option;
 }
 
-String OpenXREditorExportPlugin::_get_name() const {
+String OpenXRVendorsEditorExportPlugin::_get_name() const {
 	return "GodotOpenXR" + _vendor.capitalize();
 }
 
-String OpenXREditorExportPlugin::_get_android_aar_file_path(bool debug) const {
+String OpenXRVendorsEditorExportPlugin::_get_android_aar_file_path(bool debug) const {
 	const String debug_label = debug ? "debug" : "release";
 	return "res://addons/godotopenxrvendors/.bin/android/" + debug_label + "/godotopenxr-" + _vendor + "-" + debug_label + ".aar";
 }
 
-String OpenXREditorExportPlugin::_get_android_maven_central_dependency() const {
+String OpenXRVendorsEditorExportPlugin::_get_android_maven_central_dependency() const {
 	return "org.godotengine:godot-openxr-vendors-" + _vendor + ":" + _plugin_version;
 }
 
-String OpenXREditorExportPlugin::_get_vendor_toggle_option_name(const String &vendor_name) const {
+String OpenXRVendorsEditorExportPlugin::_get_vendor_toggle_option_name(const String &vendor_name) const {
 	return "xr_features/enable_" + vendor_name + "_plugin";
 }
 
-Dictionary OpenXREditorExportPlugin::_get_vendor_toggle_option(const String &vendor_name) const {
+Dictionary OpenXRVendorsEditorExportPlugin::_get_vendor_toggle_option(const String &vendor_name) const {
 	return _generate_export_option(
 			_get_vendor_toggle_option_name(vendor_name),
 			"",
@@ -91,18 +91,18 @@ Dictionary OpenXREditorExportPlugin::_get_vendor_toggle_option(const String &ven
 			true);
 }
 
-bool OpenXREditorExportPlugin::_is_hybrid_app_enabled() const {
+bool OpenXRVendorsEditorExportPlugin::_is_hybrid_app_enabled() const {
 	return ProjectSettings::get_singleton()->get_setting_with_override("xr/hybrid_app/enabled");
 }
 
-OpenXRHybridApp::HybridMode OpenXREditorExportPlugin::_get_hybrid_app_launch_mode() const {
+OpenXRHybridApp::HybridMode OpenXRVendorsEditorExportPlugin::_get_hybrid_app_launch_mode() const {
 	if (!_is_hybrid_app_enabled()) {
 		return OpenXRHybridApp::HYBRID_MODE_NONE;
 	}
 	return (OpenXRHybridApp::HybridMode)(int)ProjectSettings::get_singleton()->get_setting_with_override("xr/hybrid_app/launch_mode");
 }
 
-String OpenXREditorExportPlugin::_get_opening_activity_tag_for_panel_app() const {
+String OpenXRVendorsEditorExportPlugin::_get_opening_activity_tag_for_panel_app() const {
 	ProjectSettings *project_settings = ProjectSettings::get_singleton();
 
 	return vformat(
@@ -121,7 +121,7 @@ String OpenXREditorExportPlugin::_get_opening_activity_tag_for_panel_app() const
 			_bool_to_string(project_settings->get_setting_with_override("display/window/size/resizable")));
 }
 
-String OpenXREditorExportPlugin::_get_common_activity_intent_filter_contents() const {
+String OpenXRVendorsEditorExportPlugin::_get_common_activity_intent_filter_contents() const {
 	String contents;
 
 	if (_get_bool_option("package/show_in_app_library")) {
@@ -143,15 +143,15 @@ String OpenXREditorExportPlugin::_get_common_activity_intent_filter_contents() c
 	return contents;
 }
 
-bool OpenXREditorExportPlugin::_is_openxr_enabled() const {
+bool OpenXRVendorsEditorExportPlugin::_is_openxr_enabled() const {
 	return _get_int_option("xr_features/xr_mode", REGULAR_MODE_VALUE) == OPENXR_MODE_VALUE;
 }
 
-String OpenXREditorExportPlugin::_bool_to_string(bool p_value) const {
+String OpenXRVendorsEditorExportPlugin::_bool_to_string(bool p_value) const {
 	return p_value ? "true" : "false";
 }
 
-String OpenXREditorExportPlugin::_get_android_orientation_label(DisplayServer::ScreenOrientation screen_orientation) const {
+String OpenXRVendorsEditorExportPlugin::_get_android_orientation_label(DisplayServer::ScreenOrientation screen_orientation) const {
 	switch (screen_orientation) {
 		case DisplayServer::SCREEN_PORTRAIT:
 			return "portrait";
@@ -171,7 +171,7 @@ String OpenXREditorExportPlugin::_get_android_orientation_label(DisplayServer::S
 	}
 }
 
-TypedArray<Dictionary> OpenXREditorExportPlugin::_get_export_options(const Ref<EditorExportPlatform> &platform) const {
+TypedArray<Dictionary> OpenXRVendorsEditorExportPlugin::_get_export_options(const Ref<EditorExportPlatform> &platform) const {
 	TypedArray<Dictionary> export_options;
 	if (!_supports_platform(platform)) {
 		return export_options;
@@ -181,7 +181,7 @@ TypedArray<Dictionary> OpenXREditorExportPlugin::_get_export_options(const Ref<E
 	return export_options;
 }
 
-String OpenXREditorExportPlugin::_get_export_option_warning(const Ref<EditorExportPlatform> &platform, const String &option) const {
+String OpenXRVendorsEditorExportPlugin::_get_export_option_warning(const Ref<EditorExportPlatform> &platform, const String &option) const {
 	if (!_supports_platform(platform)) {
 		return "";
 	}
@@ -205,7 +205,7 @@ String OpenXREditorExportPlugin::_get_export_option_warning(const Ref<EditorExpo
 	return "";
 }
 
-Dictionary OpenXREditorExportPlugin::_get_export_options_overrides(const Ref<EditorExportPlatform> &platform) const {
+Dictionary OpenXRVendorsEditorExportPlugin::_get_export_options_overrides(const Ref<EditorExportPlatform> &platform) const {
 	Dictionary overrides;
 	if (!_supports_platform(platform) || !_is_vendor_plugin_enabled()) {
 		return overrides;
@@ -221,11 +221,11 @@ Dictionary OpenXREditorExportPlugin::_get_export_options_overrides(const Ref<Edi
 	return overrides;
 }
 
-bool OpenXREditorExportPlugin::_supports_platform(const Ref<EditorExportPlatform> &platform) const {
+bool OpenXRVendorsEditorExportPlugin::_supports_platform(const Ref<EditorExportPlatform> &platform) const {
 	return platform->is_class(EditorExportPlatformAndroid::get_class_static());
 }
 
-bool OpenXREditorExportPlugin::_get_bool_option(const String &option) const {
+bool OpenXRVendorsEditorExportPlugin::_get_bool_option(const String &option) const {
 	Variant option_enabled = get_option(option);
 	if (option_enabled.get_type() == Variant::Type::BOOL) {
 		return option_enabled;
@@ -233,7 +233,7 @@ bool OpenXREditorExportPlugin::_get_bool_option(const String &option) const {
 	return false;
 }
 
-int OpenXREditorExportPlugin::_get_int_option(const String &option, int default_value) const {
+int OpenXRVendorsEditorExportPlugin::_get_int_option(const String &option, int default_value) const {
 	Variant option_value = get_option(option);
 	if (option_value.get_type() == Variant::Type::INT) {
 		return option_value;
@@ -241,7 +241,7 @@ int OpenXREditorExportPlugin::_get_int_option(const String &option, int default_
 	return default_value;
 }
 
-PackedStringArray OpenXREditorExportPlugin::_get_android_dependencies(const Ref<EditorExportPlatform> &platform, bool debug) const {
+PackedStringArray OpenXRVendorsEditorExportPlugin::_get_android_dependencies(const Ref<EditorExportPlatform> &platform, bool debug) const {
 	PackedStringArray dependencies;
 	if (!_supports_platform(platform)) {
 		return dependencies;
@@ -254,7 +254,7 @@ PackedStringArray OpenXREditorExportPlugin::_get_android_dependencies(const Ref<
 	return dependencies;
 }
 
-PackedStringArray OpenXREditorExportPlugin::_get_android_libraries(const Ref<EditorExportPlatform> &platform, bool debug) const {
+PackedStringArray OpenXRVendorsEditorExportPlugin::_get_android_libraries(const Ref<EditorExportPlatform> &platform, bool debug) const {
 	PackedStringArray dependencies;
 	if (!_supports_platform(platform)) {
 		return dependencies;
@@ -267,7 +267,7 @@ PackedStringArray OpenXREditorExportPlugin::_get_android_libraries(const Ref<Edi
 	return dependencies;
 }
 
-PackedStringArray OpenXREditorExportPlugin::_get_android_dependencies_maven_repos(const Ref<EditorExportPlatform> &platform, bool debug) const {
+PackedStringArray OpenXRVendorsEditorExportPlugin::_get_android_dependencies_maven_repos(const Ref<EditorExportPlatform> &platform, bool debug) const {
 	PackedStringArray maven_repos;
 	if (!_supports_platform(platform)) {
 		return maven_repos;
@@ -279,7 +279,7 @@ PackedStringArray OpenXREditorExportPlugin::_get_android_dependencies_maven_repo
 	return maven_repos;
 }
 
-String OpenXREditorExportPlugin::_get_android_manifest_activity_element_contents(const Ref<EditorExportPlatform> &platform, bool debug) const {
+String OpenXRVendorsEditorExportPlugin::_get_android_manifest_activity_element_contents(const Ref<EditorExportPlatform> &platform, bool debug) const {
 	if (!_supports_platform(platform) || !_is_vendor_plugin_enabled()) {
 		return "";
 	}
