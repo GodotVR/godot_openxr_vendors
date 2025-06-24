@@ -38,6 +38,7 @@
 #include <godot_cpp/godot.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
 
+#include "editor_plugin.h"
 #include "export/export_plugin.h"
 #include "export/khronos_export_plugin.h"
 #include "export/lynx_export_plugin.h"
@@ -133,37 +134,37 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 		case MODULE_INITIALIZATION_LEVEL_CORE: {
 			add_plugin_project_settings();
 
-			ClassDB::register_class<OpenXRFbPassthroughExtensionWrapper>();
-			ClassDB::register_class<OpenXRFbRenderModelExtensionWrapper>();
-			ClassDB::register_class<OpenXRFbColorSpaceExtensionWrapper>();
-			ClassDB::register_class<OpenXRFbSceneCaptureExtensionWrapper>();
-			ClassDB::register_class<OpenXRFbSpatialEntityExtensionWrapper>();
-			ClassDB::register_class<OpenXRFbSpatialEntitySharingExtensionWrapper>();
-			ClassDB::register_class<OpenXRFbSpatialEntityStorageExtensionWrapper>();
-			ClassDB::register_class<OpenXRFbSpatialEntityStorageBatchExtensionWrapper>();
-			ClassDB::register_class<OpenXRFbSpatialEntityQueryExtensionWrapper>();
-			ClassDB::register_class<OpenXRFbSpatialEntityContainerExtensionWrapper>();
-			ClassDB::register_class<OpenXRFbSpatialEntityUserExtensionWrapper>();
-			ClassDB::register_class<OpenXRMetaRecommendedLayerResolutionExtensionWrapper>();
-			ClassDB::register_class<OpenXRMetaSpatialEntityMeshExtensionWrapper>();
-			ClassDB::register_class<OpenXRFbSceneExtensionWrapper>();
-			ClassDB::register_class<OpenXRFbFaceTrackingExtensionWrapper>();
-			ClassDB::register_class<OpenXRFbBodyTrackingExtensionWrapper>();
-			ClassDB::register_class<OpenXRFbHandTrackingMeshExtensionWrapper>();
-			ClassDB::register_class<OpenXRFbHandTrackingAimExtensionWrapper>();
-			ClassDB::register_class<OpenXRFbHandTrackingCapsulesExtensionWrapper>();
-			ClassDB::register_class<OpenXRFbCompositionLayerSecureContentExtensionWrapper>();
-			ClassDB::register_class<OpenXRFbCompositionLayerDepthTestExtensionWrapper>();
-			ClassDB::register_class<OpenXRFbCompositionLayerAlphaBlendExtensionWrapper>();
-			ClassDB::register_class<OpenXRFbCompositionLayerImageLayoutExtensionWrapper>();
-			ClassDB::register_class<OpenXRFbCompositionLayerSettingsExtensionWrapper>();
-			ClassDB::register_class<OpenXRFbAndroidSurfaceSwapchainCreateExtensionWrapper>();
-			ClassDB::register_class<OpenXRHtcFacialTrackingExtensionWrapper>();
-			ClassDB::register_class<OpenXRHtcPassthroughExtensionWrapper>();
+			GDREGISTER_CLASS(OpenXRFbPassthroughExtensionWrapper);
+			GDREGISTER_CLASS(OpenXRFbRenderModelExtensionWrapper);
+			GDREGISTER_CLASS(OpenXRFbColorSpaceExtensionWrapper);
+			GDREGISTER_CLASS(OpenXRFbSceneCaptureExtensionWrapper);
+			GDREGISTER_CLASS(OpenXRFbSpatialEntityExtensionWrapper);
+			GDREGISTER_CLASS(OpenXRFbSpatialEntitySharingExtensionWrapper);
+			GDREGISTER_CLASS(OpenXRFbSpatialEntityStorageExtensionWrapper);
+			GDREGISTER_CLASS(OpenXRFbSpatialEntityStorageBatchExtensionWrapper);
+			GDREGISTER_CLASS(OpenXRFbSpatialEntityQueryExtensionWrapper);
+			GDREGISTER_CLASS(OpenXRFbSpatialEntityContainerExtensionWrapper);
+			GDREGISTER_CLASS(OpenXRFbSpatialEntityUserExtensionWrapper);
+			GDREGISTER_CLASS(OpenXRMetaRecommendedLayerResolutionExtensionWrapper);
+			GDREGISTER_CLASS(OpenXRMetaSpatialEntityMeshExtensionWrapper);
+			GDREGISTER_CLASS(OpenXRFbSceneExtensionWrapper);
+			GDREGISTER_CLASS(OpenXRFbFaceTrackingExtensionWrapper);
+			GDREGISTER_CLASS(OpenXRFbBodyTrackingExtensionWrapper);
+			GDREGISTER_CLASS(OpenXRFbHandTrackingMeshExtensionWrapper);
+			GDREGISTER_CLASS(OpenXRFbHandTrackingAimExtensionWrapper);
+			GDREGISTER_CLASS(OpenXRFbHandTrackingCapsulesExtensionWrapper);
+			GDREGISTER_CLASS(OpenXRFbCompositionLayerSecureContentExtensionWrapper);
+			GDREGISTER_CLASS(OpenXRFbCompositionLayerDepthTestExtensionWrapper);
+			GDREGISTER_CLASS(OpenXRFbCompositionLayerAlphaBlendExtensionWrapper);
+			GDREGISTER_CLASS(OpenXRFbCompositionLayerImageLayoutExtensionWrapper);
+			GDREGISTER_CLASS(OpenXRFbCompositionLayerSettingsExtensionWrapper);
+			GDREGISTER_CLASS(OpenXRFbAndroidSurfaceSwapchainCreateExtensionWrapper);
+			GDREGISTER_CLASS(OpenXRHtcFacialTrackingExtensionWrapper);
+			GDREGISTER_CLASS(OpenXRHtcPassthroughExtensionWrapper);
 
 // @todo GH Issue 304: Remove check for meta headers when feature becomes part of OpenXR spec.
 #ifdef META_HEADERS_ENABLED
-			ClassDB::register_class<OpenXRMetaBoundaryVisibilityExtensionWrapper>();
+			GDREGISTER_CLASS(OpenXRMetaBoundaryVisibilityExtensionWrapper);
 #endif // META_HEADERS_ENABLED
 
 			if (_get_bool_project_setting("xr/openxr/extensions/meta/passthrough")) {
@@ -255,8 +256,8 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 
 			// Only works with Godot 4.5 or later.
 			if (godot::internal::godot_version.minor >= 5) {
-				ClassDB::register_class<OpenXRFbSpaceWarpExtensionWrapper>();
-				ClassDB::register_class<OpenXRMetaEnvironmentDepthExtensionWrapper>();
+				GDREGISTER_CLASS(OpenXRFbSpaceWarpExtensionWrapper);
+				GDREGISTER_CLASS(OpenXRMetaEnvironmentDepthExtensionWrapper);
 
 				if (_get_bool_project_setting("xr/openxr/extensions/meta/application_space_warp")) {
 					_register_extension_with_openxr(OpenXRFbSpaceWarpExtensionWrapper::get_singleton());
@@ -292,18 +293,18 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			_register_extension_as_singleton(OpenXRMetaBoundaryVisibilityExtensionWrapper::get_singleton());
 #endif // META_HEADERS_ENABLED
 
-			ClassDB::register_class<OpenXRFbRenderModel>();
-			ClassDB::register_class<OpenXRFbHandTrackingMesh>();
-			ClassDB::register_class<OpenXRFbSceneManager>();
-			ClassDB::register_class<OpenXRFbSpatialAnchorManager>();
-			ClassDB::register_class<OpenXRFbSpatialEntity>();
-			ClassDB::register_class<OpenXRFbSpatialEntityBatch>();
-			ClassDB::register_class<OpenXRFbSpatialEntityQuery>();
-			ClassDB::register_class<OpenXRFbSpatialEntityUser>();
-			ClassDB::register_class<OpenXRFbPassthroughGeometry>();
-			ClassDB::register_class<OpenXRMetaPassthroughColorLut>();
+			GDREGISTER_CLASS(OpenXRFbRenderModel);
+			GDREGISTER_CLASS(OpenXRFbHandTrackingMesh);
+			GDREGISTER_CLASS(OpenXRFbSceneManager);
+			GDREGISTER_CLASS(OpenXRFbSpatialAnchorManager);
+			GDREGISTER_CLASS(OpenXRFbSpatialEntity);
+			GDREGISTER_CLASS(OpenXRFbSpatialEntityBatch);
+			GDREGISTER_CLASS(OpenXRFbSpatialEntityQuery);
+			GDREGISTER_CLASS(OpenXRFbSpatialEntityUser);
+			GDREGISTER_CLASS(OpenXRFbPassthroughGeometry);
+			GDREGISTER_CLASS(OpenXRMetaPassthroughColorLut);
 
-			ClassDB::register_class<OpenXRHybridApp>();
+			GDREGISTER_CLASS(OpenXRHybridApp);
 			Engine::get_singleton()->register_singleton("OpenXRHybridApp", OpenXRHybridApp::get_singleton());
 
 			// Only works with Godot 4.5 or later.
@@ -311,31 +312,21 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 				_register_extension_as_singleton(OpenXRFbSpaceWarpExtensionWrapper::get_singleton());
 				_register_extension_as_singleton(OpenXRMetaEnvironmentDepthExtensionWrapper::get_singleton());
 
-				ClassDB::register_class<OpenXRMetaEnvironmentDepth>();
+				GDREGISTER_CLASS(OpenXRMetaEnvironmentDepth);
 			}
 		} break;
 
 		case MODULE_INITIALIZATION_LEVEL_EDITOR: {
-			ClassDB::register_class<OpenXREditorExportPlugin>();
+			GDREGISTER_INTERNAL_CLASS(OpenXRVendorsEditorPlugin);
+			GDREGISTER_INTERNAL_CLASS(OpenXRVendorsEditorExportPlugin);
 
-			ClassDB::register_class<KhronosEditorExportPlugin>();
-			ClassDB::register_class<KhronosEditorPlugin>();
-			EditorPlugins::add_by_type<KhronosEditorPlugin>();
+			GDREGISTER_INTERNAL_CLASS(KhronosEditorExportPlugin);
+			GDREGISTER_INTERNAL_CLASS(LynxEditorExportPlugin);
+			GDREGISTER_INTERNAL_CLASS(MagicleapEditorExportPlugin);
+			GDREGISTER_INTERNAL_CLASS(MetaEditorExportPlugin);
+			GDREGISTER_INTERNAL_CLASS(PicoEditorExportPlugin);
 
-			ClassDB::register_class<LynxEditorPlugin>();
-			EditorPlugins::add_by_type<LynxEditorPlugin>();
-
-			ClassDB::register_class<MetaEditorExportPlugin>();
-			ClassDB::register_class<MetaEditorPlugin>();
-			EditorPlugins::add_by_type<MetaEditorPlugin>();
-
-			ClassDB::register_class<PicoEditorExportPlugin>();
-			ClassDB::register_class<PicoEditorPlugin>();
-			EditorPlugins::add_by_type<PicoEditorPlugin>();
-
-			ClassDB::register_class<MagicleapEditorExportPlugin>();
-			ClassDB::register_class<MagicleapEditorPlugin>();
-			EditorPlugins::add_by_type<MagicleapEditorPlugin>();
+			EditorPlugins::add_by_type<OpenXRVendorsEditorPlugin>();
 
 			// Only works with Godot 4.5 or later.
 			if (godot::internal::godot_version.minor >= 5) {

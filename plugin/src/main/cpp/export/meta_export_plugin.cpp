@@ -34,21 +34,6 @@
 
 using namespace godot;
 
-void MetaEditorPlugin::_bind_methods() {}
-
-void MetaEditorPlugin::_enter_tree() {
-	// Initialize the editor export plugin
-	meta_export_plugin.instantiate();
-	add_export_plugin(meta_export_plugin);
-}
-
-void MetaEditorPlugin::_exit_tree() {
-	// Clean up the editor export plugin
-	remove_export_plugin(meta_export_plugin);
-
-	meta_export_plugin.unref();
-}
-
 MetaEditorExportPlugin::MetaEditorExportPlugin() {
 	set_vendor_name(META_VENDOR_NAME);
 
@@ -312,7 +297,7 @@ String MetaEditorExportPlugin::_get_export_option_warning(const Ref<EditorExport
 		}
 	}
 
-	return OpenXREditorExportPlugin::_get_export_option_warning(platform, option);
+	return OpenXRVendorsEditorExportPlugin::_get_export_option_warning(platform, option);
 }
 
 bool MetaEditorExportPlugin::_get_export_option_visibility(const Ref<EditorExportPlatform> &p_platform, const String &p_option) const {

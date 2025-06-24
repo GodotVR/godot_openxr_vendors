@@ -33,21 +33,6 @@
 
 using namespace godot;
 
-void PicoEditorPlugin::_bind_methods() {}
-
-void PicoEditorPlugin::_enter_tree() {
-	// Initialize the editor export plugin
-	pico_export_plugin.instantiate();
-	add_export_plugin(pico_export_plugin);
-}
-
-void PicoEditorPlugin::_exit_tree() {
-	// Clean up the editor export plugin
-	remove_export_plugin(pico_export_plugin);
-
-	pico_export_plugin.unref();
-}
-
 PicoEditorExportPlugin::PicoEditorExportPlugin() {
 	set_vendor_name(PICO_VENDOR_NAME);
 
@@ -127,7 +112,7 @@ String PicoEditorExportPlugin::_get_export_option_warning(const Ref<EditorExport
 		}
 	}
 
-	return OpenXREditorExportPlugin::_get_export_option_warning(platform, option);
+	return OpenXRVendorsEditorExportPlugin::_get_export_option_warning(platform, option);
 }
 
 bool PicoEditorExportPlugin::_get_export_option_visibility(const Ref<EditorExportPlatform> &p_platform, const String &p_option) const {

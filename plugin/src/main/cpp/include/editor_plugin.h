@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  magicleap_editor_plugin.h                                             */
+/*  editor_plugin.h                                                       */
 /**************************************************************************/
 /*                       This file is part of:                            */
 /*                              GODOT XR                                  */
@@ -29,22 +29,24 @@
 
 #pragma once
 
+#include <godot_cpp/classes/editor_export_plugin.hpp>
 #include <godot_cpp/classes/editor_plugin.hpp>
-
-#include "export_plugin.h"
 
 using namespace godot;
 
-class MagicleapEditorExportPlugin : public OpenXRVendorsEditorExportPlugin {
-	GDCLASS(MagicleapEditorExportPlugin, OpenXRVendorsEditorExportPlugin)
+class OpenXRVendorsEditorPlugin : public EditorPlugin {
+	GDCLASS(OpenXRVendorsEditorPlugin, EditorPlugin)
 
-public:
-	MagicleapEditorExportPlugin();
+	Vector<Ref<EditorExportPlugin>> export_plugins;
 
-	TypedArray<Dictionary> _get_export_options(const Ref<EditorExportPlatform> &platform) const override;
-
-	String _get_android_manifest_element_contents(const Ref<EditorExportPlatform> &platform, bool debug) const override;
+	void _add_export_plugin(const Ref<EditorExportPlugin> &p_plugin);
 
 protected:
 	static void _bind_methods();
+
+public:
+	void _enter_tree() override;
+	void _exit_tree() override;
+
+	OpenXRVendorsEditorPlugin();
 };

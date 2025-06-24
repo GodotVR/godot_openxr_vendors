@@ -33,21 +33,6 @@
 
 using namespace godot;
 
-void KhronosEditorPlugin::_bind_methods() {}
-
-void KhronosEditorPlugin::_enter_tree() {
-	// Initialize the editor export plugin
-	khronos_export_plugin.instantiate();
-	add_export_plugin(khronos_export_plugin);
-}
-
-void KhronosEditorPlugin::_exit_tree() {
-	// Clean up the editor export plugin
-	remove_export_plugin(khronos_export_plugin);
-
-	khronos_export_plugin.unref();
-}
-
 KhronosEditorExportPlugin::KhronosEditorExportPlugin() {
 	set_vendor_name(KHRONOS_VENDOR_NAME);
 
@@ -103,7 +88,7 @@ Dictionary KhronosEditorExportPlugin::_get_export_options_overrides(const Ref<go
 		return Dictionary();
 	}
 
-	Dictionary overrides = OpenXREditorExportPlugin::_get_export_options_overrides(p_platform);
+	Dictionary overrides = OpenXRVendorsEditorExportPlugin::_get_export_options_overrides(p_platform);
 
 	if (!_is_vendor_plugin_enabled()) {
 		overrides["khronos_xr_features/vendors"] = KHRONOS_VENDOR_OTHER;
@@ -152,7 +137,7 @@ String KhronosEditorExportPlugin::_get_export_option_warning(const Ref<EditorExp
 		}
 	}
 
-	return OpenXREditorExportPlugin::_get_export_option_warning(platform, option);
+	return OpenXRVendorsEditorExportPlugin::_get_export_option_warning(platform, option);
 }
 
 String KhronosEditorExportPlugin::_get_android_manifest_activity_element_contents(const Ref<EditorExportPlatform> &platform, bool debug) const {

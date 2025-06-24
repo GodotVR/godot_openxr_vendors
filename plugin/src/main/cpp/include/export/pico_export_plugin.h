@@ -35,8 +35,8 @@
 
 using namespace godot;
 
-class PicoEditorExportPlugin : public OpenXREditorExportPlugin {
-	GDCLASS(PicoEditorExportPlugin, OpenXREditorExportPlugin)
+class PicoEditorExportPlugin : public OpenXRVendorsEditorExportPlugin {
+	GDCLASS(PicoEditorExportPlugin, OpenXRVendorsEditorExportPlugin)
 
 	static const int MANIFEST_FALSE_VALUE = 0;
 	static const int MANIFEST_TRUE_VALUE = 1;
@@ -77,18 +77,4 @@ private:
 	void _project_settings_changed() {
 		_should_update_options = true;
 	}
-};
-
-class PicoEditorPlugin : public EditorPlugin {
-	GDCLASS(PicoEditorPlugin, EditorPlugin)
-
-public:
-	void _enter_tree() override;
-	void _exit_tree() override;
-
-protected:
-	static void _bind_methods();
-
-private:
-	Ref<PicoEditorExportPlugin> pico_export_plugin;
 };

@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  lynx_editor_plugin.h                                                  */
+/*  lynx_export_plugin.h                                                  */
 /**************************************************************************/
 /*                       This file is part of:                            */
 /*                              GODOT XR                                  */
@@ -35,16 +35,12 @@
 
 using namespace godot;
 
-class LynxEditorPlugin : public EditorPlugin {
-	GDCLASS(LynxEditorPlugin, EditorPlugin)
-
-public:
-	void _enter_tree() override;
-	void _exit_tree() override;
+class LynxEditorExportPlugin : public OpenXRVendorsEditorExportPlugin {
+	GDCLASS(LynxEditorExportPlugin, OpenXRVendorsEditorExportPlugin)
 
 protected:
 	static void _bind_methods();
 
-private:
-	Ref<OpenXREditorExportPlugin> lynx_export_plugin;
+public:
+	LynxEditorExportPlugin();
 };
