@@ -32,7 +32,7 @@
 #include <godot_cpp/classes/object.hpp>
 #include <godot_cpp/classes/open_xrapi_extension.hpp>
 #include <godot_cpp/classes/xr_server.hpp>
-#include <godot_cpp/variant/utility_functions.hpp>
+#include <godot_cpp/templates/local_vector.hpp>
 
 using namespace godot;
 
@@ -41,8 +41,8 @@ struct JointMapEntry {
 	/// Joint in Godot XRBodyTracker
 	XRBodyTracker::Joint xr_joint;
 
-	/// Joint in OpenXR XrBodyJointFB
-	XrBodyJointFB fb_joint;
+	/// Joint in OpenXR XrBodyJointFB or XrFullBodyJointMETA
+	int fb_joint;
 
 	/// Joint rotation
 	Quaternion rotation;
@@ -124,6 +124,16 @@ static const JointMapEntry joint_table[] = {
 	{ XRBodyTracker::JOINT_RIGHT_PINKY_FINGER_PHALANX_INTERMEDIATE, XR_BODY_JOINT_RIGHT_HAND_LITTLE_INTERMEDIATE_FB, Quaternion(0.5, 0.5, -0.5, 0.5) },
 	{ XRBodyTracker::JOINT_RIGHT_PINKY_FINGER_PHALANX_DISTAL, XR_BODY_JOINT_RIGHT_HAND_LITTLE_DISTAL_FB, Quaternion(0.5, 0.5, -0.5, 0.5) },
 	{ XRBodyTracker::JOINT_RIGHT_PINKY_FINGER_TIP, XR_BODY_JOINT_RIGHT_HAND_LITTLE_TIP_FB, Quaternion(0.5, 0.5, -0.5, 0.5) },
+
+	// Lower body joints
+	{ XRBodyTracker::JOINT_LEFT_UPPER_LEG, XR_FULL_BODY_JOINT_LEFT_UPPER_LEG_META, Quaternion(0.5, -0.5, 0.5, 0.5) },
+	{ XRBodyTracker::JOINT_LEFT_LOWER_LEG, XR_FULL_BODY_JOINT_LEFT_LOWER_LEG_META, Quaternion(-0.5, 0.5, 0.5, 0.5) },
+	{ XRBodyTracker::JOINT_LEFT_FOOT, XR_FULL_BODY_JOINT_LEFT_FOOT_ANKLE_META, Quaternion(-0.5, -0.5, -0.5, 0.5) },
+	{ XRBodyTracker::JOINT_LEFT_TOES, XR_FULL_BODY_JOINT_LEFT_FOOT_BALL_META, Quaternion(0.5, 0.5, -0.5, 0.5) },
+	{ XRBodyTracker::JOINT_RIGHT_UPPER_LEG, XR_FULL_BODY_JOINT_RIGHT_UPPER_LEG_META, Quaternion(-0.5, -0.5, -0.5, 0.5) },
+	{ XRBodyTracker::JOINT_RIGHT_LOWER_LEG, XR_FULL_BODY_JOINT_RIGHT_LOWER_LEG_META, Quaternion(0.5, 0.5, -0.5, 0.5) },
+	{ XRBodyTracker::JOINT_RIGHT_FOOT, XR_FULL_BODY_JOINT_RIGHT_FOOT_ANKLE_META, Quaternion(0.5, -0.5, 0.5, 0.5) },
+	{ XRBodyTracker::JOINT_RIGHT_TOES, XR_FULL_BODY_JOINT_RIGHT_FOOT_BALL_META, Quaternion(-0.5, 0.5, 0.5, 0.5) },
 };
 
 OpenXRFbBodyTrackingExtensionWrapper *OpenXRFbBodyTrackingExtensionWrapper::singleton = nullptr;
@@ -140,26 +150,80 @@ OpenXRFbBodyTrackingExtensionWrapper::OpenXRFbBodyTrackingExtensionWrapper() :
 	ERR_FAIL_COND_MSG(singleton != nullptr, "An OpenXRFbBodyTrackingExtensionWrapper singleton already exists.");
 
 	request_extensions[XR_FB_BODY_TRACKING_EXTENSION_NAME] = &fb_body_tracking_ext;
+	request_extensions[XR_META_BODY_TRACKING_FULL_BODY_EXTENSION_NAME] = &meta_body_tracking_full_body_ext;
+
+// @todo GH Issue 304: Remove check for meta headers when feature becomes part of OpenXR spec.
+#ifdef META_HEADERS_ENABLED
+	request_extensions[XR_META_BODY_TRACKING_FIDELITY_EXTENSION_NAME] = &meta_body_tracking_fidelity_ext;
+	request_extensions[XR_META_BODY_TRACKING_CALIBRATION_EXTENSION_NAME] = &meta_body_tracking_calibration_ext;
+#endif // META_HEADERS_ENABLED
 
 	singleton = this;
 }
 
 OpenXRFbBodyTrackingExtensionWrapper::~OpenXRFbBodyTrackingExtensionWrapper() {
 	cleanup();
+	singleton = nullptr;
 }
 
 void OpenXRFbBodyTrackingExtensionWrapper::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("is_full_body_tracking_supported"), &OpenXRFbBodyTrackingExtensionWrapper::is_full_body_tracking_supported);
+
+// @todo GH Issue 304: Remove check for meta headers when feature becomes part of OpenXR spec.
+#ifdef META_HEADERS_ENABLED
+	ClassDB::bind_method(D_METHOD("is_body_tracking_fidelity_supported"), &OpenXRFbBodyTrackingExtensionWrapper::is_body_tracking_fidelity_supported);
+	ClassDB::bind_method(D_METHOD("request_body_tracking_fidelity", "fidelity"), &OpenXRFbBodyTrackingExtensionWrapper::request_body_tracking_fidelity);
+	ClassDB::bind_method(D_METHOD("get_body_tracking_fidelity_status"), &OpenXRFbBodyTrackingExtensionWrapper::get_body_tracking_fidelity_status);
+
+	ClassDB::bind_method(D_METHOD("is_body_tracking_height_override_supported"), &OpenXRFbBodyTrackingExtensionWrapper::is_body_tracking_height_override_supported);
+	ClassDB::bind_method(D_METHOD("suggest_body_tracking_height_override", "body_height"), &OpenXRFbBodyTrackingExtensionWrapper::suggest_body_tracking_height_override);
+	ClassDB::bind_method(D_METHOD("get_body_tracking_calibration_state"), &OpenXRFbBodyTrackingExtensionWrapper::get_body_tracking_calibration_state);
+	ClassDB::bind_method(D_METHOD("reset_body_tracking_calibration"), &OpenXRFbBodyTrackingExtensionWrapper::reset_body_tracking_calibration);
+
+	BIND_ENUM_CONSTANT(BODY_TRACKING_FIDELITY_UNKNOWN);
+	BIND_ENUM_CONSTANT(BODY_TRACKING_FIDELITY_LOW);
+	BIND_ENUM_CONSTANT(BODY_TRACKING_FIDELITY_HIGH);
+
+	BIND_ENUM_CONSTANT(BODY_TRACKING_CALIBRATION_STATE_VALID);
+	BIND_ENUM_CONSTANT(BODY_TRACKING_CALIBRATION_STATE_CALIBRATING);
+	BIND_ENUM_CONSTANT(BODY_TRACKING_CALIBRATION_STATE_INVALID);
+#endif // META_HEADERS_ENABLED
 }
 
 void OpenXRFbBodyTrackingExtensionWrapper::cleanup() {
 	fb_body_tracking_ext = false;
+	meta_body_tracking_full_body_ext = false;
+
+// @todo GH Issue 304: Remove check for meta headers when feature becomes part of OpenXR spec.
+#ifdef META_HEADERS_ENABLED
+	meta_body_tracking_fidelity_ext = false;
+	meta_body_tracking_calibration_ext = false;
+#endif // META_HEADERS_ENABLED
 }
 
-uint64_t OpenXRFbBodyTrackingExtensionWrapper::_set_system_properties_and_get_next_pointer(void *next_pointer) {
-	system_body_tracking_properties.type = XR_TYPE_SYSTEM_BODY_TRACKING_PROPERTIES_FB;
-	system_body_tracking_properties.next = next_pointer;
-	system_body_tracking_properties.supportsBodyTracking = false;
-	return reinterpret_cast<uint64_t>(&system_body_tracking_properties);
+uint64_t OpenXRFbBodyTrackingExtensionWrapper::_set_system_properties_and_get_next_pointer(void *p_next_pointer) {
+	if (fb_body_tracking_ext) {
+		system_body_tracking_properties.next = p_next_pointer;
+		p_next_pointer = &system_body_tracking_properties;
+	}
+	if (meta_body_tracking_full_body_ext) {
+		system_body_tracking_full_body_properties.next = p_next_pointer;
+		p_next_pointer = &system_body_tracking_full_body_properties;
+	}
+
+// @todo GH Issue 304: Remove check for meta headers when feature becomes part of OpenXR spec.
+#ifdef META_HEADERS_ENABLED
+	if (meta_body_tracking_fidelity_ext) {
+		system_body_tracking_fidelity_properties.next = p_next_pointer;
+		p_next_pointer = &system_body_tracking_fidelity_properties;
+	}
+	if (meta_body_tracking_calibration_ext) {
+		system_body_tracking_calibration_properties.next = p_next_pointer;
+		p_next_pointer = &system_body_tracking_calibration_properties;
+	}
+#endif // META_HEADERS_ENABLED
+
+	return reinterpret_cast<uint64_t>(p_next_pointer);
 }
 
 godot::Dictionary OpenXRFbBodyTrackingExtensionWrapper::_get_requested_extensions() {
@@ -172,14 +236,33 @@ godot::Dictionary OpenXRFbBodyTrackingExtensionWrapper::_get_requested_extension
 	return result;
 }
 
-void OpenXRFbBodyTrackingExtensionWrapper::_on_instance_created(uint64_t instance) {
+void OpenXRFbBodyTrackingExtensionWrapper::_on_instance_created(uint64_t p_instance) {
 	if (fb_body_tracking_ext) {
-		bool result = initialize_fb_body_tracking_extension((XrInstance)instance);
+		bool result = initialize_fb_body_tracking_extension((XrInstance)p_instance);
 		if (!result) {
-			UtilityFunctions::print("Failed to initialize fb_body_tracking extension");
+			ERR_PRINT("Failed to initialize fb_body_tracking extension");
 			fb_body_tracking_ext = false;
 		}
 	}
+
+// @todo GH Issue 304: Remove check for meta headers when feature becomes part of OpenXR spec.
+#ifdef META_HEADERS_ENABLED
+	if (meta_body_tracking_fidelity_ext) {
+		bool result = initialize_meta_body_tracking_fidelity_extension((XrInstance)p_instance);
+		if (!result) {
+			ERR_PRINT("Failed to initialize meta_body_tracking_fidelity extension");
+			meta_body_tracking_fidelity_ext = false;
+		}
+	}
+
+	if (meta_body_tracking_calibration_ext) {
+		bool result = initialize_meta_body_tracking_calibration_extension((XrInstance)p_instance);
+		if (!result) {
+			ERR_PRINT("Failed to initialize meta_body_tracking_calibration extension");
+			meta_body_tracking_calibration_ext = false;
+		}
+	}
+#endif // META_HEADERS_ENABLED
 }
 
 void OpenXRFbBodyTrackingExtensionWrapper::_on_instance_destroyed() {
@@ -193,22 +276,29 @@ void OpenXRFbBodyTrackingExtensionWrapper::_on_session_created(uint64_t instance
 	}
 
 	// Create the body-tracker handle
+	XrBodyJointSetFB body_joint_set = XR_BODY_JOINT_SET_DEFAULT_FB;
+	if (meta_body_tracking_full_body_ext && is_full_body_tracking_supported()) {
+		body_joint_set = XR_BODY_JOINT_SET_FULL_BODY_META;
+	}
+
 	XrBodyTrackerCreateInfoFB createInfo = {
 		XR_TYPE_BODY_TRACKER_CREATE_INFO_FB, // type
 		nullptr, // next
-		XR_BODY_JOINT_SET_DEFAULT_FB // bodyJointSet
+		body_joint_set, // bodyJointSet
 	};
 	XrResult result = xrCreateBodyTrackerFB(SESSION, &createInfo, &body_tracker);
-	if (XR_FAILED(result)) {
-		UtilityFunctions::print("Failed to create body-tracker handle: ", result);
-		return;
-	}
+	ERR_FAIL_COND_MSG(XR_FAILED(result), vformat("Failed to create body-tracker handle: ", get_openxr_api()->get_error_string(result)));
 
 	// Construct the XRBodyTracker if necessary
 	if (xr_body_tracker.is_null()) {
 		xr_body_tracker.instantiate();
 		xr_body_tracker->set_tracker_name("/user/body_tracker");
-		xr_body_tracker->set_body_flags(XRBodyTracker::BODY_FLAG_UPPER_BODY_SUPPORTED | XRBodyTracker::BODY_FLAG_HANDS_SUPPORTED);
+
+		BitField<XRBodyTracker::BodyFlags> body_flags = XRBodyTracker::BODY_FLAG_UPPER_BODY_SUPPORTED | XRBodyTracker::BODY_FLAG_HANDS_SUPPORTED;
+		if (meta_body_tracking_full_body_ext && is_full_body_tracking_supported()) {
+			body_flags.set_flag(XRBodyTracker::BODY_FLAG_LOWER_BODY_SUPPORTED);
+		}
+		xr_body_tracker->set_body_flags(body_flags);
 	}
 }
 
@@ -221,7 +311,7 @@ void OpenXRFbBodyTrackingExtensionWrapper::_on_session_destroyed() {
 	// Destroy the body-tracker handle
 	XrResult result = xrDestroyBodyTrackerFB(body_tracker);
 	if (XR_FAILED(result)) {
-		UtilityFunctions::print("Failed to destroy body-tracker handle: ", result);
+		ERR_PRINT(vformat("Failed to destroy body-tracker handle: ", get_openxr_api()->get_error_string(result)));
 	}
 	body_tracker = XR_NULL_HANDLE;
 
@@ -255,28 +345,52 @@ void OpenXRFbBodyTrackingExtensionWrapper::_on_process() {
 		display_time // time
 	};
 
+	// Construct locations struct next chain.
+	void *next_pointer = nullptr;
+// @todo GH Issue 304: Remove check for meta headers when feature becomes part of OpenXR spec.
+#ifdef META_HEADERS_ENABLED
+	if (meta_body_tracking_fidelity_ext && is_body_tracking_fidelity_supported()) {
+		body_tracking_fidelity_status.next = next_pointer;
+		next_pointer = &body_tracking_fidelity_status;
+	}
+
+	if (meta_body_tracking_calibration_ext) {
+		body_tracking_calibration_status.next = next_pointer;
+		next_pointer = &body_tracking_calibration_status;
+	}
+#endif // META_HEADERS_ENABLED
+
 	// Construct the locations struct.
-	XrBodyJointLocationFB fb_locations[XR_BODY_JOINT_COUNT_FB] = {};
+	uint32_t fb_joint_count = XR_BODY_JOINT_COUNT_FB;
+	bool is_full_body_supported = is_full_body_tracking_supported();
+	if (meta_body_tracking_full_body_ext && is_full_body_supported) {
+		fb_joint_count = XR_FULL_BODY_JOINT_COUNT_META;
+	}
+
+	XrBodyJointLocationFB fb_locations[XR_FULL_BODY_JOINT_COUNT_META];
 	XrBodyJointLocationsFB locations = {
 		XR_TYPE_BODY_JOINT_LOCATIONS_FB, // type
-		nullptr, // next
+		next_pointer, // next
 		XR_FALSE, // isActive
 		0.0f, // confidence
-		XR_BODY_JOINT_COUNT_FB, // jointCount
+		fb_joint_count, // jointCount
 		fb_locations // jointLocations
 	};
 
 	// Read the weights
 	XrResult result = xrLocateBodyJointsFB(body_tracker, &locate_info, &locations);
-	if (XR_FAILED(result)) {
-		UtilityFunctions::print("Failed to get body joint locations: ", result);
-	}
+	ERR_FAIL_COND_MSG(XR_FAILED(result), vformat("Failed to get body joint locations: ", get_openxr_api()->get_error_string(result)));
 
 	// Set the tracking active flag
 	xr_body_tracker->set_has_tracking_data(locations.isActive);
 
 	// Process all joints
 	for (const JointMapEntry &entry : joint_table) {
+		// Skip full body joints if extension is not supported.
+		if (!is_full_body_supported && entry.fb_joint >= XR_BODY_JOINT_COUNT_FB) {
+			break;
+		}
+
 		// Process the joint pose
 		const XrBodyJointLocationFB &location = fb_locations[entry.fb_joint];
 		const XrPosef &pose = location.pose;
@@ -371,3 +485,98 @@ bool OpenXRFbBodyTrackingExtensionWrapper::initialize_fb_body_tracking_extension
 
 	return true;
 }
+
+// META_body_tracking_full_body extension.
+
+bool OpenXRFbBodyTrackingExtensionWrapper::is_full_body_tracking_supported() {
+	return system_body_tracking_full_body_properties.supportsFullBodyTracking;
+}
+
+// @todo GH Issue 304: Remove check for meta headers when feature becomes part of OpenXR spec.
+#ifdef META_HEADERS_ENABLED
+// META_body_tracking_fidelity extension.
+
+bool OpenXRFbBodyTrackingExtensionWrapper::is_body_tracking_fidelity_supported() {
+	return system_body_tracking_fidelity_properties.supportsBodyTrackingFidelity;
+}
+
+void OpenXRFbBodyTrackingExtensionWrapper::request_body_tracking_fidelity(BodyTrackingFidelity p_fidelity) {
+	ERR_FAIL_COND_MSG(!fb_body_tracking_ext || !meta_body_tracking_fidelity_ext, "XR_META_body_tracking_fidelity extension is not enabled");
+	ERR_FAIL_COND_MSG(p_fidelity == BODY_TRACKING_FIDELITY_UNKNOWN, "Cannot request body tracking fidelity update: invalid fidelity type");
+	ERR_FAIL_COND_MSG(body_tracker == XR_NULL_HANDLE, "Cannot request body tracking fidelity update: body tracker handle is null");
+
+	const XrBodyTrackingFidelityMETA fidelity = XrBodyTrackingFidelityMETA(p_fidelity);
+	XrResult result = xrRequestBodyTrackingFidelityMETA(body_tracker, fidelity);
+	ERR_FAIL_COND_MSG(XR_FAILED(result), vformat("Failed to request body tracking fidelity update: ", get_openxr_api()->get_error_string(result)));
+}
+
+OpenXRFbBodyTrackingExtensionWrapper::BodyTrackingFidelity OpenXRFbBodyTrackingExtensionWrapper::get_body_tracking_fidelity_status() {
+	ERR_FAIL_COND_V_MSG(!fb_body_tracking_ext || !meta_body_tracking_fidelity_ext, BODY_TRACKING_FIDELITY_UNKNOWN, "XR_META_body_tracking_fidelity extension is not enabled");
+
+	switch (body_tracking_fidelity_status.fidelity) {
+		case XR_BODY_TRACKING_FIDELITY_LOW_META:
+			return BODY_TRACKING_FIDELITY_LOW;
+		case XR_BODY_TRACKING_FIDELITY_HIGH_META:
+			return BODY_TRACKING_FIDELITY_HIGH;
+		default:
+			return BODY_TRACKING_FIDELITY_UNKNOWN;
+	}
+}
+
+bool OpenXRFbBodyTrackingExtensionWrapper::initialize_meta_body_tracking_fidelity_extension(XrInstance p_instance) {
+	GDEXTENSION_INIT_XR_FUNC_V(xrRequestBodyTrackingFidelityMETA);
+
+	return true;
+}
+
+// META_body_tracking_calibration extension.
+
+bool OpenXRFbBodyTrackingExtensionWrapper::is_body_tracking_height_override_supported() {
+	return system_body_tracking_calibration_properties.supportsHeightOverride;
+}
+
+OpenXRFbBodyTrackingExtensionWrapper::BodyTrackingCalibrationState OpenXRFbBodyTrackingExtensionWrapper::get_body_tracking_calibration_state() {
+	ERR_FAIL_COND_V_MSG(!fb_body_tracking_ext || !meta_body_tracking_calibration_ext, BODY_TRACKING_CALIBRATION_STATE_INVALID, "XR_META_body_tracking_calibration extension is not enabled");
+
+	switch (body_tracking_calibration_status.status) {
+		case XR_BODY_TRACKING_CALIBRATION_STATE_VALID_META:
+			return BODY_TRACKING_CALIBRATION_STATE_VALID;
+		case XR_BODY_TRACKING_CALIBRATION_STATE_CALIBRATING_META:
+			return BODY_TRACKING_CALIBRATION_STATE_CALIBRATING;
+		case XR_BODY_TRACKING_CALIBRATION_STATE_INVALID_META:
+			return BODY_TRACKING_CALIBRATION_STATE_INVALID;
+		default:
+			return BODY_TRACKING_CALIBRATION_STATE_INVALID;
+	}
+}
+
+void OpenXRFbBodyTrackingExtensionWrapper::suggest_body_tracking_height_override(float p_body_height) {
+	ERR_FAIL_COND_MSG(!fb_body_tracking_ext || !meta_body_tracking_calibration_ext, "XR_META_body_tracking_calibration extension is not enabled");
+	ERR_FAIL_COND_MSG(p_body_height < 0.5f || p_body_height > 3.0f, "Cannot request body tracking height override: height must be within range of 0.5 and 3.0 meters");
+	ERR_FAIL_COND_MSG(body_tracker == XR_NULL_HANDLE, "Cannot request body tracking height override: body tracker handle is null");
+
+	const XrBodyTrackingCalibrationInfoMETA body_tracking_calibration_info = {
+		XR_TYPE_BODY_TRACKING_CALIBRATION_INFO_META, // type
+		nullptr, // next
+		p_body_height, // bodyHeight
+	};
+
+	XrResult result = xrSuggestBodyTrackingCalibrationOverrideMETA(body_tracker, &body_tracking_calibration_info);
+	ERR_FAIL_COND_MSG(XR_FAILED(result), vformat("Failed to suggest body tracking calibration override: ", get_openxr_api()->get_error_string(result)));
+}
+
+void OpenXRFbBodyTrackingExtensionWrapper::reset_body_tracking_calibration() {
+	ERR_FAIL_COND_MSG(!fb_body_tracking_ext || !meta_body_tracking_calibration_ext, "XR_META_body_tracking_calibration extension is not enabled");
+	ERR_FAIL_COND_MSG(body_tracker == XR_NULL_HANDLE, "Cannot reset body tracking calibration: body tracker handle is null");
+
+	XrResult result = xrResetBodyTrackingCalibrationMETA(body_tracker);
+	ERR_FAIL_COND_MSG(XR_FAILED(result), vformat("Failed to reset body tracking calibration: ", get_openxr_api()->get_error_string(result)));
+}
+
+bool OpenXRFbBodyTrackingExtensionWrapper::initialize_meta_body_tracking_calibration_extension(XrInstance p_instance) {
+	GDEXTENSION_INIT_XR_FUNC_V(xrSuggestBodyTrackingCalibrationOverrideMETA);
+	GDEXTENSION_INIT_XR_FUNC_V(xrResetBodyTrackingCalibrationMETA);
+
+	return true;
+}
+#endif // META_HEADERS_ENABLED

@@ -8,4 +8,77 @@
 	</description>
 	<tutorials>
 	</tutorials>
+	<methods>
+		<method name="get_body_tracking_calibration_state">
+			<return type="int" enum="OpenXRFbBodyTrackingExtensionWrapper.BodyTrackingCalibrationState" />
+			<description>
+				Returns the body tracking calibration state.
+			</description>
+		</method>
+		<method name="get_body_tracking_fidelity_status">
+			<return type="int" enum="OpenXRFbBodyTrackingExtensionWrapper.BodyTrackingFidelity" />
+			<description>
+				Returns the body tracking fidelity status.
+			</description>
+		</method>
+		<method name="is_body_tracking_fidelity_supported">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] if the body tracking fidelity extension is supported.
+			</description>
+		</method>
+		<method name="is_body_tracking_height_override_supported">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] if height override from the body tracking calibration extension is supported.
+			</description>
+		</method>
+		<method name="is_full_body_tracking_supported">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] if the body tracking full body extension is supported.
+			</description>
+		</method>
+		<method name="request_body_tracking_fidelity">
+			<return type="void" />
+			<param index="0" name="fidelity" type="int" enum="OpenXRFbBodyTrackingExtensionWrapper.BodyTrackingFidelity" />
+			<description>
+				Request that the OpenXR runtime use a specified body tracking fidelity.
+			</description>
+		</method>
+		<method name="reset_body_tracking_calibration">
+			<return type="void" />
+			<description>
+				Reset the body tracking calibration state.
+			</description>
+		</method>
+		<method name="suggest_body_tracking_height_override">
+			<return type="void" />
+			<param index="0" name="body_height" type="float" />
+			<description>
+				Suggest a height override in meters for body tracking calibration to the OpenXR runtime.
+				[b]Note:[/b] this value must be within the range of 0.5 and 3.0 meters.
+			</description>
+		</method>
+	</methods>
+	<constants>
+		<constant name="BODY_TRACKING_FIDELITY_UNKNOWN" value="0" enum="BodyTrackingFidelity">
+			Unknown body tracking fidelity.
+		</constant>
+		<constant name="BODY_TRACKING_FIDELITY_LOW" value="1" enum="BodyTrackingFidelity">
+			Low fidelity body tracking.
+		</constant>
+		<constant name="BODY_TRACKING_FIDELITY_HIGH" value="2" enum="BodyTrackingFidelity">
+			High fidelity body tracking.
+		</constant>
+		<constant name="BODY_TRACKING_CALIBRATION_STATE_VALID" value="0" enum="BodyTrackingCalibrationState">
+			Valid body tracking calibration state.
+		</constant>
+		<constant name="BODY_TRACKING_CALIBRATION_STATE_CALIBRATING" value="1" enum="BodyTrackingCalibrationState">
+			Calibrating body tracking calibration state.
+		</constant>
+		<constant name="BODY_TRACKING_CALIBRATION_STATE_INVALID" value="2" enum="BodyTrackingCalibrationState">
+			Invalid body tracking calibration state.
+		</constant>
+	</constants>
 </class>
