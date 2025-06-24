@@ -253,7 +253,9 @@ void OpenXRFbColorSpaceExtensionWrapper::_on_session_destroyed() {
 }
 
 void OpenXRFbColorSpaceExtensionWrapper::_on_state_ready() {
-	ERR_FAIL_COND_MSG(!fb_color_space_ext, "XR_FB_color_space extension is not enabled");
+	if (!fb_color_space_ext) {
+		return;
+	}
 
 	ProjectSettings *project_settings = ProjectSettings::get_singleton();
 	ERR_FAIL_NULL(project_settings);
