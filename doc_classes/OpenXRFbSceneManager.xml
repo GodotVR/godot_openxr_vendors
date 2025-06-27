@@ -57,7 +57,13 @@
 		<method name="is_scene_capture_enabled" qualifiers="const">
 			<return type="bool" />
 			<description>
-				Checks if scene capture is enabled.
+				Returns [code]true[/code] if the scene capture process is currently in progress; otherwise [code]false[/code].
+			</description>
+		</method>
+		<method name="is_scene_capture_supported" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] if scene capture is supported; otherwise [code]false[/code].
 			</description>
 		</method>
 		<method name="remove_scene_anchors">

@@ -61,6 +61,7 @@ void OpenXRFbSceneManager::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("request_scene_capture", "request"), &OpenXRFbSceneManager::request_scene_capture, DEFVAL(""));
 	ClassDB::bind_method(D_METHOD("is_scene_capture_enabled"), &OpenXRFbSceneManager::is_scene_capture_enabled);
+	ClassDB::bind_method(D_METHOD("is_scene_capture_supported"), &OpenXRFbSceneManager::is_scene_capture_supported);
 
 	ClassDB::bind_method(D_METHOD("get_anchor_uuids"), &OpenXRFbSceneManager::get_anchor_uuids);
 	ClassDB::bind_method(D_METHOD("get_anchor_node", "uuid"), &OpenXRFbSceneManager::get_anchor_node);
@@ -343,6 +344,10 @@ bool OpenXRFbSceneManager::request_scene_capture(const String &p_request) const 
 
 bool OpenXRFbSceneManager::is_scene_capture_enabled() const {
 	return OpenXRFbSceneCaptureExtensionWrapper::get_singleton()->is_scene_capture_enabled();
+}
+
+bool OpenXRFbSceneManager::is_scene_capture_supported() const {
+	return OpenXRFbSceneCaptureExtensionWrapper::get_singleton()->is_scene_capture_supported();
 }
 
 void OpenXRFbSceneManager::_scene_capture_callback(XrResult p_result, void *p_userdata) {
