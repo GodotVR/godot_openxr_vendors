@@ -27,3 +27,4 @@ openxr/enabled=true
 openxr/reference_space=2
 shaders/enabled=true
 openxr/extensions/meta/render_model=true
+openxr/extensions/meta/color_space/starting_color_space=3
