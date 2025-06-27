@@ -41,3 +41,4 @@ openxr/extensions/hand_tracking_controller_data_source=true
 shaders/enabled=true
 openxr/extensions/meta/hand_tracking_mesh=true
 openxr/extensions/meta/render_model=true
+openxr/extensions/meta/color_space/starting_color_space=3

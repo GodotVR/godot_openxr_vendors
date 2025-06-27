@@ -46,3 +46,4 @@ hybrid_app/enabled=true
 hybrid_app/launch_mode=1
 openxr/extensions/meta/passthrough=true
 openxr/extensions/meta/render_model=true
+openxr/extensions/meta/color_space/starting_color_space=3
