@@ -12,13 +12,13 @@
 		<method name="is_scene_capture_enabled" deprecated="Use [method OpenXRFbSceneManager.is_scene_capture_enabled] instead.">
 			<return type="bool" />
 			<description>
-				Checks if this extension is enabled.
+				Returns [code]true[/code] if the scene capture process is currently in progress; otherwise [code]false[/code].
 			</description>
 		</method>
-		<method name="is_scene_capture_supported" deprecated="Use [method OpenXRFbSceneManager.is_scene_capture_enabled] instead.">
+		<method name="is_scene_capture_supported" deprecated="Use [method OpenXRFbSceneManager.is_scene_capture_supported] instead.">
 			<return type="bool" />
 			<description>
-				Checks if scene capture is supported.
+				Returns [code]true[/code] if scene capture is supported; otherwise [code]false[/code].
 			</description>
 		</method>
 		<method name="request_scene_capture" deprecated="Use [method OpenXRFbSceneManager.request_scene_capture] instead.">

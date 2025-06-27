@@ -107,6 +107,7 @@ public:
 
 	bool request_scene_capture(const String &p_request = "") const;
 	bool is_scene_capture_enabled() const;
+	bool is_scene_capture_supported() const;
 
 	static void _scene_capture_callback(XrResult p_result, void *p_userdata);
 
