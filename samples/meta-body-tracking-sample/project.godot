@@ -41,3 +41,4 @@ shaders/enabled=true
 openxr/extensions/meta/face_tracking=true
 openxr/extensions/meta/body_tracking=true
 openxr/extensions/meta/hand_tracking_mesh=true
+openxr/extensions/meta/color_space/starting_color_space=3
