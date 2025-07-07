@@ -274,7 +274,7 @@ PackedStringArray OpenXRVendorsEditorExportPlugin::_get_android_dependencies_mav
 	}
 
 	if (_is_vendor_plugin_enabled() && !_is_android_aar_file_available(debug) && _plugin_version.ends_with("-SNAPSHOT")) {
-		maven_repos.append("https://s01.oss.sonatype.org/content/repositories/snapshots/");
+		maven_repos.append("https://central.sonatype.com/repository/maven-snapshots/");
 	}
 	return maven_repos;
 }
