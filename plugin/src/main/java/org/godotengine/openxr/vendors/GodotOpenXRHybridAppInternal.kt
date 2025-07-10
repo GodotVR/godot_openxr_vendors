@@ -31,6 +31,7 @@ package org.godotengine.openxr.vendors
 
 import android.app.Activity
 import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import android.util.Log
 import android.view.View
@@ -78,6 +79,14 @@ class GodotOpenXRHybridAppInternal(godot: Godot?) : GodotPlugin(godot) {
 			}
 
 			return HybridMode.IMMERSIVE
+		}
+
+		/**
+		 * Returns true if running on an Android XR device.
+		 * TODO: Remove when this is included in the Godot Android library.
+		 */
+		private fun isAndroidXRDevice(context: Context): Boolean {
+			return context.packageManager.hasSystemFeature("android.software.xr.immersive")
 		}
 
 		/**
@@ -161,7 +170,7 @@ class GodotOpenXRHybridAppInternal(godot: Godot?) : GodotPlugin(godot) {
 
 		val context = activity ?: return false
 
-		if (!isNativeXRDevice(context)) return false
+		if (!isNativeXRDevice(context) && !isAndroidXRDevice(context)) return false
 
 		val hybridCategory = if (mode == HybridMode.IMMERSIVE) HYBRID_APP_IMMERSIVE_CATEGORY else HYBRID_APP_PANEL_CATEGORY
 		val hybridLaunchIntent = Intent().apply {

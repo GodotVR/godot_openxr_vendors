@@ -40,7 +40,7 @@
 
 using namespace godot;
 
-static const char *PLUGIN_VERSION = "2.0.3-stable";
+static const char *PLUGIN_VERSION = "4.0.0-stable";
 
 // Set of supported vendors
 static const char *META_VENDOR_NAME = "meta";
@@ -48,6 +48,7 @@ static const char *PICO_VENDOR_NAME = "pico";
 static const char *LYNX_VENDOR_NAME = "lynx";
 static const char *KHRONOS_VENDOR_NAME = "khronos";
 static const char *MAGICLEAP_VENDOR_NAME = "magicleap";
+static const char *ANDROID_VENDOR_NAME = "androidxr";
 
 static const char *VENDORS_LIST[] = {
 	META_VENDOR_NAME,
@@ -55,6 +56,7 @@ static const char *VENDORS_LIST[] = {
 	LYNX_VENDOR_NAME,
 	KHRONOS_VENDOR_NAME,
 	MAGICLEAP_VENDOR_NAME,
+	ANDROID_VENDOR_NAME,
 };
 
 // Set of custom feature tags supported by the plugin
