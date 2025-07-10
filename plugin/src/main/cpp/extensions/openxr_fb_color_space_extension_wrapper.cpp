@@ -261,10 +261,9 @@ void OpenXRFbColorSpaceExtensionWrapper::_on_state_ready() {
 	ERR_FAIL_NULL(project_settings);
 
 	ColorSpace starting_color_space = ColorSpace((int)project_settings->get_setting_with_override("xr/openxr/extensions/meta/color_space/starting_color_space"));
-	if (starting_color_space != COLOR_SPACE_REC709) {
+	if (starting_color_space == COLOR_SPACE_RUNTIME_DEFAULT) {
 		WARN_PRINT("Recommended color space project setting is REC709");
-	}
-	if (starting_color_space != COLOR_SPACE_RUNTIME_DEFAULT) {
+	} else {
 		set_color_space(starting_color_space);
 	}
 }

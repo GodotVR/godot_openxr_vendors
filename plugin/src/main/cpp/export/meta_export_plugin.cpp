@@ -291,7 +291,7 @@ String MetaEditorExportPlugin::_get_export_option_warning(const Ref<EditorExport
 		}
 	} else if (option == "xr_features/enable_meta_plugin") {
 		if ((bool)project_settings->get_setting_with_override("xr/openxr/extensions/meta/color_space")) {
-			if ((int)project_settings->get_setting_with_override("xr/openxr/extensions/meta/color_space/starting_color_space") != 3) {
+			if ((int)project_settings->get_setting_with_override("xr/openxr/extensions/meta/color_space/starting_color_space") == 0) {
 				return "\"Recommended color space is REC709, this can be updated in OpenXR project settings.\"";
 			}
 		}
