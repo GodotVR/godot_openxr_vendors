@@ -16,12 +16,12 @@ ext {
     ]
 
     libraries = [
-            godotAndroidLib: "org.godotengine:godot:4.4.0.beta-SNAPSHOT",
+            godotAndroidLib: "org.godotengine:godot:4.4.1.stable",
     ]
 
     // Parse the release version from the gradle project properties (e.g: -Prelease_version=<version>)
     getReleaseVersion = { ->
-        final String defaultVersion = "4.0.0-dev-SNAPSHOT"
+        final String defaultVersion = "4.0.0-stable" // Also update 'plugin/src/main/cpp/include/export/export_plugin.h#PLUGIN_VERSION'
 
         String releaseVersion = project.hasProperty("release_version") ? project.property("release_version") : defaultVersion
         if (releaseVersion == null || releaseVersion.isEmpty()) {
