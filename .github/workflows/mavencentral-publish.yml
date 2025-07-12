@@ -35,19 +35,29 @@ jobs:
           java-version: 17
       - name: Validate Gradle wrapper
         uses: gradle/actions/wrapper-validation@v3
+      - name: Download Meta OpenXR Preview headers
+        run: |
+          # PowerShell (ick!) works on all GitHub platforms. I don't like it, but it works.
+          Invoke-WebRequest -Uri "${{ env.META_OPENXR_HEADERS_URL }}" -OutFile "ovr_openxr_mobile_sdk.zip"
+          Expand-Archive -Path "ovr_openxr_mobile_sdk.zip" -DestinationPath "ovr_openxr_mobile_sdk"
+
+          # These variables should carry over into bash as well.
+          echo "SCONS_EXTRA=meta_headers=${{ github.workspace }}/ovr_openxr_mobile_sdk/OpenXR/meta_openxr_preview/" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          echo "GRADLE_EXTRA=-Pmeta_headers=${{ github.workspace }}/ovr_openxr_mobile_sdk/OpenXR/meta_openxr_preview/" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+        shell: pwsh
 
         # Builds the release artifacts of the library
       - name: Release build
         run: |
-          scons platform=android target=template_debug arch=arm64 custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json build_profile=thirdparty/godot_cpp_build_profile/build_profile.json
-          scons platform=android target=template_release arch=arm64 custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json build_profile=thirdparty/godot_cpp_build_profile/build_profile.json
-          scons platform=android target=template_debug arch=x86_64 custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json build_profile=thirdparty/godot_cpp_build_profile/build_profile.json
-          scons platform=android target=template_release arch=x86_64 custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json build_profile=thirdparty/godot_cpp_build_profile/build_profile.json
-          ./gradlew -Prelease_version=${{ github.ref_name }} build
+          scons platform=android target=template_debug arch=arm64 custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json build_profile=thirdparty/godot_cpp_build_profile/build_profile.json $SCONS_EXTRA
+          scons platform=android target=template_release arch=arm64 custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json build_profile=thirdparty/godot_cpp_build_profile/build_profile.json $SCONS_EXTRA
+          scons platform=android target=template_debug arch=x86_64 custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json build_profile=thirdparty/godot_cpp_build_profile/build_profile.json $SCONS_EXTRA
+          scons platform=android target=template_release arch=x86_64 custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json build_profile=thirdparty/godot_cpp_build_profile/build_profile.json $SCONS_EXTRA
+          ./gradlew -Prelease_version=${{ github.ref_name }} build $GRADLE_EXTRA
 
         # Runs upload, and then closes & releases the repository
       - name: Publish to MavenCentral
-        run: ./gradlew -Prelease_version=${{ github.ref_name }} publishAllPublicationToSonatypeRepository --max-workers 1 closeAndReleaseSonatypeStagingRepository
+        run: ./gradlew -Prelease_version=${{ github.ref_name }} publishAllPublicationToSonatypeRepository --max-workers 1 closeAndReleaseSonatypeStagingRepository $GRADLE_EXTRA
         env:
           OSSRH_GROUP_ID: ${{ secrets.OSSRH_GROUP_ID }}
           OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
