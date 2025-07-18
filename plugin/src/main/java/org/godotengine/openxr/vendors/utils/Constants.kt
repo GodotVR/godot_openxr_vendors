@@ -57,10 +57,12 @@ internal val META_PERMISSIONS_LIST = listOf(
 // Pico permissions
 internal const val PICO_EYE_TRACKING_PERMISSION = "com.picovr.permission.EYE_TRACKING"
 internal const val PICO_FACE_TRACKING_PERMISSION = "com.picovr.permission.FACE_TRACKING"
+internal const val PICO_SPATIAL_DATA_PERMISSION = "com.picovr.permission.SPATIAL_DATA"
 
 internal val PICO_PERMISSIONS_LIST = listOf(
     PICO_EYE_TRACKING_PERMISSION,
     PICO_FACE_TRACKING_PERMISSION,
+    PICO_SPATIAL_DATA_PERMISSION,
 )
 
 internal fun getVendorPermissions(vendorName: String): List<String> {
