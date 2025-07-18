@@ -8,15 +8,17 @@ afterEvaluate {
     publishing {
         publications {
             android.libraryVariants.all { variant ->
-                String buildType = variant.buildType.name
-                if (buildType != "release") {
-                    return
-                }
-
                 String flavorArtifactId = PUBLISH_ARTIFACT_ID
                 String flavorName = variant.getFlavorName()
                 if (flavorName != null && !flavorName.isEmpty()) {
                     flavorArtifactId = "$flavorArtifactId-$flavorName"
+                }
+
+                String descriptionLabel = "Godot OpenXR Vendors"
+                String buildType = variant.buildType.name
+                if (buildType == "debug") {
+                    flavorArtifactId = "$flavorArtifactId-debug"
+                    descriptionLabel = "$descriptionLabel (Debug)"
                 }
 
                 String variantName = variant.name
@@ -32,7 +34,7 @@ afterEvaluate {
                     // Mostly self-explanatory metadata
                     pom {
                         name = flavorArtifactId
-                        description = 'Godot OpenXR Vendors'
+                        description = descriptionLabel
                         url = 'https://github.com/GodotVR/godot_openxr_vendors#readme'
                         licenses {
                             license {
