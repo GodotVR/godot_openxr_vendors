@@ -152,26 +152,46 @@ android {
     }
 
     publishing {
+        singleVariant("khronosDebug") {
+            withSourcesJar()
+            withJavadocJar()
+        }
         singleVariant("khronosRelease") {
             withSourcesJar()
             withJavadocJar()
         }
 
+        singleVariant("lynxDebug") {
+            withSourcesJar()
+            withJavadocJar()
+        }
         singleVariant("lynxRelease") {
             withSourcesJar()
             withJavadocJar()
         }
 
+        singleVariant("magicleapDebug") {
+            withSourcesJar()
+            withJavadocJar()
+        }
         singleVariant("magicleapRelease") {
             withSourcesJar()
             withJavadocJar()
         }
 
+        singleVariant("metaDebug") {
+            withSourcesJar()
+            withJavadocJar()
+        }
         singleVariant("metaRelease") {
             withSourcesJar()
             withJavadocJar()
         }
 
+        singleVariant("picoDebug") {
+            withSourcesJar()
+            withJavadocJar()
+        }
         singleVariant("picoRelease") {
             withSourcesJar()
             withJavadocJar()
