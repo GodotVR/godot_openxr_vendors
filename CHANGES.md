@@ -74,6 +74,10 @@
 - Add manifest entries to Pico and switch Pico to using the Khronos Loader
 - Add Meta Passthrough tutorial doc
 
+## 2.0.4
+- Fix misc crash when reloading project on Godot 4.3
+- Fix issue with only the first permission being requested
+
 ## 2.0.3
 - Migrate the export scripts from gdscript to C++ via gdextension
 - Manually request eye tracking permission if it's included in the app manifest
