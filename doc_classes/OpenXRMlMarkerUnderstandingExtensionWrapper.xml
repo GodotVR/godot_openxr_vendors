@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="OpenXRMlMarkerUnderstandingExtensionWrapper" inherits="OpenXRExtensionWrapperExtension" experimental="Marked as experimental due to lack of community validation on Magic Leap devices." xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		Wraps the [code]XR_ML_marker_understanding[/code] extension.
+	</brief_description>
+	<description>
+		Wraps the [code]XR_ML_marker_understanding[/code] extension.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="is_marker_understanding_supported">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] if marker understanding is supported; otherwise, [code]false[/code].
+			</description>
+		</method>
+	</methods>
+	<signals>
+		<signal name="updating_marker_detectors">
+			<description>
+				Emitted on every valid XR frame so that [OpenXRMlMarkerDetector] instances can update their state.
+			</description>
+		</signal>
+	</signals>
+</class>

@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  magicleap_editor_plugin.cpp                                           */
+/*  openxr_ml_marker_detector_aruco_settings.h                            */
 /**************************************************************************/
 /*                       This file is part of:                            */
 /*                              GODOT XR                                  */
@@ -27,45 +27,59 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "export/magicleap_export_plugin.h"
+#ifndef OPENXR_ML_MARKER_DETECTOR_ARUCO_SETTINGS_H
+#define OPENXR_ML_MARKER_DETECTOR_ARUCO_SETTINGS_H
 
-#include <godot_cpp/classes/project_settings.hpp>
+#include "classes/openxr_ml_marker_detector_settings.h"
 
-using namespace godot;
+#include <godot_cpp/core/binder_common.hpp>
 
-MagicleapEditorExportPlugin::MagicleapEditorExportPlugin() {
-	set_vendor_name(MAGICLEAP_VENDOR_NAME);
-}
+namespace godot {
+class OpenXRMlMarkerDetectorArucoSettings : public OpenXRMlMarkerDetectorSettings {
+	GDCLASS(OpenXRMlMarkerDetectorArucoSettings, OpenXRMlMarkerDetectorSettings);
 
-void MagicleapEditorExportPlugin::_bind_methods() {}
+public:
+	enum ArucoDictionary {
+		ARUCO_DICTIONARY_4X4_50 = 0,
+		ARUCO_DICTIONARY_4X4_100 = 1,
+		ARUCO_DICTIONARY_4X4_250 = 2,
+		ARUCO_DICTIONARY_4X4_1000 = 3,
+		ARUCO_DICTIONARY_5X5_50 = 4,
+		ARUCO_DICTIONARY_5X5_100 = 5,
+		ARUCO_DICTIONARY_5X5_250 = 6,
+		ARUCO_DICTIONARY_5X5_1000 = 7,
+		ARUCO_DICTIONARY_6X6_50 = 8,
+		ARUCO_DICTIONARY_6X6_100 = 9,
+		ARUCO_DICTIONARY_6X6_250 = 10,
+		ARUCO_DICTIONARY_6X6_1000 = 11,
+		ARUCO_DICTIONARY_7X7_50 = 12,
+		ARUCO_DICTIONARY_7X7_100 = 13,
+		ARUCO_DICTIONARY_7X7_250 = 14,
+		ARUCO_DICTIONARY_7X7_1000 = 15,
+	};
 
-TypedArray<Dictionary> MagicleapEditorExportPlugin::_get_export_options(const Ref<EditorExportPlatform> &platform) const {
-	TypedArray<Dictionary> export_options;
-	if (!_supports_platform(platform)) {
-		return export_options;
-	}
+private:
+	bool estimate_aruco_length = false;
+	float aruco_length = 0;
+	ArucoDictionary aruco_dictionary = ArucoDictionary::ARUCO_DICTIONARY_4X4_50;
 
-	export_options.append(_get_vendor_toggle_option());
+protected:
+	static void _bind_methods();
 
-	return export_options;
-}
+public:
+	void set_estimate_aruco_length(bool p_estimate_aruco_length);
+	bool get_estimate_aruco_length() const;
 
-String MagicleapEditorExportPlugin::_get_android_manifest_element_contents(const Ref<EditorExportPlatform> &platform, bool debug) const {
-	String contents;
-	if (!_supports_platform(platform) || !_is_vendor_plugin_enabled()) {
-		return contents;
-	}
+	void set_aruco_length(float p_aruco_length);
+	float get_aruco_length() const;
 
-	if (ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/extensions/hand_tracking")) {
-		contents += "    <uses-permission android:name=\"com.magicleap.permission.HAND_TRACKING\" />\n";
-	}
+	void set_aruco_dictionary(ArucoDictionary p_aruco_dictionary);
+	ArucoDictionary get_aruco_dictionary() const;
 
-	if (ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/extensions/magic_leap/marker_understanding")) {
-		contents += "    <uses-permission android:name=\"com.magicleap.permission.MARKER_TRACKING\" />\n";
-	}
+	OpenXRMlMarkerDetectorArucoSettings();
+};
+} // namespace godot
 
-	// Always include this.
-	contents += "    <uses-feature android:name=\"com.magicleap.api_level\" android:version=\"20\" />\n";
+VARIANT_ENUM_CAST(OpenXRMlMarkerDetectorArucoSettings::ArucoDictionary);
 
-	return contents;
-}
+#endif

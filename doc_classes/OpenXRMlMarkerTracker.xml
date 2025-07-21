@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="OpenXRMlMarkerTracker" inherits="XRPositionalTracker" experimental="Marked as experimental due to lack of community validation on Magic Leap devices." xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		Represents a marker tracker of the [OpenXRMlMarkerDetector].
+	</brief_description>
+	<description>
+		Represents a marker tracker of the [OpenXRMlMarkerDetector].
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="get_marker_length" qualifiers="const">
+			<return type="float" />
+			<description>
+				Gets the size of the marker, defined as the length in meters per side. If the detector's setting already defines a length, this query may be redundant. This method is primarily intended to query for a runtime estimated size when an application did not indicate the expected size of the marker.
+			</description>
+		</method>
+		<method name="get_marker_number" qualifiers="const">
+			<return type="int" />
+			<description>
+				Gets the numerical value of a marker, such as the ArUco ID.
+			</description>
+		</method>
+		<method name="get_marker_string" qualifiers="const">
+			<return type="String" />
+			<description>
+				Gets the string value of a marker, such as the QR encoded string.
+			</description>
+		</method>
+		<method name="get_marker_type" qualifiers="const">
+			<return type="int" enum="OpenXRMlMarkerDetectorSettings.MarkerType" />
+			<description>
+				Gets the marker's type.
+			</description>
+		</method>
+		<method name="get_reprojection_error_meters" qualifiers="const">
+			<return type="float" />
+			<description>
+				Gets the reprojection error of a marker, only available for certain types of markers.
+				A high reprojection error means that the estimated pose of the marker does not match well with the 2D detection on the processed video frame and thus the pose may be inaccurate. The error is given in meters, representing the displacement between real marker and its estimated pose. This means this is a normalized number, independent of marker distance or length.
+			</description>
+		</method>
+		<method name="set_marker_length">
+			<return type="void" />
+			<param index="0" name="marker_length" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="set_marker_number">
+			<return type="void" />
+			<param index="0" name="marker_number" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="set_marker_string">
+			<return type="void" />
+			<param index="0" name="marker_string" type="String" />
+			<description>
+			</description>
+		</method>
+		<method name="set_marker_type">
+			<return type="void" />
+			<param index="0" name="marker_type" type="int" enum="OpenXRMlMarkerDetectorSettings.MarkerType" />
+			<description>
+			</description>
+		</method>
+		<method name="set_reprojection_error_meters">
+			<return type="void" />
+			<param index="0" name="reprojection_error_meters" type="float" />
+			<description>
+			</description>
+		</method>
+	</methods>
+	<signals>
+		<signal name="openxr_ml_marker_updated">
+			<description>
+				Emitted when the marker is successfully updated.
+			</description>
+		</signal>
+	</signals>
+</class>

@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  magicleap_editor_plugin.cpp                                           */
+/*  openxr_ml_marker_understanding_manager.h                              */
 /**************************************************************************/
 /*                       This file is part of:                            */
 /*                              GODOT XR                                  */
@@ -27,45 +27,67 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "export/magicleap_export_plugin.h"
+#ifndef OPENXR_ML_MARKER_UNDERSTANDING_MANAGER_H
+#define OPENXR_ML_MARKER_UNDERSTANDING_MANAGER_H
 
-#include <godot_cpp/classes/project_settings.hpp>
+#include <openxr/openxr.h>
+#include <godot_cpp/classes/node.hpp>
+#include <godot_cpp/classes/packed_scene.hpp>
+#include <godot_cpp/classes/xr_anchor3d.hpp>
+#include <godot_cpp/classes/xr_origin3d.hpp>
+#include <godot_cpp/core/binder_common.hpp>
+#include <godot_cpp/core/defs.hpp>
+#include <godot_cpp/templates/hash_map.hpp>
 
-using namespace godot;
+#include "classes/openxr_ml_marker_tracker.h"
 
-MagicleapEditorExportPlugin::MagicleapEditorExportPlugin() {
-	set_vendor_name(MAGICLEAP_VENDOR_NAME);
-}
+namespace godot {
+class OpenXRMlMarkerUnderstandingManager : public Node {
+	GDCLASS(OpenXRMlMarkerUnderstandingManager, Node);
 
-void MagicleapEditorExportPlugin::_bind_methods() {}
+private:
+	Ref<PackedScene> scene;
+	StringName scene_setup_method = "setup_scene";
+	bool visible = true;
 
-TypedArray<Dictionary> MagicleapEditorExportPlugin::_get_export_options(const Ref<EditorExportPlatform> &platform) const {
-	TypedArray<Dictionary> export_options;
-	if (!_supports_platform(platform)) {
-		return export_options;
-	}
+	XROrigin3D *xr_origin = nullptr;
 
-	export_options.append(_get_vendor_toggle_option());
+	struct Anchor {
+		ObjectID node;
+		Ref<OpenXRMlMarkerTracker> entity;
 
-	return export_options;
-}
+		Anchor(Node *p_node, const Ref<OpenXRMlMarkerTracker> &p_entity) {
+			node = p_node->get_instance_id();
+			entity = p_entity;
+		}
+		Anchor() {}
+	};
+	HashMap<StringName, Anchor> anchors;
 
-String MagicleapEditorExportPlugin::_get_android_manifest_element_contents(const Ref<EditorExportPlatform> &platform, bool debug) const {
-	String contents;
-	if (!_supports_platform(platform) || !_is_vendor_plugin_enabled()) {
-		return contents;
-	}
+	void _cleanup_anchors();
+	void _add_tracker(const Ref<OpenXRMlMarkerTracker> &p_tracker);
+	void _on_tracker_added(const StringName &p_tracker_name, XRServer::TrackerType p_tracker_type);
+	void _on_tracker_removed(const StringName &p_tracker_name, XRServer::TrackerType p_tracker_type);
 
-	if (ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/extensions/hand_tracking")) {
-		contents += "    <uses-permission android:name=\"com.magicleap.permission.HAND_TRACKING\" />\n";
-	}
+protected:
+	static void _bind_methods();
 
-	if (ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/extensions/magic_leap/marker_understanding")) {
-		contents += "    <uses-permission android:name=\"com.magicleap.permission.MARKER_TRACKING\" />\n";
-	}
+	void _notification(int p_what);
 
-	// Always include this.
-	contents += "    <uses-feature android:name=\"com.magicleap.api_level\" android:version=\"20\" />\n";
+public:
+	PackedStringArray _get_configuration_warnings() const override;
 
-	return contents;
-}
+	void set_scene(const Ref<PackedScene> &p_scene);
+	Ref<PackedScene> get_scene() const;
+
+	void set_scene_setup_method(const StringName &p_method);
+	StringName get_scene_setup_method() const;
+
+	void set_visible(bool p_visible);
+	bool get_visible() const;
+	void show();
+	void hide();
+};
+} // namespace godot
+
+#endif

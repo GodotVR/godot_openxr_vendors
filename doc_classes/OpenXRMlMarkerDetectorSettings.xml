@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="OpenXRMlMarkerDetectorSettings" inherits="Resource" experimental="Marked as experimental due to lack of community validation on Magic Leap devices." xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		Abstract base class for marker detector settings.
+	</brief_description>
+	<description>
+		Abstract base class for marker detector settings.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="get_marker_type" qualifiers="const">
+			<return type="int" enum="OpenXRMlMarkerDetectorSettings.MarkerType" />
+			<description>
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="marker_detector_profile" type="int" setter="set_marker_detector_profile" getter="get_marker_detector_profile" enum="OpenXRMlMarkerDetectorSettings.MarkerDetectorProfile" default="0">
+		</member>
+		<member name="marker_detector_profile_settings" type="OpenXRMlMarkerDetectorProfileSettings" setter="set_marker_detector_profile_settings" getter="get_marker_detector_profile_settings">
+			The custom profile to be used when [member marker_detector_profile] is set to [constant MARKER_DETECTOR_PROFILE_CUSTOM].
+		</member>
+	</members>
+	<constants>
+		<constant name="MARKER_TYPE_ARUCO" value="0" enum="MarkerType">
+			Aruco Marker detection and localization. The marker id of the Aruco marker is available via [method OpenXRMlMarkerTracker.get_marker_number].
+		</constant>
+		<constant name="MARKER_TYPE_APRIL_TAG" value="1" enum="MarkerType">
+			AprilTag detection and localization. The marker id of the AprilTags is available via [method OpenXRMlMarkerTracker.get_marker_number].
+		</constant>
+		<constant name="MARKER_TYPE_QR" value="2" enum="MarkerType">
+			QR code detection and localization. The contents of the QR code is available via [method OpenXRMlMarkerTracker.get_marker_string].
+		</constant>
+		<constant name="MARKER_TYPE_EAN_13" value="3" enum="MarkerType">
+			EAN-13, detection only, not locatable. The contents of the barcode is available via [method OpenXRMlMarkerTracker.get_marker_string].
+		</constant>
+		<constant name="MARKER_TYPE_UPC_A" value="4" enum="MarkerType">
+			UPC-A, detection only, not locatable. The contents of the barcode is available via [method OpenXRMlMarkerTracker.get_marker_string].
+		</constant>
+		<constant name="MARKER_TYPE_CODE_128" value="5" enum="MarkerType">
+			Code 128, detection only, not locatable. The contents of the barcode is available via [method OpenXRMlMarkerTracker.get_marker_string].
+		</constant>
+		<constant name="MARKER_DETECTOR_PROFILE_DEFAULT" value="0" enum="MarkerDetectorProfile">
+			Tracker profile that covers standard use cases. If this does not suite the needs of the application try the other profiles listed below.
+		</constant>
+		<constant name="MARKER_DETECTOR_PROFILE_SPEED" value="1" enum="MarkerDetectorProfile">
+			Optimized for speed. Use this profile to reduce the compute load and increase detection/tracker speed. This can result in low accuracy poses.
+		</constant>
+		<constant name="MARKER_DETECTOR_PROFILE_ACCURACY" value="2" enum="MarkerDetectorProfile">
+			Optimized for accuracy. Use this profile to optimize for accurate marker poses. This can cause increased load on the compute.
+		</constant>
+		<constant name="MARKER_DETECTOR_PROFILE_SMALL_TARGETS" value="3" enum="MarkerDetectorProfile">
+			Optimized for small targets. Use this profile to optimize for markers that are small or for larger markers that need to be detected from afar.
+		</constant>
+		<constant name="MARKER_DETECTOR_PROFILE_LARGE_FOV" value="4" enum="MarkerDetectorProfile">
+			Optimized for FoV. Use this profile to be able to detect markers across a larger FoV. The marker tracker system will attempt to use multiple cameras to detect the markers.
+		</constant>
+		<constant name="MARKER_DETECTOR_PROFILE_CUSTOM" value="5" enum="MarkerDetectorProfile">
+			Custom Tracker Profile. See [member marker_detector_profile_settings] for more details.
+		</constant>
+	</constants>
+</class>

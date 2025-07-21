@@ -1,0 +1,47 @@
+[gd_scene load_steps=8 format=3 uid="uid://ctaejfkxghmda"]
+
+[ext_resource type="Script" uid="uid://ck3gd3ct4rlub" path="res://marker_display.gd" id="1_u2du8"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_u2du8"]
+albedo_color = Color(1, 0, 0, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_h1frk"]
+material = SubResource("StandardMaterial3D_u2du8")
+size = Vector3(0.05, 0.005, 0.005)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kgcxf"]
+albedo_color = Color(0, 1, 0, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_b46i1"]
+material = SubResource("StandardMaterial3D_kgcxf")
+size = Vector3(0.005, 0.05, 0.005)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4e267"]
+albedo_color = Color(0, 0.498039, 1, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_rd0tc"]
+material = SubResource("StandardMaterial3D_4e267")
+size = Vector3(0.005, 0.005, 0.05)
+
+[node name="MarkerDisplay" type="Node3D"]
+script = ExtResource("1_u2du8")
+
+[node name="X" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.025, 0, 0)
+mesh = SubResource("BoxMesh_h1frk")
+skeleton = NodePath("../Z")
+
+[node name="Y" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.025, 0)
+mesh = SubResource("BoxMesh_b46i1")
+skeleton = NodePath("../Z")
+
+[node name="Z" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.025)
+mesh = SubResource("BoxMesh_rd0tc")
+
+[node name="Description" type="Label3D" parent="."]
+pixel_size = 0.0005
+text = "Marker
+Description"
+vertical_alignment = 0

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="OpenXRMlMarkerUnderstandingManager" inherits="Node" experimental="Marked as experimental due to lack of community validation on Magic Leap devices." xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		Provides an easy-to-use way to interact with Magic Leap's Marker.
+	</brief_description>
+	<description>
+		Provides an easy-to-use way to interact with Magic Leap's Marker.
+		Markers are detected by adding [OpenXRMlMarkerDetector] nodes to the scene tree.
+		This node instantiates a scene to represent the virtual objects located at those markers. Each instantiated scene will be added as a child of an [XRAnchor3D] node that will be positioned using tracking data from the headset.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="hide">
+			<return type="void" />
+			<description>
+				Hides all markers tracked by this manager.
+			</description>
+		</method>
+		<method name="show">
+			<return type="void" />
+			<description>
+				Shows all markers tracked by this manager.
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="scene" type="PackedScene" setter="set_scene" getter="get_scene">
+			The scene to be instantiated automatically for each marker.
+		</member>
+		<member name="scene_setup_method" type="StringName" setter="set_scene_setup_method" getter="get_scene_setup_method" default="&amp;&quot;setup_scene&quot;">
+			The method that will be called on scenes after they have been instantiated for a marker.
+			The method will be called with a single [OpenXRMlMarkerTracker] argument, representing the marker.
+		</member>
+		<member name="visible" type="bool" setter="set_visible" getter="get_visible" default="true">
+			Controls the visibility of the [XRAnchor3D] nodes managed by this node.
+		</member>
+	</members>
+</class>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="OpenXRMlMarkerDetectorArucoSettings" inherits="OpenXRMlMarkerDetectorSettings" experimental="Marked as experimental due to lack of community validation on Magic Leap devices." xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		ArUco settings for the [OpenXRMlMarkerDetector].
+	</brief_description>
+	<description>
+		ArUco settings for the [OpenXRMlMarkerDetector].
+	</description>
+	<tutorials>
+	</tutorials>
+	<members>
+		<member name="aruco_dictionary" type="int" setter="set_aruco_dictionary" getter="get_aruco_dictionary" enum="OpenXRMlMarkerDetectorArucoSettings.ArucoDictionary" default="0">
+			The ArUco dictionary name from which markers will be detected.
+		</member>
+		<member name="aruco_length" type="float" setter="set_aruco_length" getter="get_aruco_length" default="0.0">
+			The physical length of one side of a marker in meters.
+			A higher localization accuracy may be obtained by specifying the marker size.
+			This value is ignored if [member estimate_aruco_length] is set to [code]true[/code].
+		</member>
+		<member name="estimate_aruco_length" type="bool" setter="set_estimate_aruco_length" getter="get_estimate_aruco_length" default="false">
+			If set to [code]true[/code] the detector will estimate the size of the marker.
+		</member>
+	</members>
+	<constants>
+		<constant name="ARUCO_DICTIONARY_4X4_50" value="0" enum="ArucoDictionary">
+			4 by 4 pixel Aruco marker dictionary with 50 IDs.
+		</constant>
+		<constant name="ARUCO_DICTIONARY_4X4_100" value="1" enum="ArucoDictionary">
+			4 by 4 pixel Aruco marker dictionary with 100 IDs.
+		</constant>
+		<constant name="ARUCO_DICTIONARY_4X4_250" value="2" enum="ArucoDictionary">
+			4 by 4 pixel Aruco marker dictionary with 250 IDs.
+		</constant>
+		<constant name="ARUCO_DICTIONARY_4X4_1000" value="3" enum="ArucoDictionary">
+			4 by 4 pixel Aruco marker dictionary with 1000 IDs.
+		</constant>
+		<constant name="ARUCO_DICTIONARY_5X5_50" value="4" enum="ArucoDictionary">
+			5 by 5 pixel Aruco marker dictionary with 50 IDs.
+		</constant>
+		<constant name="ARUCO_DICTIONARY_5X5_100" value="5" enum="ArucoDictionary">
+			5 by 5 pixel Aruco marker dictionary with 100 IDs.
+		</constant>
+		<constant name="ARUCO_DICTIONARY_5X5_250" value="6" enum="ArucoDictionary">
+			5 by 5 pixel Aruco marker dictionary with 250 IDs.
+		</constant>
+		<constant name="ARUCO_DICTIONARY_5X5_1000" value="7" enum="ArucoDictionary">
+			5 by 5 pixel Aruco marker dictionary with 1000 IDs.
+		</constant>
+		<constant name="ARUCO_DICTIONARY_6X6_50" value="8" enum="ArucoDictionary">
+			6 by 6 pixel Aruco marker dictionary with 50 IDs.
+		</constant>
+		<constant name="ARUCO_DICTIONARY_6X6_100" value="9" enum="ArucoDictionary">
+			6 by 6 pixel Aruco marker dictionary with 100 IDs.
+		</constant>
+		<constant name="ARUCO_DICTIONARY_6X6_250" value="10" enum="ArucoDictionary">
+			6 by 6 pixel Aruco marker dictionary with 250 IDs.
+		</constant>
+		<constant name="ARUCO_DICTIONARY_6X6_1000" value="11" enum="ArucoDictionary">
+			6 by 6 pixel Aruco marker dictionary with 1000 IDs.
+		</constant>
+		<constant name="ARUCO_DICTIONARY_7X7_50" value="12" enum="ArucoDictionary">
+			7 by 7 pixel Aruco marker dictionary with 50 IDs.
+		</constant>
+		<constant name="ARUCO_DICTIONARY_7X7_100" value="13" enum="ArucoDictionary">
+			7 by 7 pixel Aruco marker dictionary with 100 IDs.
+		</constant>
+		<constant name="ARUCO_DICTIONARY_7X7_250" value="14" enum="ArucoDictionary">
+			7 by 7 pixel Aruco marker dictionary with 250 IDs.
+		</constant>
+		<constant name="ARUCO_DICTIONARY_7X7_1000" value="15" enum="ArucoDictionary">
+			7 by 7 pixel Aruco marker dictionary with 1000 IDs.
+		</constant>
+	</constants>
+</class>
