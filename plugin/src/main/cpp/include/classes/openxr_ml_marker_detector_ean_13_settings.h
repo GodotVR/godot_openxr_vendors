@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  magicleap_editor_plugin.cpp                                           */
+/*  openxr_ml_marker_detector_ean_13_settings.h                           */
 /**************************************************************************/
 /*                       This file is part of:                            */
 /*                              GODOT XR                                  */
@@ -27,45 +27,22 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "export/magicleap_export_plugin.h"
+#ifndef OPENXR_ML_MARKER_DETECTOR_EAN_13_SETTINGS_H
+#define OPENXR_ML_MARKER_DETECTOR_EAN_13_SETTINGS_H
 
-#include <godot_cpp/classes/project_settings.hpp>
+#include "classes/openxr_ml_marker_detector_settings.h"
 
-using namespace godot;
+#include <godot_cpp/core/binder_common.hpp>
 
-MagicleapEditorExportPlugin::MagicleapEditorExportPlugin() {
-	set_vendor_name(MAGICLEAP_VENDOR_NAME);
-}
+namespace godot {
+class OpenXRMlMarkerDetectorEan13Settings : public OpenXRMlMarkerDetectorSettings {
+	GDCLASS(OpenXRMlMarkerDetectorEan13Settings, OpenXRMlMarkerDetectorSettings);
 
-void MagicleapEditorExportPlugin::_bind_methods() {}
+protected:
+	static void _bind_methods();
 
-TypedArray<Dictionary> MagicleapEditorExportPlugin::_get_export_options(const Ref<EditorExportPlatform> &platform) const {
-	TypedArray<Dictionary> export_options;
-	if (!_supports_platform(platform)) {
-		return export_options;
-	}
-
-	export_options.append(_get_vendor_toggle_option());
-
-	return export_options;
-}
-
-String MagicleapEditorExportPlugin::_get_android_manifest_element_contents(const Ref<EditorExportPlatform> &platform, bool debug) const {
-	String contents;
-	if (!_supports_platform(platform) || !_is_vendor_plugin_enabled()) {
-		return contents;
-	}
-
-	if (ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/extensions/hand_tracking")) {
-		contents += "    <uses-permission android:name=\"com.magicleap.permission.HAND_TRACKING\" />\n";
-	}
-
-	if (ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/extensions/magic_leap/marker_understanding")) {
-		contents += "    <uses-permission android:name=\"com.magicleap.permission.MARKER_TRACKING\" />\n";
-	}
-
-	// Always include this.
-	contents += "    <uses-feature android:name=\"com.magicleap.api_level\" android:version=\"20\" />\n";
-
-	return contents;
-}
+public:
+	OpenXRMlMarkerDetectorEan13Settings();
+};
+} // namespace godot
+#endif
