@@ -7,6 +7,10 @@ on:
     types: [published]
   workflow_dispatch: {}
 
+env:
+  # This is ovr_openxr_mobile_sdk v77.
+  META_OPENXR_HEADERS_URL: 'https://securecdn-ord5-3.oculus.com/binaries/download/?id=23875289988749597'
+
 jobs:
   publish:
     name: Release build and publish
