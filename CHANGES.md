@@ -1,5 +1,9 @@
 # Change history for the Godot OpenXR loaders asset
 
+## 4.1.1
+
+- Update the export plugin version to match the maven central release
+
 ## 4.1.0
 
 - Implement `XR_META_boundary_visibility` extension
