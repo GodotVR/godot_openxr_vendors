@@ -32,6 +32,7 @@
 package org.godotengine.openxr.vendors
 
 // Set of supported vendors
+internal const val ANDROID_XR_VENDOR_NAME = "androidxr"
 internal const val META_VENDOR_NAME = "meta"
 internal const val PICO_VENDOR_NAME = "pico"
 internal const val LYNX_VENDOR_NAME = "lynx"
@@ -40,6 +41,53 @@ internal const val MAGICLEAP_VENDOR_NAME = "magicleap"
 
 // Feature tags
 internal const val EYE_GAZE_INTERACTION_FEATURE_TAG = "PERMISSION_XR_EXT_eye_gaze_interaction"
+
+// Android permissions
+/**
+ * Representing the user's eye pose, status, and orientation, such as for use with avatars.
+ * Use this permission when low-precision eye tracking data is needed.
+ */
+internal const val ANDROID_XR_EYE_TRACKING_COARSE_PERMISSION = "android.permission.EYE_TRACKING_COARSE"
+
+/**
+ * Eye gaze for selection, input, and interactions.
+ */
+internal const val ANDROID_XR_EYE_TRACKING_FINE_PERMISSION = "android.permission.EYE_TRACKING_FINE"
+
+/**
+ * Tracking and rendering facial expressions.
+ */
+internal const val ANDROID_XR_FACE_TRACKING_PERMISSION = "android.permission.FACE_TRACKING"
+
+/**
+ * Tracking hand joint poses and angular and linear velocities; Using a mesh representation of
+ * the user's hands.
+ */
+internal const val ANDROID_XR_HAND_TRACKING_PERMISSION = "android.permission.HAND_TRACKING"
+
+/**
+ * - Light estimation
+ * - projecting passthrough onto mesh surfaces
+ * - performing raycasts against trackables in the environment
+ * - plane tracking
+ * - object tracking
+ * - persistent anchors
+ */
+internal const val ANDROID_XR_SCENE_UNDERSTANDING_COARSE_PERMISSION = "android.permission.SCENE_UNDERSTANDING_COARSE"
+
+/**
+ * Depth texture.
+ */
+internal const val ANDROID_XR_SCENE_UNDERSTANDING_FINE_PERMISSION = "android.permission.SCENE_UNDERSTANDING_FINE"
+
+internal val ANDROID_XR_PERMISSIONS_LIST = listOf(
+    ANDROID_XR_EYE_TRACKING_COARSE_PERMISSION,
+    ANDROID_XR_EYE_TRACKING_FINE_PERMISSION,
+    ANDROID_XR_FACE_TRACKING_PERMISSION,
+    ANDROID_XR_HAND_TRACKING_PERMISSION,
+    ANDROID_XR_SCENE_UNDERSTANDING_COARSE_PERMISSION,
+    ANDROID_XR_SCENE_UNDERSTANDING_FINE_PERMISSION,
+)
 
 // Meta permissions
 internal const val META_BODY_TRACKING_PERMISSION = "com.oculus.permission.BODY_TRACKING"
@@ -65,6 +113,7 @@ internal val PICO_PERMISSIONS_LIST = listOf(
 
 internal fun getVendorPermissions(vendorName: String): List<String> {
     return when (vendorName) {
+        ANDROID_XR_VENDOR_NAME -> ANDROID_XR_PERMISSIONS_LIST
         META_VENDOR_NAME -> META_PERMISSIONS_LIST
         PICO_VENDOR_NAME -> PICO_PERMISSIONS_LIST
         else -> emptyList()
