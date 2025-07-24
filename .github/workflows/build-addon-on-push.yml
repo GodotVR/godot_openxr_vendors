@@ -11,9 +11,33 @@ env:
   META_OPENXR_HEADERS_URL: 'https://securecdn-ord5-3.oculus.com/binaries/download/?id=23875289988749597'
 
 jobs:
+  release-guard:
+    name: Release guard
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - name: Validate release
+        run: |
+          if [[ "${{ github.ref }}" =~ ^refs/tags/ ]]; then
+            if scripts/validate_release.py . "${{ github.ref_name }}"; then
+              echo " ** Ready for release!"
+            else
+              echo " ** Not ready for release! Fix the above errors, reset the Git tag, and try again..."
+              exit 1
+            fi
+          else
+            echo " ** Not doing a release - carry on..."
+          fi
+
   build:
     name: Building for ${{ matrix.name }} (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
+    needs: release-guard
     strategy:
       fail-fast: true
       matrix:
