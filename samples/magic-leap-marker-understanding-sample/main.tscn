@@ -1,0 +1,28 @@
+[gd_scene load_steps=6 format=3 uid="uid://5e17d4y7whio"]
+
+[ext_resource type="Script" uid="uid://0fp7fjvwk13c" path="res://start_xr.gd" id="1_ig7tw"]
+[ext_resource type="Script" uid="uid://cy66x8q1iyl66" path="res://ml_marker_understanding.gd" id="2_0xm2m"]
+[ext_resource type="PackedScene" uid="uid://ctaejfkxghmda" path="res://marker_display.tscn" id="3_h2yge"]
+
+[sub_resource type="OpenXRMlMarkerDetectorArucoSettings" id="OpenXRMlMarkerDetectorArucoSettings_h2yge"]
+aruco_length = 0.09
+
+[sub_resource type="OpenXRMlMarkerDetectorQrSettings" id="OpenXRMlMarkerDetectorQrSettings_h2yge"]
+qr_length = 0.09
+
+[node name="Main" type="Node3D"]
+script = ExtResource("1_ig7tw")
+
+[node name="XROrigin3D" type="XROrigin3D" parent="."]
+
+[node name="XRCamera3D" type="XRCamera3D" parent="XROrigin3D"]
+
+[node name="ArUco Marker Detector" type="Node" parent="XROrigin3D"]
+script = ExtResource("2_0xm2m")
+marker_display_scene = ExtResource("3_h2yge")
+settings = SubResource("OpenXRMlMarkerDetectorArucoSettings_h2yge")
+
+[node name="Qr Marker Detector" type="Node" parent="XROrigin3D"]
+script = ExtResource("2_0xm2m")
+marker_display_scene = ExtResource("3_h2yge")
+settings = SubResource("OpenXRMlMarkerDetectorQrSettings_h2yge")
