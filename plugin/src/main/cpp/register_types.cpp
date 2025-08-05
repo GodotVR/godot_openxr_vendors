@@ -75,6 +75,7 @@
 #include "extensions/openxr_meta_boundary_visibility_extension_wrapper.h"
 #include "extensions/openxr_meta_environment_depth_extension_wrapper.h"
 #include "extensions/openxr_meta_recommended_layer_resolution_extension_wrapper.h"
+#include "extensions/openxr_meta_simultaneous_hands_and_controllers_extension_wrapper.h"
 #include "extensions/openxr_meta_spatial_entity_mesh_extension_wrapper.h"
 
 #include "classes/openxr_fb_hand_tracking_mesh.h"
@@ -146,6 +147,7 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			GDREGISTER_CLASS(OpenXRFbSpatialEntityContainerExtensionWrapper);
 			GDREGISTER_CLASS(OpenXRFbSpatialEntityUserExtensionWrapper);
 			GDREGISTER_CLASS(OpenXRMetaRecommendedLayerResolutionExtensionWrapper);
+			GDREGISTER_CLASS(OpenXRMetaSimultaneousHandsAndControllersExtensionWrapper);
 			GDREGISTER_CLASS(OpenXRMetaSpatialEntityMeshExtensionWrapper);
 			GDREGISTER_CLASS(OpenXRFbSceneExtensionWrapper);
 			GDREGISTER_CLASS(OpenXRFbFaceTrackingExtensionWrapper);
@@ -228,6 +230,10 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 				if (_get_bool_project_setting("xr/openxr/extensions/meta/hand_tracking_capsules")) {
 					_register_extension_with_openxr(OpenXRFbHandTrackingCapsulesExtensionWrapper::get_singleton());
 				}
+
+				if (_get_bool_project_setting("xr/openxr/extensions/meta/simultaneous_hands_and_controllers")) {
+					_register_extension_with_openxr(OpenXRMetaSimultaneousHandsAndControllersExtensionWrapper::get_singleton());
+				}
 			}
 
 			if (_get_bool_project_setting("xr/openxr/extensions/meta/composition_layer_settings")) {
@@ -284,6 +290,7 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			_register_extension_as_singleton(OpenXRFbSceneExtensionWrapper::get_singleton());
 			_register_extension_as_singleton(OpenXRFbHandTrackingAimExtensionWrapper::get_singleton());
 			_register_extension_as_singleton(OpenXRFbHandTrackingCapsulesExtensionWrapper::get_singleton());
+			_register_extension_as_singleton(OpenXRMetaSimultaneousHandsAndControllersExtensionWrapper::get_singleton());
 			_register_extension_as_singleton(OpenXRFbBodyTrackingExtensionWrapper::get_singleton());
 			_register_extension_as_singleton(OpenXRHtcFacialTrackingExtensionWrapper::get_singleton());
 			_register_extension_as_singleton(OpenXRHtcPassthroughExtensionWrapper::get_singleton());
@@ -418,6 +425,7 @@ void add_plugin_project_settings() {
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/hand_tracking_aim", false);
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/hand_tracking_mesh", false);
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/hand_tracking_capsules", false);
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/simultaneous_hands_and_controllers", false);
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/render_model", false);
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/anchor_api", false);
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/anchor_sharing", false);
