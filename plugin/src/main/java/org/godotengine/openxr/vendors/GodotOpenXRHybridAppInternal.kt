@@ -149,8 +149,8 @@ class GodotOpenXRHybridAppInternal(godot: Godot?) : GodotPlugin(godot) {
 
 	override fun getPluginName() = "GodotOpenXRHybridAppInternal"
 
-	override fun onMainCreate(activity: Activity): View? {
-		hybridLaunchData = activity.intent.getStringExtra(EXTRA_HYBRID_LAUNCH_DATA) ?: ""
+	override fun onMainCreate(activity: Activity?): View? {
+		hybridLaunchData = activity?.intent?.getStringExtra(EXTRA_HYBRID_LAUNCH_DATA) ?: ""
 		return null
 	}
 
