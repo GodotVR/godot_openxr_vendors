@@ -32,12 +32,15 @@
 #include <godot_cpp/classes/editor_export_plugin.hpp>
 #include <godot_cpp/classes/editor_plugin.hpp>
 
+#include "editor_debugger_plugin.h"
+
 using namespace godot;
 
 class OpenXRVendorsEditorPlugin : public EditorPlugin {
 	GDCLASS(OpenXRVendorsEditorPlugin, EditorPlugin)
 
 	Vector<Ref<EditorExportPlugin>> export_plugins;
+	Ref<OpenXRVendorsEditorDebuggerPlugin> debugger_plugin;
 
 	void _add_export_plugin(const Ref<EditorExportPlugin> &p_plugin);
 
@@ -47,6 +50,8 @@ protected:
 public:
 	void _enter_tree() override;
 	void _exit_tree() override;
+
+	PackedStringArray _run_scene(const String &p_scene, const PackedStringArray &p_args) const override;
 
 	OpenXRVendorsEditorPlugin();
 };
