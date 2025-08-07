@@ -74,6 +74,7 @@
 #include "extensions/openxr_htc_passthrough_extension_wrapper.h"
 #include "extensions/openxr_meta_boundary_visibility_extension_wrapper.h"
 #include "extensions/openxr_meta_environment_depth_extension_wrapper.h"
+#include "extensions/openxr_meta_headset_id_extension_wrapper.h"
 #include "extensions/openxr_meta_recommended_layer_resolution_extension_wrapper.h"
 #include "extensions/openxr_meta_simultaneous_hands_and_controllers_extension_wrapper.h"
 #include "extensions/openxr_meta_spatial_entity_mesh_extension_wrapper.h"
@@ -148,6 +149,7 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			GDREGISTER_CLASS(OpenXRFbSpatialEntityUserExtensionWrapper);
 			GDREGISTER_CLASS(OpenXRMetaRecommendedLayerResolutionExtensionWrapper);
 			GDREGISTER_CLASS(OpenXRMetaSimultaneousHandsAndControllersExtensionWrapper);
+			GDREGISTER_CLASS(OpenXRMetaHeadsetIDExtensionWrapper);
 			GDREGISTER_CLASS(OpenXRMetaSpatialEntityMeshExtensionWrapper);
 			GDREGISTER_CLASS(OpenXRFbSceneExtensionWrapper);
 			GDREGISTER_CLASS(OpenXRFbFaceTrackingExtensionWrapper);
@@ -215,6 +217,10 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 
 			if (_get_bool_project_setting("xr/openxr/extensions/meta/body_tracking")) {
 				_register_extension_with_openxr(OpenXRFbBodyTrackingExtensionWrapper::get_singleton());
+			}
+
+			if (_get_bool_project_setting("xr/openxr/extensions/meta/headset_id")) {
+				_register_extension_with_openxr(OpenXRMetaHeadsetIDExtensionWrapper::get_singleton());
 			}
 
 			// All of the hand tracking extensions depend on the Godot hand tracking setting being set first.
@@ -291,6 +297,7 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			_register_extension_as_singleton(OpenXRFbHandTrackingAimExtensionWrapper::get_singleton());
 			_register_extension_as_singleton(OpenXRFbHandTrackingCapsulesExtensionWrapper::get_singleton());
 			_register_extension_as_singleton(OpenXRMetaSimultaneousHandsAndControllersExtensionWrapper::get_singleton());
+			_register_extension_as_singleton(OpenXRMetaHeadsetIDExtensionWrapper::get_singleton());
 			_register_extension_as_singleton(OpenXRFbBodyTrackingExtensionWrapper::get_singleton());
 			_register_extension_as_singleton(OpenXRHtcFacialTrackingExtensionWrapper::get_singleton());
 			_register_extension_as_singleton(OpenXRHtcPassthroughExtensionWrapper::get_singleton());
@@ -433,6 +440,7 @@ void add_plugin_project_settings() {
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/color_space", true);
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/composition_layer_settings", true);
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/dynamic_resolution", true);
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/headset_id", false);
 
 	// Only works with Godot 4.5 or later.
 	if (godot::internal::godot_version.minor >= 5) {
