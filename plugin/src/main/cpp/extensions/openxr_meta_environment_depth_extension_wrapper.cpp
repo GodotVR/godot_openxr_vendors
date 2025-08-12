@@ -50,7 +50,6 @@
 #include <godot_cpp/classes/project_settings.hpp>
 #include <godot_cpp/classes/rendering_device.hpp>
 #include <godot_cpp/classes/rendering_server.hpp>
-#include <godot_cpp/classes/scene_tree.hpp>
 #include <godot_cpp/classes/window.hpp>
 #include <godot_cpp/classes/xr_interface.hpp>
 #include <godot_cpp/classes/xr_server.hpp>
@@ -141,7 +140,7 @@ OpenXRMetaEnvironmentDepthExtensionWrapper::OpenXRMetaEnvironmentDepthExtensionW
 	singleton = this;
 
 #ifndef ANDROID_ENABLED
-	graphics_api = GRAPHICS_API_UNSUPPORTED;
+	render_state.graphics_api = GRAPHICS_API_UNSUPPORTED;
 #endif // ANDROID_ENABLED
 }
 
@@ -188,17 +187,16 @@ void OpenXRMetaEnvironmentDepthExtensionWrapper::_on_instance_destroyed() {
 }
 
 void OpenXRMetaEnvironmentDepthExtensionWrapper::_on_session_destroyed() {
-	destroy_depth_provider();
+	// Normally, we'd only run this on the render thread, but the session is being destroyed,
+	// and we need to make sure to clean-up before that is done. At this point, we shouldn't
+	// be rendering anything through OpenXR anymore anyway.
+	_destroy_depth_provider_rt();
 }
 
 void OpenXRMetaEnvironmentDepthExtensionWrapper::_on_pre_render() {
 #ifdef ANDROID_ENABLED
 	RenderingServer *rs = RenderingServer::get_singleton();
 	ERR_FAIL_NULL(rs);
-
-	if (unlikely(graphics_api == GRAPHICS_API_UNKNOWN)) {
-		check_graphics_api();
-	}
 
 	if (unlikely(reprojection_material_dirty)) {
 		update_reprojection_material();
@@ -207,7 +205,7 @@ void OpenXRMetaEnvironmentDepthExtensionWrapper::_on_pre_render() {
 	rs->global_shader_parameter_set(META_ENVIRONMENT_DEPTH_AVAILABLE_NAME, false);
 	rs->global_shader_parameter_set(META_ENVIRONMENT_DEPTH_TEXTURE_NAME, RID());
 
-	if (depth_provider == XR_NULL_HANDLE || !depth_provider_started) {
+	if (render_state.depth_provider == XR_NULL_HANDLE || !render_state.depth_provider_started) {
 		return;
 	}
 
@@ -219,9 +217,6 @@ void OpenXRMetaEnvironmentDepthExtensionWrapper::_on_pre_render() {
 
 	Ref<XRInterface> openxr_interface = xr_server->find_interface("OpenXR");
 	ERR_FAIL_COND(openxr_interface.is_null());
-
-	SceneTree *scene_tree = Object::cast_to<SceneTree>(Engine::get_singleton()->get_main_loop());
-	ERR_FAIL_NULL(scene_tree);
 
 	XrEnvironmentDepthImageAcquireInfoMETA acquire_info = {
 		XR_TYPE_ENVIRONMENT_DEPTH_IMAGE_ACQUIRE_INFO_META, // type
@@ -249,22 +244,21 @@ void OpenXRMetaEnvironmentDepthExtensionWrapper::_on_pre_render() {
 		}
 	};
 
-	XrResult result = xrAcquireEnvironmentDepthImageMETA(depth_provider, &acquire_info, &depth_image);
+	XrResult result = xrAcquireEnvironmentDepthImageMETA(render_state.depth_provider, &acquire_info, &depth_image);
 	if (XR_FAILED(result)) {
 		UtilityFunctions::printerr("Failed to acquire environment depth image: ", openxr_api->get_error_string(result));
 		return;
 	}
 
 	rs->global_shader_parameter_set(META_ENVIRONMENT_DEPTH_AVAILABLE_NAME, true);
-	rs->global_shader_parameter_set(META_ENVIRONMENT_DEPTH_TEXTURE_NAME, depth_swapchain_textures[depth_image.swapchainIndex]);
+	rs->global_shader_parameter_set(META_ENVIRONMENT_DEPTH_TEXTURE_NAME, render_state.depth_swapchain_textures[depth_image.swapchainIndex]);
 
 	Transform3D world_origin = xr_server->get_world_origin();
 	Vector2 viewport_size = openxr_interface->get_render_target_size();
 	float aspect = viewport_size.width / viewport_size.height;
 
-	Camera3D *camera = scene_tree->get_root()->get_camera_3d();
-	float z_near = camera->get_near();
-	float z_far = camera->get_far();
+	float z_near = openxr_api->get_render_state_z_near();
+	float z_far = openxr_api->get_render_state_z_far();
 
 	for (int i = 0; i < 2; i++) {
 		XrPosef local_from_depth_eye = depth_image.views[i].pose;
@@ -294,7 +288,7 @@ void OpenXRMetaEnvironmentDepthExtensionWrapper::_on_pre_render() {
 
 		Projection camera_proj_view = openxr_interface->get_projection_for_view(i, aspect, z_near, z_far) * openxr_interface->get_transform_for_view(i, world_origin).affine_inverse();
 
-		if (graphics_api == GRAPHICS_API_VULKAN) {
+		if (render_state.graphics_api == GRAPHICS_API_VULKAN) {
 			Projection correction;
 			correction.set_depth_correction(true);
 			camera_proj_view = correction * camera_proj_view;
@@ -316,34 +310,27 @@ uint64_t OpenXRMetaEnvironmentDepthExtensionWrapper::_set_system_properties_and_
 }
 
 void OpenXRMetaEnvironmentDepthExtensionWrapper::start_environment_depth() {
-	if (depth_provider == XR_NULL_HANDLE) {
-		if (!create_depth_provider()) {
-			return;
-		}
-	}
-
-	XrResult result = xrStartEnvironmentDepthProviderMETA(depth_provider);
-	if (XR_FAILED(result)) {
-		UtilityFunctions::printerr("Failed to start environment depth provider: ", get_openxr_api()->get_error_string(result));
-		return;
-	}
-
-	setup_global_uniforms();
+	RenderingServer *rs = RenderingServer::get_singleton();
+	ERR_FAIL_NULL(rs);
+	ERR_FAIL_COND(depth_provider_started);
 
 	depth_provider_started = true;
+	setup_global_uniforms();
+
+	rs->call_on_render_thread(callable_mp(this, &OpenXRMetaEnvironmentDepthExtensionWrapper::_start_environment_depth_rt));
+
 	emit_signal("openxr_meta_environment_depth_started");
 }
 
 void OpenXRMetaEnvironmentDepthExtensionWrapper::stop_environment_depth() {
-	ERR_FAIL_NULL(depth_provider);
-
-	XrResult result = xrStopEnvironmentDepthProviderMETA(depth_provider);
-	if (XR_FAILED(result)) {
-		UtilityFunctions::printerr("Failed to stop environment depth provider: ", get_openxr_api()->get_error_string(result));
-		return;
-	}
+	RenderingServer *rs = RenderingServer::get_singleton();
+	ERR_FAIL_NULL(rs);
+	ERR_FAIL_COND(!depth_provider_started);
 
 	depth_provider_started = false;
+
+	rs->call_on_render_thread(callable_mp(this, &OpenXRMetaEnvironmentDepthExtensionWrapper::_stop_environment_depth_rt));
+
 	emit_signal("openxr_meta_environment_depth_stopped");
 }
 
@@ -352,25 +339,10 @@ bool OpenXRMetaEnvironmentDepthExtensionWrapper::is_environment_depth_started() 
 }
 
 void OpenXRMetaEnvironmentDepthExtensionWrapper::set_hand_removal_enabled(bool p_enable) {
-	if (depth_provider == XR_NULL_HANDLE) {
-		if (!create_depth_provider()) {
-			return;
-		}
-	}
-
-	XrEnvironmentDepthHandRemovalSetInfoMETA info = {
-		XR_TYPE_ENVIRONMENT_DEPTH_HAND_REMOVAL_SET_INFO_META, // type
-		nullptr, // next
-		p_enable, // enabled
-	};
-
-	XrResult result = xrSetEnvironmentDepthHandRemovalMETA(depth_provider, &info);
-	if (XR_FAILED(result)) {
-		UtilityFunctions::printerr("Failed to set hand removal enabled: ", get_openxr_api()->get_error_string(result));
-		return;
-	}
-
+	RenderingServer *rs = RenderingServer::get_singleton();
+	ERR_FAIL_NULL(rs);
 	hand_removal_enabled = p_enable;
+	rs->call_on_render_thread(callable_mp(this, &OpenXRMetaEnvironmentDepthExtensionWrapper::_set_hand_removal_enabled_rt).bind(p_enable));
 }
 
 bool OpenXRMetaEnvironmentDepthExtensionWrapper::get_hand_removal_enabled() const {
@@ -550,16 +522,16 @@ void OpenXRMetaEnvironmentDepthExtensionWrapper::cleanup() {
 	meta_environment_depth_ext = false;
 }
 
-bool OpenXRMetaEnvironmentDepthExtensionWrapper::create_depth_provider() {
+bool OpenXRMetaEnvironmentDepthExtensionWrapper::_create_depth_provider_rt() {
 #ifdef ANDROID_ENABLED
 	if (!meta_environment_depth_ext) {
 		UtilityFunctions::printerr("Environment depth not supported");
 		return false;
 	}
-	if (graphics_api == GRAPHICS_API_UNKNOWN) {
-		check_graphics_api();
+	if (render_state.graphics_api == GRAPHICS_API_UNKNOWN) {
+		render_state.graphics_api = get_graphics_api();
 	}
-	if (graphics_api == GRAPHICS_API_UNSUPPORTED) {
+	if (render_state.graphics_api == GRAPHICS_API_UNSUPPORTED) {
 		UtilityFunctions::printerr("Environment depth is not supported with the current graphics API");
 		return false;
 	}
@@ -575,7 +547,7 @@ bool OpenXRMetaEnvironmentDepthExtensionWrapper::create_depth_provider() {
 		0, // createFlags
 	};
 
-	result = xrCreateEnvironmentDepthProviderMETA(SESSION, &provider_create_info, &depth_provider);
+	result = xrCreateEnvironmentDepthProviderMETA(SESSION, &provider_create_info, &render_state.depth_provider);
 	if (XR_FAILED(result)) {
 		UtilityFunctions::printerr("Failed to create environment depth provider: ", get_openxr_api()->get_error_string(result));
 		return false;
@@ -587,10 +559,10 @@ bool OpenXRMetaEnvironmentDepthExtensionWrapper::create_depth_provider() {
 		0, // createFlags
 	};
 
-	result = xrCreateEnvironmentDepthSwapchainMETA(depth_provider, &swapchain_create_info, &depth_swapchain);
+	result = xrCreateEnvironmentDepthSwapchainMETA(render_state.depth_provider, &swapchain_create_info, &render_state.depth_swapchain);
 	if (XR_FAILED(result)) {
 		UtilityFunctions::printerr("Failed to create environment depth swapchain: ", get_openxr_api()->get_error_string(result));
-		destroy_depth_provider();
+		_destroy_depth_provider_rt();
 		return false;
 	}
 
@@ -601,23 +573,23 @@ bool OpenXRMetaEnvironmentDepthExtensionWrapper::create_depth_provider() {
 		0, // height
 	};
 
-	result = xrGetEnvironmentDepthSwapchainStateMETA(depth_swapchain, &swapchain_state);
+	result = xrGetEnvironmentDepthSwapchainStateMETA(render_state.depth_swapchain, &swapchain_state);
 	if (XR_FAILED(result)) {
 		UtilityFunctions::printerr("Failed to get environment depth swapchain state: ", get_openxr_api()->get_error_string(result));
-		destroy_depth_provider();
+		_destroy_depth_provider_rt();
 		return false;
 	}
 
 	uint32_t swapchain_length = 0;
 
-	result = xrEnumerateEnvironmentDepthSwapchainImagesMETA(depth_swapchain, swapchain_length, &swapchain_length, nullptr);
+	result = xrEnumerateEnvironmentDepthSwapchainImagesMETA(render_state.depth_swapchain, swapchain_length, &swapchain_length, nullptr);
 	if (XR_FAILED(result)) {
 		UtilityFunctions::printerr("Failed to get environment depth swapchain image count: ", get_openxr_api()->get_error_string(result));
-		destroy_depth_provider();
+		_destroy_depth_provider_rt();
 		return false;
 	}
 
-	if (graphics_api == GRAPHICS_API_OPENGL) {
+	if (render_state.graphics_api == GRAPHICS_API_OPENGL) {
 		LocalVector<XrSwapchainImageOpenGLESKHR> swapchain_images;
 
 		swapchain_images.resize(swapchain_length);
@@ -627,14 +599,14 @@ bool OpenXRMetaEnvironmentDepthExtensionWrapper::create_depth_provider() {
 			image.image = 0;
 		}
 
-		result = xrEnumerateEnvironmentDepthSwapchainImagesMETA(depth_swapchain, swapchain_length, &swapchain_length, (XrSwapchainImageBaseHeader *)swapchain_images.ptr());
+		result = xrEnumerateEnvironmentDepthSwapchainImagesMETA(render_state.depth_swapchain, swapchain_length, &swapchain_length, (XrSwapchainImageBaseHeader *)swapchain_images.ptr());
 		if (XR_FAILED(result)) {
 			UtilityFunctions::printerr("Failed to get environment depth swapchain images: ", get_openxr_api()->get_error_string(result));
-			destroy_depth_provider();
+			_destroy_depth_provider_rt();
 			return false;
 		}
 
-		depth_swapchain_textures.reserve(swapchain_length);
+		render_state.depth_swapchain_textures.reserve(swapchain_length);
 
 		for (const auto &image : swapchain_images) {
 			RID texture = rs->texture_create_from_native_handle(
@@ -647,9 +619,9 @@ bool OpenXRMetaEnvironmentDepthExtensionWrapper::create_depth_provider() {
 					2,
 					RenderingServer::TextureLayeredType::TEXTURE_LAYERED_2D_ARRAY);
 
-			depth_swapchain_textures.push_back(texture);
+			render_state.depth_swapchain_textures.push_back(texture);
 		}
-	} else if (graphics_api == GRAPHICS_API_VULKAN) {
+	} else if (render_state.graphics_api == GRAPHICS_API_VULKAN) {
 		LocalVector<XrSwapchainImageVulkanKHR> swapchain_images;
 
 		swapchain_images.resize(swapchain_length);
@@ -659,14 +631,14 @@ bool OpenXRMetaEnvironmentDepthExtensionWrapper::create_depth_provider() {
 			image.image = 0;
 		}
 
-		result = xrEnumerateEnvironmentDepthSwapchainImagesMETA(depth_swapchain, swapchain_length, &swapchain_length, (XrSwapchainImageBaseHeader *)swapchain_images.ptr());
+		result = xrEnumerateEnvironmentDepthSwapchainImagesMETA(render_state.depth_swapchain, swapchain_length, &swapchain_length, (XrSwapchainImageBaseHeader *)swapchain_images.ptr());
 		if (XR_FAILED(result)) {
 			UtilityFunctions::printerr("Failed to get environment depth swapchain images: ", get_openxr_api()->get_error_string(result));
-			destroy_depth_provider();
+			_destroy_depth_provider_rt();
 			return false;
 		}
 
-		depth_swapchain_textures.reserve(swapchain_length);
+		render_state.depth_swapchain_textures.reserve(swapchain_length);
 
 		RenderingDevice *rendering_device = RenderingServer::get_singleton()->get_rendering_device();
 
@@ -684,7 +656,7 @@ bool OpenXRMetaEnvironmentDepthExtensionWrapper::create_depth_provider() {
 
 			RID texture = rs->texture_rd_create(rd_texture, RenderingServer::TextureLayeredType::TEXTURE_LAYERED_2D_ARRAY);
 
-			depth_swapchain_textures.push_back(texture);
+			render_state.depth_swapchain_textures.push_back(texture);
 		}
 	}
 
@@ -694,41 +666,99 @@ bool OpenXRMetaEnvironmentDepthExtensionWrapper::create_depth_provider() {
 #endif // ANDROID_ENABLED
 }
 
-void OpenXRMetaEnvironmentDepthExtensionWrapper::check_graphics_api() {
+OpenXRMetaEnvironmentDepthExtensionWrapper::GraphicsAPI OpenXRMetaEnvironmentDepthExtensionWrapper::get_graphics_api() {
 	RenderingServer *rs = RenderingServer::get_singleton();
-	ERR_FAIL_NULL(rs);
+	ERR_FAIL_NULL_V(rs, GRAPHICS_API_UNKNOWN);
 
-	String rendering_driver = RenderingServer::get_singleton()->get_current_rendering_driver_name();
+	String rendering_driver = rs->get_current_rendering_driver_name();
 	if (rendering_driver.contains("opengl")) {
-		graphics_api = GRAPHICS_API_OPENGL;
+		return GRAPHICS_API_OPENGL;
 	} else if (rendering_driver == "vulkan") {
-		graphics_api = GRAPHICS_API_VULKAN;
-	} else {
-		graphics_api = GRAPHICS_API_UNSUPPORTED;
+		return GRAPHICS_API_VULKAN;
+	}
+
+	return GRAPHICS_API_UNSUPPORTED;
+}
+
+void OpenXRMetaEnvironmentDepthExtensionWrapper::_start_environment_depth_rt() {
+	ERR_FAIL_COND(render_state.depth_provider_started);
+
+	if (render_state.depth_provider == XR_NULL_HANDLE) {
+		if (!_create_depth_provider_rt()) {
+			return;
+		}
+	}
+
+	XrResult result = xrStartEnvironmentDepthProviderMETA(render_state.depth_provider);
+	if (XR_FAILED(result)) {
+		UtilityFunctions::printerr("Failed to start environment depth provider: ", get_openxr_api()->get_error_string(result));
+		return;
+	}
+
+	render_state.depth_provider_started = true;
+}
+
+void OpenXRMetaEnvironmentDepthExtensionWrapper::_stop_environment_depth_rt() {
+	ERR_FAIL_COND(!render_state.depth_provider_started);
+	ERR_FAIL_NULL(render_state.depth_provider);
+
+	XrResult result = xrStopEnvironmentDepthProviderMETA(render_state.depth_provider);
+	if (XR_FAILED(result)) {
+		UtilityFunctions::printerr("Failed to stop environment depth provider: ", get_openxr_api()->get_error_string(result));
+		return;
+	}
+
+	render_state.depth_provider_started = false;
+}
+
+void OpenXRMetaEnvironmentDepthExtensionWrapper::_set_hand_removal_enabled_rt(bool p_enable) {
+	if (render_state.depth_provider == XR_NULL_HANDLE) {
+		if (!_create_depth_provider_rt()) {
+			return;
+		}
+	}
+
+	XrEnvironmentDepthHandRemovalSetInfoMETA info = {
+		XR_TYPE_ENVIRONMENT_DEPTH_HAND_REMOVAL_SET_INFO_META, // type
+		nullptr, // next
+		p_enable, // enabled
+	};
+
+	XrResult result = xrSetEnvironmentDepthHandRemovalMETA(render_state.depth_provider, &info);
+	if (XR_FAILED(result)) {
+		UtilityFunctions::printerr("Failed to set hand removal enabled: ", get_openxr_api()->get_error_string(result));
+		return;
 	}
 }
 
-void OpenXRMetaEnvironmentDepthExtensionWrapper::destroy_depth_provider() {
-	if (depth_provider_started) {
-		stop_environment_depth();
+void OpenXRMetaEnvironmentDepthExtensionWrapper::_destroy_depth_provider_rt() {
+	if (render_state.depth_provider_started) {
+		_stop_environment_depth_rt();
 	}
 
-	if (depth_swapchain != XR_NULL_HANDLE) {
-		XrResult result = xrDestroyEnvironmentDepthSwapchainMETA(depth_swapchain);
+	if (render_state.depth_swapchain != XR_NULL_HANDLE) {
+		XrResult result = xrDestroyEnvironmentDepthSwapchainMETA(render_state.depth_swapchain);
 		if (XR_FAILED(result)) {
 			UtilityFunctions::printerr("Failed to destroy environment depth swapchain: ", get_openxr_api()->get_error_string(result));
 		}
-		depth_swapchain = XR_NULL_HANDLE;
+		render_state.depth_swapchain = XR_NULL_HANDLE;
 	}
 
-	depth_swapchain_textures.clear();
+	render_state.depth_swapchain_textures.clear();
 
-	if (depth_provider != XR_NULL_HANDLE) {
-		XrResult result = xrDestroyEnvironmentDepthProviderMETA(depth_provider);
+	if (render_state.depth_provider != XR_NULL_HANDLE) {
+		XrResult result = xrDestroyEnvironmentDepthProviderMETA(render_state.depth_provider);
 		if (XR_FAILED(result)) {
 			UtilityFunctions::printerr("Failed to destroy environment depth provider: ", get_openxr_api()->get_error_string(result));
 		}
-		depth_provider = XR_NULL_HANDLE;
-		hand_removal_enabled = false;
+		render_state.depth_provider = XR_NULL_HANDLE;
 	}
+
+	// Reset state on the main thread.
+	callable_mp(this, &OpenXRMetaEnvironmentDepthExtensionWrapper::reset_state).call_deferred();
+}
+
+void OpenXRMetaEnvironmentDepthExtensionWrapper::reset_state() {
+	depth_provider_started = false;
+	hand_removal_enabled = false;
 }
