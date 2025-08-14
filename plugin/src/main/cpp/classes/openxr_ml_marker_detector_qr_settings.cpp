@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  magicleap_editor_plugin.cpp                                           */
+/*  openxr_ml_marker_detector_qr_settings.cpp                             */
 /**************************************************************************/
 /*                       This file is part of:                            */
 /*                              GODOT XR                                  */
@@ -27,45 +27,43 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "export/magicleap_export_plugin.h"
-
-#include <godot_cpp/classes/project_settings.hpp>
+#include "classes/openxr_ml_marker_detector_qr_settings.h"
 
 using namespace godot;
 
-MagicleapEditorExportPlugin::MagicleapEditorExportPlugin() {
-	set_vendor_name(MAGICLEAP_VENDOR_NAME);
+void OpenXRMlMarkerDetectorQrSettings::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("set_estimate_qr_length", "estimate_qr_length"), &OpenXRMlMarkerDetectorQrSettings::set_estimate_qr_length);
+	ClassDB::bind_method(D_METHOD("get_estimate_qr_length"), &OpenXRMlMarkerDetectorQrSettings::get_estimate_qr_length);
+
+	ClassDB::bind_method(D_METHOD("set_qr_length", "qr_length"), &OpenXRMlMarkerDetectorQrSettings::set_qr_length);
+	ClassDB::bind_method(D_METHOD("get_qr_length"), &OpenXRMlMarkerDetectorQrSettings::get_qr_length);
+
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "estimate_qr_length", PROPERTY_HINT_NONE, ""), "set_estimate_qr_length", "get_estimate_qr_length");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "qr_length", PROPERTY_HINT_NONE, ""), "set_qr_length", "get_qr_length");
 }
 
-void MagicleapEditorExportPlugin::_bind_methods() {}
-
-TypedArray<Dictionary> MagicleapEditorExportPlugin::_get_export_options(const Ref<EditorExportPlatform> &platform) const {
-	TypedArray<Dictionary> export_options;
-	if (!_supports_platform(platform)) {
-		return export_options;
-	}
-
-	export_options.append(_get_vendor_toggle_option());
-
-	return export_options;
+void OpenXRMlMarkerDetectorQrSettings::set_estimate_qr_length(bool p_estimate_qr_length) {
+	if (estimate_qr_length == p_estimate_qr_length)
+		return;
+	estimate_qr_length = p_estimate_qr_length;
+	emit_changed();
 }
 
-String MagicleapEditorExportPlugin::_get_android_manifest_element_contents(const Ref<EditorExportPlatform> &platform, bool debug) const {
-	String contents;
-	if (!_supports_platform(platform) || !_is_vendor_plugin_enabled()) {
-		return contents;
-	}
+bool OpenXRMlMarkerDetectorQrSettings::get_estimate_qr_length() const {
+	return estimate_qr_length;
+}
 
-	if (ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/extensions/hand_tracking")) {
-		contents += "    <uses-permission android:name=\"com.magicleap.permission.HAND_TRACKING\" />\n";
-	}
+void OpenXRMlMarkerDetectorQrSettings::set_qr_length(float p_qr_length) {
+	if (qr_length == p_qr_length)
+		return;
+	qr_length = p_qr_length;
+	emit_changed();
+}
 
-	if (ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/extensions/magic_leap/marker_understanding")) {
-		contents += "    <uses-permission android:name=\"com.magicleap.permission.MARKER_TRACKING\" />\n";
-	}
+float OpenXRMlMarkerDetectorQrSettings::get_qr_length() const {
+	return qr_length;
+}
 
-	// Always include this.
-	contents += "    <uses-feature android:name=\"com.magicleap.api_level\" android:version=\"20\" />\n";
-
-	return contents;
+OpenXRMlMarkerDetectorQrSettings::OpenXRMlMarkerDetectorQrSettings() :
+		OpenXRMlMarkerDetectorSettings(OpenXRMlMarkerDetectorSettings::MarkerType::MARKER_TYPE_QR) {
 }
