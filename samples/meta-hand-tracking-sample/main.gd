@@ -2,33 +2,48 @@ extends StartXR
 
 const CAPSULE_MATERIAL = preload("res://capsule_material.tres")
 
-@onready var left_hand_ray_cast: RayCast3D = $XROrigin3D/LeftController/RayCast3D
+@onready var left_hand_aim_controller: XRController3D = $XROrigin3D/LeftHandAimController
+@onready var right_hand_aim_controller: XRController3D = $XROrigin3D/RightHandAimController
+
+@onready var left_hand_ray_cast: RayCast3D = $XROrigin3D/LeftHandAimController/RayCast3D
 @onready var left_hand_tracker: XRNode3D = $XROrigin3D/LeftHandTracker
 @onready var left_hand_skeleton: OpenXRFbHandTrackingMesh = $XROrigin3D/LeftHandTracker/OpenXRFbHandTrackingMesh
-@onready var right_hand_ray_cast: RayCast3D = $XROrigin3D/RightController/RayCast3D
+@onready var right_hand_ray_cast: RayCast3D = $XROrigin3D/RightHandAimController/RayCast3D
 @onready var right_hand_tracker: XRNode3D = $XROrigin3D/RightHandTracker
 @onready var right_hand_skeleton: OpenXRFbHandTrackingMesh = $XROrigin3D/RightHandTracker/OpenXRFbHandTrackingMesh
 
-@onready var left_index_strength: MeshInstance3D = $LeftHandInterface/LeftIndexStrength
-@onready var left_middle_strength: MeshInstance3D = $LeftHandInterface/LeftMiddleStrength
-@onready var left_ring_strength: MeshInstance3D = $LeftHandInterface/LeftRingStrength
-@onready var left_little_strength: MeshInstance3D = $LeftHandInterface/LeftLittleStrength
-@onready var left_menu_pressed: MeshInstance3D = $LeftHandInterface/DiscreteIndicators/MenuPressed
-@onready var left_menu_gesture: MeshInstance3D = $LeftHandInterface/DiscreteIndicators/MenuGesture
-@onready var left_index_pinch: MeshInstance3D = $LeftHandInterface/DiscreteIndicators/IndexPinch
-@onready var left_middle_pinch: MeshInstance3D = $LeftHandInterface/DiscreteIndicators/MiddlePinch
-@onready var left_ring_pinch: MeshInstance3D = $LeftHandInterface/DiscreteIndicators/RingPinch
-@onready var left_little_pinch: MeshInstance3D = $LeftHandInterface/DiscreteIndicators/LittlePinch
+@onready var left_index_strength: MeshInstance3D = $HandAimInterface/LeftHand/StrengthIndicators/LeftIndexStrength
+@onready var left_middle_strength: MeshInstance3D = $HandAimInterface/LeftHand/StrengthIndicators/LeftMiddleStrength
+@onready var left_ring_strength: MeshInstance3D = $HandAimInterface/LeftHand/StrengthIndicators/LeftRingStrength
+@onready var left_little_strength: MeshInstance3D = $HandAimInterface/LeftHand/StrengthIndicators/LeftLittleStrength
+@onready var left_menu_gesture: MeshInstance3D = $HandAimInterface/LeftHand/DiscreteIndicators/LeftMenuGesture
+@onready var left_menu_pressed: MeshInstance3D = $HandAimInterface/LeftHand/DiscreteIndicators/LeftMenuPressed
+@onready var left_index_pinch: MeshInstance3D = $HandAimInterface/LeftHand/DiscreteIndicators/LeftIndexPinch
+@onready var left_middle_pinch: MeshInstance3D = $HandAimInterface/LeftHand/DiscreteIndicators/LeftMiddlePinch
+@onready var left_ring_pinch: MeshInstance3D = $HandAimInterface/LeftHand/DiscreteIndicators/LeftRingPinch
+@onready var left_little_pinch: MeshInstance3D = $HandAimInterface/LeftHand/DiscreteIndicators/LeftLittlePinch
 
-@onready var right_index_strength: MeshInstance3D = $RightHandInterface/RightIndexStrength
-@onready var right_middle_strength: MeshInstance3D = $RightHandInterface/RightMiddleStrength
-@onready var right_ring_strength: MeshInstance3D = $RightHandInterface/RightRingStrength
-@onready var right_little_strength: MeshInstance3D = $RightHandInterface/RightLittleStrength
-@onready var right_system_gesture: MeshInstance3D = $RightHandInterface/DiscreteIndicators/SystemGesture
-@onready var right_index_pinch: MeshInstance3D = $RightHandInterface/DiscreteIndicators/IndexPinch
-@onready var right_middle_pinch: MeshInstance3D = $RightHandInterface/DiscreteIndicators/MiddlePinch
-@onready var right_ring_pinch: MeshInstance3D = $RightHandInterface/DiscreteIndicators/RingPinch
-@onready var right_little_pinch: MeshInstance3D = $RightHandInterface/DiscreteIndicators/LittlePinch
+@onready var right_index_strength: MeshInstance3D = $HandAimInterface/RightHand/StengthIndicators/RightIndexStrength
+@onready var right_middle_strength: MeshInstance3D = $HandAimInterface/RightHand/StengthIndicators/RightMiddleStrength
+@onready var right_ring_strength: MeshInstance3D = $HandAimInterface/RightHand/StengthIndicators/RightRingStrength
+@onready var right_little_strength: MeshInstance3D = $HandAimInterface/RightHand/StengthIndicators/RightLittleStrength
+@onready var right_system_gesture: MeshInstance3D = $HandAimInterface/RightHand/DiscreteIndicators/RightSystemGesture
+@onready var right_index_pinch: MeshInstance3D = $HandAimInterface/RightHand/DiscreteIndicators/RightIndexPinch
+@onready var right_middle_pinch: MeshInstance3D = $HandAimInterface/RightHand/DiscreteIndicators/RightMiddlePinch
+@onready var right_ring_pinch: MeshInstance3D = $HandAimInterface/RightHand/DiscreteIndicators/RightRingPinch
+@onready var right_little_pinch: MeshInstance3D = $HandAimInterface/RightHand/DiscreteIndicators/RightLittlePinch
+
+@onready var left_tap_thumb: MeshInstance3D = $NormalInterface/LeftHand/MicrogestureIndicators/LeftTapThumb
+@onready var left_swipe_left: MeshInstance3D = $NormalInterface/LeftHand/MicrogestureIndicators/LeftSwipeLeft
+@onready var left_swipe_right: MeshInstance3D = $NormalInterface/LeftHand/MicrogestureIndicators/LeftSwipeRight
+@onready var left_swipe_forward: MeshInstance3D = $NormalInterface/LeftHand/MicrogestureIndicators/LeftSwipeForward
+@onready var left_swipe_backward: MeshInstance3D = $NormalInterface/LeftHand/MicrogestureIndicators/LeftSwipeBackward
+
+@onready var right_tap_thumb: MeshInstance3D = $NormalInterface/RightHand/MicrogestureIndicators/RightTapThumb
+@onready var right_swipe_left: MeshInstance3D = $NormalInterface/RightHand/MicrogestureIndicators/RightSwipeLeft
+@onready var right_swipe_right: MeshInstance3D = $NormalInterface/RightHand/MicrogestureIndicators/RightSwipeRight
+@onready var right_swipe_forward: MeshInstance3D = $NormalInterface/RightHand/MicrogestureIndicators/RightSwipeForward
+@onready var right_swipe_backward: MeshInstance3D = $NormalInterface/RightHand/MicrogestureIndicators/RightSwipeBackward
 
 var fb_capsule_ext
 var left_capsules_loaded := false
@@ -95,7 +110,7 @@ func hand_capsule_setup(hand_idx: int, hand_tracker: XRHandTracker) -> void:
 			right_capsules_loaded = true
 
 
-func _on_left_controller_input_float_changed(name: String, value: float) -> void:
+func _on_left_hand_aim_controller_input_float_changed(name: String, value: float) -> void:
 	match name:
 		"index_pinch_strength":
 			left_index_strength.get_surface_override_material(0).set_shader_parameter("value", value)
@@ -107,7 +122,7 @@ func _on_left_controller_input_float_changed(name: String, value: float) -> void
 			left_little_strength.get_surface_override_material(0).set_shader_parameter("value", value)
 
 
-func _on_right_controller_input_float_changed(name: String, value: float) -> void:
+func _on_right_hand_aim_controller_input_float_changed(name: String, value: float) -> void:
 	match name:
 		"index_pinch_strength":
 			right_index_strength.get_surface_override_material(0).set_shader_parameter("value", value)
@@ -119,7 +134,7 @@ func _on_right_controller_input_float_changed(name: String, value: float) -> voi
 			right_little_strength.get_surface_override_material(0).set_shader_parameter("value", value)
 
 
-func _on_left_controller_button_pressed(name: String) -> void:
+func _on_left_hand_aim_controller_button_pressed(name: String) -> void:
 	match name:
 		"menu_pressed":
 			left_menu_pressed.get_surface_override_material(0).albedo_color = Color.GREEN
@@ -139,7 +154,7 @@ func _on_left_controller_button_pressed(name: String) -> void:
 			left_little_pinch.get_surface_override_material(0).albedo_color = Color.GREEN
 
 
-func _on_left_controller_button_released(name: String) -> void:
+func _on_left_hand_aim_controller_button_released(name: String) -> void:
 	match name:
 		"menu_pressed":
 			left_menu_pressed.get_surface_override_material(0).albedo_color = Color.RED
@@ -154,9 +169,20 @@ func _on_left_controller_button_released(name: String) -> void:
 			left_ring_pinch.get_surface_override_material(0).albedo_color = Color.RED
 		"little_pinch":
 			left_little_pinch.get_surface_override_material(0).albedo_color = Color.RED
+		"swipe_left":
+			left_swipe_left.get_surface_override_material(0).albedo_color = Color.RED
+		"swipe_right":
+			left_swipe_right.get_surface_override_material(0).albedo_color = Color.RED
+		"swipe_forward":
+			left_swipe_forward.get_surface_override_material(0).albedo_color = Color.RED
+		"swipe_backward":
+			left_swipe_backward.get_surface_override_material(0).albedo_color = Color.RED
+		"tap_thumb":
+			left_hand_ray_cast.is_active = false
+			left_tap_thumb.get_surface_override_material(0).albedo_color = Color.RED
 
 
-func _on_right_controller_button_pressed(name: String) -> void:
+func _on_right_hand_aim_controller_button_pressed(name: String) -> void:
 	match name:
 		"system_gesture":
 			right_system_gesture.get_surface_override_material(0).albedo_color = Color.GREEN
@@ -174,7 +200,7 @@ func _on_right_controller_button_pressed(name: String) -> void:
 			right_little_pinch.get_surface_override_material(0).albedo_color = Color.GREEN
 
 
-func _on_right_controller_button_released(name: String) -> void:
+func _on_right_hand_aim_controller_button_released(name: String) -> void:
 	match name:
 		"system_gesture":
 			right_system_gesture.get_surface_override_material(0).albedo_color = Color.RED
@@ -187,6 +213,72 @@ func _on_right_controller_button_released(name: String) -> void:
 			right_ring_pinch.get_surface_override_material(0).albedo_color = Color.RED
 		"little_pinch":
 			right_little_pinch.get_surface_override_material(0).albedo_color = Color.RED
+
+
+func _on_left_controller_button_pressed(name: String) -> void:
+	match name:
+		"swipe_left":
+			left_swipe_left.get_surface_override_material(0).albedo_color = Color.GREEN
+		"swipe_right":
+			left_swipe_right.get_surface_override_material(0).albedo_color = Color.GREEN
+		"swipe_forward":
+			left_swipe_forward.get_surface_override_material(0).albedo_color = Color.GREEN
+		"swipe_backward":
+			left_swipe_backward.get_surface_override_material(0).albedo_color = Color.GREEN
+		"tap_thumb":
+			left_hand_ray_cast.is_active = true
+			if left_hand_ray_cast.is_colliding():
+				var collider = left_hand_ray_cast.get_collider()
+				update(collider.name)
+			left_tap_thumb.get_surface_override_material(0).albedo_color = Color.GREEN
+
+
+func _on_left_controller_button_released(name: String) -> void:
+	match name:
+		"swipe_left":
+			left_swipe_left.get_surface_override_material(0).albedo_color = Color.RED
+		"swipe_right":
+			left_swipe_right.get_surface_override_material(0).albedo_color = Color.RED
+		"swipe_forward":
+			left_swipe_forward.get_surface_override_material(0).albedo_color = Color.RED
+		"swipe_backward":
+			left_swipe_backward.get_surface_override_material(0).albedo_color = Color.RED
+		"tap_thumb":
+			left_hand_ray_cast.is_active = false
+			left_tap_thumb.get_surface_override_material(0).albedo_color = Color.RED
+
+
+func _on_right_controller_button_pressed(name: String) -> void:
+	match name:
+		"swipe_left":
+			right_swipe_left.get_surface_override_material(0).albedo_color = Color.GREEN
+		"swipe_right":
+			right_swipe_right.get_surface_override_material(0).albedo_color = Color.GREEN
+		"swipe_forward":
+			right_swipe_forward.get_surface_override_material(0).albedo_color = Color.GREEN
+		"swipe_backward":
+			right_swipe_backward.get_surface_override_material(0).albedo_color = Color.GREEN
+		"tap_thumb":
+			right_hand_ray_cast.is_active = true
+			if right_hand_ray_cast.is_colliding():
+				var collider = right_hand_ray_cast.get_collider()
+				update(collider.name)
+			right_tap_thumb.get_surface_override_material(0).albedo_color = Color.GREEN
+
+
+func _on_right_controller_button_released(name: String) -> void:
+	match name:
+		"swipe_left":
+			right_swipe_left.get_surface_override_material(0).albedo_color = Color.RED
+		"swipe_right":
+			right_swipe_right.get_surface_override_material(0).albedo_color = Color.RED
+		"swipe_forward":
+			right_swipe_forward.get_surface_override_material(0).albedo_color = Color.RED
+		"swipe_backward":
+			right_swipe_backward.get_surface_override_material(0).albedo_color = Color.RED
+		"tap_thumb":
+			right_hand_ray_cast.is_active = false
+			right_tap_thumb.get_surface_override_material(0).albedo_color = Color.RED
 
 
 func update(collider_name: String) -> void:
