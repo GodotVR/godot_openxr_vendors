@@ -194,6 +194,11 @@ bool OpenXRFbHandTrackingMeshExtensionWrapper::fetch_hand_mesh_data(Hand p_hand)
 		return false;
 	}
 
+	if (xr_hand_mesh.jointCountOutput == 0 || xr_hand_mesh.vertexCountOutput == 0 || xr_hand_mesh.indexCountOutput == 0) {
+		WARN_PRINT("Invalid mesh data returned from xrGetHandMeshFB...");
+		return false;
+	}
+
 	xr_hand_mesh.jointCapacityInput = xr_hand_mesh.jointCountOutput;
 	xr_hand_mesh.vertexCapacityInput = xr_hand_mesh.vertexCountOutput;
 	xr_hand_mesh.indexCapacityInput = xr_hand_mesh.indexCountOutput;
