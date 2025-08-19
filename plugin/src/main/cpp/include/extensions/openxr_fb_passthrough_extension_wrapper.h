@@ -39,6 +39,7 @@
 #include <godot_cpp/classes/mesh.hpp>
 #include <godot_cpp/classes/open_xr_extension_wrapper_extension.hpp>
 #include <godot_cpp/classes/xr_interface.hpp>
+#include <godot_cpp/templates/rid_owner.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
 
 #include <openxr/openxr.h>
@@ -108,12 +109,12 @@ public:
 	void start_passthrough_layer(LayerPurpose p_layer_purpose);
 	LayerPurpose get_current_layer_purpose() { return current_passthrough_layer; }
 
-	void register_geometry_node(OpenXRFbPassthroughGeometry *p_node);
-	void unregister_geometry_node(OpenXRFbPassthroughGeometry *p_node);
+	RID geometry_instance_create(const Array &p_array_mesh, const Transform3D &p_transform);
+	void geometry_instance_set_transform(RID p_geometry_instance, const Transform3D &p_transform);
+	void geometry_instance_free(RID p_geometry_instance);
 
-	XrGeometryInstanceFB create_geometry_instance(const Ref<Mesh> &p_mesh, const Transform3D &p_transform);
-	void set_geometry_instance_transform(XrGeometryInstanceFB p_geometry_instance, const Transform3D &p_transform);
-	void destroy_geometry_instance(XrGeometryInstanceFB p_geometry_instance);
+	RID color_lut_create(OpenXRMetaPassthroughColorLut::ColorLutChannels p_channels, uint32_t p_image_cell_resolution, const PackedByteArray &p_buffer);
+	void color_lut_free(RID p_color_lut);
 
 	void set_texture_opacity_factor(float p_value);
 	float get_texture_opacity_factor();
@@ -135,8 +136,6 @@ public:
 
 	void set_color_lut(float p_weight, const Ref<OpenXRMetaPassthroughColorLut> &p_color_lut);
 	void set_interpolated_color_lut(float p_weight, const Ref<OpenXRMetaPassthroughColorLut> &p_source_color_lut, const Ref<OpenXRMetaPassthroughColorLut> &p_target_color_lut);
-	void create_color_lut(const Ref<OpenXRMetaPassthroughColorLut> &p_color_lut);
-	void destroy_color_lut(const Ref<OpenXRMetaPassthroughColorLut> &p_color_lut);
 	int get_max_color_lut_resolution();
 
 	static OpenXRFbPassthroughExtensionWrapper *get_singleton();
@@ -302,50 +301,10 @@ private:
 	bool meta_passthrough_preferences_ext = false;
 	bool meta_passthrough_color_lut_ext = false;
 
-	XrPassthroughFB passthrough_handle = XR_NULL_HANDLE;
-	XrPassthroughLayerFB passthrough_layer[LAYER_PURPOSE_MAX] = { XR_NULL_HANDLE };
-
-	XrPassthroughColorLutMETA color_lut_handle = XR_NULL_HANDLE;
-	XrPassthroughColorLutMETA source_color_lut_handle = XR_NULL_HANDLE;
-	XrPassthroughColorLutMETA target_color_lut_handle = XR_NULL_HANDLE;
-
 	XrSystemPassthroughProperties2FB system_passthrough_properties = {
 		XR_TYPE_SYSTEM_PASSTHROUGH_PROPERTIES2_FB, // type
 		nullptr, // next
 		0, // capabilities
-	};
-
-	XrPassthroughStyleFB passthrough_style = {
-		XR_TYPE_PASSTHROUGH_STYLE_FB, // type
-		nullptr, // next
-		1.0, // textureOpacityFactor
-		{ 0.0, 0.0, 0.0, 0.0 }, // edgeColor
-	};
-
-	XrPassthroughColorMapMonoToRgbaFB color_map = {
-		XR_TYPE_PASSTHROUGH_COLOR_MAP_MONO_TO_RGBA_FB, // type
-		nullptr, // next
-	};
-
-	XrPassthroughColorMapMonoToMonoFB mono_map = {
-		XR_TYPE_PASSTHROUGH_COLOR_MAP_MONO_TO_MONO_FB, // type
-		nullptr, // next
-	};
-
-	XrPassthroughBrightnessContrastSaturationFB brightness_contrast_saturation = {
-		XR_TYPE_PASSTHROUGH_BRIGHTNESS_CONTRAST_SATURATION_FB, // type
-		nullptr, // next
-		0.0, // brightness
-		1.0, // contrast
-		1.0, // saturation
-	};
-
-	XrCompositionLayerPassthroughFB composition_passthrough_layer = {
-		XR_TYPE_COMPOSITION_LAYER_PASSTHROUGH_FB, // type
-		nullptr, // next
-		XR_COMPOSITION_LAYER_BLEND_TEXTURE_SOURCE_ALPHA_BIT, // flags
-		XR_NULL_HANDLE, // space
-		XR_NULL_HANDLE, // layerHandle
 	};
 
 	XrSystemPassthroughColorLutPropertiesMETA system_passthrough_color_lut_properties = {
@@ -354,25 +313,122 @@ private:
 		0, // maxColorLutResolution
 	};
 
-	XrPassthroughColorMapLutMETA color_map_lut = {
-		XR_TYPE_PASSTHROUGH_COLOR_MAP_LUT_META, // type
-		nullptr, // next
-		XR_NULL_HANDLE, // colorLut
-		1.0, // weight
-	};
+	struct {
+		XrPassthroughFB passthrough_handle = XR_NULL_HANDLE;
+		XrPassthroughLayerFB passthrough_layer[LAYER_PURPOSE_MAX] = { XR_NULL_HANDLE };
 
-	XrPassthroughColorMapInterpolatedLutMETA color_map_interpolated_lut = {
-		XR_TYPE_PASSTHROUGH_COLOR_MAP_INTERPOLATED_LUT_META, // type
-		nullptr, // next
-		XR_NULL_HANDLE, //sourceColorLut
-		XR_NULL_HANDLE, //targetColorLut
-		1.0, // weight
-	};
+		XrPassthroughColorLutMETA color_lut_handle;
+		XrPassthroughColorLutMETA source_color_lut_handle;
+		XrPassthroughColorLutMETA target_color_lut_handle;
+
+		bool passthrough_started = false;
+		LayerPurpose current_passthrough_layer = LAYER_PURPOSE_NONE;
+		PassthroughFilter current_passthrough_filter = PASSTHROUGH_FILTER_DISABLED;
+
+		XrPassthroughStyleFB passthrough_style = {
+			XR_TYPE_PASSTHROUGH_STYLE_FB, // type
+			nullptr, // next
+			1.0, // textureOpacityFactor
+			{ 0.0, 0.0, 0.0, 0.0 }, // edgeColor
+		};
+
+		XrPassthroughColorMapMonoToRgbaFB color_map = {
+			XR_TYPE_PASSTHROUGH_COLOR_MAP_MONO_TO_RGBA_FB, // type
+			nullptr, // next
+		};
+
+		XrPassthroughColorMapMonoToMonoFB mono_map = {
+			XR_TYPE_PASSTHROUGH_COLOR_MAP_MONO_TO_MONO_FB, // type
+			nullptr, // next
+		};
+
+		XrPassthroughBrightnessContrastSaturationFB brightness_contrast_saturation = {
+			XR_TYPE_PASSTHROUGH_BRIGHTNESS_CONTRAST_SATURATION_FB, // type
+			nullptr, // next
+			0.0, // brightness
+			1.0, // contrast
+			1.0, // saturation
+		};
+
+		XrCompositionLayerPassthroughFB composition_passthrough_layer = {
+			XR_TYPE_COMPOSITION_LAYER_PASSTHROUGH_FB, // type
+			nullptr, // next
+			XR_COMPOSITION_LAYER_BLEND_TEXTURE_SOURCE_ALPHA_BIT, // flags
+			XR_NULL_HANDLE, // space
+			XR_NULL_HANDLE, // layerHandle
+		};
+
+		XrPassthroughColorMapLutMETA color_map_lut = {
+			XR_TYPE_PASSTHROUGH_COLOR_MAP_LUT_META, // type
+			nullptr, // next
+			XR_NULL_HANDLE, // colorLut
+			1.0, // weight
+		};
+
+		XrPassthroughColorMapInterpolatedLutMETA color_map_interpolated_lut = {
+			XR_TYPE_PASSTHROUGH_COLOR_MAP_INTERPOLATED_LUT_META, // type
+			nullptr, // next
+			XR_NULL_HANDLE, //sourceColorLut
+			XR_NULL_HANDLE, //targetColorLut
+			1.0, // weight
+		};
+
+	} render_state;
 
 	bool passthrough_started = false;
+	float texture_opacity_factor = 1.0;
+	Color edge_color;
 	LayerPurpose current_passthrough_layer = LAYER_PURPOSE_NONE;
 	PassthroughFilter current_passthrough_filter = PASSTHROUGH_FILTER_DISABLED;
-	Vector<OpenXRFbPassthroughGeometry *> passthrough_geometry_nodes;
+
+	struct GeometryInstance {
+		XrGeometryInstanceFB handle = XR_NULL_HANDLE;
+	};
+
+	RID_Owner<GeometryInstance, true> geometry_instances;
+
+	struct ColorLut {
+		XrPassthroughColorLutChannelsMETA channels;
+		uint32_t image_cell_resolution;
+		PackedByteArray buffer;
+
+		XrPassthroughColorLutMETA handle = XR_NULL_HANDLE;
+	};
+
+	RID_Owner<ColorLut, true> color_luts;
+
+	void _set_passthrough_started(bool p_started) {
+		passthrough_started = p_started;
+	}
+
+	void _set_current_passthrough_layer(LayerPurpose p_layer) {
+		current_passthrough_layer = p_layer;
+	}
+
+	void _emit_signal(const StringName &p_name) {
+		emit_signal(p_name);
+	}
+
+	void _start_passthrough_rt();
+	void _stop_passthrough_rt();
+	void _start_passthrough_layer_rt(LayerPurpose p_layer_purpose);
+
+	void _set_texture_opacity_factor_rt(float p_value);
+	void _set_edge_color_rt(Color p_color);
+	void _set_passthrough_filter_rt(PassthroughFilter p_filter);
+	void _set_color_map_rt(const Ref<Gradient> &p_gradient);
+	void _set_mono_map_rt(const Ref<Curve> &p_curve);
+	void _set_brightness_contrast_saturation_rt(float p_brightness, float p_contrast, float p_saturation);
+
+	void _set_color_lut_rt(float p_weight, const Ref<OpenXRMetaPassthroughColorLut> &p_color_lut);
+	void _set_interpolated_color_lut_rt(float p_weight, const Ref<OpenXRMetaPassthroughColorLut> &p_source_color_lut, const Ref<OpenXRMetaPassthroughColorLut> &p_target_color_lut);
+
+	XrPassthroughColorLutMETA _color_lut_get_handle_rt(RID p_color_lut);
+	void _color_lut_free_rt(RID p_color_lut);
+
+	void _geometry_instance_initialize_rt(RID p_geometry_instance, const Array &p_array_mesh, const Transform3D &p_transform);
+	void _geometry_instance_set_transform_rt(RID p_geometry_instance, const Transform3D &p_transform);
+	void _geometry_instance_free_rt(RID p_geometry_instance);
 };
 
 VARIANT_ENUM_CAST(OpenXRFbPassthroughExtensionWrapper::LayerPurpose);
