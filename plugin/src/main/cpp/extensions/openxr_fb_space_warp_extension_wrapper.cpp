@@ -102,14 +102,6 @@ void OpenXRFbSpaceWarpExtensionWrapper::_on_session_created(uint64_t p_instance)
 	}
 
 	ProjectSettings *project_settings = ProjectSettings::get_singleton();
-	bool is_project_setting_enabled = (bool)project_settings->get_setting_with_override("xr/openxr/extensions/meta/application_space_warp");
-	if (!is_project_setting_enabled) {
-		fb_space_warp_ext = false;
-		return;
-	} else {
-		enabled = true;
-	}
-
 	String rendering_method = (String)project_settings->get_setting_with_override("rendering/renderer/rendering_method");
 	if (rendering_method == "forward_plus") {
 		UtilityFunctions::print_verbose("Disabling XR_FB_space_warp extension; this extension is not supported in the forward plus renderer");

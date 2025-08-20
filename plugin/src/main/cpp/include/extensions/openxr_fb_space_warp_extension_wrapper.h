@@ -76,7 +76,7 @@ private:
 
 	static OpenXRFbSpaceWarpExtensionWrapper *singleton;
 
-	bool enabled = false;
+	bool enabled = true;
 
 	XrSystemSpaceWarpPropertiesFB system_space_warp_properties = {
 		XR_TYPE_SYSTEM_SPACE_WARP_PROPERTIES_FB, // type
