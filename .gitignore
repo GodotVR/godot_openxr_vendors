@@ -25,6 +25,7 @@ local.properties
 # Misc
 compile_commands.json
 .DS_Store
+.cache
 /plugin/src/gen/
 /plugin/src/main/libs
 /zippedSamples
