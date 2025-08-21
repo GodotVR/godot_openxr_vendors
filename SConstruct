@@ -12,6 +12,7 @@ opts.Update(env)
 env.Append(CPPPATH=[
     "#plugin/src/main/cpp/include/",
     "#thirdparty/openxr/include/",
+    "#thirdparty/androidxr/include/",
     ])
 
 # Include Meta OpenXR preview headers if provided

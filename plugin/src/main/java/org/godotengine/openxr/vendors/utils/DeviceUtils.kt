@@ -49,6 +49,13 @@ const val META_HORIZON_OS = "horizonos"
 const val PICO_OS = "picoos"
 
 /**
+ * Returns true if running on an Android XR device.
+ */
+fun isAndroidXRDevice(context: Context): Boolean {
+	return context.packageManager.hasSystemFeature("android.software.xr.api.openxr")
+}
+
+/**
  * Returns true if running on Meta Horizon OS.
  */
 fun isHorizonOSDevice(context: Context): Boolean {
@@ -66,5 +73,5 @@ fun isPicoOSDevice(): Boolean {
  * Returns true if running on a native Android XR device.
  */
 fun isNativeXRDevice(context: Context): Boolean {
-	return isHorizonOSDevice(context) || isPicoOSDevice()
+	return isHorizonOSDevice(context) || isPicoOSDevice() || isAndroidXRDevice(context)
 }
