@@ -120,6 +120,17 @@ class GodotOpenXR(godot: Godot?) : GodotPlugin(godot) {
 
 			EYE_GAZE_INTERACTION_FEATURE_TAG -> {
 				when (BuildConfig.FLAVOR) {
+					ANDROID_XR_VENDOR_NAME -> {
+						val grantedPermissions = godot?.getGrantedPermissions()
+						if (grantedPermissions != null) {
+							for (permission in grantedPermissions) {
+								if (ANDROID_XR_EYE_TRACKING_FINE_PERMISSION == permission) {
+									return true
+								}
+							}
+						}
+					}
+
 					META_VENDOR_NAME -> {
 						val grantedPermissions = godot?.getGrantedPermissions()
 						if (grantedPermissions != null) {
