@@ -75,6 +75,7 @@
 #include "extensions/openxr_meta_boundary_visibility_extension_wrapper.h"
 #include "extensions/openxr_meta_environment_depth_extension_wrapper.h"
 #include "extensions/openxr_meta_headset_id_extension_wrapper.h"
+#include "extensions/openxr_meta_performance_metrics_extension_wrapper.h"
 #include "extensions/openxr_meta_recommended_layer_resolution_extension_wrapper.h"
 #include "extensions/openxr_meta_simultaneous_hands_and_controllers_extension_wrapper.h"
 #include "extensions/openxr_meta_spatial_entity_mesh_extension_wrapper.h"
@@ -91,6 +92,8 @@
 #include "classes/openxr_hybrid_app.h"
 #include "classes/openxr_meta_environment_depth.h"
 #include "classes/openxr_meta_passthrough_color_lut.h"
+#include "classes/openxr_vendor_performance_metrics.h"
+#include "classes/openxr_vendor_performance_metrics_provider.h"
 
 using namespace godot;
 
@@ -135,6 +138,10 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 	switch (p_level) {
 		case MODULE_INITIALIZATION_LEVEL_CORE: {
 			add_plugin_project_settings();
+
+			GDREGISTER_ABSTRACT_CLASS(OpenXRVendorPerformanceMetricsProvider);
+			GDREGISTER_CLASS(OpenXRVendorPerformanceMetrics);
+			GDREGISTER_CLASS(OpenXRMetaPerformanceMetricsExtensionWrapper);
 
 			GDREGISTER_CLASS(OpenXRFbPassthroughExtensionWrapper);
 			GDREGISTER_CLASS(OpenXRFbRenderModelExtensionWrapper);
@@ -221,6 +228,10 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 
 			if (_get_bool_project_setting("xr/openxr/extensions/meta/headset_id")) {
 				_register_extension_with_openxr(OpenXRMetaHeadsetIDExtensionWrapper::get_singleton());
+			}
+
+			if (_get_bool_project_setting("xr/openxr/extensions/vendor_performance_metrics")) {
+				_register_extension_with_openxr(OpenXRMetaPerformanceMetricsExtensionWrapper::get_singleton());
 			}
 
 			// All of the hand tracking extensions depend on the Godot hand tracking setting being set first.
@@ -321,6 +332,8 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			GDREGISTER_CLASS(OpenXRHybridApp);
 			Engine::get_singleton()->register_singleton("OpenXRHybridApp", OpenXRHybridApp::get_singleton());
 
+			Engine::get_singleton()->register_singleton("OpenXRVendorPerformanceMetrics", OpenXRVendorPerformanceMetrics::get_singleton());
+
 			// Only works with Godot 4.5 or later.
 			if (godot::internal::godot_version.minor >= 5) {
 				_register_extension_as_singleton(OpenXRFbSpaceWarpExtensionWrapper::get_singleton());
@@ -376,6 +389,9 @@ void terminate_plugin_module(ModuleInitializationLevel p_level) {
 
 			Engine::get_singleton()->unregister_singleton("OpenXRHybridApp");
 			memdelete(OpenXRHybridApp::get_singleton());
+
+			Engine::get_singleton()->unregister_singleton("OpenXRVendorPerformanceMetrics");
+			memdelete(OpenXRVendorPerformanceMetrics::get_singleton());
 		} break;
 
 		case MODULE_INITIALIZATION_LEVEL_EDITOR:
@@ -422,6 +438,9 @@ void add_plugin_project_settings() {
 		hybrid_app_launch_mode_property_info["hint_string"] = "Start As Immersive:0,Start As Panel:1";
 		project_settings->add_property_info(hybrid_app_launch_mode_property_info);
 	}
+
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/vendor_performance_metrics", false);
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/vendor_performance_metrics/capture_on_startup", true);
 
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/htc/passthrough", false);
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/htc/face_tracking", false);
