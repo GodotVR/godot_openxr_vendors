@@ -48,7 +48,7 @@ class OpenXRMetaEnvironmentDepthExtensionWrapper : public OpenXRExtensionWrapper
 public:
 	Dictionary _get_requested_extensions() override;
 
-	virtual void _on_instance_created(uint64_t instance) override;
+	virtual void _on_instance_created(uint64_t p_instance) override;
 	virtual void _on_instance_destroyed() override;
 
 	virtual void _on_session_destroyed() override;
@@ -58,11 +58,11 @@ public:
 	virtual uint64_t _set_system_properties_and_get_next_pointer(void *p_next_pointer) override;
 
 	bool is_environment_depth_supported() {
-		return meta_environment_depth_ext && graphics_api != GRAPHICS_API_UNSUPPORTED && system_depth_properties.supportsEnvironmentDepth;
+		return meta_environment_depth_ext && system_depth_properties.supportsEnvironmentDepth && get_graphics_api() != GRAPHICS_API_UNSUPPORTED;
 	}
 
 	bool is_hand_removal_supported() {
-		return meta_environment_depth_ext && graphics_api != GRAPHICS_API_UNSUPPORTED && system_depth_properties.supportsHandRemoval;
+		return meta_environment_depth_ext && system_depth_properties.supportsHandRemoval && get_graphics_api() != GRAPHICS_API_UNSUPPORTED;
 	}
 
 	void start_environment_depth();
@@ -151,11 +151,6 @@ private:
 		XR_FALSE, // supportsHandRemoval
 	};
 
-	XrEnvironmentDepthProviderMETA depth_provider = XR_NULL_HANDLE;
-	XrEnvironmentDepthSwapchainMETA depth_swapchain = XR_NULL_HANDLE;
-	bool depth_provider_started = false;
-	bool hand_removal_enabled = false;
-
 	enum GraphicsAPI {
 		GRAPHICS_API_UNKNOWN,
 		GRAPHICS_API_OPENGL,
@@ -163,8 +158,16 @@ private:
 		GRAPHICS_API_UNSUPPORTED,
 	};
 
-	GraphicsAPI graphics_api = GRAPHICS_API_UNKNOWN;
-	LocalVector<RID> depth_swapchain_textures;
+	struct {
+		XrEnvironmentDepthProviderMETA depth_provider = XR_NULL_HANDLE;
+		XrEnvironmentDepthSwapchainMETA depth_swapchain = XR_NULL_HANDLE;
+		bool depth_provider_started = false;
+		GraphicsAPI graphics_api = GRAPHICS_API_UNKNOWN;
+		LocalVector<RID> depth_swapchain_textures;
+	} render_state;
+
+	bool depth_provider_started = false;
+	bool hand_removal_enabled = false;
 
 	Ref<Shader> reprojection_shader;
 	Ref<ShaderMaterial> reprojection_material;
@@ -174,10 +177,16 @@ private:
 	float reprojection_offset_exponent = 1.0;
 	bool reprojection_material_dirty = false;
 
-	void check_graphics_api();
+	GraphicsAPI get_graphics_api();
 
 	void update_reprojection_material(bool p_creation = false);
 
-	bool create_depth_provider();
-	void destroy_depth_provider();
+	void _start_environment_depth_rt();
+	void _stop_environment_depth_rt();
+	void _set_hand_removal_enabled_rt(bool p_enable);
+
+	bool _create_depth_provider_rt();
+	void _destroy_depth_provider_rt();
+
+	void reset_state();
 };
