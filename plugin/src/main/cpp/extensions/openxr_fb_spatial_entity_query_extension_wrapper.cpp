@@ -146,14 +146,13 @@ void OpenXRFbSpatialEntityQueryExtensionWrapper::on_space_query_results(const Xr
 
 	QueryInfo *query = queries.getptr(event->requestId);
 
-	Vector<XrSpaceQueryResultFB> results;
 	query->results.resize(queryResults.resultCountOutput);
-	queryResults.resultCapacityInput = query->results.size();
-	queryResults.resultCountOutput = 0;
+	queryResults.resultCapacityInput = queryResults.resultCountOutput;
 	queryResults.results = query->results.ptrw();
 
 	result = xrRetrieveSpaceQueryResultsFB(SESSION, event->requestId, &queryResults);
 	if (!XR_SUCCEEDED(result)) {
+		query->results.clear();
 		WARN_PRINT("xrRetrieveSpaceQueryResultsFB failed to get results!");
 		WARN_PRINT(get_openxr_api()->get_error_string(result));
 		return;
