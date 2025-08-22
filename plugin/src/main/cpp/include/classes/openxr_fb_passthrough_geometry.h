@@ -34,8 +34,6 @@
 #include <godot_cpp/classes/mesh_instance3d.hpp>
 #include <godot_cpp/classes/node3d.hpp>
 
-#include <openxr/openxr.h>
-
 namespace godot {
 class OpenXRFbPassthroughGeometry : public Node3D {
 	GDCLASS(OpenXRFbPassthroughGeometry, Node3D)
@@ -52,7 +50,7 @@ private:
 
 	Ref<Mesh> mesh;
 	bool enable_hole_punch = true;
-	XrGeometryInstanceFB geometry_instance = XR_NULL_HANDLE;
+	RID geometry_instance;
 	MeshInstance3D *opaque_mesh = nullptr;
 
 protected:

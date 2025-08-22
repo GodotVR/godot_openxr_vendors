@@ -53,7 +53,7 @@ void OpenXRFbPassthroughGeometry::set_mesh(const Ref<Mesh> &p_mesh) {
 		return;
 	}
 
-	if (geometry_instance) {
+	if (geometry_instance.is_valid()) {
 		destroy_passthrough_geometry();
 	}
 
@@ -110,7 +110,9 @@ OpenXRFbPassthroughGeometry::OpenXRFbPassthroughGeometry() {
 }
 
 void OpenXRFbPassthroughGeometry::create_passthrough_geometry() {
-	geometry_instance = OpenXRFbPassthroughExtensionWrapper::get_singleton()->create_geometry_instance(mesh, get_transform());
+	if (!geometry_instance.is_valid() && mesh.is_valid()) {
+		geometry_instance = OpenXRFbPassthroughExtensionWrapper::get_singleton()->geometry_instance_create(mesh->surface_get_arrays(0), get_transform());
+	}
 
 	if (opaque_mesh == nullptr && enable_hole_punch) {
 		instatiate_opaque_mesh();
@@ -120,9 +122,9 @@ void OpenXRFbPassthroughGeometry::create_passthrough_geometry() {
 }
 
 void OpenXRFbPassthroughGeometry::destroy_passthrough_geometry() {
-	if (geometry_instance != XR_NULL_HANDLE) {
-		OpenXRFbPassthroughExtensionWrapper::get_singleton()->destroy_geometry_instance(geometry_instance);
-		geometry_instance = XR_NULL_HANDLE;
+	if (geometry_instance.is_valid()) {
+		OpenXRFbPassthroughExtensionWrapper::get_singleton()->geometry_instance_free(geometry_instance);
+		geometry_instance = RID();
 	}
 
 	if (opaque_mesh != nullptr) {
@@ -131,8 +133,8 @@ void OpenXRFbPassthroughGeometry::destroy_passthrough_geometry() {
 }
 
 void OpenXRFbPassthroughGeometry::update_passthrough_geometry_transform() {
-	if (geometry_instance) {
-		OpenXRFbPassthroughExtensionWrapper::get_singleton()->set_geometry_instance_transform(geometry_instance, get_transform());
+	if (geometry_instance.is_valid()) {
+		OpenXRFbPassthroughExtensionWrapper::get_singleton()->geometry_instance_set_transform(geometry_instance, get_transform());
 	}
 }
 
@@ -179,22 +181,20 @@ void OpenXRFbPassthroughGeometry::_notification(int p_what) {
 			OpenXRFbPassthroughExtensionWrapper::get_singleton()->connect("openxr_fb_passthrough_stopped", callable_mp(this, &OpenXRFbPassthroughGeometry::destroy_passthrough_geometry));
 		} break;
 		case NOTIFICATION_ENTER_TREE: {
-			if (is_visible()) {
-				OpenXRFbPassthroughExtensionWrapper::get_singleton()->register_geometry_node(this);
+			if (is_visible() && OpenXRFbPassthroughExtensionWrapper::get_singleton()->is_passthrough_started()) {
+				create_passthrough_geometry();
 			}
 		} break;
 		case NOTIFICATION_EXIT_TREE: {
-			OpenXRFbPassthroughExtensionWrapper::get_singleton()->unregister_geometry_node(this);
-
-			if (geometry_instance) {
+			if (geometry_instance.is_valid()) {
 				destroy_passthrough_geometry();
 			}
 		} break;
 		case NOTIFICATION_VISIBILITY_CHANGED: {
-			if (is_visible()) {
-				OpenXRFbPassthroughExtensionWrapper::get_singleton()->register_geometry_node(this);
+			if (is_visible() && OpenXRFbPassthroughExtensionWrapper::get_singleton()->is_passthrough_started()) {
+				create_passthrough_geometry();
 			} else {
-				OpenXRFbPassthroughExtensionWrapper::get_singleton()->unregister_geometry_node(this);
+				destroy_passthrough_geometry();
 			}
 		} break;
 		case NOTIFICATION_LOCAL_TRANSFORM_CHANGED: {
