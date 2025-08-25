@@ -78,6 +78,11 @@ uint64_t OpenXRFbCompositionLayerSecureContentExtensionWrapper::_set_viewport_co
 		return reinterpret_cast<uint64_t>(p_next_pointer);
 	}
 
+	ExternalOutput external_output = (ExternalOutput)(int)p_property_values.get(EXTERNAL_OUTPUT_PROPERTY_NAME, EXTERNAL_OUTPUT_DISPLAY);
+	if (external_output == EXTERNAL_OUTPUT_DISPLAY) {
+		return reinterpret_cast<uint64_t>(p_next_pointer);
+	}
+
 	const XrCompositionLayerBaseHeader *layer = reinterpret_cast<const XrCompositionLayerBaseHeader *>(p_layer);
 
 	if (!layer_structs.has(layer)) {
@@ -90,9 +95,9 @@ uint64_t OpenXRFbCompositionLayerSecureContentExtensionWrapper::_set_viewport_co
 
 	XrCompositionLayerSecureContentFB *secure_content = layer_structs.getptr(layer);
 
-	switch ((ExternalOutput)(int)p_property_values.get(EXTERNAL_OUTPUT_PROPERTY_NAME, EXTERNAL_OUTPUT_DISPLAY)) {
+	switch (external_output) {
 		case EXTERNAL_OUTPUT_DISPLAY: {
-			secure_content->flags = 0;
+			// We'll never reach this - it would have been handled above.
 		} break;
 		case EXTERNAL_OUTPUT_EXCLUDE: {
 			secure_content->flags = XR_COMPOSITION_LAYER_SECURE_CONTENT_EXCLUDE_LAYER_BIT_FB;

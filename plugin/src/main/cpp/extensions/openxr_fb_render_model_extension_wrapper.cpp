@@ -119,6 +119,10 @@ void OpenXRFbRenderModelExtensionWrapper::fetch_paths() {
 	}
 
 	XrRenderModelPathInfoFB *paths = reinterpret_cast<XrRenderModelPathInfoFB *>(memalloc(sizeof(XrRenderModelPathInfoFB) * path_count));
+	for (int i = 0; i < path_count; i++) {
+		paths[i].type = XR_TYPE_RENDER_MODEL_PATH_INFO_FB;
+		paths[i].next = nullptr;
+	}
 
 	result = xrEnumerateRenderModelPathsFB(SESSION, path_count, &path_count, paths);
 	if (XR_FAILED(result)) {

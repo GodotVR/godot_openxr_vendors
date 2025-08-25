@@ -179,5 +179,8 @@ void OpenXRFbHandTrackingAimExtensionWrapper::_on_process() {
 		} else if (i == Hand::HAND_RIGHT) {
 			trackers[i]->set_input("system_gesture", (bool)(aim_state[i].status & XR_HAND_TRACKING_AIM_SYSTEM_GESTURE_BIT_FB));
 		}
+
+		// Clear status for the next frame.
+		aim_state[i].status = 0;
 	}
 }
