@@ -34,6 +34,7 @@
 #include <godot_cpp/classes/main_loop.hpp>
 #include <godot_cpp/classes/open_xrapi_extension.hpp>
 #include <godot_cpp/classes/os.hpp>
+#include <godot_cpp/classes/rendering_server.hpp>
 #include <godot_cpp/classes/scene_tree.hpp>
 #include <godot_cpp/classes/viewport.hpp>
 #include <godot_cpp/classes/xr_server.hpp>
@@ -196,10 +197,11 @@ void OpenXRFbPassthroughExtensionWrapper::_on_session_created(uint64_t p_session
 			0, // flags
 		};
 
-		XrResult result = xrCreatePassthroughFB(session, &passthrough_create_info, &passthrough_handle);
+		// Since OpenXR isn't yet involved in rendering yet, it's safe to write to `render_state`.
+		XrResult result = xrCreatePassthroughFB(session, &passthrough_create_info, &render_state.passthrough_handle);
 		if (XR_FAILED(result)) {
 			UtilityFunctions::print("Failed to create passthrough");
-			passthrough_handle = XR_NULL_HANDLE;
+			render_state.passthrough_handle = XR_NULL_HANDLE;
 			return;
 		}
 
@@ -229,9 +231,9 @@ void OpenXRFbPassthroughExtensionWrapper::_on_process() {
 	// Reconstruction layer will always take priority
 	if (blend_mode == XRInterface::XR_ENV_BLEND_MODE_ALPHA_BLEND && current_passthrough_layer != LAYER_PURPOSE_RECONSTRUCTION) {
 		start_passthrough_layer(LAYER_PURPOSE_RECONSTRUCTION);
-	} else if (blend_mode != XRInterface::XR_ENV_BLEND_MODE_ALPHA_BLEND && passthrough_geometry_nodes.size() > 0 && current_passthrough_layer != LAYER_PURPOSE_PROJECTED) {
+	} else if (blend_mode != XRInterface::XR_ENV_BLEND_MODE_ALPHA_BLEND && geometry_instances.get_rid_count() > 0 && current_passthrough_layer != LAYER_PURPOSE_PROJECTED) {
 		start_passthrough_layer(LAYER_PURPOSE_PROJECTED);
-	} else if (blend_mode != XRInterface::XR_ENV_BLEND_MODE_ALPHA_BLEND && passthrough_geometry_nodes.size() == 0 && current_passthrough_layer != LAYER_PURPOSE_NONE) {
+	} else if (blend_mode != XRInterface::XR_ENV_BLEND_MODE_ALPHA_BLEND && geometry_instances.get_rid_count() == 0 && current_passthrough_layer != LAYER_PURPOSE_NONE) {
 		stop_passthrough();
 	}
 }
@@ -265,15 +267,16 @@ bool OpenXRFbPassthroughExtensionWrapper::_on_event_polled(const void *p_event) 
 
 void OpenXRFbPassthroughExtensionWrapper::_on_session_destroyed() {
 	if (fb_passthrough_ext) {
-		stop_passthrough();
+		// Since OpenXR is no longer involved in rendering, it's safe to write to `render_state`.
+		_stop_passthrough_rt();
 
 		XrResult result;
-		if (passthrough_handle != XR_NULL_HANDLE) {
-			result = xrDestroyPassthroughFB(passthrough_handle);
+		if (render_state.passthrough_handle != XR_NULL_HANDLE) {
+			result = xrDestroyPassthroughFB(render_state.passthrough_handle);
 			if (XR_FAILED(result)) {
 				UtilityFunctions::print("Unable to destroy passthrough feature");
 			}
-			passthrough_handle = XR_NULL_HANDLE;
+			render_state.passthrough_handle = XR_NULL_HANDLE;
 
 			get_openxr_api()->unregister_composition_layer_provider(this);
 			get_openxr_api()->set_emulate_environment_blend_mode_alpha_blend(false);
@@ -285,31 +288,35 @@ void OpenXRFbPassthroughExtensionWrapper::_on_instance_destroyed() {
 	cleanup();
 }
 
-void OpenXRFbPassthroughExtensionWrapper::register_geometry_node(OpenXRFbPassthroughGeometry *p_node) {
-	passthrough_geometry_nodes.append(p_node);
-}
-
-void OpenXRFbPassthroughExtensionWrapper::unregister_geometry_node(OpenXRFbPassthroughGeometry *p_node) {
-	passthrough_geometry_nodes.erase(p_node);
-}
-
 void OpenXRFbPassthroughExtensionWrapper::start_passthrough() {
-	if (passthrough_handle == XR_NULL_HANDLE) {
+	RenderingServer::get_singleton()->call_on_render_thread(callable_mp(this, &OpenXRFbPassthroughExtensionWrapper::_start_passthrough_rt));
+}
+
+void OpenXRFbPassthroughExtensionWrapper::_start_passthrough_rt() {
+	if (render_state.passthrough_handle == XR_NULL_HANDLE) {
 		UtilityFunctions::print("Cannot start passthrough before passthrough handle is created");
 		return;
 	}
 
-	XrResult result = xrPassthroughStartFB(passthrough_handle);
+	XrResult result = xrPassthroughStartFB(render_state.passthrough_handle);
 	if (XR_FAILED(result)) {
 		UtilityFunctions::print("Failed to start passthrough, error code: ", result);
-		stop_passthrough();
+		_stop_passthrough_rt();
 		return;
 	}
 
-	passthrough_started = true;
+	render_state.passthrough_started = true;
+
+	// Use `call_deferred()` to set the public value on the main thread.
+	callable_mp(this, &OpenXRFbPassthroughExtensionWrapper::_set_passthrough_started).bind(true).call_deferred();
 }
 
 void OpenXRFbPassthroughExtensionWrapper::start_passthrough_layer(LayerPurpose p_layer_purpose) {
+	current_passthrough_layer = p_layer_purpose;
+	RenderingServer::get_singleton()->call_on_render_thread(callable_mp(this, &OpenXRFbPassthroughExtensionWrapper::_start_passthrough_layer_rt).bind(p_layer_purpose));
+}
+
+void OpenXRFbPassthroughExtensionWrapper::_start_passthrough_layer_rt(LayerPurpose p_layer_purpose) {
 	XrPassthroughLayerPurposeFB xr_layer_purpose;
 	switch (p_layer_purpose) {
 		case LAYER_PURPOSE_RECONSTRUCTION:
@@ -321,37 +328,43 @@ void OpenXRFbPassthroughExtensionWrapper::start_passthrough_layer(LayerPurpose p
 		case LAYER_PURPOSE_NONE:
 		case LAYER_PURPOSE_MAX:
 			UtilityFunctions::print("Corresponding XrPassthroughLayerPurposeFB not found for LayerPurpose: ", p_layer_purpose);
+			// Use `call_deferred()` to set the public value on the main thread.
+			callable_mp(this, &OpenXRFbPassthroughExtensionWrapper::_set_current_passthrough_layer).bind(LAYER_PURPOSE_NONE).call_deferred();
 			return;
 	}
 
 	// If passthrough hasn't started, start it.
-	if (!is_passthrough_started()) {
-		start_passthrough();
-		if (!is_passthrough_started()) {
+	if (!render_state.passthrough_started) {
+		_start_passthrough_rt();
+		if (!render_state.passthrough_started) {
+			// Use `call_deferred()` to set the public value on the main thread.
+			callable_mp(this, &OpenXRFbPassthroughExtensionWrapper::_set_current_passthrough_layer).bind(LAYER_PURPOSE_NONE).call_deferred();
 			return;
 		}
 	}
 
 	// If a different layer is active, pause it.
-	if (current_passthrough_layer >= 0 && current_passthrough_layer != p_layer_purpose) {
-		XrResult result = xrPassthroughLayerPauseFB(passthrough_layer[current_passthrough_layer]);
+	if (render_state.current_passthrough_layer >= 0 && render_state.current_passthrough_layer != p_layer_purpose) {
+		XrResult result = xrPassthroughLayerPauseFB(render_state.passthrough_layer[render_state.current_passthrough_layer]);
 		if (XR_FAILED(result)) {
 			UtilityFunctions::print("Failed to pause current passthrough layer, error code: ", result);
+			// Use `call_deferred()` to set the public value on the main thread.
+			callable_mp(this, &OpenXRFbPassthroughExtensionWrapper::_set_current_passthrough_layer).bind(LAYER_PURPOSE_NONE).call_deferred();
 			return;
 		}
 	}
 
 	// If layer does not exist, create it.
-	if (passthrough_layer[p_layer_purpose] == XR_NULL_HANDLE) {
+	if (render_state.passthrough_layer[p_layer_purpose] == XR_NULL_HANDLE) {
 		XrPassthroughLayerCreateInfoFB passthrough_layer_config = {
 			XR_TYPE_PASSTHROUGH_LAYER_CREATE_INFO_FB, // type
 			nullptr, // next
-			passthrough_handle, // passthrough
+			render_state.passthrough_handle, // passthrough
 			XR_PASSTHROUGH_IS_RUNNING_AT_CREATION_BIT_FB, // flags
 			xr_layer_purpose, // purpose
 		};
 
-		XrResult result = xrCreatePassthroughLayerFB(SESSION, &passthrough_layer_config, &passthrough_layer[p_layer_purpose]);
+		XrResult result = xrCreatePassthroughLayerFB(SESSION, &passthrough_layer_config, &render_state.passthrough_layer[p_layer_purpose]);
 		if (XR_FAILED(result)) {
 			UtilityFunctions::print("Failed to create passthrough layer ", p_layer_purpose, ", error code: ", result);
 			stop_passthrough();
@@ -359,33 +372,36 @@ void OpenXRFbPassthroughExtensionWrapper::start_passthrough_layer(LayerPurpose p
 		}
 
 		if (p_layer_purpose == LAYER_PURPOSE_PROJECTED) {
-			emit_signal("openxr_fb_projected_passthrough_layer_created");
+			// Use `call_deferred()` so the signal will be emitted on the main thread.
+			callable_mp(this, &OpenXRFbPassthroughExtensionWrapper::_emit_signal).bind("openxr_fb_projected_passthrough_layer_created").call_deferred();
 		}
 	} else { // Else resume already created layer.
-		XrResult result = xrPassthroughLayerResumeFB(passthrough_layer[p_layer_purpose]);
+		XrResult result = xrPassthroughLayerResumeFB(render_state.passthrough_layer[p_layer_purpose]);
 		if (XR_FAILED(result)) {
 			UtilityFunctions::print("Failed to resume passthrough layer ", p_layer_purpose, ", error code: ", result);
+			// Use `call_deferred()` so the signal will be emitted on the main thread.
+			callable_mp(this, &OpenXRFbPassthroughExtensionWrapper::_set_current_passthrough_layer).bind(LAYER_PURPOSE_NONE).call_deferred();
 			return;
 		}
 	}
 
-	current_passthrough_layer = p_layer_purpose;
+	render_state.current_passthrough_layer = p_layer_purpose;
 
 	// Apply passthrough style to layer
-	XrResult result = xrPassthroughLayerSetStyleFB(passthrough_layer[current_passthrough_layer], &passthrough_style);
+	XrResult result = xrPassthroughLayerSetStyleFB(render_state.passthrough_layer[render_state.current_passthrough_layer], &render_state.passthrough_style);
 	if (XR_FAILED(result)) {
 		UtilityFunctions::print("Failed to set passthrough style, error code: ", result);
 	}
 }
 
 int OpenXRFbPassthroughExtensionWrapper::_get_composition_layer_count() {
-	return is_passthrough_started() ? 1 : 0;
+	return render_state.passthrough_started ? 1 : 0;
 }
 
 uint64_t OpenXRFbPassthroughExtensionWrapper::_get_composition_layer(int p_index) {
 	if (p_index == 0) {
-		composition_passthrough_layer.layerHandle = passthrough_layer[current_passthrough_layer];
-		return reinterpret_cast<uint64_t>(&composition_passthrough_layer);
+		render_state.composition_passthrough_layer.layerHandle = render_state.passthrough_layer[render_state.current_passthrough_layer];
+		return reinterpret_cast<uint64_t>(&render_state.composition_passthrough_layer);
 	} else {
 		return 0;
 	}
@@ -397,45 +413,70 @@ int OpenXRFbPassthroughExtensionWrapper::_get_composition_layer_order(int p_inde
 }
 
 void OpenXRFbPassthroughExtensionWrapper::stop_passthrough() {
+	current_passthrough_layer = LAYER_PURPOSE_NONE;
+	RenderingServer::get_singleton()->call_on_render_thread(callable_mp(this, &OpenXRFbPassthroughExtensionWrapper::_stop_passthrough_rt));
+}
+
+void OpenXRFbPassthroughExtensionWrapper::_stop_passthrough_rt() {
 	if (!fb_passthrough_ext) {
 		return;
 	}
 
 	XrResult result;
 	for (int i = 0; i < LAYER_PURPOSE_MAX; i++) {
-		if (passthrough_layer[i] != XR_NULL_HANDLE) {
-			result = xrDestroyPassthroughLayerFB(passthrough_layer[i]);
+		if (render_state.passthrough_layer[i] != XR_NULL_HANDLE) {
+			result = xrDestroyPassthroughLayerFB(render_state.passthrough_layer[i]);
 			if (XR_FAILED(result)) {
 				UtilityFunctions::print("Unable to destroy passthrough layer, error code: ", result);
 			}
-			passthrough_layer[i] = XR_NULL_HANDLE;
+			render_state.passthrough_layer[i] = XR_NULL_HANDLE;
 		}
 	}
 
-	if (passthrough_handle != XR_NULL_HANDLE) {
-		result = xrPassthroughPauseFB(passthrough_handle);
+	if (render_state.passthrough_handle != XR_NULL_HANDLE) {
+		result = xrPassthroughPauseFB(render_state.passthrough_handle);
 		if (XR_FAILED(result)) {
 			UtilityFunctions::print("Unable to stop passthrough feature, error code: ", result);
 			return;
 		}
 	}
 
-	current_passthrough_layer = LAYER_PURPOSE_NONE;
-	passthrough_started = false;
-	emit_signal("openxr_fb_passthrough_stopped");
+	render_state.current_passthrough_layer = LAYER_PURPOSE_NONE;
+	render_state.passthrough_started = false;
+
+	// Use `call_deferred()` so signal is emitted and public values are updated on the main thread.
+	callable_mp(this, &OpenXRFbPassthroughExtensionWrapper::_emit_signal).bind("openxr_fb_passthrough_stopped").call_deferred();
+	callable_mp(this, &OpenXRFbPassthroughExtensionWrapper::_set_passthrough_started).bind(false).call_deferred();
 }
 
-XrGeometryInstanceFB OpenXRFbPassthroughExtensionWrapper::create_geometry_instance(const Ref<Mesh> &p_mesh, const Transform3D &p_transform) {
-	ERR_FAIL_COND_V(p_mesh.is_null(), XR_NULL_HANDLE);
-
-	if (!is_passthrough_started()) {
-		UtilityFunctions::print("Tried to create geometry instance, but passthrough isn't started!");
-		return XR_NULL_HANDLE;
+RID OpenXRFbPassthroughExtensionWrapper::geometry_instance_create(const Array &p_array_mesh, const Transform3D &p_transform) {
+	if (current_passthrough_layer != LAYER_PURPOSE_PROJECTED) {
+		start_passthrough_layer(LAYER_PURPOSE_PROJECTED);
 	}
 
-	Array surface_arrays = p_mesh->surface_get_arrays(0);
+	RID ret = geometry_instances.make_rid();
+	RenderingServer::get_singleton()->call_on_render_thread(callable_mp(this, &OpenXRFbPassthroughExtensionWrapper::_geometry_instance_initialize_rt).bind(ret, p_array_mesh, p_transform));
+	return ret;
+}
 
-	Array vertex_array = surface_arrays[Mesh::ARRAY_VERTEX];
+void OpenXRFbPassthroughExtensionWrapper::_geometry_instance_initialize_rt(RID p_geometry_instance, const Array &p_array_mesh, const Transform3D &p_transform) {
+	GeometryInstance *geometry_instance = geometry_instances.get_or_null(p_geometry_instance);
+
+	if (geometry_instance == nullptr) {
+		return;
+	}
+
+	if (!render_state.passthrough_started) {
+		UtilityFunctions::print("Tried to create geometry instance, but passthrough isn't started!");
+		return;
+	}
+
+	if (render_state.passthrough_layer[LAYER_PURPOSE_PROJECTED] == XR_NULL_HANDLE) {
+		UtilityFunctions::print("Tried to create geometry instance, but there's no projected passthrough layer");
+		return;
+	}
+
+	Array vertex_array = p_array_mesh[Mesh::ARRAY_VERTEX];
 	LocalVector<XrVector3f> vertices;
 	vertices.resize(vertex_array.size());
 	for (int j = 0; j < vertex_array.size(); j++) {
@@ -447,7 +488,7 @@ XrGeometryInstanceFB OpenXRFbPassthroughExtensionWrapper::create_geometry_instan
 		};
 	}
 
-	Array index_array = surface_arrays[Mesh::ARRAY_INDEX];
+	Array index_array = p_array_mesh[Mesh::ARRAY_INDEX];
 	LocalVector<uint32_t> indices;
 	indices.resize(index_array.size());
 	for (int j = 0; j < index_array.size(); j++) {
@@ -469,7 +510,7 @@ XrGeometryInstanceFB OpenXRFbPassthroughExtensionWrapper::create_geometry_instan
 	XrResult result = xrCreateTriangleMeshFB(SESSION, &triangle_mesh_info, &mesh);
 	if (XR_FAILED(result)) {
 		UtilityFunctions::print("Failed to create triangle mesh, error code: ", result);
-		return XR_NULL_HANDLE;
+		return;
 	}
 
 	Transform3D reference_frame = XRServer::get_singleton()->get_reference_frame();
@@ -496,27 +537,34 @@ XrGeometryInstanceFB OpenXRFbPassthroughExtensionWrapper::create_geometry_instan
 		static_cast<float>(scale.z)
 	};
 
-	XrGeometryInstanceFB geometry_instance = XR_NULL_HANDLE;
 	XrGeometryInstanceCreateInfoFB geometry_instance_info = {
 		XR_TYPE_GEOMETRY_INSTANCE_CREATE_INFO_FB, // type
 		nullptr, // next
-		passthrough_layer[LAYER_PURPOSE_PROJECTED], // layer
+		render_state.passthrough_layer[LAYER_PURPOSE_PROJECTED], // layer
 		mesh, // mesh
 		(XrSpace)get_openxr_api()->get_play_space(), // baseSpace
 		xr_pose, // pose
 		xr_scale, // scale
 	};
 
-	result = xrCreateGeometryInstanceFB(SESSION, &geometry_instance_info, &geometry_instance);
+	result = xrCreateGeometryInstanceFB(SESSION, &geometry_instance_info, &geometry_instance->handle);
 	if (XR_FAILED(result)) {
 		UtilityFunctions::print("Failed to create geometry instance, error code: ", result);
-		return XR_NULL_HANDLE;
+		return;
 	}
-
-	return geometry_instance;
 }
 
-void OpenXRFbPassthroughExtensionWrapper::set_geometry_instance_transform(XrGeometryInstanceFB p_geometry_instance, const Transform3D &p_transform) {
+void OpenXRFbPassthroughExtensionWrapper::geometry_instance_set_transform(RID p_geometry_instance, const Transform3D &p_transform) {
+	RenderingServer::get_singleton()->call_on_render_thread(callable_mp(this, &OpenXRFbPassthroughExtensionWrapper::_geometry_instance_set_transform_rt).bind(p_geometry_instance, p_transform));
+}
+
+void OpenXRFbPassthroughExtensionWrapper::_geometry_instance_set_transform_rt(RID p_geometry_instance, const Transform3D &p_transform) {
+	GeometryInstance *geometry_instance = geometry_instances.get_or_null(p_geometry_instance);
+
+	if (geometry_instance == nullptr) {
+		return;
+	}
+
 	Transform3D reference_frame = XRServer::get_singleton()->get_reference_frame();
 	Transform3D transform = reference_frame.inverse() * p_transform;
 
@@ -550,24 +598,41 @@ void OpenXRFbPassthroughExtensionWrapper::set_geometry_instance_transform(XrGeom
 		xr_scale, // scale
 	};
 
-	XrResult result = xrGeometryInstanceSetTransformFB(p_geometry_instance, &xr_transform);
+	XrResult result = xrGeometryInstanceSetTransformFB(geometry_instance->handle, &xr_transform);
 	if (XR_FAILED(result)) {
 		UtilityFunctions::print("Failed to set geometry instance transform, error code: ", result);
 	}
 }
 
-void OpenXRFbPassthroughExtensionWrapper::destroy_geometry_instance(XrGeometryInstanceFB p_geometry_instance) {
-	XrResult result = xrDestroyGeometryInstanceFB(p_geometry_instance);
+void OpenXRFbPassthroughExtensionWrapper::geometry_instance_free(RID p_geometry_instance) {
+	RenderingServer::get_singleton()->call_on_render_thread(callable_mp(this, &OpenXRFbPassthroughExtensionWrapper::_geometry_instance_free_rt).bind(p_geometry_instance));
+}
+
+void OpenXRFbPassthroughExtensionWrapper::_geometry_instance_free_rt(RID p_geometry_instance) {
+	GeometryInstance *geometry_instance = geometry_instances.get_or_null(p_geometry_instance);
+
+	if (geometry_instance == nullptr) {
+		return;
+	}
+
+	XrResult result = xrDestroyGeometryInstanceFB(geometry_instance->handle);
 	if (XR_FAILED(result)) {
 		UtilityFunctions::print("Failed to destroy geometry instance, error code: ", result);
 	}
+
+	geometry_instances.free(p_geometry_instance);
 }
 
 void OpenXRFbPassthroughExtensionWrapper::set_texture_opacity_factor(float p_value) {
-	passthrough_style.textureOpacityFactor = p_value;
+	texture_opacity_factor = p_value;
+	RenderingServer::get_singleton()->call_on_render_thread(callable_mp(this, &OpenXRFbPassthroughExtensionWrapper::_set_texture_opacity_factor_rt).bind(p_value));
+}
 
-	if (is_passthrough_started()) {
-		XrResult result = xrPassthroughLayerSetStyleFB(passthrough_layer[current_passthrough_layer], &passthrough_style);
+void OpenXRFbPassthroughExtensionWrapper::_set_texture_opacity_factor_rt(float p_value) {
+	render_state.passthrough_style.textureOpacityFactor = p_value;
+
+	if (render_state.passthrough_started) {
+		XrResult result = xrPassthroughLayerSetStyleFB(render_state.passthrough_layer[render_state.current_passthrough_layer], &render_state.passthrough_style);
 		if (XR_FAILED(result)) {
 			UtilityFunctions::print("Failed to set passthrough style, error code: ", result);
 		}
@@ -575,14 +640,19 @@ void OpenXRFbPassthroughExtensionWrapper::set_texture_opacity_factor(float p_val
 }
 
 float OpenXRFbPassthroughExtensionWrapper::get_texture_opacity_factor() {
-	return passthrough_style.textureOpacityFactor;
+	return texture_opacity_factor;
 }
 
 void OpenXRFbPassthroughExtensionWrapper::set_edge_color(Color p_color) {
-	passthrough_style.edgeColor = { p_color.r, p_color.g, p_color.b, p_color.a };
+	edge_color = p_color;
+	RenderingServer::get_singleton()->call_on_render_thread(callable_mp(this, &OpenXRFbPassthroughExtensionWrapper::_set_edge_color_rt).bind(p_color));
+}
 
-	if (is_passthrough_started()) {
-		XrResult result = xrPassthroughLayerSetStyleFB(passthrough_layer[current_passthrough_layer], &passthrough_style);
+void OpenXRFbPassthroughExtensionWrapper::_set_edge_color_rt(Color p_color) {
+	render_state.passthrough_style.edgeColor = { p_color.r, p_color.g, p_color.b, p_color.a };
+
+	if (render_state.passthrough_started) {
+		XrResult result = xrPassthroughLayerSetStyleFB(render_state.passthrough_layer[current_passthrough_layer], &render_state.passthrough_style);
 		if (XR_FAILED(result)) {
 			UtilityFunctions::print("Failed to set passthrough style, error code: ", result);
 		}
@@ -590,43 +660,48 @@ void OpenXRFbPassthroughExtensionWrapper::set_edge_color(Color p_color) {
 }
 
 Color OpenXRFbPassthroughExtensionWrapper::get_edge_color() {
-	return { passthrough_style.edgeColor.r, passthrough_style.edgeColor.g, passthrough_style.edgeColor.b, passthrough_style.edgeColor.a };
+	return edge_color;
 }
 
 void OpenXRFbPassthroughExtensionWrapper::set_passthrough_filter(PassthroughFilter p_filter) {
+	current_passthrough_filter = p_filter;
+	RenderingServer::get_singleton()->call_on_render_thread(callable_mp(this, &OpenXRFbPassthroughExtensionWrapper::_set_passthrough_filter_rt).bind(p_filter));
+}
+
+void OpenXRFbPassthroughExtensionWrapper::_set_passthrough_filter_rt(PassthroughFilter p_filter) {
 	switch (p_filter) {
 		case PASSTHROUGH_FILTER_DISABLED: {
-			passthrough_style.next = nullptr;
+			render_state.passthrough_style.next = nullptr;
 		} break;
 		case PASSTHROUGH_FILTER_COLOR_MAP: {
-			passthrough_style.next = &color_map;
+			render_state.passthrough_style.next = &render_state.color_map;
 		} break;
 		case PASSTHROUGH_FILTER_MONO_MAP: {
-			passthrough_style.next = &mono_map;
+			render_state.passthrough_style.next = &render_state.mono_map;
 		} break;
 		case PASSTHROUGH_FILTER_BRIGHTNESS_CONTRAST_SATURATION: {
-			passthrough_style.next = &brightness_contrast_saturation;
+			render_state.passthrough_style.next = &render_state.brightness_contrast_saturation;
 		} break;
 		case PASSTHROUGH_FILTER_COLOR_MAP_LUT: {
-			if (color_lut_handle == XR_NULL_HANDLE) {
+			if (render_state.color_lut_handle == XR_NULL_HANDLE) {
 				UtilityFunctions::print("Cannot set filter to color map LUT, color LUT has not been previously set");
 				return;
 			}
-			passthrough_style.next = &color_map_lut;
+			render_state.passthrough_style.next = &render_state.color_map_lut;
 		} break;
 		case PASSTHROUGH_FILTER_COLOR_MAP_INTERPOLATED_LUT: {
-			if (source_color_lut_handle == XR_NULL_HANDLE || target_color_lut_handle == XR_NULL_HANDLE) {
+			if (render_state.source_color_lut_handle == XR_NULL_HANDLE || render_state.target_color_lut_handle == XR_NULL_HANDLE) {
 				UtilityFunctions::print("Cannot set filter to color map interpolated LUT, interpolated color LUT has not been previously set");
 				return;
 			}
-			passthrough_style.next = &color_map_interpolated_lut;
+			render_state.passthrough_style.next = &render_state.color_map_interpolated_lut;
 		} break;
 	}
 
-	current_passthrough_filter = p_filter;
+	render_state.current_passthrough_filter = p_filter;
 
-	if (is_passthrough_started()) {
-		XrResult result = xrPassthroughLayerSetStyleFB(passthrough_layer[current_passthrough_layer], &passthrough_style);
+	if (render_state.passthrough_started) {
+		XrResult result = xrPassthroughLayerSetStyleFB(render_state.passthrough_layer[render_state.current_passthrough_layer], &render_state.passthrough_style);
 		if (XR_FAILED(result)) {
 			UtilityFunctions::print("Failed to set passthrough style, error code: ", result);
 		}
@@ -634,20 +709,22 @@ void OpenXRFbPassthroughExtensionWrapper::set_passthrough_filter(PassthroughFilt
 }
 
 void OpenXRFbPassthroughExtensionWrapper::set_color_map(const Ref<Gradient> &p_gradient) {
-	if (p_gradient.is_null()) {
-		return;
-	}
+	ERR_FAIL_COND(p_gradient.is_null());
+	current_passthrough_filter = PASSTHROUGH_FILTER_COLOR_MAP;
+	RenderingServer::get_singleton()->call_on_render_thread(callable_mp(this, &OpenXRFbPassthroughExtensionWrapper::_set_color_map_rt).bind(p_gradient));
+}
 
+void OpenXRFbPassthroughExtensionWrapper::_set_color_map_rt(const Ref<Gradient> &p_gradient) {
 	for (int i = 0; i < XR_PASSTHROUGH_COLOR_MAP_MONO_SIZE_FB; i++) {
 		Color sample_color = p_gradient->sample((double)i / (double)XR_PASSTHROUGH_COLOR_MAP_MONO_SIZE_FB);
-		color_map.textureColorMap[i] = { sample_color.r, sample_color.g, sample_color.b, sample_color.a };
+		render_state.color_map.textureColorMap[i] = { sample_color.r, sample_color.g, sample_color.b, sample_color.a };
 	}
 
-	current_passthrough_filter = PASSTHROUGH_FILTER_COLOR_MAP;
-	passthrough_style.next = &color_map;
+	render_state.current_passthrough_filter = PASSTHROUGH_FILTER_COLOR_MAP;
+	render_state.passthrough_style.next = &render_state.color_map;
 
-	if (is_passthrough_started()) {
-		XrResult result = xrPassthroughLayerSetStyleFB(passthrough_layer[current_passthrough_layer], &passthrough_style);
+	if (render_state.passthrough_started) {
+		XrResult result = xrPassthroughLayerSetStyleFB(render_state.passthrough_layer[render_state.current_passthrough_layer], &render_state.passthrough_style);
 		if (XR_FAILED(result)) {
 			UtilityFunctions::print("Failed to set passthrough style, error code: ", result);
 		}
@@ -655,19 +732,21 @@ void OpenXRFbPassthroughExtensionWrapper::set_color_map(const Ref<Gradient> &p_g
 }
 
 void OpenXRFbPassthroughExtensionWrapper::set_mono_map(const Ref<Curve> &p_curve) {
-	if (p_curve.is_null()) {
-		return;
-	}
-
-	for (int i = 0; i < XR_PASSTHROUGH_COLOR_MAP_MONO_SIZE_FB; i++) {
-		mono_map.textureColorMap[i] = p_curve->sample((double)i / (double)XR_PASSTHROUGH_COLOR_MAP_MONO_SIZE_FB) * XR_PASSTHROUGH_COLOR_MAP_MONO_SIZE_FB;
-	}
-
+	ERR_FAIL_COND(p_curve.is_null());
 	current_passthrough_filter = PASSTHROUGH_FILTER_MONO_MAP;
-	passthrough_style.next = &mono_map;
+	RenderingServer::get_singleton()->call_on_render_thread(callable_mp(this, &OpenXRFbPassthroughExtensionWrapper::_set_mono_map_rt).bind(p_curve));
+}
 
-	if (is_passthrough_started()) {
-		XrResult result = xrPassthroughLayerSetStyleFB(passthrough_layer[current_passthrough_layer], &passthrough_style);
+void OpenXRFbPassthroughExtensionWrapper::_set_mono_map_rt(const Ref<Curve> &p_curve) {
+	for (int i = 0; i < XR_PASSTHROUGH_COLOR_MAP_MONO_SIZE_FB; i++) {
+		render_state.mono_map.textureColorMap[i] = p_curve->sample((double)i / (double)XR_PASSTHROUGH_COLOR_MAP_MONO_SIZE_FB) * XR_PASSTHROUGH_COLOR_MAP_MONO_SIZE_FB;
+	}
+
+	render_state.current_passthrough_filter = PASSTHROUGH_FILTER_MONO_MAP;
+	render_state.passthrough_style.next = &render_state.mono_map;
+
+	if (render_state.passthrough_started) {
+		XrResult result = xrPassthroughLayerSetStyleFB(render_state.passthrough_layer[render_state.current_passthrough_layer], &render_state.passthrough_style);
 		if (XR_FAILED(result)) {
 			UtilityFunctions::print("Failed to set passthrough style, error code: ", result);
 		}
@@ -681,15 +760,21 @@ void OpenXRFbPassthroughExtensionWrapper::set_brightness_contrast_saturation(flo
 	ERR_FAIL_COND_MSG(p_contrast < 0.0, vformat("Contrast value %d is not greater than or equal to zero", p_contrast));
 	ERR_FAIL_COND_MSG(p_saturation < 0.0, vformat("Saturation value %d is not greater than or equal to zero", p_saturation));
 
-	brightness_contrast_saturation.brightness = p_brightness;
-	brightness_contrast_saturation.contrast = p_contrast;
-	brightness_contrast_saturation.saturation = p_saturation;
-
 	current_passthrough_filter = PASSTHROUGH_FILTER_BRIGHTNESS_CONTRAST_SATURATION;
-	passthrough_style.next = &brightness_contrast_saturation;
 
-	if (is_passthrough_started()) {
-		XrResult result = xrPassthroughLayerSetStyleFB(passthrough_layer[current_passthrough_layer], &passthrough_style);
+	RenderingServer::get_singleton()->call_on_render_thread(callable_mp(this, &OpenXRFbPassthroughExtensionWrapper::_set_brightness_contrast_saturation_rt).bind(p_brightness, p_contrast, p_saturation));
+}
+
+void OpenXRFbPassthroughExtensionWrapper::_set_brightness_contrast_saturation_rt(float p_brightness, float p_contrast, float p_saturation) {
+	render_state.brightness_contrast_saturation.brightness = p_brightness;
+	render_state.brightness_contrast_saturation.contrast = p_contrast;
+	render_state.brightness_contrast_saturation.saturation = p_saturation;
+
+	render_state.current_passthrough_filter = PASSTHROUGH_FILTER_BRIGHTNESS_CONTRAST_SATURATION;
+	render_state.passthrough_style.next = &render_state.brightness_contrast_saturation;
+
+	if (render_state.passthrough_started) {
+		XrResult result = xrPassthroughLayerSetStyleFB(render_state.passthrough_layer[render_state.current_passthrough_layer], &render_state.passthrough_style);
 		if (XR_FAILED(result)) {
 			UtilityFunctions::print("Failed to set passthrough style, error code: ", result);
 		}
@@ -735,19 +820,21 @@ void OpenXRFbPassthroughExtensionWrapper::set_color_lut(float p_weight, const Re
 		return;
 	}
 
-	if (p_color_lut->get_handle() == XR_NULL_HANDLE) {
-		create_color_lut(p_color_lut);
-	}
-
-	color_lut_handle = p_color_lut->get_handle();
-
 	current_passthrough_filter = PASSTHROUGH_FILTER_COLOR_MAP_LUT;
-	color_map_lut.colorLut = color_lut_handle;
-	color_map_lut.weight = CLAMP(p_weight, 0.0, 1.0);
-	passthrough_style.next = &color_map_lut;
 
-	if (is_passthrough_started()) {
-		XrResult result = xrPassthroughLayerSetStyleFB(passthrough_layer[current_passthrough_layer], &passthrough_style);
+	RenderingServer::get_singleton()->call_on_render_thread(callable_mp(this, &OpenXRFbPassthroughExtensionWrapper::_set_color_lut_rt).bind(p_weight, p_color_lut));
+}
+
+void OpenXRFbPassthroughExtensionWrapper::_set_color_lut_rt(float p_weight, const Ref<OpenXRMetaPassthroughColorLut> &p_color_lut) {
+	render_state.color_lut_handle = _color_lut_get_handle_rt(p_color_lut->get_handle());
+
+	render_state.current_passthrough_filter = PASSTHROUGH_FILTER_COLOR_MAP_LUT;
+	render_state.color_map_lut.colorLut = render_state.color_lut_handle;
+	render_state.color_map_lut.weight = CLAMP(p_weight, 0.0, 1.0);
+	render_state.passthrough_style.next = &render_state.color_map_lut;
+
+	if (render_state.passthrough_started) {
+		XrResult result = xrPassthroughLayerSetStyleFB(render_state.passthrough_layer[render_state.current_passthrough_layer], &render_state.passthrough_style);
 		if (XR_FAILED(result)) {
 			UtilityFunctions::printerr("Failed to set passthrough style, error code: ", result);
 		}
@@ -760,39 +847,40 @@ void OpenXRFbPassthroughExtensionWrapper::set_interpolated_color_lut(float p_wei
 		return;
 	}
 
-	if (!p_source_color_lut->get_handle()) {
-		create_color_lut(p_source_color_lut);
-	}
-
-	if (!p_target_color_lut->get_handle()) {
-		create_color_lut(p_target_color_lut);
-	}
-
-	source_color_lut_handle = p_source_color_lut->get_handle();
-	target_color_lut_handle = p_target_color_lut->get_handle();
+	ERR_FAIL_COND(p_source_color_lut.is_null());
+	ERR_FAIL_COND(p_target_color_lut.is_null());
 
 	current_passthrough_filter = PASSTHROUGH_FILTER_COLOR_MAP_INTERPOLATED_LUT;
-	color_map_interpolated_lut.sourceColorLut = source_color_lut_handle;
-	color_map_interpolated_lut.targetColorLut = target_color_lut_handle;
-	color_map_interpolated_lut.weight = CLAMP(p_weight, 0.0, 1.0);
-	passthrough_style.next = &color_map_interpolated_lut;
 
-	if (is_passthrough_started()) {
-		XrResult result = xrPassthroughLayerSetStyleFB(passthrough_layer[current_passthrough_layer], &passthrough_style);
+	RenderingServer::get_singleton()->call_on_render_thread(callable_mp(this, &OpenXRFbPassthroughExtensionWrapper::_set_interpolated_color_lut_rt).bind(p_weight, p_source_color_lut, p_target_color_lut));
+}
+
+void OpenXRFbPassthroughExtensionWrapper::_set_interpolated_color_lut_rt(float p_weight, const Ref<OpenXRMetaPassthroughColorLut> &p_source_color_lut, const Ref<OpenXRMetaPassthroughColorLut> &p_target_color_lut) {
+	render_state.source_color_lut_handle = _color_lut_get_handle_rt(p_source_color_lut->get_handle());
+	render_state.target_color_lut_handle = _color_lut_get_handle_rt(p_target_color_lut->get_handle());
+
+	render_state.current_passthrough_filter = PASSTHROUGH_FILTER_COLOR_MAP_INTERPOLATED_LUT;
+	render_state.color_map_interpolated_lut.sourceColorLut = render_state.source_color_lut_handle;
+	render_state.color_map_interpolated_lut.targetColorLut = render_state.target_color_lut_handle;
+	render_state.color_map_interpolated_lut.weight = CLAMP(p_weight, 0.0, 1.0);
+	render_state.passthrough_style.next = &render_state.color_map_interpolated_lut;
+
+	if (render_state.passthrough_started) {
+		XrResult result = xrPassthroughLayerSetStyleFB(render_state.passthrough_layer[render_state.current_passthrough_layer], &render_state.passthrough_style);
 		if (XR_FAILED(result)) {
 			UtilityFunctions::printerr("Failed to set passthrough style, error code: ", result);
 		}
 	}
 }
 
-void OpenXRFbPassthroughExtensionWrapper::create_color_lut(const Ref<OpenXRMetaPassthroughColorLut> &p_color_lut) {
-	if (p_color_lut->get_image_cell_resolution() > system_passthrough_color_lut_properties.maxColorLutResolution) {
+RID OpenXRFbPassthroughExtensionWrapper::color_lut_create(OpenXRMetaPassthroughColorLut::ColorLutChannels p_channels, uint32_t p_image_cell_resolution, const PackedByteArray &p_buffer) {
+	if (p_image_cell_resolution > system_passthrough_color_lut_properties.maxColorLutResolution) {
 		UtilityFunctions::print("Color LUT cell resolution cannot be greater than the maximum resolution supported by this system: ", system_passthrough_color_lut_properties.maxColorLutResolution);
-		return;
+		return RID();
 	}
 
 	XrPassthroughColorLutChannelsMETA channels;
-	switch (p_color_lut->get_channels()) {
+	switch (p_channels) {
 		case OpenXRMetaPassthroughColorLut::COLOR_LUT_CHANNELS_RGB: {
 			channels = XR_PASSTHROUGH_COLOR_LUT_CHANNELS_RGB_META;
 		} break;
@@ -801,31 +889,48 @@ void OpenXRFbPassthroughExtensionWrapper::create_color_lut(const Ref<OpenXRMetaP
 		} break;
 	}
 
+	return color_luts.make_rid({ channels, p_image_cell_resolution, p_buffer });
+}
+
+XrPassthroughColorLutMETA OpenXRFbPassthroughExtensionWrapper::_color_lut_get_handle_rt(RID p_color_lut) {
+	ColorLut *color_lut = color_luts.get_or_null(p_color_lut);
+	if (color_lut == nullptr) {
+		return XR_NULL_HANDLE;
+	}
+
+	if (color_lut->handle != XR_NULL_HANDLE) {
+		return color_lut->handle;
+	}
+
 	XrPassthroughColorLutDataMETA color_lut_data = {
-		(uint32_t)p_color_lut->get_buffer().size(), // bufferSize
-		p_color_lut->get_buffer().ptr(), // buffer
+		(uint32_t)color_lut->buffer.size(), // bufferSize
+		color_lut->buffer.ptr(), // buffer
 	};
 
 	XrPassthroughColorLutCreateInfoMETA color_lut_create_info = {
 		XR_TYPE_PASSTHROUGH_COLOR_LUT_CREATE_INFO_META, // type
 		nullptr, // next
-		channels, // channels
-		(uint32_t)p_color_lut->get_image_cell_resolution(), // resolution
+		color_lut->channels, // channels
+		color_lut->image_cell_resolution, // resolution
 		color_lut_data, // data
 	};
 
-	XrPassthroughColorLutMETA handle;
-	XrResult result = xrCreatePassthroughColorLutMETA(passthrough_handle, &color_lut_create_info, &handle);
+	XrResult result = xrCreatePassthroughColorLutMETA(render_state.passthrough_handle, &color_lut_create_info, &color_lut->handle);
 	if (XR_FAILED(result)) {
 		UtilityFunctions::printerr("Failed to create passthrough color LUT, error code: ", result);
-		return;
+		return XR_NULL_HANDLE;
 	}
 
-	p_color_lut->set_handle(handle);
+	return color_lut->handle;
 }
 
-void OpenXRFbPassthroughExtensionWrapper::destroy_color_lut(const Ref<OpenXRMetaPassthroughColorLut> &p_color_lut) {
-	XrPassthroughColorLutMETA handle = p_color_lut->get_handle();
+void OpenXRFbPassthroughExtensionWrapper::color_lut_free(RID p_color_lut) {
+	RenderingServer::get_singleton()->call_on_render_thread(callable_mp(this, &OpenXRFbPassthroughExtensionWrapper::_color_lut_free_rt).bind(p_color_lut));
+}
+
+void OpenXRFbPassthroughExtensionWrapper::_color_lut_free_rt(RID p_color_lut) {
+	ColorLut *color_lut = color_luts.get_or_null(p_color_lut);
+	XrPassthroughColorLutMETA handle = color_lut ? color_lut->handle : XR_NULL_HANDLE;
 
 	if (handle == XR_NULL_HANDLE) {
 		UtilityFunctions::print("Cannot delete invalid color LUT");
@@ -838,17 +943,26 @@ void OpenXRFbPassthroughExtensionWrapper::destroy_color_lut(const Ref<OpenXRMeta
 		return;
 	}
 
-	if (color_lut_handle == handle) {
-		color_lut_handle = XR_NULL_HANDLE;
+	if (render_state.color_lut_handle == handle) {
+		render_state.color_lut_handle = XR_NULL_HANDLE;
+		if (render_state.current_passthrough_filter == PASSTHROUGH_FILTER_COLOR_MAP_LUT) {
+			_set_passthrough_filter_rt(PASSTHROUGH_FILTER_DISABLED);
+		}
 	}
-	if (source_color_lut_handle == handle) {
-		source_color_lut_handle = XR_NULL_HANDLE;
+	if (render_state.source_color_lut_handle == handle) {
+		render_state.source_color_lut_handle = XR_NULL_HANDLE;
+		if (render_state.current_passthrough_filter == PASSTHROUGH_FILTER_COLOR_MAP_INTERPOLATED_LUT) {
+			_set_passthrough_filter_rt(PASSTHROUGH_FILTER_DISABLED);
+		}
 	}
-	if (target_color_lut_handle == handle) {
-		target_color_lut_handle = XR_NULL_HANDLE;
+	if (render_state.target_color_lut_handle == handle) {
+		render_state.target_color_lut_handle = XR_NULL_HANDLE;
+		if (render_state.current_passthrough_filter == PASSTHROUGH_FILTER_COLOR_MAP_INTERPOLATED_LUT) {
+			_set_passthrough_filter_rt(PASSTHROUGH_FILTER_DISABLED);
+		}
 	}
 
-	p_color_lut->set_handle(XR_NULL_HANDLE);
+	color_luts.free(p_color_lut);
 }
 
 int OpenXRFbPassthroughExtensionWrapper::get_max_color_lut_resolution() {

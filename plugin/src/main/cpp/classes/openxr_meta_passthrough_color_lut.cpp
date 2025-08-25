@@ -44,7 +44,9 @@ void OpenXRMetaPassthroughColorLut::_bind_methods() {
 }
 
 OpenXRMetaPassthroughColorLut::~OpenXRMetaPassthroughColorLut() {
-	OpenXRFbPassthroughExtensionWrapper::get_singleton()->destroy_color_lut(this);
+	if (color_lut_handle.is_valid()) {
+		OpenXRFbPassthroughExtensionWrapper::get_singleton()->color_lut_free(color_lut_handle);
+	}
 }
 
 Ref<OpenXRMetaPassthroughColorLut> OpenXRMetaPassthroughColorLut::create_from_image(Ref<Image> p_image, ColorLutChannels p_channels) {
@@ -124,4 +126,7 @@ void OpenXRMetaPassthroughColorLut::populate_buffer(const Ref<Image> &p_image, C
 			}
 		}
 	}
+
+	color_lut_handle = OpenXRFbPassthroughExtensionWrapper::get_singleton()->color_lut_create(channels, image_cell_resolution, buffer);
+	;
 }

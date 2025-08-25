@@ -30,7 +30,6 @@
 #ifndef OPENXR_FB_PASSTHROUGH_COLOR_LUT_H
 #define OPENXR_FB_PASSTHROUGH_COLOR_LUT_H
 
-#include <openxr/openxr.h>
 #include <godot_cpp/classes/image.hpp>
 #include <godot_cpp/classes/ref_counted.hpp>
 
@@ -45,7 +44,7 @@ public:
 	};
 
 private:
-	XrPassthroughColorLutMETA color_lut_handle = XR_NULL_HANDLE;
+	RID color_lut_handle;
 	int image_cell_resolution = 0;
 	ColorLutChannels channels;
 	PackedByteArray buffer;
@@ -53,19 +52,18 @@ private:
 protected:
 	static void _bind_methods();
 
-	~OpenXRMetaPassthroughColorLut();
-
 	void populate_buffer(const Ref<Image> &p_image, ColorLutChannels p_channels);
 
 public:
 	static Ref<OpenXRMetaPassthroughColorLut> create_from_image(Ref<Image> p_image, ColorLutChannels p_channels);
 
-	void set_handle(XrPassthroughColorLutMETA p_handle) { color_lut_handle = p_handle; }
-	XrPassthroughColorLutMETA get_handle() const { return color_lut_handle; }
+	RID get_handle() const { return color_lut_handle; }
 
 	int get_image_cell_resolution() const { return image_cell_resolution; }
 	PackedByteArray get_buffer() const { return buffer; }
 	ColorLutChannels get_channels() const { return channels; }
+
+	~OpenXRMetaPassthroughColorLut();
 };
 } // namespace godot
 
