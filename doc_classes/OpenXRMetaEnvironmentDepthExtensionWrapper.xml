@@ -9,6 +9,20 @@
 	<tutorials>
 	</tutorials>
 	<methods>
+		<method name="get_environment_depth_map_async">
+			<return type="void" />
+			<param index="0" name="callback" type="Callable" />
+			<description>
+				Requests that the environment depth map data (including the image data) be sent to the given callback for use on the CPU.
+				This can be used for things like implementing your own realtime plane tracking.
+				The callback will be called with an array of two dictionaries (one for each eye), containing:
+				- [b]depth_projection_view[/b]: ([Projection]) The projection view matrix for the depth map.
+				- [b]depth_inverse_projection_view[/b]: ([Projection]) The inverse projection view matrix for the depth map.
+				- [b]image[/b]: ([Image]) The depth map image data.
+				This method should be called sparingly, and definitely not on every frame. First of all, the depth map image isn't updated every frame - it's closer to every 2-4 frames, depending on the display's refresh rate. But, also, the depth map is provided to us as GPU resource that we need to download to the CPU, which isn't the fastest operation. It would be reasonable to call this from a timer that goes off every 1 second, for example.
+				If you need to use the depth map for rendering, it's recommended that you do so from a shader (instead of using this method), which will be able to access the depth map texture on the GPU directly via global shader uniforms, as well as up-to-date projection information for use on the current frame.
+			</description>
+		</method>
 		<method name="get_hand_removal_enabled" qualifiers="const">
 			<return type="bool" />
 			<description>
