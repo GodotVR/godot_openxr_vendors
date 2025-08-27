@@ -159,6 +159,8 @@ void OpenXRMetaEnvironmentDepthExtensionWrapper::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_hand_removal_enabled", "enable"), &OpenXRMetaEnvironmentDepthExtensionWrapper::set_hand_removal_enabled);
 	ClassDB::bind_method(D_METHOD("get_hand_removal_enabled"), &OpenXRMetaEnvironmentDepthExtensionWrapper::get_hand_removal_enabled);
 
+	ClassDB::bind_method(D_METHOD("get_environment_depth_map_async", "callback"), &OpenXRMetaEnvironmentDepthExtensionWrapper::get_environment_depth_map_async);
+
 	ADD_SIGNAL(MethodInfo("openxr_meta_environment_depth_started"));
 	ADD_SIGNAL(MethodInfo("openxr_meta_environment_depth_stopped"));
 }
@@ -260,6 +262,8 @@ void OpenXRMetaEnvironmentDepthExtensionWrapper::_on_pre_render() {
 	float z_near = openxr_api->get_render_state_z_near();
 	float z_far = openxr_api->get_render_state_z_far();
 
+	Array callback_data;
+
 	for (int i = 0; i < 2; i++) {
 		XrPosef local_from_depth_eye = depth_image.views[i].pose;
 		XrPosef depth_eye_from_local;
@@ -283,8 +287,9 @@ void OpenXRMetaEnvironmentDepthExtensionWrapper::_on_pre_render() {
 		OpenXRUtilities::xrMatrix4x4f_to_godot_projection(&projection_mat, godot_projection_mat);
 
 		Projection depth_proj_view = godot_projection_mat * godot_view_mat;
+		Projection depth_inv_proj_view = depth_proj_view.inverse();
 		rs->global_shader_parameter_set(i == 0 ? META_ENVIRONMENT_DEPTH_PROJECTION_VIEW_LEFT_NAME : META_ENVIRONMENT_DEPTH_PROJECTION_VIEW_RIGHT_NAME, depth_proj_view);
-		rs->global_shader_parameter_set(i == 0 ? META_ENVIRONMENT_DEPTH_INV_PROJECTION_VIEW_LEFT_NAME : META_ENVIRONMENT_DEPTH_INV_PROJECTION_VIEW_RIGHT_NAME, depth_proj_view.inverse());
+		rs->global_shader_parameter_set(i == 0 ? META_ENVIRONMENT_DEPTH_INV_PROJECTION_VIEW_LEFT_NAME : META_ENVIRONMENT_DEPTH_INV_PROJECTION_VIEW_RIGHT_NAME, depth_inv_proj_view);
 
 		Projection camera_proj_view = openxr_interface->get_projection_for_view(i, aspect, z_near, z_far) * openxr_interface->get_transform_for_view(i, world_origin).affine_inverse();
 
@@ -295,7 +300,28 @@ void OpenXRMetaEnvironmentDepthExtensionWrapper::_on_pre_render() {
 		}
 
 		rs->global_shader_parameter_set(i == 0 ? META_ENVIRONMENT_DEPTH_FROM_CAMERA_PROJECTION_LEFT_NAME : META_ENVIRONMENT_DEPTH_FROM_CAMERA_PROJECTION_RIGHT_NAME, depth_proj_view * camera_proj_view.inverse());
-		rs->global_shader_parameter_set(i == 0 ? META_ENVIRONMENT_DEPTH_TO_CAMERA_PROJECTION_LEFT_NAME : META_ENVIRONMENT_DEPTH_TO_CAMERA_PROJECTION_RIGHT_NAME, camera_proj_view * depth_proj_view.inverse());
+		rs->global_shader_parameter_set(i == 0 ? META_ENVIRONMENT_DEPTH_TO_CAMERA_PROJECTION_LEFT_NAME : META_ENVIRONMENT_DEPTH_TO_CAMERA_PROJECTION_RIGHT_NAME, camera_proj_view * depth_inv_proj_view);
+
+		if (render_state.depth_map_callbacks.size() > 0) {
+			Dictionary data;
+			data["depth_projection_view"] = depth_proj_view;
+			data["depth_inverse_projection_view"] = depth_inv_proj_view;
+
+			Ref<Image> image = rs->texture_2d_layer_get(render_state.depth_swapchain_textures[depth_image.swapchainIndex], i);
+			data["image"] = image;
+
+			callback_data.push_back(data);
+		}
+	}
+
+	if (render_state.depth_map_callbacks.size() > 0) {
+		for (const Variant &v : render_state.depth_map_callbacks) {
+			Callable callback = v;
+			if (callback.is_valid()) {
+				callback.call_deferred(callback_data);
+			}
+		}
+		render_state.depth_map_callbacks.clear();
 	}
 #endif // ANDROID_ENABLED
 }
@@ -438,6 +464,13 @@ void OpenXRMetaEnvironmentDepthExtensionWrapper::set_reprojection_offset_exponen
 
 float OpenXRMetaEnvironmentDepthExtensionWrapper::get_reprojection_offset_exponent() const {
 	return reprojection_offset_exponent;
+}
+
+void OpenXRMetaEnvironmentDepthExtensionWrapper::get_environment_depth_map_async(const Callable &p_callback) {
+	RenderingServer *rs = RenderingServer::get_singleton();
+	ERR_FAIL_NULL(rs);
+	ERR_FAIL_COND(!depth_provider_started);
+	rs->call_on_render_thread(callable_mp(this, &OpenXRMetaEnvironmentDepthExtensionWrapper::_add_depth_map_callback_rt).bind(p_callback));
 }
 
 static void create_shader_global_uniform(const String &p_name, RenderingServer::GlobalShaderParameterType p_type, Variant p_value, RenderingServer *p_rendering_server, ProjectSettings *p_project_settings, bool p_is_editor) {
@@ -729,6 +762,10 @@ void OpenXRMetaEnvironmentDepthExtensionWrapper::_set_hand_removal_enabled_rt(bo
 		UtilityFunctions::printerr("Failed to set hand removal enabled: ", get_openxr_api()->get_error_string(result));
 		return;
 	}
+}
+
+void OpenXRMetaEnvironmentDepthExtensionWrapper::_add_depth_map_callback_rt(const Callable &p_callback) {
+	render_state.depth_map_callbacks.push_back(p_callback);
 }
 
 void OpenXRMetaEnvironmentDepthExtensionWrapper::_destroy_depth_provider_rt() {

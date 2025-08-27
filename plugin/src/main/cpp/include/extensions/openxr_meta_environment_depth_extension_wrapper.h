@@ -83,6 +83,8 @@ public:
 	void set_reprojection_offset_exponent(float p_offset_exponent);
 	float get_reprojection_offset_exponent() const;
 
+	void get_environment_depth_map_async(const Callable &p_callback);
+
 	void setup_global_uniforms();
 
 	static OpenXRMetaEnvironmentDepthExtensionWrapper *get_singleton();
@@ -164,6 +166,7 @@ private:
 		bool depth_provider_started = false;
 		GraphicsAPI graphics_api = GRAPHICS_API_UNKNOWN;
 		LocalVector<RID> depth_swapchain_textures;
+		LocalVector<Callable> depth_map_callbacks;
 	} render_state;
 
 	bool depth_provider_started = false;
@@ -184,6 +187,7 @@ private:
 	void _start_environment_depth_rt();
 	void _stop_environment_depth_rt();
 	void _set_hand_removal_enabled_rt(bool p_enable);
+	void _add_depth_map_callback_rt(const Callable &p_callback);
 
 	bool _create_depth_provider_rt();
 	void _destroy_depth_provider_rt();
