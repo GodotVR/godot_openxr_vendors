@@ -11,6 +11,7 @@ Meta
     composition_layers
     dynamic_resolution
     hand_tracking
+    environment_depth
     passthrough
     scene_manager
     spatial_anchors
