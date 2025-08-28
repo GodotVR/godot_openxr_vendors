@@ -32,6 +32,7 @@
         "OpenXRExtensionWrapperExtension",
         "OpenXRInterface",
         "PackedScene",
+        "Performance",
         "PlaneMesh",
         "PrimitiveMesh",
         "ProjectSettings",

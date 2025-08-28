@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="OpenXRMetaPerformanceMetricsExtensionWrapper" inherits="OpenXRExtensionWrapperExtension" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		Wraps the [code]XR_META_performance_metrics[/code] extension.
+	</brief_description>
+	<description>
+		Wraps the [code]XR_META_performance_metrics[/code] extension.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="get_performance_metrics_counter_paths">
+			<return type="PackedStringArray" />
+			<description>
+				Returns a [code]PackedStringArray[/code] of counter paths that may be passed to [method query_performance_metrics_counter].
+			</description>
+		</method>
+		<method name="is_capturing_performance_metrics">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] if the performance metrics system is currently capturing data; otherwise [code]false[/code].
+			</description>
+		</method>
+		<method name="is_enabled">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] if the extension is enabled; otherwise [code]false[/code].
+			</description>
+		</method>
+		<method name="query_performance_metrics_counter">
+			<return type="Dictionary" />
+			<param index="0" name="counter_path" type="String" />
+			<description>
+				Returns a [Dictionary] containing the following keys:
+				- [code]counter_path[/code] ([String]): the counter path associated with this data.
+				- [code]counter_flags[/code] ([int]): a bitfield of [enum PerformanceMetricsCounterFlags] indicating both if this data is valid and what data fields are valid.
+				- [code]counter_unit[/code] ([enum PerformanceMetricsCounterUnit]): The unit associated with the data value.
+				- [code]uint_value[/code] ([int]): The counter value in unsigned integer format. Valid if [code]counter_flags[/code] contains [constant PERFORMANCE_METRICS_COUNTER_FLAGS_UINT_VALUE_VALID_BIT].
+				- [code]float_value[/code] ([float]): The counter value in floating point format. Valid if [code]counter_flags[/code] contains [constant PERFORMANCE_METRICS_COUNTER_FLAGS_FLOAT_VALUE_VALID_BIT].
+				The returned [Dictionary] may be empty if an invalid counter path is provided, or if the returned data is not considered valid by the runtime.
+			</description>
+		</method>
+		<method name="set_capture_performance_metrics">
+			<return type="void" />
+			<param index="0" name="enabled" type="bool" />
+			<description>
+				Sets the performance metrics system as actively capturing or not.
+			</description>
+		</method>
+	</methods>
+	<constants>
+		<constant name="PERFORMANCE_METRICS_COUNTER_FLAGS_ANY_VALUE_VALID_BIT" value="1" enum="PerformanceMetricsCounterFlags">
+			Indicates the data returned by [method query_performance_metrics_counter] is valid.
+		</constant>
+		<constant name="PERFORMANCE_METRICS_COUNTER_FLAGS_UINT_VALUE_VALID_BIT" value="2" enum="PerformanceMetricsCounterFlags">
+			Indicates the [code]uint_value[/code] returned by [method query_performance_metrics_counter] is valid.
+		</constant>
+		<constant name="PERFORMANCE_METRICS_COUNTER_FLAGS_FLOAT_VALUE_VALID_BIT" value="4" enum="PerformanceMetricsCounterFlags">
+			Indicates the [code]float_value[/code] returned by [method query_performance_metrics_counter] is valid.
+		</constant>
+		<constant name="PERFORMANCE_METRICS_COUNTER_UNIT_GENERIC" value="0" enum="PerformanceMetricsCounterUnit">
+			The performance counter unit is generic/unspecified.
+		</constant>
+		<constant name="PERFORMANCE_METRICS_COUNTER_UNIT_PERCENTAGE" value="1" enum="PerformanceMetricsCounterUnit">
+			The performance counter unit is a percentage.
+		</constant>
+		<constant name="PERFORMANCE_METRICS_COUNTER_UNIT_MILLISECONDS" value="2" enum="PerformanceMetricsCounterUnit">
+			The performance counter unit is milliseconds.
+		</constant>
+		<constant name="PERFORMANCE_METRICS_COUNTER_UNIT_BYTES" value="3" enum="PerformanceMetricsCounterUnit">
+			The performance counter unit is bytes.
+		</constant>
+		<constant name="PERFORMANCE_METRICS_COUNTER_UNIT_HERTZ" value="4" enum="PerformanceMetricsCounterUnit">
+			The performance counter unit is hertz.
+		</constant>
+	</constants>
+</class>
