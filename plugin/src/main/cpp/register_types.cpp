@@ -47,6 +47,7 @@
 #include "export/magicleap_export_plugin.h"
 #include "export/meta_export_plugin.h"
 #include "export/pico_export_plugin.h"
+#include "export/validation_layers_export_plugin.h"
 
 #include "extensions/openxr_android_passthrough_camera_state_extension_wrapper.h"
 #include "extensions/openxr_android_performance_metrics_extension_wrapper.h"
@@ -397,6 +398,7 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			GDREGISTER_INTERNAL_CLASS(MagicleapEditorExportPlugin);
 			GDREGISTER_INTERNAL_CLASS(MetaEditorExportPlugin);
 			GDREGISTER_INTERNAL_CLASS(PicoEditorExportPlugin);
+			GDREGISTER_INTERNAL_CLASS(OpenXRValidationLayersEditorExportPlugin);
 
 			EditorPlugins::add_by_type<OpenXRVendorsEditorPlugin>();
 

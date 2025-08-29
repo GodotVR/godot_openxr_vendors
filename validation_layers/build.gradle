@@ -1,0 +1,160 @@
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+}
+
+ext {
+    PUBLISH_ARTIFACT_ID = 'openxr-validation-layers'
+    PUBLISH_ARTIFACT_VERSION = getValidationLayersVersion()
+    PUBLISH_ARTIFACT_DESCRIPTION_LABEL = "OpenXR Validation Layers built by Godot"
+}
+
+apply from: "../scripts/publish-module.gradle"
+
+def khronosOpenxrValidationLayersAndroidAssetsTargetDir = file("${buildDir}/temp/openxr_validation_layers_assets")
+def khronosOpenxrValidationLayersAndroidBuildDir = file("${buildDir}/temp/openxr_validation_layers_build")
+
+android {
+    compileSdk versions.compileSdk
+    ndkVersion versions.ndkVersion
+
+    externalNativeBuild {
+        cmake {
+            path file('../thirdparty/openxr-source/CMakeLists.txt')
+            version "3.22.1"
+        }
+    }
+    defaultConfig {
+        minSdk versions.minSdk
+        targetSdk versions.targetSdk
+        versionName getValidationLayersVersion()
+
+        setProperty("archivesBaseName", "openxr-validation-layers")
+
+        ndk {
+            //noinspection ChromeOsAbiSupport
+            abiFilters "arm64-v8a", "x86_64"
+        }
+        externalNativeBuild {
+            cmake {
+                arguments "-DBUILD_TESTS=OFF",
+                        "-DBUILD_CONFORMANCE_TESTS=OFF",
+                        "-DBUILD_LOADER=OFF",
+                        "-DBUILD_API_LAYERS=YES",
+                        // CMake may not detect OpenGL ES support, so we force it to be on.
+                        "-DCMAKE_C_FLAGS=-DXR_USE_GRAPHICS_API_OPENGL_ES",
+                        "-DCMAKE_CXX_FLAGS=-DXR_USE_GRAPHICS_API_OPENGL_ES"
+            }
+        }
+    }
+    buildTypes {
+        debug {
+            externalNativeBuild {
+                cmake {
+                    // Override the default build directory.
+                    arguments.add("-B${khronosOpenxrValidationLayersAndroidBuildDir}/Debug")
+                }
+            }
+        }
+
+        release {
+            externalNativeBuild {
+                cmake {
+                    // Override the default build directory.
+                    arguments.add("-B${khronosOpenxrValidationLayersAndroidBuildDir}/Release")
+                }
+            }
+        }
+    }
+
+    namespace = "org.godotengine.openxr.validation_layers"
+
+    sourceSets {
+        main {
+            // Temp folder where the validation api layers json files are copied.
+            debug.assets.srcDirs += ["$khronosOpenxrValidationLayersAndroidAssetsTargetDir/debug"]
+            release.assets.srcDirs += ["$khronosOpenxrValidationLayersAndroidAssetsTargetDir/release"]
+        }
+    }
+
+    packagingOptions {
+        if (shouldNotStrip()) {
+            doNotStrip '**/*.so'
+        }
+
+        jniLibs {
+            excludes += ["**/libXrApiLayer_api_dump.so"]
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility versions.javaVersion
+        targetCompatibility versions.javaVersion
+    }
+
+    kotlinOptions {
+        jvmTarget = versions.javaVersion
+    }
+
+    libraryVariants.all { variant ->
+        def buildType = variant.buildType.name
+        if (buildType == null || buildType == "") {
+            throw new GradleException("Invalid build type: $buildType")
+        }
+
+        def capitalizedBuildType = buildType.capitalize()
+        def jsonTargetDir = file("${khronosOpenxrValidationLayersAndroidAssetsTargetDir}/${buildType}/openxr/1/api_layers/implicit.d")
+
+        tasks.register("copyOpenxrValidationLayersAndroid${capitalizedBuildType}JSON", Copy) {
+            doFirst {
+                jsonTargetDir.mkdirs()
+            }
+            from("${khronosOpenxrValidationLayersAndroidBuildDir}/${capitalizedBuildType}/src/api_layers") {
+                include 'XrApiLayer_core_validation.json', 'XrApiLayer_best_practices_validation.json'
+            }
+            into jsonTargetDir
+        }
+
+        tasks.named("merge${capitalizedBuildType}JniLibFolders") {
+            dependsOn("copyOpenxrValidationLayersAndroid${capitalizedBuildType}JSON")
+        }
+
+        // Added to suppress gradle warnings.
+        tasks.named("package${capitalizedBuildType}Assets") {
+            dependsOn("copyOpenxrValidationLayersAndroid${capitalizedBuildType}JSON")
+        }
+        tasks.named("generate${capitalizedBuildType}LintReportModel") {
+            dependsOn("copyOpenxrValidationLayersAndroid${capitalizedBuildType}JSON")
+        }
+        tasks.named("lintAnalyze${capitalizedBuildType}") {
+            dependsOn("copyOpenxrValidationLayersAndroid${capitalizedBuildType}JSON")
+        }
+    }
+
+    publishing {
+        singleVariant("debug") {}
+        singleVariant("release") {}
+    }
+}
+
+task copyDebugAARToAddons(type: Copy) {
+    from 'build/outputs/aar'
+    include 'openxr-validation-layers-debug.aar'
+    into '../demo/addons/godotopenxrvendors/.bin/android/debug'
+}
+
+task copyReleaseAARToAddons(type: Copy) {
+    from 'build/outputs/aar'
+    include 'openxr-validation-layers-release.aar'
+    into '../demo/addons/godotopenxrvendors/.bin/android/release'
+}
+
+task cleanOpenxrValidationLayersAndroid(type: Delete) {
+    delete(".cxx")
+    delete khronosOpenxrValidationLayersAndroidAssetsTargetDir
+    delete khronosOpenxrValidationLayersAndroidBuildDir
+}
+
+assemble.finalizedBy(copyDebugAARToAddons)
+assemble.finalizedBy(copyReleaseAARToAddons)
+clean.dependsOn(cleanOpenxrValidationLayersAndroid)
