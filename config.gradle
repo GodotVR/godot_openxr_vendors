@@ -2,7 +2,7 @@ ext {
     versions = [
             gradlePluginVersion     : '8.6.1',
             compileSdk              : 35,
-            minSdk                  : 21,
+            minSdk                  : 24,
             targetSdk               : 35,
             // Update the Java version in the github workflows when this is updated.
             javaVersion             : JavaVersion.VERSION_17,
@@ -35,6 +35,10 @@ ext {
         }
 
         return releaseVersion
+    }
+
+    getValidationLayersVersion = { ->
+        return "${versions.openxrVersion}-${getReleaseVersion()}"
     }
 
     shouldNotStrip = { ->

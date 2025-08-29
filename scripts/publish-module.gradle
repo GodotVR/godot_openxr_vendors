@@ -2,7 +2,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
 group = ossrhGroupId
-version = getReleaseVersion()
+version = PUBLISH_ARTIFACT_VERSION
 
 afterEvaluate {
     publishing {
@@ -14,7 +14,7 @@ afterEvaluate {
                     flavorArtifactId = "$flavorArtifactId-$flavorName"
                 }
 
-                String descriptionLabel = "Godot OpenXR Vendors"
+                String descriptionLabel = PUBLISH_ARTIFACT_DESCRIPTION_LABEL
                 String buildType = variant.buildType.name
                 if (buildType == "debug") {
                     flavorArtifactId = "$flavorArtifactId-debug"
@@ -29,7 +29,7 @@ afterEvaluate {
                     // The coordinates of the library, being set from variables that we'll set up later
                     groupId ossrhGroupId
                     artifactId flavorArtifactId
-                    version getReleaseVersion()
+                    version PUBLISH_ARTIFACT_VERSION
 
                     // Mostly self-explanatory metadata
                     pom {
