@@ -1,3 +1,5 @@
+.. _meta_scene_manager:
+
 Meta Scene Manager
 ==================
 
