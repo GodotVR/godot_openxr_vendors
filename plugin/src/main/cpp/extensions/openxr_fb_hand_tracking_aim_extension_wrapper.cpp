@@ -63,10 +63,12 @@ void OpenXRFbHandTrackingAimExtensionWrapper::cleanup() {
 	XRServer *xr_server = XRServer::get_singleton();
 
 	for (int i = 0; i < Hand::HAND_MAX; i++) {
-		if (xr_server != nullptr) {
-			xr_server->remove_tracker(trackers[i]);
+		if (trackers[i].is_valid()) {
+			if (xr_server != nullptr) {
+				xr_server->remove_tracker(trackers[i]);
+			}
+			trackers[i].unref();
 		}
-		trackers[i].unref();
 	}
 
 	fb_hand_tracking_aim_ext = false;
