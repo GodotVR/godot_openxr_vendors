@@ -318,7 +318,7 @@ void OpenXRFbBodyTrackingExtensionWrapper::_on_session_destroyed() {
 	// Unregister the body tracker.
 	if (xr_body_tracker_registered) {
 		XRServer *xr_server = XRServer::get_singleton();
-		if (xr_server) {
+		if (xr_server && xr_body_tracker.is_valid()) {
 			xr_server->remove_tracker(xr_body_tracker);
 		}
 	}
