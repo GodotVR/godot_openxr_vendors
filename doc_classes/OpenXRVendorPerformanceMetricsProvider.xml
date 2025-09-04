@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="OpenXRVendorPerformanceMetricsProvider" inherits="OpenXRExtensionWrapperExtension" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		Abstract base class for OpenXR vendor performance metrics extensions.
+	</brief_description>
+	<description>
+		Abstract base class for OpenXR vendor performance metrics extensions.
+	</description>
+	<tutorials>
+	</tutorials>
+</class>
