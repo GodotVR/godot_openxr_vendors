@@ -83,6 +83,9 @@ public:
 	void set_reprojection_offset_exponent(float p_offset_exponent);
 	float get_reprojection_offset_exponent() const;
 
+	void set_reprojection_bilinear_filtering(bool p_enabled);
+	bool get_reprojection_bilinear_filtering() const;
+
 	void get_environment_depth_map_async(const Callable &p_callback);
 
 	void setup_global_uniforms();
@@ -165,6 +168,7 @@ private:
 		XrEnvironmentDepthSwapchainMETA depth_swapchain = XR_NULL_HANDLE;
 		bool depth_provider_started = false;
 		GraphicsAPI graphics_api = GRAPHICS_API_UNKNOWN;
+		Vector2 depth_swapchain_texel_size;
 		LocalVector<RID> depth_swapchain_textures;
 		LocalVector<Callable> depth_map_callbacks;
 	} render_state;
@@ -178,6 +182,7 @@ private:
 	int reprojection_render_priority = -50;
 	float reprojection_offset_scale = 0.005;
 	float reprojection_offset_exponent = 1.0;
+	bool reprojection_bilinear_filtering = true;
 	bool reprojection_material_dirty = false;
 
 	GraphicsAPI get_graphics_api();
