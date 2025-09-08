@@ -66,15 +66,12 @@ bool OpenXRVendorPerformanceMetrics::is_enabled() {
 }
 
 void OpenXRVendorPerformanceMetrics::set_vendor_performance_metrics_provider(OpenXRVendorPerformanceMetricsProvider *p_provider) {
-	if (provider == p_provider) {
+	if (provider != nullptr && provider->is_enabled()) {
+		WARN_PRINT("An OpenXRVendorPerformanceMetricsProvider is already set; ignoring new provider");
 		return;
 	}
 
 	provider = p_provider;
-}
-
-OpenXRVendorPerformanceMetricsProvider *OpenXRVendorPerformanceMetrics::get_vendor_performance_metrics_provider() {
-	return provider;
 }
 
 void OpenXRVendorPerformanceMetrics::set_capture_performance_metrics(bool p_enabled) {

@@ -62,7 +62,6 @@ public:
 	bool is_enabled();
 
 	void set_vendor_performance_metrics_provider(OpenXRVendorPerformanceMetricsProvider *p_provider);
-	OpenXRVendorPerformanceMetricsProvider *get_vendor_performance_metrics_provider();
 
 	void set_capture_performance_metrics(bool p_enabled);
 	bool is_capturing_performance_metrics();
@@ -77,7 +76,7 @@ protected:
 private:
 	static OpenXRVendorPerformanceMetrics *singleton;
 
-	OpenXRVendorPerformanceMetricsProvider *provider;
+	OpenXRVendorPerformanceMetricsProvider *provider = nullptr;
 
 	bool capture_performance_metrics = false;
 

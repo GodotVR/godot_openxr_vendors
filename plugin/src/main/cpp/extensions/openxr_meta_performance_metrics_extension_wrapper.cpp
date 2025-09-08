@@ -83,10 +83,7 @@ void OpenXRMetaPerformanceMetricsExtensionWrapper::_on_instance_created(uint64_t
 			return;
 		}
 
-		OpenXRVendorPerformanceMetrics *vendor_performance_metrics = OpenXRVendorPerformanceMetrics::get_singleton();
-		if (vendor_performance_metrics->get_vendor_performance_metrics_provider() != nullptr) {
-			vendor_performance_metrics->set_vendor_performance_metrics_provider(this);
-		}
+		OpenXRVendorPerformanceMetrics::get_singleton()->set_vendor_performance_metrics_provider(this);
 	}
 }
 
