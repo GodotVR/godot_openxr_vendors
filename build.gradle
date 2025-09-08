@@ -91,6 +91,11 @@ def createSconsTasks(File sconsExecutableFile, boolean clean) {
         "build_profile=thirdparty/godot_cpp_build_profile/build_profile.json",
     ]
 
+    def sconsExtraArgs = []
+    if (project.hasProperty("scons_extra_args")) {
+        sconsExtraArgs = project.property("scons_extra_args").trim().split(/\s+/) as List
+    }
+
     String meta_headers = project.hasProperty("meta_headers") ? project.property("meta_headers") : ""
     if (meta_headers != null && !meta_headers.isEmpty()) {
         defaultArgs << "meta_headers=${meta_headers}"
@@ -105,29 +110,29 @@ def createSconsTasks(File sconsExecutableFile, boolean clean) {
     // Android.
     tasks.create(name: "${taskPrefix}GodotOpenXRVendorsAndroidArm64Debug", type: Exec) {
         executable sconsExecutableFile.absolutePath
-        args defaultArgs + ["platform=android", "target=template_debug", "arch=arm64"]
+        args defaultArgs + ["platform=android", "target=template_debug", "arch=arm64"] + sconsExtraArgs
     }
     tasks.create(name: "${taskPrefix}GodotOpenXRVendorsAndroidArm64Release", type: Exec) {
         executable sconsExecutableFile.absolutePath
-        args defaultArgs + ["platform=android", "target=template_release", "arch=arm64"]
+        args defaultArgs + ["platform=android", "target=template_release", "arch=arm64"] + sconsExtraArgs
     }
     tasks.create(name: "${taskPrefix}GodotOpenXRVendorsAndroidX86_64Debug", type: Exec) {
         executable sconsExecutableFile.absolutePath
-        args defaultArgs + ["platform=android", "target=template_debug", "arch=x86_64"]
+        args defaultArgs + ["platform=android", "target=template_debug", "arch=x86_64"] + sconsExtraArgs
     }
     tasks.create(name: "${taskPrefix}GodotOpenXRVendorsAndroidX86_64Release", type: Exec) {
         executable sconsExecutableFile.absolutePath
-        args defaultArgs + ["platform=android", "target=template_release", "arch=x86_64"]
+        args defaultArgs + ["platform=android", "target=template_release", "arch=x86_64"] + sconsExtraArgs
     }
 
     // Desktop.
     tasks.create(name: "${taskPrefix}GodotOpenXRVendorsDesktopDebug", type: Exec) {
         executable sconsExecutableFile.absolutePath
-        args defaultArgs + ["target=template_debug"]
+        args defaultArgs + ["target=template_debug"] + sconsExtraArgs
     }
     tasks.create(name: "${taskPrefix}GodotOpenXRVendorsDesktopRelease", type: Exec) {
         executable sconsExecutableFile.absolutePath
-        args defaultArgs + ["target=template_release"]
+        args defaultArgs + ["target=template_release"] + sconsExtraArgs
     }
 }
 
