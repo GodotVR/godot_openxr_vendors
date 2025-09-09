@@ -11,6 +11,9 @@
 	<tutorials>
 	</tutorials>
 	<members>
+		<member name="bilinear_filtering" type="bool" setter="set_bilinear_filtering" getter="get_bilinear_filtering" default="true">
+			Enables bilinear filtering. This will have a higher GPU cost, but lead to somewhat straighter (rather than jagged) edges in the reprojected data.
+		</member>
 		<member name="render_priority" type="int" setter="set_render_priority" getter="get_render_priority" default="-50">
 			Determines the order this node will be rendered relative to other objects in the scene. Lower values will be rendered earlier.
 		</member>

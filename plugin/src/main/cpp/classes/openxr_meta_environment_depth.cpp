@@ -49,7 +49,11 @@ void OpenXRMetaEnvironmentDepth::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_reprojection_offset_exponent", "offset_exponent"), &OpenXRMetaEnvironmentDepth::set_reprojection_offset_exponent);
 	ClassDB::bind_method(D_METHOD("get_reprojection_offset_exponent"), &OpenXRMetaEnvironmentDepth::get_reprojection_offset_exponent);
 
+	ClassDB::bind_method(D_METHOD("set_bilinear_filtering", "enabled"), &OpenXRMetaEnvironmentDepth::set_bilinear_filtering);
+	ClassDB::bind_method(D_METHOD("get_bilinear_filtering"), &OpenXRMetaEnvironmentDepth::get_bilinear_filtering);
+
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "render_priority"), "set_render_priority", "get_render_priority");
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "bilinear_filtering"), "set_bilinear_filtering", "get_bilinear_filtering");
 
 	ADD_GROUP("Reprojection Offset", "reprojection_offset_");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "reprojection_offset_scale"), "set_reprojection_offset_scale", "get_reprojection_offset_scale");
@@ -78,6 +82,14 @@ void OpenXRMetaEnvironmentDepth::set_reprojection_offset_exponent(float p_offset
 
 float OpenXRMetaEnvironmentDepth::get_reprojection_offset_exponent() const {
 	return OpenXRMetaEnvironmentDepthExtensionWrapper::get_singleton()->get_reprojection_offset_exponent();
+}
+
+void OpenXRMetaEnvironmentDepth::set_bilinear_filtering(bool p_enabled) {
+	OpenXRMetaEnvironmentDepthExtensionWrapper::get_singleton()->set_reprojection_bilinear_filtering(p_enabled);
+}
+
+bool OpenXRMetaEnvironmentDepth::get_bilinear_filtering() const {
+	return OpenXRMetaEnvironmentDepthExtensionWrapper::get_singleton()->get_reprojection_bilinear_filtering();
 }
 
 void OpenXRMetaEnvironmentDepth::_notification(int p_what) {

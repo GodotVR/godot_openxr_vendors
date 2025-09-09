@@ -53,6 +53,9 @@ public:
 	void set_render_priority(int p_render_priority);
 	int get_render_priority() const;
 
+	void set_bilinear_filtering(bool p_enabled);
+	bool get_bilinear_filtering() const;
+
 	void set_reprojection_offset_scale(float p_offset_exponent);
 	float get_reprojection_offset_scale() const;
 
