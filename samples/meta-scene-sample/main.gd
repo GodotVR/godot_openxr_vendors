@@ -17,7 +17,8 @@ var global_environment_depth_enabled: bool = true
 @onready var world_environment: WorldEnvironment = $WorldEnvironment
 @onready var scene_manager: OpenXRFbSceneManager = $XROrigin3D/OpenXRFbSceneManager
 @onready var spatial_anchor_manager: OpenXRFbSpatialAnchorManager = $XROrigin3D/OpenXRFbSpatialAnchorManager
-@onready var environment_depth_node: OpenXRMetaEnvironmentDepth = $XROrigin3D/XRCamera3D/OpenXRMetaEnvironmentDepth
+# Don't statically type this as `OpenXRMetaEnvironmentDepth` because it doesn't exist on Godot 4.4.
+@onready var environment_depth_node = $XROrigin3D/XRCamera3D/OpenXRMetaEnvironmentDepth
 @onready var depth_testing_mesh: MeshInstance3D = $XROrigin3D/RightHand/DepthTestingMesh
 
 const SPATIAL_ANCHORS_FILE = "user://openxr_fb_spatial_anchors.json"
