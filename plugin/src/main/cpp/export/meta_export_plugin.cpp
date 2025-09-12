@@ -217,6 +217,7 @@ PackedStringArray MetaEditorExportPlugin::_get_supported_devices() const {
 
 	if (_get_bool_option("meta_xr_features/quest_3_support")) {
 		supported_devices.append("quest3");
+		supported_devices.append("quest3s");
 	}
 
 	if (_get_bool_option("meta_xr_features/quest_pro_support")) {
