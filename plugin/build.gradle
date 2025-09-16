@@ -138,10 +138,6 @@ android {
         pico.jniLibs.srcDirs += ["${khronosOpenxrLoaderTargetDir}/arm64-v8a"]
     }
 
-    packagingOptions {
-        doNotStrip '**/*.so'
-    }
-
     compileOptions {
         sourceCompatibility versions.javaVersion
         targetCompatibility versions.javaVersion
