@@ -449,6 +449,8 @@ String MetaEditorExportPlugin::_get_android_manifest_element_contents(const Ref<
 	int boundary_mode = _get_int_option("meta_xr_features/boundary_mode", BOUNDARY_ENABLED_VALUE);
 	if (boundary_mode == BOUNDARY_DISABLED_VALUE) {
 		contents += "    <uses-feature tools:node=\"replace\" android:name=\"com.oculus.feature.BOUNDARYLESS_APP\" android:required=\"true\" />\n";
+		// This overrides the default in plugin/src/main/AndroidManifest.xml, changing "required" to "true", which the Horizon store requires.
+		contents += "    <uses-feature android:name=\"android.hardware.vr.headtracking\" android:required=\"true\" android:version=\"1\" tools:node=\"replace\" />\n";
 	}
 
 	// Add camera permissions if needed.
