@@ -1,0 +1,7 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://2kgovb2ulacb"]
+
+[ext_resource type="Texture2D" uid="uid://rblx0fgkh8sk" path="res://assets/test_kun/Tex/Highlights.png" id="1_dftt7"]
+
+[resource]
+transparency = 1
+albedo_texture = ExtResource("1_dftt7")
