@@ -1,0 +1,69 @@
+[gd_scene load_steps=10 format=3 uid="uid://d1uh74yqgrf1w"]
+
+[ext_resource type="Script" uid="uid://eko8ybihpl3l" path="res://main.gd" id="1_h2yge"]
+[ext_resource type="Texture2D" uid="uid://btobyv4xjhltq" path="res://assets/pattern.png" id="2_h2yge"]
+[ext_resource type="Script" uid="uid://c347delyqndg2" path="res://movement.gd" id="2_lquwl"]
+[ext_resource type="PackedScene" uid="uid://ca7cbd0ijsfgk" path="res://kun_with_axis.tscn" id="4_lquwl"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_1bvp3"]
+sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+
+[sub_resource type="Sky" id="Sky_lquwl"]
+sky_material = SubResource("ProceduralSkyMaterial_1bvp3")
+
+[sub_resource type="Environment" id="Environment_7mycd"]
+background_mode = 2
+sky = SubResource("Sky_lquwl")
+tonemap_mode = 2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_272bh"]
+albedo_color = Color(0.11728112, 0.41384926, 0.08809375, 1)
+albedo_texture = ExtResource("2_h2yge")
+uv1_scale = Vector3(10, 10, 10)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_5vw27"]
+size = Vector2(10, 10)
+
+[node name="Main" type="Node3D"]
+script = ExtResource("1_h2yge")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_7mycd")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+shadow_enabled = true
+
+[node name="XROrigin3D" type="XROrigin3D" parent="."]
+
+[node name="XRCamera3D" type="XRCamera3D" parent="XROrigin3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, 0)
+
+[node name="LeftHand" type="XRController3D" parent="XROrigin3D"]
+tracker = &"left_hand"
+pose = &"grip"
+
+[node name="RightHand" type="XRController3D" parent="XROrigin3D"]
+tracker = &"right_hand"
+pose = &"grip"
+
+[node name="XRMovement" type="Node3D" parent="XROrigin3D/RightHand"]
+script = ExtResource("2_lquwl")
+metadata/_custom_type_script = "uid://c347delyqndg2"
+
+[node name="Floor" type="MeshInstance3D" parent="."]
+material_override = SubResource("StandardMaterial3D_272bh")
+mesh = SubResource("PlaneMesh_5vw27")
+
+[node name="Mirror-Kun" parent="." instance=ExtResource("4_lquwl")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2)
+
+[node name="XRBodyModifier3D" type="XRBodyModifier3D" parent="Mirror-Kun/Armature/GeneralSkeleton" index="2"]
+body_update = 3
+bone_update = 1
+
+[node name="Reference-Kun" parent="." instance=ExtResource("4_lquwl")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.6, 0, -2)
+
+[editable path="Mirror-Kun"]
