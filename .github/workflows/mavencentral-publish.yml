@@ -1,4 +1,4 @@
-# Workflow to publish the Godot openxr libraries to MavenCentral on release
+# Workflow to publish the AARs to MavenCentral and capture the debug symbols on release.
 name: MavenCentral Publish
 
 on:
@@ -53,11 +53,43 @@ jobs:
         # Builds the release artifacts of the library
       - name: Release build
         run: |
+          # We build with debug symbols which will be stripped by Gradle.
+          SCONS_EXTRA="$SCONS_EXTRA debug_symbols=yes"
           scons platform=android target=template_debug arch=arm64 custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json build_profile=thirdparty/godot_cpp_build_profile/build_profile.json $SCONS_EXTRA
           scons platform=android target=template_release arch=arm64 custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json build_profile=thirdparty/godot_cpp_build_profile/build_profile.json $SCONS_EXTRA
           scons platform=android target=template_debug arch=x86_64 custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json build_profile=thirdparty/godot_cpp_build_profile/build_profile.json $SCONS_EXTRA
           scons platform=android target=template_release arch=x86_64 custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json build_profile=thirdparty/godot_cpp_build_profile/build_profile.json $SCONS_EXTRA
           ./gradlew -Prelease_version=${{ github.ref_name }} build $GRADLE_EXTRA
+
+          # Put the unstripped .so files into ZIPs to use for their debug symbols.
+          mkdir -p native-symbols/debug native-symbols/release
+          cp -r plugin/src/main/libs/debug/*/* native-symbols/debug/
+          cp -r plugin/src/main/libs/release/*/* native-symbols/release/
+          (cd native-symbols/debug && zip -r ../../godot-openxr-vendors-android-native-symbols-debug.zip *)
+          (cd native-symbols/release && zip -r ../../godot-openxr-vendors-android-native-symbols-release.zip *)
+
+      - name: Upload native debug symbols
+        uses: actions/upload-artifact@v4
+        with:
+          name: native-debug-symbols
+          path: |
+            godot-openxr-vendors-android-native-symbols-debug.zip
+            godot-openxr-vendors-android-native-symbols-release.zip
+
+      - name: Add native debug symbols to release
+        uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: true
+          artifacts: |
+            godot-openxr-vendors-android-native-symbols-debug.zip
+            godot-openxr-vendors-android-native-symbols-release.zip
+          draft: true
+          omitNameDuringUpdate: true
+          omitBodyDuringUpdate: true
+          omitDraftDuringUpdate: true
+          omitPrereleaseDuringUpdate: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+        if: startsWith(github.ref, 'refs/tags')
 
         # Runs upload, and then closes & releases the repository
       - name: Publish to MavenCentral
