@@ -58,7 +58,6 @@ OpenXRFbHandTrackingMeshExtensionWrapper::~OpenXRFbHandTrackingMeshExtensionWrap
 }
 
 void OpenXRFbHandTrackingMeshExtensionWrapper::_bind_methods() {
-	ADD_SIGNAL(MethodInfo("openxr_fb_hand_tracking_mesh_data_fetched", PropertyInfo(Variant::INT, "hand_index")));
 }
 
 void OpenXRFbHandTrackingMeshExtensionWrapper::cleanup() {
@@ -120,35 +119,32 @@ uint64_t OpenXRFbHandTrackingMeshExtensionWrapper::_set_hand_joint_locations_and
 }
 
 void OpenXRFbHandTrackingMeshExtensionWrapper::_on_process() {
-	if (!is_enabled() || get_openxr_api().is_null()) {
-		return;
-	}
-
 	if (!should_fetch_hand_mesh_data) {
 		return;
 	}
 
-	for (int i = 0; i < Hand::HAND_MAX; i++) {
-		if (hand_mesh[i].is_null()) {
-			XrHandTrackerEXT hand_tracker = reinterpret_cast<XrHandTrackerEXT>(get_openxr_api()->get_hand_tracker(i));
-			if (hand_tracker != XR_NULL_HANDLE) {
-				if (fetch_hand_mesh_data(Hand(i))) {
-					emit_signal("openxr_fb_hand_tracking_mesh_data_fetched", i);
-				}
-
-				// May be turned false if fetch_hand_mesh_data encounters errors indicating hand tracking mesh is not supported.
-				if (!should_fetch_hand_mesh_data) {
-					return;
-				}
-			}
-		}
+	if (!is_enabled() || get_openxr_api().is_null()) {
+		return;
 	}
 
+	XrHandTrackerEXT hand_trackers[Hand::HAND_MAX];
 	for (int i = 0; i < Hand::HAND_MAX; i++) {
-		if (hand_mesh[i].is_null()) {
+		hand_trackers[i] = reinterpret_cast<XrHandTrackerEXT>(get_openxr_api()->get_hand_tracker(i));
+		if (hand_trackers[i] == XR_NULL_HANDLE) {
+			// If we're missing a hand tracker, we can't fetch the data.
 			return;
 		}
 	}
+
+	for (int i = 0; i < Hand::HAND_MAX; i++) {
+		fetch_hand_mesh_data(Hand(i));
+	}
+
+	for (const FetchCallback &fetch_callback : fetch_callbacks) {
+		fetch_callback.callable.call(hand_mesh[fetch_callback.hand]);
+	}
+
+	fetch_callbacks.clear();
 	should_fetch_hand_mesh_data = false;
 }
 
@@ -166,10 +162,6 @@ void OpenXRFbHandTrackingMeshExtensionWrapper::set_scale_override(Hand p_hand, f
 
 float OpenXRFbHandTrackingMeshExtensionWrapper::get_scale_override(Hand p_hand) const {
 	return hand_tracking_scale[p_hand].overrideValueInput;
-}
-
-void OpenXRFbHandTrackingMeshExtensionWrapper::enable_fetch_hand_mesh_data() {
-	should_fetch_hand_mesh_data = true;
 }
 
 bool OpenXRFbHandTrackingMeshExtensionWrapper::fetch_hand_mesh_data(Hand p_hand) {
@@ -292,11 +284,18 @@ bool OpenXRFbHandTrackingMeshExtensionWrapper::fetch_hand_mesh_data(Hand p_hand)
 	return true;
 }
 
-Ref<ArrayMesh> OpenXRFbHandTrackingMeshExtensionWrapper::get_mesh(Hand p_hand) {
-	ERR_FAIL_COND_V_MSG(!is_enabled(), Ref<ArrayMesh>(), "OpenXR extension XR_FB_hand_tracking_mesh is not available");
-	ERR_FAIL_COND_V_MSG(hand_mesh[p_hand].is_null(), Ref<ArrayMesh>(), "OpenXR extension XR_FB_hand_tracking_mesh has not populated mesh data");
+void OpenXRFbHandTrackingMeshExtensionWrapper::request_hand_mesh_data(Hand p_hand, const Callable &p_callback) {
+	if (!is_enabled()) {
+		p_callback.call(Ref<Mesh>());
+		return;
+	}
 
-	return hand_mesh[p_hand];
+	if (hand_mesh[p_hand].is_null()) {
+		should_fetch_hand_mesh_data = true;
+		fetch_callbacks.push_back({ p_hand, p_callback });
+	} else {
+		p_callback.call(hand_mesh[p_hand]);
+	}
 }
 
 void OpenXRFbHandTrackingMeshExtensionWrapper::construct_skeleton(Skeleton3D *r_skeleton) {
