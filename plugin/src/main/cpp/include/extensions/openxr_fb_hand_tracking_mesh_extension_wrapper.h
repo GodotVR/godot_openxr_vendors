@@ -75,9 +75,7 @@ public:
 	void set_scale_override(Hand p_hand, float p_scale);
 	float get_scale_override(Hand p_hand) const;
 
-	void enable_fetch_hand_mesh_data();
-	bool fetch_hand_mesh_data(Hand p_hand);
-	Ref<ArrayMesh> get_mesh(Hand p_hand);
+	void request_hand_mesh_data(Hand p_hand, const Callable &p_callback);
 	void construct_skeleton(Skeleton3D *r_skeleton);
 	void reset_skeleton_pose(Hand p_hand, Skeleton3D *r_skeleton);
 
@@ -102,10 +100,18 @@ private:
 
 	bool fb_hand_tracking_mesh_ext = false;
 
+	struct FetchCallback {
+		Hand hand;
+		Callable callable;
+	};
+	LocalVector<FetchCallback> fetch_callbacks;
+
 	bool should_fetch_hand_mesh_data = false;
 	Ref<ArrayMesh> hand_mesh[Hand::HAND_MAX];
 	BoneData bone_data[Hand::HAND_MAX];
 	XrHandTrackingScaleFB hand_tracking_scale[Hand::HAND_MAX];
+
+	bool fetch_hand_mesh_data(Hand p_hand);
 };
 
 #endif // OPENXR_FB_HAND_TRACKING_MESH_EXTENSION_WRAPPER_H

@@ -39,19 +39,26 @@
 
 using namespace godot;
 
-void OpenXRFbHandTrackingMesh::setup_hand_mesh(Hand p_hand) {
-	if (p_hand != hand) {
+void OpenXRFbHandTrackingMesh::setup_hand_mesh(bool p_success, const Ref<Mesh> &p_mesh) {
+	if (!p_success) {
+		emit_signal("openxr_fb_hand_tracking_mesh_unavailable");
 		return;
 	}
 
-	ERR_FAIL_COND_MSG(mesh_instance != nullptr, "OpenXRFbHandTrackingMesh has already been set up.");
+	OpenXRFbHandTrackingMeshExtensionWrapper::get_singleton()->reset_skeleton_pose(hand, this);
 
-	OpenXRFbHandTrackingMeshExtensionWrapper::get_singleton()->reset_skeleton_pose(p_hand, this);
+	if (!mesh_instance) {
+		mesh_instance = memnew(MeshInstance3D);
+		mesh_instance->set_material_override(material);
+		mesh_instance->set_mesh(p_mesh);
+		add_child(mesh_instance);
+	} else {
+		remove_child(mesh_instance);
+		mesh_instance->set_mesh(p_mesh);
+		add_child(mesh_instance);
+	}
 
-	mesh_instance = memnew(MeshInstance3D);
-	mesh_instance->set_mesh(OpenXRFbHandTrackingMeshExtensionWrapper::get_singleton()->get_mesh(p_hand));
-	mesh_instance->set_material_override(material);
-	add_child(mesh_instance);
+	emit_signal("openxr_fb_hand_tracking_mesh_ready");
 }
 
 MeshInstance3D *OpenXRFbHandTrackingMesh::get_mesh_instance() const {
@@ -76,6 +83,12 @@ void OpenXRFbHandTrackingMesh::set_hand(Hand p_hand) {
 			set_bone_name(i, bone_name);
 		}
 	}
+
+	// If we already have mesh data, but now we're changing hands, we need to request it again.
+	if (is_node_ready() && ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/extensions/meta/hand_tracking_mesh")) {
+		OpenXRFbHandTrackingMeshExtensionWrapper::get_singleton()->request_hand_mesh_data(hand, callable_mp(this, &OpenXRFbHandTrackingMesh::setup_hand_mesh));
+	}
+
 	notify_property_list_changed();
 }
 
@@ -122,9 +135,12 @@ void OpenXRFbHandTrackingMesh::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_POSTINITIALIZE: {
 			if (ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/extensions/meta/hand_tracking_mesh")) {
-				OpenXRFbHandTrackingMeshExtensionWrapper::get_singleton()->enable_fetch_hand_mesh_data();
-				OpenXRFbHandTrackingMeshExtensionWrapper::get_singleton()->connect("openxr_fb_hand_tracking_mesh_data_fetched", callable_mp(this, &OpenXRFbHandTrackingMesh::setup_hand_mesh));
 				OpenXRFbHandTrackingMeshExtensionWrapper::get_singleton()->construct_skeleton(this);
+			}
+		} break;
+		case NOTIFICATION_READY: {
+			if (ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/extensions/meta/hand_tracking_mesh")) {
+				OpenXRFbHandTrackingMeshExtensionWrapper::get_singleton()->request_hand_mesh_data(hand, callable_mp(this, &OpenXRFbHandTrackingMesh::setup_hand_mesh));
 			}
 		} break;
 		case NOTIFICATION_ENTER_TREE: {
@@ -158,4 +174,7 @@ void OpenXRFbHandTrackingMesh::_bind_methods() {
 
 	BIND_ENUM_CONSTANT(Hand::HAND_LEFT);
 	BIND_ENUM_CONSTANT(Hand::HAND_RIGHT);
+
+	ADD_SIGNAL(MethodInfo("openxr_fb_hand_tracking_mesh_ready"));
+	ADD_SIGNAL(MethodInfo("openxr_fb_hand_tracking_mesh_unavailable"));
 }
