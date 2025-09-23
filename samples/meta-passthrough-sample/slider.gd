@@ -15,6 +15,7 @@ var value: float
 @onready var collision_shape_3d: CollisionShape3D = $CollisionShape3D
 @onready var value_indicator: MeshInstance3D = $ValueIndicator
 
+
 func _ready() -> void:
 	extent = (collision_shape_3d.shape.size.x * 0.5) * 0.9
 	value_indicator.position.x = remap(start_value, 0.0, 1.0, -extent, extent)

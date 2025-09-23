@@ -16,7 +16,8 @@ var global_environment_depth_enabled: bool = true
 @onready var scene_colliding_mesh: MeshInstance3D = $XROrigin3D/RightHandPointer/SceneCollidingMesh
 @onready var world_environment: WorldEnvironment = $WorldEnvironment
 @onready var scene_manager: OpenXRFbSceneManager = $XROrigin3D/OpenXRFbSceneManager
-@onready var spatial_anchor_manager: OpenXRFbSpatialAnchorManager = $XROrigin3D/OpenXRFbSpatialAnchorManager
+@onready
+var spatial_anchor_manager: OpenXRFbSpatialAnchorManager = $XROrigin3D/OpenXRFbSpatialAnchorManager
 # Don't statically type this as `OpenXRMetaEnvironmentDepth` because it doesn't exist on Godot 4.4.
 @onready var environment_depth_node = $XROrigin3D/XRCamera3D/OpenXRMetaEnvironmentDepth
 @onready var depth_testing_mesh: MeshInstance3D = $XROrigin3D/RightHand/DepthTestingMesh
@@ -26,15 +27,16 @@ const SPATIAL_ANCHORS_FILE = "user://openxr_fb_spatial_anchors.json"
 var _setup := false
 
 const COLORS = [
-	"#FF0000", # Red
-	"#00FF00", # Green
-	"#0000FF", # Blue
-	"#FFFF00", # Yellow
-	"#00FFFF", # Cyan
-	"#FF00FF", # Magenta
-	"#FF8000", # Orange
-	"#800080", # Purple
+	"#FF0000",  # Red
+	"#00FF00",  # Green
+	"#0000FF",  # Blue
+	"#FFFF00",  # Yellow
+	"#00FFFF",  # Cyan
+	"#FF00FF",  # Magenta
+	"#FF8000",  # Orange
+	"#800080",  # Purple
 ]
+
 
 func _ready():
 	super._ready()
@@ -42,7 +44,9 @@ func _ready():
 		xr_interface.session_begun.connect(_on_openxr_session_begun)
 
 	for render_model in [%LeftControllerFbRenderModel, %RightControllerFbRenderModel]:
-		render_model.openxr_fb_render_model_loaded.connect(_on_openxr_fb_render_model_loaded.bind(render_model))
+		render_model.openxr_fb_render_model_loaded.connect(
+			_on_openxr_fb_render_model_loaded.bind(render_model)
+		)
 
 
 func _on_openxr_session_begun() -> void:
@@ -78,7 +82,9 @@ func load_spatial_anchors_from_file() -> void:
 
 	var anchor_data: Dictionary = json.data
 	if anchor_data.size() > 0:
-		spatial_anchor_manager.load_anchors(anchor_data.keys(), anchor_data, OpenXRFbSpatialEntity.STORAGE_LOCAL, true)
+		spatial_anchor_manager.load_anchors(
+			anchor_data.keys(), anchor_data, OpenXRFbSpatialEntity.STORAGE_LOCAL, true
+		)
 
 
 func save_spatial_anchors_to_file() -> void:
@@ -96,12 +102,16 @@ func save_spatial_anchors_to_file() -> void:
 	file.close()
 
 
-func _on_spatial_anchor_tracked(_anchor_node: XRAnchor3D, _spatial_entity: OpenXRFbSpatialEntity, is_new: bool) -> void:
+func _on_spatial_anchor_tracked(
+	_anchor_node: XRAnchor3D, _spatial_entity: OpenXRFbSpatialEntity, is_new: bool
+) -> void:
 	if is_new:
 		save_spatial_anchors_to_file()
 
 
-func _on_spatial_anchor_untracked(_anchor_node: XRAnchor3D, _spatial_entity: OpenXRFbSpatialEntity) -> void:
+func _on_spatial_anchor_untracked(
+	_anchor_node: XRAnchor3D, _spatial_entity: OpenXRFbSpatialEntity
+) -> void:
 	save_spatial_anchors_to_file()
 
 
@@ -118,7 +128,10 @@ func enable_passthrough(enable: bool) -> void:
 		return
 
 	var supported_blend_modes = xr_interface.get_supported_environment_blend_modes()
-	if XRInterface.XR_ENV_BLEND_MODE_ALPHA_BLEND in supported_blend_modes and XRInterface.XR_ENV_BLEND_MODE_OPAQUE in supported_blend_modes:
+	if (
+		XRInterface.XR_ENV_BLEND_MODE_ALPHA_BLEND in supported_blend_modes
+		and XRInterface.XR_ENV_BLEND_MODE_OPAQUE in supported_blend_modes
+	):
 		if enable:
 			# Switch to passthrough.
 			xr_interface.environment_blend_mode = XRInterface.XR_ENV_BLEND_MODE_ALPHA_BLEND
@@ -152,7 +165,9 @@ func _physics_process(_delta: float) -> void:
 			var collision_point: Vector3 = right_hand_pointer_raycast.get_collision_point()
 			scene_colliding_mesh.global_position = collision_point
 
-			var pointer_length: float = (collision_point - right_hand_pointer.global_position).length()
+			var pointer_length: float = (
+				(collision_point - right_hand_pointer.global_position).length()
+			)
 			scene_pointer_mesh.mesh.size.z = pointer_length
 			scene_pointer_mesh.position.z = -pointer_length / 2.0
 
@@ -198,21 +213,33 @@ func _on_right_hand_button_pressed(name: String) -> void:
 
 				var collision_normal: Vector3 = right_hand_pointer_raycast.get_collision_normal()
 				if collision_normal.is_equal_approx(Vector3.UP):
-					anchor_transform.basis = anchor_transform.basis.rotated(Vector3(1.0, 0.0, 0.0), PI / 2.0)
+					anchor_transform.basis = anchor_transform.basis.rotated(
+						Vector3(1.0, 0.0, 0.0), PI / 2.0
+					)
 				elif collision_normal.is_equal_approx(Vector3.DOWN):
-					anchor_transform.basis = anchor_transform.basis.rotated(Vector3(1.0, 0.0, 0.0), -PI / 2.0)
+					anchor_transform.basis = anchor_transform.basis.rotated(
+						Vector3(1.0, 0.0, 0.0), -PI / 2.0
+					)
 				else:
-					anchor_transform.basis = Basis.looking_at(right_hand_pointer_raycast.get_collision_normal())
+					anchor_transform.basis = Basis.looking_at(
+						right_hand_pointer_raycast.get_collision_normal()
+					)
 
-				spatial_anchor_manager.create_anchor(anchor_transform, { color = COLORS[randi() % COLORS.size()] })
+				spatial_anchor_manager.create_anchor(
+					anchor_transform, {color = COLORS[randi() % COLORS.size()]}
+				)
 	elif name == "ax_button":
 		var anchor_transform := right_hand.transform
-		spatial_anchor_manager.create_anchor(anchor_transform, { color = COLORS[randi() % COLORS.size()] })
+		spatial_anchor_manager.create_anchor(
+			anchor_transform, {color = COLORS[randi() % COLORS.size()]}
+		)
 	elif name == "by_button":
 		global_environment_depth_enabled = not global_environment_depth_enabled
 
 		environment_depth_node.visible = global_environment_depth_enabled
-		depth_testing_mesh.set_surface_override_material(0, BLUE_MATERIAL if global_environment_depth_enabled else ENVIRONMENT_DEPTH_MATERIAL)
+		depth_testing_mesh.set_surface_override_material(
+			0, BLUE_MATERIAL if global_environment_depth_enabled else ENVIRONMENT_DEPTH_MATERIAL
+		)
 
 
 func _on_scene_manager_scene_capture_completed(success: bool) -> void:

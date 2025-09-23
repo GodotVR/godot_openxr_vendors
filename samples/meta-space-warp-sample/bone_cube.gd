@@ -2,6 +2,7 @@ extends Node3D
 
 @onready var skeleton := $Armature/Skeleton3D
 
+
 func _physics_process(delta: float) -> void:
 	if not "--xrsim-automated-tests" in OS.get_cmdline_user_args():
 		# When we're running tests via the XR Simulator, we don't want this

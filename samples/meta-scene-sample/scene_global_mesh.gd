@@ -6,6 +6,7 @@ const WIREFRAME_MATERIAL: Material = preload("res://assets/wireframe-material.tr
 
 var mesh_instance: MeshInstance3D
 
+
 func setup_scene(entity: OpenXRFbSpatialEntity) -> void:
 	var collision_shape = entity.create_collision_shape()
 	if collision_shape:

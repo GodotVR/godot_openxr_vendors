@@ -5,6 +5,7 @@ extends Control
 var hybrid_app_mode := OpenXRHybridApp.HYBRID_MODE_NONE
 var data := {}
 
+
 func _ready() -> void:
 	hybrid_app_mode = OpenXRHybridApp.get_mode()
 	if hybrid_app_mode == OpenXRHybridApp.HYBRID_MODE_IMMERSIVE:
@@ -13,6 +14,7 @@ func _ready() -> void:
 		switch_button.text = "Switch To Immersive"
 	else:
 		switch_button.visible = false
+
 
 func _on_switch_button_pressed() -> void:
 	var data_string := JSON.stringify(data)
