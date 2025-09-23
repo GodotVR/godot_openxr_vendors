@@ -30,6 +30,7 @@ const TURN_ANGLE := TAU / 16
 @onready var replace_secure_content_mesh: MeshInstance3D = $XROrigin3D/SecureContentCompositionLayer/ReplaceSecureContent/MeshInstance3D
 @onready var exclude_secure_content_mesh: MeshInstance3D = $XROrigin3D/SecureContentCompositionLayer/ExcludeSecureContent/MeshInstance3D
 
+
 func _ready():
 	super._ready()
 

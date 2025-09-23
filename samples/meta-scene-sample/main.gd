@@ -26,15 +26,16 @@ const SPATIAL_ANCHORS_FILE = "user://openxr_fb_spatial_anchors.json"
 var _setup := false
 
 const COLORS = [
-	"#FF0000", # Red
-	"#00FF00", # Green
-	"#0000FF", # Blue
-	"#FFFF00", # Yellow
-	"#00FFFF", # Cyan
-	"#FF00FF", # Magenta
-	"#FF8000", # Orange
-	"#800080", # Purple
+	"#FF0000",  # Red
+	"#00FF00",  # Green
+	"#0000FF",  # Blue
+	"#FFFF00",  # Yellow
+	"#00FFFF",  # Cyan
+	"#FF00FF",  # Magenta
+	"#FF8000",  # Orange
+	"#800080",  # Purple
 ]
+
 
 func _ready():
 	super._ready()
@@ -204,10 +205,10 @@ func _on_right_hand_button_pressed(name: String) -> void:
 				else:
 					anchor_transform.basis = Basis.looking_at(right_hand_pointer_raycast.get_collision_normal())
 
-				spatial_anchor_manager.create_anchor(anchor_transform, { color = COLORS[randi() % COLORS.size()] })
+				spatial_anchor_manager.create_anchor(anchor_transform, {color = COLORS[randi() % COLORS.size()]})
 	elif name == "ax_button":
 		var anchor_transform := right_hand.transform
-		spatial_anchor_manager.create_anchor(anchor_transform, { color = COLORS[randi() % COLORS.size()] })
+		spatial_anchor_manager.create_anchor(anchor_transform, {color = COLORS[randi() % COLORS.size()]})
 	elif name == "by_button":
 		global_environment_depth_enabled = not global_environment_depth_enabled
 

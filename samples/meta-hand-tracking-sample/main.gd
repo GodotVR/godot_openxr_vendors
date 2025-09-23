@@ -35,6 +35,7 @@ var countdown_to_group_hand_meshes := 3
 var left_capsules_loaded := false
 var right_capsules_loaded := false
 
+
 func _ready() -> void:
 	super._ready()
 	if xr_interface and xr_interface.is_initialized():
@@ -55,11 +56,11 @@ func _process(delta):
 	if not left_capsules_loaded:
 		var tracker: XRHandTracker = XRServer.get_tracker("/user/hand_tracker/left")
 		if tracker and tracker.has_tracking_data:
-				hand_capsule_setup(0, tracker)
+			hand_capsule_setup(0, tracker)
 	if not right_capsules_loaded:
 		var tracker: XRHandTracker = XRServer.get_tracker("/user/hand_tracker/right")
 		if tracker and tracker.has_tracking_data:
-				hand_capsule_setup(1, tracker)
+			hand_capsule_setup(1, tracker)
 
 
 func hand_capsule_setup(hand_idx: int, hand_tracker: XRHandTracker) -> void:
@@ -94,6 +95,7 @@ func hand_capsule_setup(hand_idx: int, hand_tracker: XRHandTracker) -> void:
 			left_capsules_loaded = true
 		1:
 			right_capsules_loaded = true
+
 
 func _on_left_controller_input_float_changed(name: String, value: float) -> void:
 	match name:

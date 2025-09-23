@@ -1,0 +1,6 @@
+excluded_directories: !!set
+  .git: null
+# Effectively disable the line limit.
+line_length: 10000
+safety_checks: null
+use_spaces: null

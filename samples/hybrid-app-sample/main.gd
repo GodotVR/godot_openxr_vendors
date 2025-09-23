@@ -12,6 +12,7 @@ var pointer_pressed := false
 @onready var turkey = %Turkey
 @onready var right_controller_pointer: XRController3D = %RightControllerPointer
 
+
 func _ready() -> void:
 	var data_string: String = OpenXRHybridApp.get_launch_data()
 	if data_string != "":
@@ -19,7 +20,7 @@ func _ready() -> void:
 		print("Hybrid App Launch Data: ", data)
 
 		# Restore the turkey's rotation.
-		var turkey_rotation := Vector3(0.0, data.get('turkey_y_rotation', 0.0), 0.0)
+		var turkey_rotation := Vector3(0.0, data.get("turkey_y_rotation", 0.0), 0.0)
 		turkey.transform.basis = Basis.from_euler(turkey_rotation)
 
 	xr_interface = XRServer.find_interface("OpenXR")
@@ -44,6 +45,7 @@ func _ready() -> void:
 	print("Is Hybrid App: ", OpenXRHybridApp.is_hybrid_app())
 	print("Hybrid App Mode: ", OpenXRHybridApp.get_mode())
 
+
 func _physics_process(_delta: float) -> void:
 	# Make the gltf model slowly rotate
 	if turkey:
@@ -51,17 +53,20 @@ func _physics_process(_delta: float) -> void:
 
 		# Store the data in the panel switcher, so the turkey rotation is maintained in the other mode.
 		var turkey_rotation: Vector3 = turkey.transform.basis.get_euler()
-		panel_switcher.data['turkey_y_rotation'] = turkey_rotation.y
+		panel_switcher.data["turkey_y_rotation"] = turkey_rotation.y
+
 
 func _process(_delta: float) -> void:
 	if panel_switcher_layer:
 		var t: Transform3D = right_controller_pointer.global_transform
 		panel_switcher_layer.update_pointer(t.origin, -t.basis.z, pointer_pressed)
 
+
 func _on_right_controller_pointer_button_pressed(p_name: String) -> void:
-	if p_name == 'trigger_click':
+	if p_name == "trigger_click":
 		pointer_pressed = true
 
+
 func _on_right_controller_pointer_button_released(p_name: String) -> void:
-	if p_name == 'trigger_click':
+	if p_name == "trigger_click":
 		pointer_pressed = false

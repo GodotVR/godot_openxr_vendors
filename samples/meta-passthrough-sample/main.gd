@@ -26,6 +26,7 @@ var countdown_to_recenter_hmd: int = 3
 @onready var color_map_mesh: MeshInstance3D = $Interfaces/InterfaceColorMap/ColorMapMesh
 @onready var mono_map_mesh: MeshInstance3D = $Interfaces/InterfaceMonoMap/MonoMapMesh
 
+
 func _ready() -> void:
 	super._ready()
 
@@ -142,24 +143,24 @@ func update(to_update: String) -> void:
 			child.hide()
 
 	match to_update:
-			"ModeFull":
-				enable_mode_full()
-			"ModeGeometry":
-				enable_mode_geometry()
-			"ModeGeometryHP":
-				enable_mode_geometry_hp()
-			"FilterColorMap":
-				enable_filter_color_map()
-			"FilterMonoMap":
-				enable_filter_mono_map()
-			"FilterBrightnessContrastSaturation":
-				enable_filter_brightness_contrast_saturation()
-			"FilterColorMapLUT":
-				enable_filter_color_map_lut()
-			"FilterColorMapInterpolatedLUT":
-				enable_filter_color_map_interpolated_lut()
-			"FilterDisabled":
-				disable_filters()
+		"ModeFull":
+			enable_mode_full()
+		"ModeGeometry":
+			enable_mode_geometry()
+		"ModeGeometryHP":
+			enable_mode_geometry_hp()
+		"FilterColorMap":
+			enable_filter_color_map()
+		"FilterMonoMap":
+			enable_filter_mono_map()
+		"FilterBrightnessContrastSaturation":
+			enable_filter_brightness_contrast_saturation()
+		"FilterColorMapLUT":
+			enable_filter_color_map_lut()
+		"FilterColorMapInterpolatedLUT":
+			enable_filter_color_map_interpolated_lut()
+		"FilterDisabled":
+			disable_filters()
 
 
 func _on_brightness_new_value(value: float) -> void:
