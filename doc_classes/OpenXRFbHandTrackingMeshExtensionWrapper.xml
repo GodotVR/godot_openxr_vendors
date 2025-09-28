@@ -8,12 +8,4 @@
 	</description>
 	<tutorials>
 	</tutorials>
-	<signals>
-		<signal name="openxr_fb_hand_tracking_mesh_data_fetched">
-			<param index="0" name="hand_index" type="int" />
-			<description>
-				Emitted when the mesh data has been fetched for the given hand ([code]0[/code] is left, and [code]1[/code] is right).
-			</description>
-		</signal>
-	</signals>
 </class>

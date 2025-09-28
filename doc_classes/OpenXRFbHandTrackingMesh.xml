@@ -35,11 +35,24 @@
 			[b]Note: This is a global value that applies to all [OpenXRFbHandTrackingMesh] nodes, which is only provided here for convenience.[/b]
 		</member>
 	</members>
+	<signals>
+		<signal name="openxr_fb_hand_tracking_mesh_ready">
+			<description>
+				Emitted when the hand tracking mesh is successfully loaded.
+			</description>
+		</signal>
+		<signal name="openxr_fb_hand_tracking_mesh_unavailable">
+			<description>
+				Emitted if the hand tracking mesh is unavailable, due to missing support or permissions.
+				You can use this signal to provide a fallback hand mesh.
+			</description>
+		</signal>
+	</signals>
 	<constants>
-		<constant name="Hand::HAND_LEFT" value="0" enum="Hand">
+		<constant name="HAND_LEFT" value="0" enum="Hand">
 			Left hand.
 		</constant>
-		<constant name="Hand::HAND_RIGHT" value="1" enum="Hand">
+		<constant name="HAND_RIGHT" value="1" enum="Hand">
 			Right hand.
 		</constant>
 	</constants>

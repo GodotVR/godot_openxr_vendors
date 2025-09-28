@@ -50,7 +50,7 @@ private:
 
 	MeshInstance3D *mesh_instance = nullptr;
 
-	void setup_hand_mesh(Hand p_hand);
+	void setup_hand_mesh(const Ref<Mesh> &p_hand_mesh);
 
 protected:
 	void _notification(int p_what);
