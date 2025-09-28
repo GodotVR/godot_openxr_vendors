@@ -1,0 +1,10 @@
+[gd_resource type="StandardMaterial3D" load_steps=3 format=3 uid="uid://18u26xojnkdf"]
+
+[ext_resource type="Texture2D" uid="uid://bbg6wavu4j5xr" path="res://assets/test_kun/Tex/HairBack.png" id="1_15w2u"]
+[ext_resource type="Texture2D" uid="uid://curqnunxh2ji4" path="res://assets/test_kun/Tex/HairBack_Normal.png" id="2_3tlyh"]
+
+[resource]
+transparency = 1
+albedo_texture = ExtResource("1_15w2u")
+normal_enabled = true
+normal_texture = ExtResource("2_3tlyh")
