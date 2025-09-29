@@ -14,17 +14,22 @@ var countdown_to_recenter_hmd: int = 3
 
 @onready var world_environment: WorldEnvironment = $WorldEnvironment
 @onready var left_controller_ray_cast: RayCast3D = $XROrigin3D/LeftController/LeftControllerRayCast
-@onready var right_controller_ray_cast: RayCast3D = $XROrigin3D/RightController/RightControllerRayCast
-@onready var passthrough_geometry: OpenXRFbPassthroughGeometry = $XROrigin3D/OpenXRFbPassthroughGeometry
+@onready
+var right_controller_ray_cast: RayCast3D = $XROrigin3D/RightController/RightControllerRayCast
+@onready
+var passthrough_geometry: OpenXRFbPassthroughGeometry = $XROrigin3D/OpenXRFbPassthroughGeometry
 @onready var interfaces: Node3D = $Interfaces
 @onready var interface_color_map: Node3D = $Interfaces/InterfaceColorMap
 @onready var interface_mono_map: Node3D = $Interfaces/InterfaceMonoMap
-@onready var interface_brightness_contrast_saturation: Node3D = $Interfaces/InterfaceBrightnessContrastSaturation
+@onready
+var interface_brightness_contrast_saturation: Node3D = $Interfaces/InterfaceBrightnessContrastSaturation
 @onready var interface_color_map_lut: Node3D = $Interfaces/InterfaceColorMapLut
-@onready var interface_color_map_interpolated_lut: Node3D = $Interfaces/InterfaceColorMapInterpolatedLut
+@onready
+var interface_color_map_interpolated_lut: Node3D = $Interfaces/InterfaceColorMapInterpolatedLut
 @onready var interface_disabled: Node3D = $Interfaces/InterfaceDisabled
 @onready var color_map_mesh: MeshInstance3D = $Interfaces/InterfaceColorMap/ColorMapMesh
 @onready var mono_map_mesh: MeshInstance3D = $Interfaces/InterfaceMonoMap/MonoMapMesh
+
 
 func _ready() -> void:
 	super._ready()
@@ -35,12 +40,22 @@ func _ready() -> void:
 	fb_passthrough = Engine.get_singleton("OpenXRFbPassthroughExtensionWrapper")
 	fb_passthrough.set_color_map(color_map)
 	fb_passthrough.set_mono_map(mono_map)
-	fb_passthrough.set_brightness_contrast_saturation(brightness_contrast_saturation.x, brightness_contrast_saturation.y, brightness_contrast_saturation.z)
-	meta_color_lut = OpenXRMetaPassthroughColorLut.create_from_image(color_lut, OpenXRMetaPassthroughColorLut.COLOR_LUT_CHANNELS_RGB)
+	fb_passthrough.set_brightness_contrast_saturation(
+		brightness_contrast_saturation.x,
+		brightness_contrast_saturation.y,
+		brightness_contrast_saturation.z
+	)
+	meta_color_lut = OpenXRMetaPassthroughColorLut.create_from_image(
+		color_lut, OpenXRMetaPassthroughColorLut.COLOR_LUT_CHANNELS_RGB
+	)
 	fb_passthrough.set_color_lut(0.5, meta_color_lut)
-	meta_color_lut2 = OpenXRMetaPassthroughColorLut.create_from_image(color_lut2, OpenXRMetaPassthroughColorLut.COLOR_LUT_CHANNELS_RGB)
+	meta_color_lut2 = OpenXRMetaPassthroughColorLut.create_from_image(
+		color_lut2, OpenXRMetaPassthroughColorLut.COLOR_LUT_CHANNELS_RGB
+	)
 	fb_passthrough.set_interpolated_color_lut(0.5, meta_color_lut, meta_color_lut2)
-	fb_passthrough.set_passthrough_filter(OpenXRFbPassthroughExtensionWrapper.PASSTHROUGH_FILTER_DISABLED)
+	fb_passthrough.set_passthrough_filter(
+		OpenXRFbPassthroughExtensionWrapper.PASSTHROUGH_FILTER_DISABLED
+	)
 
 	var color_map_mat := color_map_mesh.get_surface_override_material(0)
 	var color_map_gradient_texture = GradientTexture2D.new()
@@ -86,32 +101,44 @@ func enable_mode_geometry_hp() -> void:
 
 
 func enable_filter_color_map() -> void:
-	fb_passthrough.set_passthrough_filter(OpenXRFbPassthroughExtensionWrapper.PASSTHROUGH_FILTER_COLOR_MAP)
+	fb_passthrough.set_passthrough_filter(
+		OpenXRFbPassthroughExtensionWrapper.PASSTHROUGH_FILTER_COLOR_MAP
+	)
 	interface_color_map.show()
 
 
 func enable_filter_mono_map() -> void:
-	fb_passthrough.set_passthrough_filter(OpenXRFbPassthroughExtensionWrapper.PASSTHROUGH_FILTER_MONO_MAP)
+	fb_passthrough.set_passthrough_filter(
+		OpenXRFbPassthroughExtensionWrapper.PASSTHROUGH_FILTER_MONO_MAP
+	)
 	interface_mono_map.show()
 
 
 func enable_filter_brightness_contrast_saturation() -> void:
-	fb_passthrough.set_passthrough_filter(OpenXRFbPassthroughExtensionWrapper.PASSTHROUGH_FILTER_BRIGHTNESS_CONTRAST_SATURATION)
+	fb_passthrough.set_passthrough_filter(
+		OpenXRFbPassthroughExtensionWrapper.PASSTHROUGH_FILTER_BRIGHTNESS_CONTRAST_SATURATION
+	)
 	interface_brightness_contrast_saturation.show()
 
 
 func enable_filter_color_map_lut() -> void:
-	fb_passthrough.set_passthrough_filter(OpenXRFbPassthroughExtensionWrapper.PASSTHROUGH_FILTER_COLOR_MAP_LUT)
+	fb_passthrough.set_passthrough_filter(
+		OpenXRFbPassthroughExtensionWrapper.PASSTHROUGH_FILTER_COLOR_MAP_LUT
+	)
 	interface_color_map_lut.show()
 
 
 func enable_filter_color_map_interpolated_lut() -> void:
-	fb_passthrough.set_passthrough_filter(OpenXRFbPassthroughExtensionWrapper.PASSTHROUGH_FILTER_COLOR_MAP_INTERPOLATED_LUT)
+	fb_passthrough.set_passthrough_filter(
+		OpenXRFbPassthroughExtensionWrapper.PASSTHROUGH_FILTER_COLOR_MAP_INTERPOLATED_LUT
+	)
 	interface_color_map_interpolated_lut.show()
 
 
 func disable_filters() -> void:
-	fb_passthrough.set_passthrough_filter(OpenXRFbPassthroughExtensionWrapper.PASSTHROUGH_FILTER_DISABLED)
+	fb_passthrough.set_passthrough_filter(
+		OpenXRFbPassthroughExtensionWrapper.PASSTHROUGH_FILTER_DISABLED
+	)
 	interface_disabled.show()
 
 
@@ -142,39 +169,51 @@ func update(to_update: String) -> void:
 			child.hide()
 
 	match to_update:
-			"ModeFull":
-				enable_mode_full()
-			"ModeGeometry":
-				enable_mode_geometry()
-			"ModeGeometryHP":
-				enable_mode_geometry_hp()
-			"FilterColorMap":
-				enable_filter_color_map()
-			"FilterMonoMap":
-				enable_filter_mono_map()
-			"FilterBrightnessContrastSaturation":
-				enable_filter_brightness_contrast_saturation()
-			"FilterColorMapLUT":
-				enable_filter_color_map_lut()
-			"FilterColorMapInterpolatedLUT":
-				enable_filter_color_map_interpolated_lut()
-			"FilterDisabled":
-				disable_filters()
+		"ModeFull":
+			enable_mode_full()
+		"ModeGeometry":
+			enable_mode_geometry()
+		"ModeGeometryHP":
+			enable_mode_geometry_hp()
+		"FilterColorMap":
+			enable_filter_color_map()
+		"FilterMonoMap":
+			enable_filter_mono_map()
+		"FilterBrightnessContrastSaturation":
+			enable_filter_brightness_contrast_saturation()
+		"FilterColorMapLUT":
+			enable_filter_color_map_lut()
+		"FilterColorMapInterpolatedLUT":
+			enable_filter_color_map_interpolated_lut()
+		"FilterDisabled":
+			disable_filters()
 
 
 func _on_brightness_new_value(value: float) -> void:
 	brightness_contrast_saturation.x = value
-	fb_passthrough.set_brightness_contrast_saturation(brightness_contrast_saturation.x, brightness_contrast_saturation.y, brightness_contrast_saturation.z)
+	fb_passthrough.set_brightness_contrast_saturation(
+		brightness_contrast_saturation.x,
+		brightness_contrast_saturation.y,
+		brightness_contrast_saturation.z
+	)
 
 
 func _on_contrast_new_value(value: float) -> void:
 	brightness_contrast_saturation.y = value
-	fb_passthrough.set_brightness_contrast_saturation(brightness_contrast_saturation.x, brightness_contrast_saturation.y, brightness_contrast_saturation.z)
+	fb_passthrough.set_brightness_contrast_saturation(
+		brightness_contrast_saturation.x,
+		brightness_contrast_saturation.y,
+		brightness_contrast_saturation.z
+	)
 
 
 func _on_saturation_new_value(value: float) -> void:
 	brightness_contrast_saturation.z = value
-	fb_passthrough.set_brightness_contrast_saturation(brightness_contrast_saturation.x, brightness_contrast_saturation.y, brightness_contrast_saturation.z)
+	fb_passthrough.set_brightness_contrast_saturation(
+		brightness_contrast_saturation.x,
+		brightness_contrast_saturation.y,
+		brightness_contrast_saturation.z
+	)
 
 
 func _on_color_map_lut_weight_new_value(value: float) -> void:

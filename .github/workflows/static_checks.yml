@@ -3,15 +3,22 @@ on: [push, pull_request]
 
 jobs:
   static-checks:
-    name: Formatting (clang-format, file format)
+    name: Formatting (clang-format, file format, gdformat)
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
       - name: Install dependencies
         run: |
           sudo apt-get install -qq dos2unix recode clang-format
+          python -m pip install --upgrade pip
+          python -m pip install 'gdtoolkit==4.*'
 
       - name: File formatting checks (file_format.sh)
         run: |
@@ -20,3 +27,16 @@ jobs:
       - name: Style checks via clang-format (clang_format.sh)
         run: |
           bash ./.github/workflows/scripts/clang_format.sh
+
+      - name: GDScript style checks (gdformat)
+        run: |
+          FAILED=n
+          for d in demo samples/*-sample; do
+            echo "Linting GDScript in $d..."
+            if ! gdformat -d "$d"; then
+              FAILED=y
+            fi
+          done
+          if [ "$FAILED" = "y" ]; then
+            exit 1
+          fi

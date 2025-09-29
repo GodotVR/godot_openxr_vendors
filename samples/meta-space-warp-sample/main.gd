@@ -21,6 +21,7 @@ var countdown_to_check_space_warp_enabled: int = 3
 @onready var gpu_particles_3d_2: GPUParticles3D = $GPUParticles3D2
 @onready var cpu_particles_3d_2: CPUParticles3D = $CPUParticles3D2
 
+
 func _ready() -> void:
 	super._ready()
 	right_hand.connect("button_pressed", _on_right_hand_button_pressed)
@@ -42,7 +43,9 @@ func _process(delta: float) -> void:
 		if countdown_to_check_space_warp_enabled == 0:
 			var fb_space_warp = Engine.get_singleton("OpenXRFbSpaceWarpExtensionWrapper")
 			if !fb_space_warp or !fb_space_warp.is_enabled():
-				right_controller_label.text = right_controller_label.text.replace("ENABLED", "DISABLED")
+				right_controller_label.text = right_controller_label.text.replace(
+					"ENABLED", "DISABLED"
+				)
 
 
 func _physics_process(delta: float) -> void:
@@ -103,7 +106,9 @@ func rotate_player(angle: float):
 	xr_origin.transform = (xr_origin.transform * t2 * rot * t1).orthonormalized()
 
 	for composition_layer in get_tree().get_nodes_in_group("composition_layer"):
-		composition_layer.global_transform = get_node(NodePath(composition_layer.name)).global_transform
+		composition_layer.global_transform = (
+			get_node(NodePath(composition_layer.name)).global_transform
+		)
 
 
 func _on_left_hand_input_vector_2_changed(name: String, value: Vector2) -> void:

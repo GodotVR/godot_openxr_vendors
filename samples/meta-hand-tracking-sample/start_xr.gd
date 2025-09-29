@@ -8,17 +8,18 @@ signal focus_lost
 signal focus_gained
 signal pose_recentered
 
-@export var maximum_refresh_rate : int = 90
+@export var maximum_refresh_rate: int = 90
 
-var xr_interface : OpenXRInterface
+var xr_interface: OpenXRInterface
 var xr_is_focussed = false
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	xr_interface = XRServer.find_interface("OpenXR")
 	if xr_interface and xr_interface.is_initialized():
 		print("OpenXR instantiated successfully.")
-		var vp : Viewport = get_viewport()
+		var vp: Viewport = get_viewport()
 
 		# Enable XR on our viewport
 		vp.use_xr = true
@@ -55,7 +56,7 @@ func _on_openxr_session_begun() -> void:
 
 	# See if we have a better refresh rate available
 	var new_rate = current_refresh_rate
-	var available_rates : Array = xr_interface.get_available_display_refresh_rates()
+	var available_rates: Array = xr_interface.get_available_display_refresh_rates()
 	if available_rates.size() == 0:
 		print("OpenXR: Target does not support refresh rate extension")
 	elif available_rates.size() == 1:

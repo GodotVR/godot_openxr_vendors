@@ -10,8 +10,10 @@ const NO_INTERSECTION := Vector2(-1.0, -1.0)
 var previous_cursor_intersection: Vector2 = NO_INTERSECTION
 var previous_cursor_pressed := false
 
+
 func get_panel_switcher() -> PanelSwitcher:
 	return panel_switcher
+
 
 func update_pointer(p_origin: Vector3, p_direction: Vector3, p_pressed: bool) -> bool:
 	var viewport_size: Vector2 = layer_viewport.size
