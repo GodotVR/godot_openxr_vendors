@@ -68,14 +68,14 @@ class GodotOpenXR(godot: Godot?) : GodotPlugin(godot) {
 		}
 	}
 
-	final override fun getPluginName() = "GodotOpenXR"
+	override fun getPluginName() = "GodotOpenXR"
 
 	override fun getPluginGDExtensionLibrariesPaths() = setOf("res://addons/godotopenxrvendors/plugin.gdextension")
 
 	override fun onGodotSetupCompleted() {
 		super.onGodotSetupCompleted()
 
-		val context = getActivity() ?: return
+		val context = activity ?: return
 
 		// Check if automatic permissions request is enabled.
 		val automaticallyRequestPermissionsSetting = GodotLib.getGlobal("xr/openxr/extensions/automatically_request_runtime_permissions")
@@ -142,6 +142,9 @@ class GodotOpenXR(godot: Godot?) : GodotPlugin(godot) {
 				}
 			}
 		}
-		return super.supportsFeature(featureTag)
+
+		// We return true to ensure that new vendors using this plugin have the feature enabled
+		// by default.
+		return true
 	}
 }
