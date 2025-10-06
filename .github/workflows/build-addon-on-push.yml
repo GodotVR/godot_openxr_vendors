@@ -168,7 +168,9 @@ jobs:
         run: |
           cd aar/thirdparty/godot-cpp
           for f in ../godot_cpp_patches/*.patch; do
-            patch -p1 < $f
+            if [ -e "$f" ]; then
+              patch -p1 < $f
+            fi
           done
           cd ../..
         if: matrix.platform != 'windows'

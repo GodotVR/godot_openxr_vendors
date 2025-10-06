@@ -37,8 +37,8 @@ binary_path = '#demo/addons/godotopenxrvendors/.bin'
 android_src_path = '#plugin/src'
 project_name = 'godotopenxrvendors'
 
-# Statically link with libgcc and libstdc++ for more Linux compatibility.
-if env["platform"] == "linux":
+# Statically link with libgcc and libstdc++ for wider compatibility on Linux and Android.
+if env["platform"] in ["linux", "android"]:
     env.Append(
         LINKFLAGS=[
             "-Wl,--no-undefined",
