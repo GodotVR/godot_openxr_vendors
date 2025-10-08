@@ -12,6 +12,15 @@ apply from: "../scripts/publish-module.gradle"
 def khronosOpenxrLoaderAarDir = file("${buildDir}/temp/khronos_openxr_loader_aar")
 def khronosOpenxrLoaderTargetDir = file("${buildDir}/temp/khronos_openxr_sdk")
 
+def khronosOpenxrSourceDir = file("../thirdparty/openxr-source")
+def khronosOpenxrValidationLayersAndroidLibraryTargetDir = file("${buildDir}/temp/openxr_validation_layers")
+def khronosOpenxrValidationLayersAndroidAssetsTargetDir = file("${buildDir}/temp/openxr_validation_layers_assets")
+def khronosOpenxrValidationLayersAndroidBuildDir = file("${buildDir}/temp/openxr_validation_layers_build")
+
+def includeOpenxrValidationLayers = providers.gradleProperty("includeOpenxrValidationLayers")
+    .map { it.toBoolean() }
+    .getOrElse(false)
+
 task extractKhronosOpenxrLoader {
     def khronosOpenxrLoader = configurations.detachedConfiguration(dependencies.create("org.khronos.openxr:openxr_loader_for_android:$versions.openxrVersion"))
 
@@ -136,6 +145,17 @@ android {
         metaRelease.jniLibs.srcDirs += ['src/main/libs/release/x86_64']
 
         pico.jniLibs.srcDirs += ["${khronosOpenxrLoaderTargetDir}/arm64-v8a"]
+
+        if (includeOpenxrValidationLayers) {
+            debug.jniLibs.srcDirs += ["${khronosOpenxrValidationLayersAndroidLibraryTargetDir}/arm64-v8a"]
+
+            khronosDebug.jniLibs.srcDirs += ["${khronosOpenxrValidationLayersAndroidLibraryTargetDir}/x86_64"]
+            magicleapDebug.jniLibs.srcDirs += ["${khronosOpenxrValidationLayersAndroidLibraryTargetDir}/x86_64"]
+            metaDebug.jniLibs.srcDirs += ["${khronosOpenxrValidationLayersAndroidLibraryTargetDir}/x86_64"]
+
+			// We don't need to give separate values for arm64-v8a and x86_64 - just one of them is fine.
+            debug.assets.srcDirs += ["${khronosOpenxrValidationLayersAndroidAssetsTargetDir}/arm64-v8a"]
+        }
     }
 
     packagingOptions {
@@ -219,6 +239,76 @@ dependencies {
     implementation "androidx.core:core-splashscreen:$versions.splashscreenVersion"
 }
 
+task buildOpenxrValidationLayersAndroid {
+    for (abi in ['arm64-v8a', 'x86_64']) {
+        def suffix = (abi == 'arm64-v8a') ? 'Arm64' : (abi == 'x86_64') ? 'X86_64' : abi
+
+        def libraryTargetDir = file("${khronosOpenxrValidationLayersAndroidLibraryTargetDir}/${abi}/${abi}")
+        def jsonTargetDir = file("${khronosOpenxrValidationLayersAndroidAssetsTargetDir}/${abi}/openxr/1/api_layers/implicit.d")
+        def buildDir = file("${khronosOpenxrValidationLayersAndroidBuildDir}/${abi}")
+
+        tasks.create(name: "configureOpenxrValidationLayersAndroid${suffix}", type: Exec) {
+            doFirst {
+                buildDir.mkdirs()
+            }
+            workingDir buildDir
+            commandLine [
+                "cmake",
+                "${khronosOpenxrSourceDir}",
+                "-DCMAKE_SYSTEM_NAME=Android",
+                "-DCMAKE_SYSTEM_VERSION=${versions.targetSdk}",
+                "-DCMAKE_ANDROID_ARCH_ABI=${abi}",
+                "-DCMAKE_ANDROID_NDK=${android.ndkDirectory}",
+                "-DCMAKE_BUILD_TYPE=Release",
+                "-DBUILD_TESTS=OFF",
+                "-DBUILD_CONFORMANCE_TESTS=OFF",
+                "-DBUILD_LOADER=OFF",
+                "-DBUILD_API_LAYERS=YES",
+            ]
+        }
+
+        tasks.create(name: "buildOpenxrValidationLayersAndroid${suffix}", type: Exec) {
+            workingDir buildDir
+            commandLine "cmake", "--build", "."
+            dependsOn "configureOpenxrValidationLayersAndroid${suffix}"
+        }
+
+        tasks.create(name: "copyOpenxrValidationLayersAndroid${suffix}Library", type: Copy) {
+            doFirst {
+                libraryTargetDir.mkdirs()
+            }
+            from("${buildDir}/src/api_layers") {
+                include 'libXrApiLayer_core_validation.so', 'libXrApiLayer_best_practices_validation.so'
+            }
+            into libraryTargetDir
+            dependsOn "buildOpenxrValidationLayersAndroid${suffix}"
+        }
+
+        tasks.create(name: "copyOpenxrValidationLayersAndroid${suffix}JSON", type: Copy) {
+            doFirst {
+                jsonTargetDir.mkdirs()
+            }
+            from("${buildDir}/src/api_layers") {
+                include 'XrApiLayer_core_validation.json', 'XrApiLayer_best_practices_validation.json'
+            }
+            into jsonTargetDir
+            dependsOn "buildOpenxrValidationLayersAndroid${suffix}"
+        }
+    }
+
+    dependsOn "copyOpenxrValidationLayersAndroidArm64Library"
+    dependsOn "copyOpenxrValidationLayersAndroidArm64JSON"
+
+    dependsOn "copyOpenxrValidationLayersAndroidX86_64Library"
+    dependsOn "copyOpenxrValidationLayersAndroidX86_64JSON"
+}
+
+task cleanOpenxrValidationLayersAndroid(type: Delete) {
+    delete khronosOpenxrValidationLayersAndroidLibraryTargetDir
+    delete khronosOpenxrValidationLayersAndroidAssetsTargetDir
+    delete khronosOpenxrValidationLayersAndroidBuildDir
+}
+
 task cleanAssets(type: Delete) {
     // Delete the 'addons' directory in the 'assets' folder
     delete("src/main/assets/addons")
@@ -252,8 +342,13 @@ preBuild.dependsOn(copyGdExtensionConfigToAssets)
 assemble.dependsOn(copyGdExtensionConfigToAssets)
 preBuild.dependsOn(copyKhronosOpenxrLoader)
 assemble.dependsOn(copyKhronosOpenxrLoader)
+if (includeOpenxrValidationLayers) {
+    preBuild.dependsOn(buildOpenxrValidationLayersAndroid)
+    assemble.dependsOn(buildOpenxrValidationLayersAndroid)
+}
 assemble.finalizedBy(copyDebugAARToAddons)
 assemble.finalizedBy(copyReleaseAARToAddons)
 clean.dependsOn(cleanAssets)
 clean.dependsOn(cleanCxx)
 clean.dependsOn(cleanKhronosOpenxrLoader)
+clean.dependsOn(cleanOpenxrValidationLayersAndroid)
