@@ -4,6 +4,7 @@ extends RayCast3D
 
 var is_active: bool = false
 
+
 func _process(delta: float) -> void:
 	var mat = mesh_instance_3d.get_surface_override_material(0)
 

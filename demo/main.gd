@@ -2,6 +2,7 @@ extends Node3D
 
 var xr_interface: XRInterface = null
 
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	xr_interface = XRServer.find_interface("OpenXR")

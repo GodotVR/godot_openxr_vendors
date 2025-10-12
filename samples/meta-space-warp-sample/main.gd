@@ -21,6 +21,7 @@ var countdown_to_check_space_warp_enabled: int = 3
 @onready var gpu_particles_3d_2: GPUParticles3D = $GPUParticles3D2
 @onready var cpu_particles_3d_2: CPUParticles3D = $CPUParticles3D2
 
+
 func _ready() -> void:
 	super._ready()
 	right_hand.connect("button_pressed", _on_right_hand_button_pressed)
