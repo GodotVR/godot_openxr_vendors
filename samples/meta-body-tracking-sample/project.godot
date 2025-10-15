@@ -38,6 +38,7 @@ openxr/reference_space=2
 openxr/extensions/hand_tracking=true
 openxr/extensions/eye_gaze_interaction=true
 shaders/enabled=true
+openxr/extensions/androidxr/face_tracking=true
 openxr/extensions/meta/face_tracking=true
 openxr/extensions/meta/body_tracking=true
 openxr/extensions/meta/hand_tracking_mesh=true
