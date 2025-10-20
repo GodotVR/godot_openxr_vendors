@@ -357,7 +357,9 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 
 			// Only works with Godot 4.5 or later.
 			if (godot::internal::godot_version.minor >= 5) {
-				callable_mp(OpenXRMetaEnvironmentDepthExtensionWrapper::get_singleton(), &OpenXRMetaEnvironmentDepthExtensionWrapper::setup_global_uniforms).call_deferred();
+				Callable meta_environment_depth_setup_global_uniforms = callable_mp(OpenXRMetaEnvironmentDepthExtensionWrapper::get_singleton(), &OpenXRMetaEnvironmentDepthExtensionWrapper::setup_global_uniforms);
+				meta_environment_depth_setup_global_uniforms.call_deferred();
+				ProjectSettings::get_singleton()->connect("settings_changed", meta_environment_depth_setup_global_uniforms);
 			}
 		} break;
 
