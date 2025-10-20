@@ -34,6 +34,7 @@ import android.util.Log
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import org.godotengine.godot.GodotActivity
 import org.godotengine.godot.BuildConfig
+import org.godotengine.openxr.vendors.utils.*
 
 /**
  * Activity for the Panel app mode in a hybrid app.
@@ -62,16 +63,12 @@ class GodotPanelApp : GodotActivity() {
 
 	override fun getCommandLine(): MutableList<String> {
 		val oldCmdline = super.getCommandLine()
-		return GodotOpenXRHybridAppInternal.updateCommandLineForHybridLaunch(
-			GodotOpenXRHybridAppInternal.HybridMode.PANEL, oldCmdline
+		return updateCommandLineForHybridLaunch(
+			HybridMode.PANEL, oldCmdline
 		)
 	}
 
 	override fun supportsFeature(featureTag: String): Boolean {
-		if (GodotOpenXRHybridAppInternal.HYBRID_APP_PANEL_FEATURE == featureTag) {
-			return true
-		}
-
-		return false
+		return HYBRID_APP_PANEL_FEATURE == featureTag
 	}
 }

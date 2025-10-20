@@ -40,7 +40,7 @@
 
 using namespace godot;
 
-static const char *PLUGIN_VERSION = "4.2.0-stable"; // Also update 'config.gradle#defaultVersion'
+static const char *PLUGIN_VERSION = "4.2.0-dev"; // Also update 'config.gradle#defaultVersion'
 
 // Set of supported vendors
 static const char *META_VENDOR_NAME = "meta";
@@ -78,6 +78,8 @@ public:
 
 	TypedArray<Dictionary> _get_export_options(const Ref<EditorExportPlatform> &platform) const override;
 	Dictionary _get_export_options_overrides(const Ref<EditorExportPlatform> &p_platform) const override;
+
+	PackedStringArray _get_export_features(const Ref<EditorExportPlatform> &platform, bool debug) const override;
 
 	String _get_export_option_warning(const Ref<EditorExportPlatform> &platform, const String &option) const override;
 

@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  Constants.kt                                                          */
+/*  DeviceUtils.kt                                                        */
 /**************************************************************************/
 /*                       This file is part of:                            */
 /*                              GODOT XR                                  */
@@ -27,46 +27,44 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-@file:JvmName("Constants")
+/**
+ * Contains utility methods for detecting specific devices.
+ */
+@file:JvmName("DeviceUtils")
 
-package org.godotengine.openxr.vendors
+package org.godotengine.openxr.vendors.utils
 
-// Set of supported vendors
-internal const val META_VENDOR_NAME = "meta"
-internal const val PICO_VENDOR_NAME = "pico"
-internal const val LYNX_VENDOR_NAME = "lynx"
-internal const val KHRONOS_VENDOR_NAME = "khronos"
-internal const val MAGICLEAP_VENDOR_NAME = "magicleap"
+import android.content.Context
+import android.os.Build
 
-// Feature tags
-internal const val EYE_GAZE_INTERACTION_FEATURE_TAG = "PERMISSION_XR_EXT_eye_gaze_interaction"
+// Set of supported OS
+/**
+ * Label used to identity the Meta Horizon OS in the Godot engine.
+ */
+const val META_HORIZON_OS = "horizonos"
 
-// Meta permissions
-internal const val META_BODY_TRACKING_PERMISSION = "com.oculus.permission.BODY_TRACKING"
-internal const val META_EYE_TRACKING_PERMISSION = "com.oculus.permission.EYE_TRACKING"
-internal const val META_FACE_TRACKING_PERMISSION = "com.oculus.permission.FACE_TRACKING"
-internal const val META_SCENE_PERMISSION = "com.oculus.permission.USE_SCENE"
+/**
+ * Label used to identify the Pico OS in the Godot engine.
+ */
+const val PICO_OS = "picoos"
 
-internal val META_PERMISSIONS_LIST = listOf(
-    META_BODY_TRACKING_PERMISSION,
-    META_EYE_TRACKING_PERMISSION,
-    META_FACE_TRACKING_PERMISSION,
-    META_SCENE_PERMISSION,
-)
+/**
+ * Returns true if running on Meta Horizon OS.
+ */
+fun isHorizonOSDevice(context: Context): Boolean {
+	return context.packageManager.hasSystemFeature("oculus.hardware.standalone_vr")
+}
 
-// Pico permissions
-internal const val PICO_EYE_TRACKING_PERMISSION = "com.picovr.permission.EYE_TRACKING"
-internal const val PICO_FACE_TRACKING_PERMISSION = "com.picovr.permission.FACE_TRACKING"
+/**
+ * Returns true if running on PICO OS.
+ */
+fun isPicoOSDevice(): Boolean {
+	return ("Pico".equals(Build.BRAND, true))
+}
 
-internal val PICO_PERMISSIONS_LIST = listOf(
-    PICO_EYE_TRACKING_PERMISSION,
-    PICO_FACE_TRACKING_PERMISSION,
-)
-
-internal fun getVendorPermissions(vendorName: String): List<String> {
-    return when (vendorName) {
-        META_VENDOR_NAME -> META_PERMISSIONS_LIST
-        PICO_VENDOR_NAME -> PICO_PERMISSIONS_LIST
-        else -> emptyList()
-    }
+/**
+ * Returns true if running on a native Android XR device.
+ */
+fun isNativeXRDevice(context: Context): Boolean {
+	return isHorizonOSDevice(context) || isPicoOSDevice()
 }

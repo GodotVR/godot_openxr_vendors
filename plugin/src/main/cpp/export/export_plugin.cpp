@@ -181,6 +181,20 @@ TypedArray<Dictionary> OpenXRVendorsEditorExportPlugin::_get_export_options(cons
 	return export_options;
 }
 
+PackedStringArray OpenXRVendorsEditorExportPlugin::_get_export_features(const Ref<EditorExportPlatform> &platform, bool debug) const {
+	PackedStringArray features;
+	if (!_supports_platform(platform) || !_is_vendor_plugin_enabled()) {
+		return features;
+	}
+
+	// Add the eye tracking feature if necessary
+	if ((bool)ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/extensions/eye_gaze_interaction")) {
+		features.append(EYE_GAZE_INTERACTION_FEATURE);
+	}
+
+	return features;
+}
+
 String OpenXRVendorsEditorExportPlugin::_get_export_option_warning(const Ref<EditorExportPlatform> &platform, const String &option) const {
 	if (!_supports_platform(platform)) {
 		return "";

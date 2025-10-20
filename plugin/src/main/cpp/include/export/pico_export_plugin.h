@@ -54,8 +54,6 @@ public:
 
 	TypedArray<Dictionary> _get_export_options(const Ref<EditorExportPlatform> &platform) const override;
 
-	PackedStringArray _get_export_features(const Ref<EditorExportPlatform> &platform, bool debug) const override;
-
 	String _get_export_option_warning(const Ref<EditorExportPlatform> &platform, const String &option) const override;
 	bool _get_export_option_visibility(const Ref<EditorExportPlatform> &p_platform, const String &p_option) const override;
 	bool _should_update_export_options(const Ref<EditorExportPlatform> &p_platform) const override;
