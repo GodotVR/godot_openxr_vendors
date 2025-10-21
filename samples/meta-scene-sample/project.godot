@@ -12,7 +12,7 @@ config_version=5
 
 config/name="Meta Scene Sample"
 run/main_scene="res://main.tscn"
-config/features=PackedStringArray("4.5", "GL Compatibility")
+config/features=PackedStringArray("4.4", "GL Compatibility")
 config/icon="res://icon.svg"
 
 [layer_names]
@@ -68,6 +68,10 @@ META_ENVIRONMENT_DEPTH_TO_CAMERA_PROJECTION_LEFT={
 META_ENVIRONMENT_DEPTH_TO_CAMERA_PROJECTION_RIGHT={
 "type": "mat4",
 "value": Projection(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)
+}
+META_ENVIRONMENT_DEPTH_TEXEL_SIZE={
+"type": "vec2",
+"value": Vector2(0, 0)
 }
 
 [xr]
