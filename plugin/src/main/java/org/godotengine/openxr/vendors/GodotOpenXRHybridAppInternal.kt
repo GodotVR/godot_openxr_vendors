@@ -36,11 +36,9 @@ import android.util.Log
 import android.view.View
 import org.godotengine.godot.Godot
 import org.godotengine.godot.GodotHost
-import org.godotengine.godot.GodotLib
 import org.godotengine.godot.plugin.GodotPlugin
 import org.godotengine.godot.plugin.UsedByGodot
-import org.godotengine.godot.utils.isHorizonOSDevice
-import org.godotengine.godot.utils.isNativeXRDevice
+import org.godotengine.openxr.vendors.utils.*
 
 /**
  * A plugin used internally for hybrid apps.
@@ -50,12 +48,6 @@ class GodotOpenXRHybridAppInternal(godot: Godot?) : GodotPlugin(godot) {
 		private val TAG = GodotOpenXRHybridAppInternal::class.java.simpleName
 
 		private const val EXTRA_HYBRID_LAUNCH_DATA = "godot_openxr_vendors_hybrid_launch_data"
-
-		// TODO: These constants were copied from Godot core for compatibility with Godot 4.4.
-		// They will be included in Godot 4.5, at which point we can remove them.
-		const val HYBRID_APP_PANEL_FEATURE = "godot_openxr_panel_app"
-		const val HYBRID_APP_PANEL_CATEGORY = "org.godotengine.xr.hybrid.PANEL"
-		const val HYBRID_APP_IMMERSIVE_CATEGORY = "org.godotengine.xr.hybrid.IMMERSIVE"
 		const val EXTRA_COMMAND_LINE_PARAMS = "command_line_params"
 
 		private fun getHybridMode(activity: Activity?): HybridMode {
@@ -68,8 +60,7 @@ class GodotOpenXRHybridAppInternal(godot: Godot?) : GodotPlugin(godot) {
 			}
 
 			// Check if hybrid is enabled
-			val hybridEnabled = GodotLib.getGlobal("xr/hybrid_app/enabled").toBoolean()
-			if (!hybridEnabled) {
+			if (!isHybridAppEnabled()) {
 				return HybridMode.NONE
 			}
 
@@ -78,69 +69,6 @@ class GodotOpenXRHybridAppInternal(godot: Godot?) : GodotPlugin(godot) {
 			}
 
 			return HybridMode.IMMERSIVE
-		}
-
-		/**
-		 * Update the given command line for an hybrid launch:
-		 *  - remove any arguments that may conflict
-		 *  - set up the xr mode based on the hybrid launch mode
-		 */
-		internal fun updateCommandLineForHybridLaunch(
-			launchMode: HybridMode,
-			originalCommandLine: List<String> = emptyList()
-		): MutableList<String> {
-			val newCmdline = mutableListOf<String>()
-			if (launchMode == HybridMode.NONE) {
-				return newCmdline
-			}
-
-			// Remove any existing command-line arguments setting the XR mode.
-			var skipNext = false
-			for (arg in originalCommandLine) {
-				if (skipNext) {
-					skipNext = false
-					continue
-				}
-
-				when (arg) {
-					"--xr_mode_regular", "--xr_mode_openxr" -> continue
-					"--xr-mode" -> {
-						skipNext = true
-						continue
-					}
-					else -> newCmdline.add(arg)
-				}
-			}
-
-			if (launchMode == HybridMode.PANEL) {
-				// Add new arguments to force XR to be turned off.
-				newCmdline.addAll(listOf("--xr_mode_regular", "--xr-mode", "off"))
-			} else {
-				// Add new arguments to force XR to be turned on.
-				newCmdline.addAll(listOf("--xr_mode_openxr", "--xr-mode", "on"))
-			}
-
-			return newCmdline
-		}
-	}
-
-	/**
-	 * Should match OpenXRHybridApp#HybridMode.
-	 */
-	internal enum class HybridMode(private val nativeValue: Int) {
-		NONE( -1),
-		IMMERSIVE(0),
-		PANEL(1);
-
-		companion object {
-			fun fromNative(nativeValue: Int): HybridMode {
-				for (mode in HybridMode.entries) {
-					if (mode.nativeValue == nativeValue) {
-						return mode
-					}
-				}
-				return NONE
-			}
 		}
 	}
 

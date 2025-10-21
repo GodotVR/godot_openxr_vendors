@@ -34,6 +34,7 @@ import org.godotengine.godot.Godot
 import org.godotengine.godot.GodotLib
 import org.godotengine.godot.plugin.GodotPlugin
 import org.godotengine.godot.utils.PermissionsUtil
+import org.godotengine.openxr.vendors.utils.*
 
 /**
  * Godot OpenXR plugin.
@@ -68,14 +69,14 @@ class GodotOpenXR(godot: Godot?) : GodotPlugin(godot) {
 		}
 	}
 
-	final override fun getPluginName() = "GodotOpenXR"
+	override fun getPluginName() = "GodotOpenXR"
 
 	override fun getPluginGDExtensionLibrariesPaths() = setOf("res://addons/godotopenxrvendors/plugin.gdextension")
 
 	override fun onGodotSetupCompleted() {
 		super.onGodotSetupCompleted()
 
-		val context = getActivity() ?: return
+		val context = activity ?: return
 
 		// Check if automatic permissions request is enabled.
 		val automaticallyRequestPermissionsSetting = GodotLib.getGlobal("xr/openxr/extensions/automatically_request_runtime_permissions")
@@ -108,36 +109,42 @@ class GodotOpenXR(godot: Godot?) : GodotPlugin(godot) {
 	}
 
 	override fun supportsFeature(featureTag: String): Boolean {
-		when (BuildConfig.FLAVOR) {
-			KHRONOS_VENDOR_NAME -> {
-				if (EYE_GAZE_INTERACTION_FEATURE_TAG == featureTag) {
-					/* HTC doesn't require permission, if other headsets that use the Khronos loader do, we need to figure out how to tell them apart... */
-					return true
-				}
+		when (featureTag) {
+			META_HORIZON_OS -> {
+				return BuildConfig.FLAVOR == META_VENDOR_NAME || isHorizonOSDevice(context)
 			}
 
-			META_VENDOR_NAME -> {
-				if (EYE_GAZE_INTERACTION_FEATURE_TAG == featureTag) {
-					val grantedPermissions = godot?.getGrantedPermissions()
-					if (grantedPermissions != null) {
-						for (permission in grantedPermissions) {
-							if (META_EYE_TRACKING_PERMISSION == permission) {
-								return true
+			PICO_OS -> {
+				return BuildConfig.FLAVOR == PICO_VENDOR_NAME || isPicoOSDevice()
+			}
+
+			EYE_GAZE_INTERACTION_FEATURE_TAG -> {
+				when (BuildConfig.FLAVOR) {
+					META_VENDOR_NAME -> {
+						val grantedPermissions = godot?.getGrantedPermissions()
+						if (grantedPermissions != null) {
+							for (permission in grantedPermissions) {
+								if (META_EYE_TRACKING_PERMISSION == permission) {
+									return true
+								}
 							}
 						}
 					}
-				}
-			}
 
-			PICO_VENDOR_NAME -> {
-				if (EYE_GAZE_INTERACTION_FEATURE_TAG == featureTag) {
-					val grantedPermissions = godot?.getGrantedPermissions()
-					if (grantedPermissions != null) {
-						for (permission in grantedPermissions) {
-							if (PICO_EYE_TRACKING_PERMISSION == permission) {
-								return true
+					PICO_VENDOR_NAME -> {
+						val grantedPermissions = godot?.getGrantedPermissions()
+						if (grantedPermissions != null) {
+							for (permission in grantedPermissions) {
+								if (PICO_EYE_TRACKING_PERMISSION == permission) {
+									return true
+								}
 							}
 						}
+					}
+
+					else -> {
+						// Other vendors don't require the permission.
+						return true;
 					}
 				}
 			}

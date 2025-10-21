@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  khronos_editor_plugin.h                                               */
+/*  Constants.kt                                                          */
 /**************************************************************************/
 /*                       This file is part of:                            */
 /*                              GODOT XR                                  */
@@ -27,40 +27,46 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#pragma once
+@file:JvmName("Constants")
 
-#include <godot_cpp/classes/editor_plugin.hpp>
+package org.godotengine.openxr.vendors.utils
 
-#include "export_plugin.h"
+// Set of supported vendors
+internal const val META_VENDOR_NAME = "meta"
+internal const val PICO_VENDOR_NAME = "pico"
+internal const val LYNX_VENDOR_NAME = "lynx"
+internal const val KHRONOS_VENDOR_NAME = "khronos"
+internal const val MAGICLEAP_VENDOR_NAME = "magicleap"
 
-using namespace godot;
+// Feature tags
+internal const val EYE_GAZE_INTERACTION_FEATURE_TAG = "PERMISSION_XR_EXT_eye_gaze_interaction"
 
-static const int KHRONOS_VENDOR_OTHER = 0;
-static const int KHRONOS_VENDOR_HTC = 1;
+// Meta permissions
+internal const val META_BODY_TRACKING_PERMISSION = "com.oculus.permission.BODY_TRACKING"
+internal const val META_EYE_TRACKING_PERMISSION = "com.oculus.permission.EYE_TRACKING"
+internal const val META_FACE_TRACKING_PERMISSION = "com.oculus.permission.FACE_TRACKING"
+internal const val META_SCENE_PERMISSION = "com.oculus.permission.USE_SCENE"
 
-class KhronosEditorExportPlugin : public OpenXRVendorsEditorExportPlugin {
-	GDCLASS(KhronosEditorExportPlugin, OpenXRVendorsEditorExportPlugin)
+internal val META_PERMISSIONS_LIST = listOf(
+    META_BODY_TRACKING_PERMISSION,
+    META_EYE_TRACKING_PERMISSION,
+    META_FACE_TRACKING_PERMISSION,
+    META_SCENE_PERMISSION,
+)
 
-public:
-	KhronosEditorExportPlugin();
+// Pico permissions
+internal const val PICO_EYE_TRACKING_PERMISSION = "com.picovr.permission.EYE_TRACKING"
+internal const val PICO_FACE_TRACKING_PERMISSION = "com.picovr.permission.FACE_TRACKING"
 
-	TypedArray<Dictionary> _get_export_options(const Ref<EditorExportPlatform> &platform) const override;
+internal val PICO_PERMISSIONS_LIST = listOf(
+    PICO_EYE_TRACKING_PERMISSION,
+    PICO_FACE_TRACKING_PERMISSION,
+)
 
-	Dictionary _get_export_options_overrides(const Ref<EditorExportPlatform> &p_platform) const override;
-
-	String _get_export_option_warning(const Ref<EditorExportPlatform> &platform, const String &option) const override;
-
-	String _get_android_manifest_activity_element_contents(const Ref<EditorExportPlatform> &platform, bool debug) const override;
-	String _get_android_manifest_element_contents(const Ref<EditorExportPlatform> &platform, bool debug) const override;
-
-protected:
-	static void _bind_methods();
-
-	bool _is_khronos_htc_enabled() const {
-		return _get_int_option("khronos_xr_features/vendors", KHRONOS_VENDOR_OTHER) == KHRONOS_VENDOR_HTC;
-	}
-
-	Dictionary _khronos_vendors_option;
-	Dictionary _tracker_option;
-	Dictionary _lip_expression_option;
-};
+internal fun getVendorPermissions(vendorName: String): List<String> {
+    return when (vendorName) {
+        META_VENDOR_NAME -> META_PERMISSIONS_LIST
+        PICO_VENDOR_NAME -> PICO_PERMISSIONS_LIST
+        else -> emptyList()
+    }
+}
