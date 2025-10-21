@@ -89,6 +89,7 @@ def createSconsTasks(File sconsExecutableFile, boolean clean) {
         "--directory=.",
         "custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json",
         "build_profile=thirdparty/godot_cpp_build_profile/build_profile.json",
+        "ndk_version=${versions.ndkVersion}",
     ]
 
     def sconsExtraArgs = []
