@@ -79,6 +79,7 @@
 #include "extensions/openxr_meta_recommended_layer_resolution_extension_wrapper.h"
 #include "extensions/openxr_meta_simultaneous_hands_and_controllers_extension_wrapper.h"
 #include "extensions/openxr_meta_spatial_entity_mesh_extension_wrapper.h"
+#include "extensions/openxr_ml_marker_understanding_extension_wrapper.h"
 
 #include "classes/openxr_fb_hand_tracking_mesh.h"
 #include "classes/openxr_fb_passthrough_geometry.h"
@@ -92,6 +93,17 @@
 #include "classes/openxr_hybrid_app.h"
 #include "classes/openxr_meta_environment_depth.h"
 #include "classes/openxr_meta_passthrough_color_lut.h"
+#include "classes/openxr_ml_marker_detector.h"
+#include "classes/openxr_ml_marker_detector_april_tag_settings.h"
+#include "classes/openxr_ml_marker_detector_aruco_settings.h"
+#include "classes/openxr_ml_marker_detector_code_128_settings.h"
+#include "classes/openxr_ml_marker_detector_ean_13_settings.h"
+#include "classes/openxr_ml_marker_detector_profile_settings.h"
+#include "classes/openxr_ml_marker_detector_qr_settings.h"
+#include "classes/openxr_ml_marker_detector_settings.h"
+#include "classes/openxr_ml_marker_detector_upc_a_settings.h"
+#include "classes/openxr_ml_marker_tracker.h"
+#include "classes/openxr_ml_marker_understanding_manager.h"
 #include "classes/openxr_vendor_performance_metrics.h"
 #include "classes/openxr_vendor_performance_metrics_provider.h"
 
@@ -172,6 +184,7 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			GDREGISTER_CLASS(OpenXRFbAndroidSurfaceSwapchainCreateExtensionWrapper);
 			GDREGISTER_CLASS(OpenXRHtcFacialTrackingExtensionWrapper);
 			GDREGISTER_CLASS(OpenXRHtcPassthroughExtensionWrapper);
+			GDREGISTER_CLASS(OpenXRMlMarkerUnderstandingExtensionWrapper);
 
 // @todo GH Issue 304: Remove check for meta headers when feature becomes part of OpenXR spec.
 #ifdef META_HEADERS_ENABLED
@@ -277,6 +290,10 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 				_register_extension_with_openxr(OpenXRHtcPassthroughExtensionWrapper::get_singleton());
 			}
 
+			if (_get_bool_project_setting("xr/openxr/extensions/magic_leap/marker_understanding")) {
+				_register_extension_with_openxr(OpenXRMlMarkerUnderstandingExtensionWrapper::get_singleton());
+			}
+
 			// Only works with Godot 4.5 or later.
 			if (godot::internal::godot_version.minor >= 5) {
 				GDREGISTER_CLASS(OpenXRFbSpaceWarpExtensionWrapper);
@@ -312,6 +329,7 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			_register_extension_as_singleton(OpenXRFbBodyTrackingExtensionWrapper::get_singleton());
 			_register_extension_as_singleton(OpenXRHtcFacialTrackingExtensionWrapper::get_singleton());
 			_register_extension_as_singleton(OpenXRHtcPassthroughExtensionWrapper::get_singleton());
+			_register_extension_as_singleton(OpenXRMlMarkerUnderstandingExtensionWrapper::get_singleton());
 
 // @todo GH Issue 304: Remove check for meta headers when feature becomes part of OpenXR spec.
 #ifdef META_HEADERS_ENABLED
@@ -328,6 +346,18 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			GDREGISTER_CLASS(OpenXRFbSpatialEntityUser);
 			GDREGISTER_CLASS(OpenXRFbPassthroughGeometry);
 			GDREGISTER_CLASS(OpenXRMetaPassthroughColorLut);
+
+			GDREGISTER_CLASS(OpenXRMlMarkerTracker);
+			GDREGISTER_CLASS(OpenXRMlMarkerDetector);
+			GDREGISTER_ABSTRACT_CLASS(OpenXRMlMarkerDetectorSettings);
+			GDREGISTER_CLASS(OpenXRMlMarkerDetectorProfileSettings);
+			GDREGISTER_CLASS(OpenXRMlMarkerDetectorAprilTagSettings);
+			GDREGISTER_CLASS(OpenXRMlMarkerDetectorArucoSettings);
+			GDREGISTER_CLASS(OpenXRMlMarkerDetectorCode128Settings)
+			GDREGISTER_CLASS(OpenXRMlMarkerDetectorEan13Settings);
+			GDREGISTER_CLASS(OpenXRMlMarkerDetectorQrSettings);
+			GDREGISTER_CLASS(OpenXRMlMarkerDetectorUpcASettings);
+			GDREGISTER_CLASS(OpenXRMlMarkerUnderstandingManager);
 
 			GDREGISTER_CLASS(OpenXRHybridApp);
 			Engine::get_singleton()->register_singleton("OpenXRHybridApp", OpenXRHybridApp::get_singleton());
@@ -462,6 +492,8 @@ void add_plugin_project_settings() {
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/composition_layer_settings", true);
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/dynamic_resolution", true);
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/headset_id", false);
+
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/magic_leap/marker_understanding", false);
 
 	// Only works with Godot 4.5 or later.
 	if (godot::internal::godot_version.minor >= 5) {
