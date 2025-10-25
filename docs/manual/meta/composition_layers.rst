@@ -1,6 +1,11 @@
 Meta Composition Layers
 =======================
 
+.. note::
+
+    Check out the `Meta Composition Layers Sample Project <https://github.com/GodotVR/godot_openxr_vendors/tree/master/samples/meta-composition-layers-sample>`_
+    for a working demo of Meta composition layers features.
+
 This tutorial will walk through the Meta-specific OpenXR composition layer extensions that are supported
 by the Godot OpenXR Vendors plugin. For a general introduction to OpenXR composition layers in Godot,
 check out the `OpenXR Composition Layer Introduction <https://docs.godotengine.org/en/latest/tutorials/xr/openxr_composition_layers.html>`_ tutorial.

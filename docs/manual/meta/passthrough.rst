@@ -1,6 +1,11 @@
 Meta Passthrough
 ================
 
+.. note::
+
+    Check out the `Meta Passthrough Sample Project <https://github.com/GodotVR/godot_openxr_vendors/tree/master/samples/meta-passthrough-sample>`_
+    for a working demo of Meta passthrough features.
+
 If your project requires the user to see their physical environment, you'll need to use the headset's passthrough functionality.
 The Godot OpenXR Vendors Plugin provides access to several passthrough modes and filters supported on the Meta Quest, all of which will be broken down in this tutorial.
 
