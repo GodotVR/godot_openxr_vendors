@@ -420,6 +420,11 @@ String MetaEditorExportPlugin::_get_android_manifest_element_contents(const Ref<
 		contents += "    <uses-permission android:name=\"com.oculus.permission.USE_SCENE\" />\n";
 	}
 
+	// Check for colocation discovery
+	if ((bool)project_settings->get_setting_with_override("xr/openxr/extensions/meta/colocation_discovery")) {
+		contents += "    <uses-permission android:name=\"com.oculus.permission.USE_COLOCATION_DISCOVERY_API\" />\n";
+	}
+
 // @todo GH Issue 304: Remove check for meta headers when feature becomes part of OpenXR spec.
 #ifdef META_HEADERS_ENABLED
 	// Check for boundary visibility
