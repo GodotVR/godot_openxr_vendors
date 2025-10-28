@@ -73,6 +73,7 @@
 #include "extensions/openxr_htc_facial_tracking_extension_wrapper.h"
 #include "extensions/openxr_htc_passthrough_extension_wrapper.h"
 #include "extensions/openxr_meta_boundary_visibility_extension_wrapper.h"
+#include "extensions/openxr_meta_colocation_discovery_extension_wrapper.h"
 #include "extensions/openxr_meta_environment_depth_extension_wrapper.h"
 #include "extensions/openxr_meta_headset_id_extension_wrapper.h"
 #include "extensions/openxr_meta_performance_metrics_extension_wrapper.h"
@@ -157,6 +158,7 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			GDREGISTER_CLASS(OpenXRMetaRecommendedLayerResolutionExtensionWrapper);
 			GDREGISTER_CLASS(OpenXRMetaSimultaneousHandsAndControllersExtensionWrapper);
 			GDREGISTER_CLASS(OpenXRMetaHeadsetIDExtensionWrapper);
+			GDREGISTER_CLASS(OpenXRMetaColocationDiscoveryExtensionWrapper);
 			GDREGISTER_CLASS(OpenXRMetaSpatialEntityMeshExtensionWrapper);
 			GDREGISTER_CLASS(OpenXRFbSceneExtensionWrapper);
 			GDREGISTER_CLASS(OpenXRFbFaceTrackingExtensionWrapper);
@@ -269,6 +271,10 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			}
 #endif // META_HEADERS_ENABLED
 
+			if (_get_bool_project_setting("xr/openxr/extensions/meta/colocation_discovery")) {
+				_register_extension_with_openxr(OpenXRMetaColocationDiscoveryExtensionWrapper::get_singleton());
+			}
+
 			if (_get_bool_project_setting("xr/openxr/extensions/htc/face_tracking")) {
 				_register_extension_with_openxr(OpenXRHtcFacialTrackingExtensionWrapper::get_singleton());
 			}
@@ -309,6 +315,7 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			_register_extension_as_singleton(OpenXRFbHandTrackingCapsulesExtensionWrapper::get_singleton());
 			_register_extension_as_singleton(OpenXRMetaSimultaneousHandsAndControllersExtensionWrapper::get_singleton());
 			_register_extension_as_singleton(OpenXRMetaHeadsetIDExtensionWrapper::get_singleton());
+			_register_extension_as_singleton(OpenXRMetaColocationDiscoveryExtensionWrapper::get_singleton());
 			_register_extension_as_singleton(OpenXRFbBodyTrackingExtensionWrapper::get_singleton());
 			_register_extension_as_singleton(OpenXRHtcFacialTrackingExtensionWrapper::get_singleton());
 			_register_extension_as_singleton(OpenXRHtcPassthroughExtensionWrapper::get_singleton());
@@ -462,6 +469,7 @@ void add_plugin_project_settings() {
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/composition_layer_settings", true);
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/dynamic_resolution", true);
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/headset_id", false);
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/colocation_discovery", false);
 
 	// Only works with Godot 4.5 or later.
 	if (godot::internal::godot_version.minor >= 5) {
