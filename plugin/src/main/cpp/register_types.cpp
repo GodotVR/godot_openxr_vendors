@@ -46,6 +46,7 @@
 #include "export/meta_export_plugin.h"
 #include "export/pico_export_plugin.h"
 
+#include "extensions/openxr_bd_body_tracking_extension_wrapper.h"
 #include "extensions/openxr_fb_android_surface_swapchain_create_extension_wrapper.h"
 #include "extensions/openxr_fb_body_tracking_extension_wrapper.h"
 #include "extensions/openxr_fb_color_space_extension_wrapper.h"
@@ -172,11 +173,16 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			GDREGISTER_CLASS(OpenXRFbAndroidSurfaceSwapchainCreateExtensionWrapper);
 			GDREGISTER_CLASS(OpenXRHtcFacialTrackingExtensionWrapper);
 			GDREGISTER_CLASS(OpenXRHtcPassthroughExtensionWrapper);
+			GDREGISTER_CLASS(OpenXRBdBodyTrackingExtensionWrapper);
 
 // @todo GH Issue 304: Remove check for meta headers when feature becomes part of OpenXR spec.
 #ifdef META_HEADERS_ENABLED
 			GDREGISTER_CLASS(OpenXRMetaBoundaryVisibilityExtensionWrapper);
 #endif // META_HEADERS_ENABLED
+
+			if (_get_bool_project_setting("xr/openxr/extensions/pico/body_tracking")) {
+				_register_extension_with_openxr(OpenXRBdBodyTrackingExtensionWrapper::get_singleton());
+			}
 
 			if (_get_bool_project_setting("xr/openxr/extensions/meta/passthrough")) {
 				_register_extension_with_openxr(OpenXRFbPassthroughExtensionWrapper::get_singleton());
@@ -296,6 +302,7 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			break;
 
 		case MODULE_INITIALIZATION_LEVEL_SCENE: {
+			_register_extension_as_singleton(OpenXRBdBodyTrackingExtensionWrapper::get_singleton());
 			_register_extension_as_singleton(OpenXRFbPassthroughExtensionWrapper::get_singleton());
 			_register_extension_as_singleton(OpenXRFbRenderModelExtensionWrapper::get_singleton());
 			_register_extension_as_singleton(OpenXRFbColorSpaceExtensionWrapper::get_singleton());
@@ -443,6 +450,8 @@ void add_plugin_project_settings() {
 
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/vendor_performance_metrics", false);
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/vendor_performance_metrics/capture_on_startup", true);
+
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/pico/body_tracking", false);
 
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/htc/passthrough", false);
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/htc/face_tracking", false);
