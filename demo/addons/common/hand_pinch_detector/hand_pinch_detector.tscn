@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://bxtjclrpxkao"]
+
+[ext_resource type="Script" uid="uid://bos3uw4e64t38" path="res://addons/common/hand_pinch_detector/hand_pinch_detector.gd" id="1_dstqi"]
+
+[node name="HandPinchDetector" type="Node3D"]
+script = ExtResource("1_dstqi")
+
+[node name="Timer" type="Timer" parent="."]
+one_shot = true
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

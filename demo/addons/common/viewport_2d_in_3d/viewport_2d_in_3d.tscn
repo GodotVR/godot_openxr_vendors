@@ -1,0 +1,27 @@
+[gd_scene load_steps=5 format=3 uid="uid://dcwibwtseri8h"]
+
+[ext_resource type="Script" uid="uid://ch5we601n513i" path="res://addons/common/viewport_2d_in_3d/viewport_2d_in_3d.gd" id="1_cglsv"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_numi8"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ej13h"]
+resource_local_to_scene = true
+transparency = 1
+shading_mode = 0
+albedo_texture = SubResource("ViewportTexture_numi8")
+
+[sub_resource type="QuadMesh" id="QuadMesh_rd55w"]
+resource_local_to_scene = true
+material = SubResource("StandardMaterial3D_ej13h")
+
+[node name="Viewport2Din3D" type="Node3D"]
+script = ExtResource("1_cglsv")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("QuadMesh_rd55w")
+
+[node name="SubViewport" type="SubViewport" parent="."]
+disable_3d = true
+transparent_bg = true
+snap_2d_vertices_to_pixel = true

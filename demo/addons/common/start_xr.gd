@@ -8,7 +8,7 @@ signal focus_lost
 signal focus_gained
 signal pose_recentered
 
-@export var maximum_refresh_rate: int = 90
+@export var maximum_refresh_rate := 90
 
 var xr_interface: OpenXRInterface
 var xr_is_focussed = false

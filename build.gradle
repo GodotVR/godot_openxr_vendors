@@ -199,6 +199,7 @@ task cleanScons {
 
 task copyBuildToSamples {
     def sourceDir = file 'demo/addons/godotopenxrvendors'
+    def sourceDirCommon = file 'demo/addons/common'
     def samplesDir = file 'samples'
     doLast{
         samplesDir.eachDir { targetSubdir ->
@@ -206,6 +207,10 @@ task copyBuildToSamples {
                 copy {
                     from sourceDir
                     into "${targetSubdir}/addons/godotopenxrvendors"
+                }
+                copy {
+                    from sourceDirCommon
+                    into "${targetSubdir}/addons/common"
                 }
             }
         }
@@ -219,6 +224,7 @@ task cleanBuildFromSamples {
             if (targetSubdir.name != 'builds') {
                 delete {
                     delete "${targetSubdir}/addons/godotopenxrvendors"
+                    delete "${targetSubdir}/addons/common"
                 }
             }
         }
