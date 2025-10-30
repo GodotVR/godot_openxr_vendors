@@ -47,6 +47,7 @@
 #include "export/meta_export_plugin.h"
 #include "export/pico_export_plugin.h"
 
+#include "extensions/openxr_android_performance_metrics_extension_wrapper.h"
 #include "extensions/openxr_fb_android_surface_swapchain_create_extension_wrapper.h"
 #include "extensions/openxr_fb_body_tracking_extension_wrapper.h"
 #include "extensions/openxr_fb_color_space_extension_wrapper.h"
@@ -156,6 +157,7 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			GDREGISTER_CLASS(OpenXRVendorPerformanceMetrics);
 			GDREGISTER_CLASS(OpenXRMetaPerformanceMetricsExtensionWrapper);
 
+			GDREGISTER_CLASS(OpenXRAndroidPerformanceMetricsExtensionWrapper);
 			GDREGISTER_CLASS(OpenXRFbPassthroughExtensionWrapper);
 			GDREGISTER_CLASS(OpenXRFbRenderModelExtensionWrapper);
 			GDREGISTER_CLASS(OpenXRFbColorSpaceExtensionWrapper);
@@ -246,6 +248,7 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 
 			if (_get_bool_project_setting("xr/openxr/extensions/vendor_performance_metrics")) {
 				_register_extension_with_openxr(OpenXRMetaPerformanceMetricsExtensionWrapper::get_singleton());
+				_register_extension_with_openxr(OpenXRAndroidPerformanceMetricsExtensionWrapper::get_singleton());
 			}
 
 			// All of the hand tracking extensions depend on the Godot hand tracking setting being set first.
