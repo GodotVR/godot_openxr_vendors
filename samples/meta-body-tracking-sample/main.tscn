@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=3 uid="uid://cqsodpswgup8w"]
 
-[ext_resource type="Script" uid="uid://dkw806r600ego" path="res://start_xr.gd" id="2_ntxf1"]
+[ext_resource type="Script" uid="uid://bnjcoo6qce8d6" path="res://addons/common/start_xr.gd" id="2_ntxf1"]
 [ext_resource type="PackedScene" uid="uid://cay8oh2ll7yxi" path="res://assets/test_kun/Test-Kun.fbx" id="4_b317s"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_0x6cv"]

@@ -1,0 +1,41 @@
+[gd_scene load_steps=7 format=3 uid="uid://lq524cbr72ox"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_naiu5"]
+resource_local_to_scene = true
+shading_mode = 0
+albedo_color = Color(1, 0, 0, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_ct5wk"]
+material = SubResource("StandardMaterial3D_naiu5")
+size = Vector3(0.1, 0.01, 0.01)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jm8b8"]
+resource_local_to_scene = true
+shading_mode = 0
+albedo_color = Color(0, 1, 0, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_mxgr2"]
+material = SubResource("StandardMaterial3D_jm8b8")
+size = Vector3(0.01, 0.1, 0.01)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_e2wxx"]
+shading_mode = 0
+albedo_color = Color(0, 0, 1, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_1lg3d"]
+material = SubResource("StandardMaterial3D_e2wxx")
+size = Vector3(0.01, 0.01, 0.1)
+
+[node name="Axis3D" type="Node3D"]
+
+[node name="XAxis" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, 0, 0)
+mesh = SubResource("BoxMesh_ct5wk")
+
+[node name="YAxis" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
+mesh = SubResource("BoxMesh_mxgr2")
+
+[node name="ZAxis" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.05)
+mesh = SubResource("BoxMesh_1lg3d")
