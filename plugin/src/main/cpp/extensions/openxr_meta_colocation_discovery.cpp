@@ -29,7 +29,7 @@
 
 #include "extensions/openxr_meta_colocation_discovery.h"
 
-// #include <godot_cpp/classes/open_xrapi_extension.hpp>
+#include <godot_cpp/classes/open_xrapi_extension.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
 
 using namespace godot;
