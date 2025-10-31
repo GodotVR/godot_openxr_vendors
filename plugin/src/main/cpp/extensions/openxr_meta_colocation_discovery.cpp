@@ -29,11 +29,6 @@
 
 #include "extensions/openxr_meta_colocation_discovery.h"
 
-#include <godot_cpp/classes/open_xrapi_extension.hpp>
-#include <godot_cpp/variant/utility_functions.hpp>
-
-#include "extensions/openxr_fb_spatial_entity_extension_wrapper.h"
-
 using namespace godot;
 
 OpenXRMetaColocationDiscovery *OpenXRMetaColocationDiscovery::singleton = nullptr;
@@ -88,10 +83,6 @@ uint64_t OpenXRMetaColocationDiscovery::_set_system_properties_and_get_next_poin
 	return reinterpret_cast<uint64_t>(p_next_pointer);
 }
 
-void OpenXRMetaColocationDiscovery::_on_session_created(uint64_t session) {
-	openxr_session = (XrSession)session;
-}
-
 void OpenXRMetaColocationDiscovery::_on_instance_destroyed() {
 	cleanup();
 }
@@ -143,9 +134,8 @@ bool OpenXRMetaColocationDiscovery::is_colocation_discovery_supported() const {
 
 bool OpenXRMetaColocationDiscovery::start_advertisement(const PackedByteArray &p_buffer) {
 	ERR_FAIL_COND_V_MSG(!meta_colocation_discovery_ext, false, "XR_META_colocation_discovery extension is not enabled");
-	ERR_FAIL_COND_V_MSG(openxr_session == XR_NULL_HANDLE, false, "OpenXR session is not created");
 	ERR_FAIL_COND_V_MSG(p_buffer.size() > XR_MAX_COLOCATION_DISCOVERY_BUFFER_SIZE_META, false,
-		vformat("Buffer size %d exceeds maximum size of %d bytes", p_buffer.size(), XR_MAX_COLOCATION_DISCOVERY_BUFFER_SIZE_META));
+			vformat("Buffer size %d exceeds maximum size of %d bytes", p_buffer.size(), XR_MAX_COLOCATION_DISCOVERY_BUFFER_SIZE_META));
 
 	if (is_advertising) {
 		UtilityFunctions::push_warning("Already advertising, stop current advertisement first");
@@ -160,7 +150,7 @@ bool OpenXRMetaColocationDiscovery::start_advertisement(const PackedByteArray &p
 	};
 
 	XrAsyncRequestIdFB request_id;
-	XrResult result = xrStartColocationAdvertisementMETA(openxr_session, &start_info, &request_id);
+	XrResult result = xrStartColocationAdvertisementMETA(SESSION, &start_info, &request_id);
 
 	if (XR_SUCCEEDED(result)) {
 		current_advertisement_request_id = request_id;
@@ -173,7 +163,6 @@ bool OpenXRMetaColocationDiscovery::start_advertisement(const PackedByteArray &p
 
 bool OpenXRMetaColocationDiscovery::stop_advertisement() {
 	ERR_FAIL_COND_V_MSG(!meta_colocation_discovery_ext, false, "XR_META_colocation_discovery extension is not enabled");
-	ERR_FAIL_COND_V_MSG(openxr_session == XR_NULL_HANDLE, false, "OpenXR session is not created");
 
 	if (!is_advertising) {
 		UtilityFunctions::push_warning("Not currently advertising");
@@ -186,7 +175,7 @@ bool OpenXRMetaColocationDiscovery::stop_advertisement() {
 	};
 
 	XrAsyncRequestIdFB request_id;
-	XrResult result = xrStopColocationAdvertisementMETA(openxr_session, &stop_info, &request_id);
+	XrResult result = xrStopColocationAdvertisementMETA(SESSION, &stop_info, &request_id);
 
 	if (XR_SUCCEEDED(result)) {
 		return true;
@@ -198,7 +187,6 @@ bool OpenXRMetaColocationDiscovery::stop_advertisement() {
 
 bool OpenXRMetaColocationDiscovery::start_discovery() {
 	ERR_FAIL_COND_V_MSG(!meta_colocation_discovery_ext, false, "XR_META_colocation_discovery extension is not enabled");
-	ERR_FAIL_COND_V_MSG(openxr_session == XR_NULL_HANDLE, false, "OpenXR session is not created");
 
 	if (is_discovering) {
 		UtilityFunctions::push_warning("Already discovering, stop current discovery first");
@@ -211,7 +199,7 @@ bool OpenXRMetaColocationDiscovery::start_discovery() {
 	};
 
 	XrAsyncRequestIdFB request_id;
-	XrResult result = xrStartColocationDiscoveryMETA(openxr_session, &start_info, &request_id);
+	XrResult result = xrStartColocationDiscoveryMETA(SESSION, &start_info, &request_id);
 
 	if (XR_SUCCEEDED(result)) {
 		current_discovery_request_id = request_id;
@@ -224,7 +212,6 @@ bool OpenXRMetaColocationDiscovery::start_discovery() {
 
 bool OpenXRMetaColocationDiscovery::stop_discovery() {
 	ERR_FAIL_COND_V_MSG(!meta_colocation_discovery_ext, false, "XR_META_colocation_discovery extension is not enabled");
-	ERR_FAIL_COND_V_MSG(openxr_session == XR_NULL_HANDLE, false, "OpenXR session is not created");
 
 	if (!is_discovering) {
 		UtilityFunctions::push_warning("Not currently discovering");
@@ -237,7 +224,7 @@ bool OpenXRMetaColocationDiscovery::stop_discovery() {
 	};
 
 	XrAsyncRequestIdFB request_id;
-	XrResult result = xrStopColocationDiscoveryMETA(openxr_session, &stop_info, &request_id);
+	XrResult result = xrStopColocationDiscoveryMETA(SESSION, &stop_info, &request_id);
 
 	if (XR_SUCCEEDED(result)) {
 		return true;
@@ -251,40 +238,40 @@ void OpenXRMetaColocationDiscovery::on_start_advertisement_complete(const XrEven
 	if (XR_SUCCEEDED(event->result)) {
 		is_advertising = true;
 		String uuid_str = OpenXRUtilities::uuid_to_string_name(event->advertisementUuid);
-		emit_signal("advertisement_started", uuid_str);
+		emit_signal("openxr_meta_colocation_discovery_advertisement_started", uuid_str);
 	} else {
 		UtilityFunctions::push_error(vformat("Failed to start advertisement: %d", event->result));
-		emit_signal("advertisement_failed", (int)event->result);
+		emit_signal("openxr_meta_colocation_discovery_advertisement_failed", (int)event->result);
 	}
 }
 
 void OpenXRMetaColocationDiscovery::on_stop_advertisement_complete(const XrEventDataStopColocationAdvertisementCompleteMETA *event) {
 	if (XR_SUCCEEDED(event->result)) {
 		is_advertising = false;
-		emit_signal("advertisement_stopped");
+		emit_signal("openxr_meta_colocation_discovery_advertisement_stopped");
 	} else {
 		UtilityFunctions::push_error(vformat("Failed to stop advertisement: %d", event->result));
-		emit_signal("advertisement_failed", (int)event->result);
+		emit_signal("openxr_meta_colocation_discovery_advertisement_failed", (int)event->result);
 	}
 }
 
 void OpenXRMetaColocationDiscovery::on_advertisement_complete(const XrEventDataColocationAdvertisementCompleteMETA *event) {
 	is_advertising = false;
 	if (XR_SUCCEEDED(event->result)) {
-		emit_signal("advertisement_complete");
+		emit_signal("openxr_meta_colocation_discovery_advertisement_complete");
 	} else {
 		UtilityFunctions::push_error(vformat("Advertisement ended with error: %d", event->result));
-		emit_signal("advertisement_failed", (int)event->result);
+		emit_signal("openxr_meta_colocation_discovery_advertisement_failed", (int)event->result);
 	}
 }
 
 void OpenXRMetaColocationDiscovery::on_start_discovery_complete(const XrEventDataStartColocationDiscoveryCompleteMETA *event) {
 	if (XR_SUCCEEDED(event->result)) {
 		is_discovering = true;
-		emit_signal("discovery_started");
+		emit_signal("openxr_meta_colocation_discovery_discovery_started");
 	} else {
 		UtilityFunctions::push_error(vformat("Failed to start discovery: %d", event->result));
-		emit_signal("discovery_failed", (int)event->result);
+		emit_signal("openxr_meta_colocation_discovery_discovery_failed", (int)event->result);
 	}
 }
 
@@ -295,26 +282,26 @@ void OpenXRMetaColocationDiscovery::on_discovery_result(const XrEventDataColocat
 	buffer.resize(event->bufferSize);
 	memcpy(buffer.ptrw(), event->buffer, event->bufferSize);
 
-	emit_signal("discovery_result", uuid_str, buffer);
+	emit_signal("openxr_meta_colocation_discovery_discovery_result", uuid_str, buffer);
 }
 
 void OpenXRMetaColocationDiscovery::on_discovery_complete(const XrEventDataColocationDiscoveryCompleteMETA *event) {
 	is_discovering = false;
 	if (XR_SUCCEEDED(event->result)) {
-		emit_signal("discovery_complete");
+		emit_signal("openxr_meta_colocation_discovery_discovery_complete");
 	} else {
 		UtilityFunctions::push_error(vformat("Discovery ended with error: %d", event->result));
-		emit_signal("discovery_failed", (int)event->result);
+		emit_signal("openxr_meta_colocation_discovery_discovery_failed", (int)event->result);
 	}
 }
 
 void OpenXRMetaColocationDiscovery::on_stop_discovery_complete(const XrEventDataStopColocationDiscoveryCompleteMETA *event) {
 	if (XR_SUCCEEDED(event->result)) {
 		is_discovering = false;
-		emit_signal("discovery_stopped");
+		emit_signal("openxr_meta_colocation_discovery_discovery_stopped");
 	} else {
 		UtilityFunctions::push_error(vformat("Failed to stop discovery: %d", event->result));
-		emit_signal("discovery_failed", (int)event->result);
+		emit_signal("openxr_meta_colocation_discovery_discovery_failed", (int)event->result);
 	}
 }
 
@@ -326,23 +313,22 @@ void OpenXRMetaColocationDiscovery::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("stop_discovery"), &OpenXRMetaColocationDiscovery::stop_discovery);
 
 	// Signals
-	ADD_SIGNAL(MethodInfo("advertisement_started", PropertyInfo(Variant::STRING, "advertisement_uuid")));
-	ADD_SIGNAL(MethodInfo("advertisement_stopped"));
-	ADD_SIGNAL(MethodInfo("advertisement_complete"));
-	ADD_SIGNAL(MethodInfo("advertisement_failed", PropertyInfo(Variant::INT, "error_code")));
+	ADD_SIGNAL(MethodInfo("openxr_meta_colocation_discovery_advertisement_started", PropertyInfo(Variant::STRING, "advertisement_uuid")));
+	ADD_SIGNAL(MethodInfo("openxr_meta_colocation_discovery_advertisement_stopped"));
+	ADD_SIGNAL(MethodInfo("openxr_meta_colocation_discovery_advertisement_complete"));
+	ADD_SIGNAL(MethodInfo("openxr_meta_colocation_discovery_advertisement_failed", PropertyInfo(Variant::INT, "error_code")));
 
-	ADD_SIGNAL(MethodInfo("discovery_started"));
-	ADD_SIGNAL(MethodInfo("discovery_result",
-		PropertyInfo(Variant::STRING, "advertisement_uuid"),
-		PropertyInfo(Variant::PACKED_BYTE_ARRAY, "data")));
-	ADD_SIGNAL(MethodInfo("discovery_complete"));
-	ADD_SIGNAL(MethodInfo("discovery_stopped"));
-	ADD_SIGNAL(MethodInfo("discovery_failed", PropertyInfo(Variant::INT, "error_code")));
+	ADD_SIGNAL(MethodInfo("openxr_meta_colocation_discovery_discovery_started"));
+	ADD_SIGNAL(MethodInfo("openxr_meta_colocation_discovery_discovery_result",
+			PropertyInfo(Variant::STRING, "advertisement_uuid"),
+			PropertyInfo(Variant::PACKED_BYTE_ARRAY, "data")));
+	ADD_SIGNAL(MethodInfo("openxr_meta_colocation_discovery_discovery_complete"));
+	ADD_SIGNAL(MethodInfo("openxr_meta_colocation_discovery_discovery_stopped"));
+	ADD_SIGNAL(MethodInfo("openxr_meta_colocation_discovery_discovery_failed", PropertyInfo(Variant::INT, "error_code")));
 }
 
 void OpenXRMetaColocationDiscovery::cleanup() {
 	meta_colocation_discovery_ext = false;
-	openxr_session = XR_NULL_HANDLE;
 	is_advertising = false;
 	is_discovering = false;
 	current_advertisement_request_id = 0;

@@ -52,7 +52,6 @@ public:
 
 	void _on_instance_created(uint64_t instance) override;
 	uint64_t _set_system_properties_and_get_next_pointer(void *p_next_pointer) override;
-	void _on_session_created(uint64_t session) override;
 	void _on_instance_destroyed() override;
 	bool _on_event_polled(const void *event) override;
 
@@ -101,8 +100,6 @@ private:
 
 	std::map<godot::String, bool *> request_extensions;
 	bool meta_colocation_discovery_ext = false;
-
-	XrSession openxr_session = XR_NULL_HANDLE;
 
 	XrSystemColocationDiscoveryPropertiesMETA colocation_discovery_properties = {
 		XR_TYPE_SYSTEM_COLOCATION_DISCOVERY_PROPERTIES_META, // type
