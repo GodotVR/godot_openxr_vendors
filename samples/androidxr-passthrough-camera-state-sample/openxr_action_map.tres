@@ -1,0 +1,8 @@
+[gd_resource type="OpenXRActionMap" load_steps=2 format=3 uid="uid://ds7smlsjad5qh"]
+
+[sub_resource type="OpenXRActionSet" id="OpenXRActionSet_neaqo"]
+resource_name = "godot"
+localized_name = "Godot action set"
+
+[resource]
+action_sets = [SubResource("OpenXRActionSet_neaqo")]

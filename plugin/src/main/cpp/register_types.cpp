@@ -47,6 +47,7 @@
 #include "export/meta_export_plugin.h"
 #include "export/pico_export_plugin.h"
 
+#include "extensions/openxr_android_passthrough_camera_state_extension_wrapper.h"
 #include "extensions/openxr_android_performance_metrics_extension_wrapper.h"
 #include "extensions/openxr_fb_android_surface_swapchain_create_extension_wrapper.h"
 #include "extensions/openxr_fb_body_tracking_extension_wrapper.h"
@@ -157,6 +158,7 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			GDREGISTER_CLASS(OpenXRVendorPerformanceMetrics);
 			GDREGISTER_CLASS(OpenXRMetaPerformanceMetricsExtensionWrapper);
 
+			GDREGISTER_CLASS(OpenXRAndroidPassthroughCameraStateExtensionWrapper);
 			GDREGISTER_CLASS(OpenXRAndroidPerformanceMetricsExtensionWrapper);
 			GDREGISTER_CLASS(OpenXRFbPassthroughExtensionWrapper);
 			GDREGISTER_CLASS(OpenXRFbRenderModelExtensionWrapper);
@@ -298,6 +300,10 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 				_register_extension_with_openxr(OpenXRMlMarkerUnderstandingExtensionWrapper::get_singleton());
 			}
 
+			if (_get_bool_project_setting("xr/openxr/extensions/androidxr/passthrough_camera_state")) {
+				_register_extension_with_openxr(OpenXRAndroidPassthroughCameraStateExtensionWrapper::get_singleton());
+			}
+
 			// Only works with Godot 4.5 or later.
 			if (godot::internal::godot_version.minor >= 5) {
 				GDREGISTER_CLASS(OpenXRFbSpaceWarpExtensionWrapper);
@@ -334,6 +340,7 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			_register_extension_as_singleton(OpenXRHtcFacialTrackingExtensionWrapper::get_singleton());
 			_register_extension_as_singleton(OpenXRHtcPassthroughExtensionWrapper::get_singleton());
 			_register_extension_as_singleton(OpenXRMlMarkerUnderstandingExtensionWrapper::get_singleton());
+			_register_extension_as_singleton(OpenXRAndroidPassthroughCameraStateExtensionWrapper::get_singleton());
 
 // @todo GH Issue 304: Remove check for meta headers when feature becomes part of OpenXR spec.
 #ifdef META_HEADERS_ENABLED
@@ -499,6 +506,8 @@ void add_plugin_project_settings() {
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/headset_id", false);
 
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/magic_leap/marker_understanding", false);
+
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/androidxr/passthrough_camera_state", false);
 
 	// Only works with Godot 4.5 or later.
 	if (godot::internal::godot_version.minor >= 5) {
