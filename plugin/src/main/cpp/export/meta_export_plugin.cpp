@@ -415,8 +415,8 @@ String MetaEditorExportPlugin::_get_android_manifest_element_contents(const Ref<
 		contents += "    <uses-permission android:name=\"com.oculus.permission.IMPORT_EXPORT_IOT_MAP_DATA\" />\n";
 	}
 
-	// Check for scene api
-	if ((bool)project_settings->get_setting_with_override("xr/openxr/extensions/meta/scene_api")) {
+	// Check for scene api or environment depth
+	if ((bool)project_settings->get_setting_with_override("xr/openxr/extensions/meta/scene_api") || (bool)project_settings->get_setting_with_override("xr/openxr/extensions/meta/environment_depth")) {
 		contents += "    <uses-permission android:name=\"com.oculus.permission.USE_SCENE\" />\n";
 	}
 
