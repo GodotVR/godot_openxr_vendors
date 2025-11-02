@@ -141,6 +141,11 @@ String PicoEditorExportPlugin::_get_android_manifest_element_contents(const Ref<
 		contents += "    <uses-permission android:name=\"com.picovr.permission.FACE_TRACKING\" />\n";
 	}
 
+	// Check for spatial entities
+	if ((bool)project_settings->get_setting_with_override("xr/openxr/extensions/spatial_entity/enabled")) {
+		contents += "    <uses-permission android:name=\"com.picovr.permission.SPATIAL_DATA\" />\n";
+	}
+
 	return contents;
 }
 
