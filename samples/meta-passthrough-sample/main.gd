@@ -63,8 +63,7 @@ func _process(_delta: float) -> void:
 
 func enable_mode_full() -> void:
 	get_viewport().transparent_bg = true
-	world_environment.environment.background_mode = Environment.BG_COLOR
-	world_environment.environment.background_color = Color(0.0, 0.0, 0.0, 0.0)
+	world_environment.environment.background_mode = Environment.BG_CLEAR_COLOR
 	xr_interface.environment_blend_mode = XRInterface.XR_ENV_BLEND_MODE_ALPHA_BLEND
 	passthrough_geometry.hide()
 
