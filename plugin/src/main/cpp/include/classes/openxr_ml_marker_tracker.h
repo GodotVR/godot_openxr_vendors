@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  magicleap_editor_plugin.cpp                                           */
+/*  openxr_ml_marker_tracker.h                                            */
 /**************************************************************************/
 /*                       This file is part of:                            */
 /*                              GODOT XR                                  */
@@ -27,45 +27,55 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "export/magicleap_export_plugin.h"
+#ifndef OPENXR_ML_MARKER_TRACKER_H
+#define OPENXR_ML_MARKER_TRACKER_H
 
-#include <godot_cpp/classes/project_settings.hpp>
+#include "classes/openxr_ml_marker_detector_settings.h"
+#include <openxr/openxr.h>
+#include <godot_cpp/classes/xr_pose.hpp>
+#include <godot_cpp/classes/xr_positional_tracker.hpp>
+#include <godot_cpp/core/binder_common.hpp>
 
-using namespace godot;
+namespace godot {
+class OpenXRMlMarkerTracker : public XRPositionalTracker {
+	GDCLASS(OpenXRMlMarkerTracker, XRPositionalTracker);
 
-MagicleapEditorExportPlugin::MagicleapEditorExportPlugin() {
-	set_vendor_name(MAGICLEAP_VENDOR_NAME);
-}
+public:
+private:
+	float reprojection_error_meters = 0;
+	float marker_length = 0;
+	uint64_t marker_number = 0;
+	String marker_string;
+	OpenXRMlMarkerDetectorSettings::MarkerType marker_type;
+	XrMarkerDetectorML marker_detector = XR_NULL_HANDLE;
+	XrMarkerML marker_atom = 0;
+	XrSpace marker_space_handle = XR_NULL_HANDLE;
 
-void MagicleapEditorExportPlugin::_bind_methods() {}
+protected:
+	static void _bind_methods();
 
-TypedArray<Dictionary> MagicleapEditorExportPlugin::_get_export_options(const Ref<EditorExportPlatform> &platform) const {
-	TypedArray<Dictionary> export_options;
-	if (!_supports_platform(platform)) {
-		return export_options;
-	}
+public:
+	_FORCE_INLINE_ XrMarkerML get_marker_atom() { return marker_atom; }
 
-	export_options.append(_get_vendor_toggle_option());
+	void set_marker_type(OpenXRMlMarkerDetectorSettings::MarkerType p_marker_type);
+	OpenXRMlMarkerDetectorSettings::MarkerType get_marker_type() const;
 
-	return export_options;
-}
+	void set_reprojection_error_meters(float p_reprojection_error_meters);
+	float get_reprojection_error_meters() const;
 
-String MagicleapEditorExportPlugin::_get_android_manifest_element_contents(const Ref<EditorExportPlatform> &platform, bool debug) const {
-	String contents;
-	if (!_supports_platform(platform) || !_is_vendor_plugin_enabled()) {
-		return contents;
-	}
+	void set_marker_length(float p_marker_length);
+	float get_marker_length() const;
 
-	if (ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/extensions/hand_tracking")) {
-		contents += "    <uses-permission android:name=\"com.magicleap.permission.HAND_TRACKING\" />\n";
-	}
+	void set_marker_number(uint64_t p_marker_number);
+	uint64_t get_marker_number() const;
 
-	if (ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/extensions/magic_leap/marker_understanding")) {
-		contents += "    <uses-permission android:name=\"com.magicleap.permission.MARKER_TRACKING\" />\n";
-	}
+	void set_marker_string(const String &p_marker_string);
+	String get_marker_string() const;
 
-	// Always include this.
-	contents += "    <uses-feature android:name=\"com.magicleap.api_level\" android:version=\"20\" />\n";
+	void update_marker();
 
-	return contents;
-}
+	OpenXRMlMarkerTracker() = default;
+	OpenXRMlMarkerTracker(XrMarkerDetectorML p_marker_detector, XrMarkerML p_marker_atom, OpenXRMlMarkerDetectorSettings::MarkerType p_marker_type);
+};
+} // namespace godot
+#endif

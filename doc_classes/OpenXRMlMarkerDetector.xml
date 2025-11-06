@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="OpenXRMlMarkerDetector" inherits="Node" experimental="Marked as experimental due to lack of community validation on Magic Leap devices." xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		Represents a marker detector in Magic Leap's Marker Understanding API.
+	</brief_description>
+	<description>
+		Represents a marker detector in Magic Leap's Marker Understanding API.
+		A marker detector detects a single type of marker, specified by the [member settings] property. To detect more than one marker type, an application may create multiple marker detectors.
+		The marker detector is only active when added to the scene tree.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="get_marker_trackers" qualifiers="const">
+			<return type="OpenXRMlMarkerTracker[]" />
+			<description>
+				Gets the currently tracked markers.
+			</description>
+		</method>
+		<method name="get_status" qualifiers="const">
+			<return type="int" enum="OpenXRMlMarkerDetector.Status" />
+			<description>
+				Gets the status of the marker detector.
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="settings" type="OpenXRMlMarkerDetectorSettings" setter="set_settings" getter="get_settings">
+			The settings of the marker detector.
+			Changing this value or any of the properties of the detector settings will restart the marker detector.
+		</member>
+	</members>
+	<constants>
+		<constant name="STATUS_PENDING" value="0" enum="Status">
+			The marker detector is working on a new snapshot.
+		</constant>
+		<constant name="STATUS_READY" value="1" enum="Status">
+			The marker detector is ready to be inspected.
+		</constant>
+		<constant name="STATUS_ERROR" value="2" enum="Status">
+			The marker detector has encountered a fatal error.
+		</constant>
+		<constant name="STATUS_MAX" value="3" enum="Status">
+			Maximum value for the status enum.
+		</constant>
+	</constants>
+</class>

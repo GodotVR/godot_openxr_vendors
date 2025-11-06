@@ -1,0 +1,30 @@
+[gd_scene load_steps=5 format=3 uid="uid://5e17d4y7whio"]
+
+[ext_resource type="Script" uid="uid://0fp7fjvwk13c" path="res://start_xr.gd" id="1_ig7tw"]
+[ext_resource type="PackedScene" uid="uid://ctaejfkxghmda" path="res://marker_display.tscn" id="3_h2yge"]
+
+[sub_resource type="OpenXRMlMarkerDetectorArucoSettings" id="OpenXRMlMarkerDetectorArucoSettings_h2yge"]
+aruco_length = 0.09
+aruco_dictionary = 12
+
+[sub_resource type="OpenXRMlMarkerDetectorQrSettings" id="OpenXRMlMarkerDetectorQrSettings_h2yge"]
+qr_length = 0.09
+
+[node name="Main" type="Node3D"]
+script = ExtResource("1_ig7tw")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.965926, -1.13133e-08, 0.258819, -0.258819, -4.2222e-08, 0.965926, 0, -1, -4.37114e-08, 0, 0, 0)
+
+[node name="XROrigin3D" type="XROrigin3D" parent="."]
+
+[node name="XRCamera3D" type="XRCamera3D" parent="XROrigin3D"]
+
+[node name="ArUco Marker Detector" type="OpenXRMlMarkerDetector" parent="XROrigin3D"]
+settings = SubResource("OpenXRMlMarkerDetectorArucoSettings_h2yge")
+
+[node name="Qr Marker Detector" type="OpenXRMlMarkerDetector" parent="XROrigin3D"]
+settings = SubResource("OpenXRMlMarkerDetectorQrSettings_h2yge")
+
+[node name="OpenXRMlMarkerUnderstandingManager" type="OpenXRMlMarkerUnderstandingManager" parent="XROrigin3D"]
+scene = ExtResource("3_h2yge")

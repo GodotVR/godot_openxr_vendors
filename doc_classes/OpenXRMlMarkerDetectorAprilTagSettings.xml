@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="OpenXRMlMarkerDetectorAprilTagSettings" inherits="OpenXRMlMarkerDetectorSettings" experimental="Marked as experimental due to lack of community validation on Magic Leap devices." xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		AprilTag settings for the [OpenXRMlMarkerDetector].
+	</brief_description>
+	<description>
+		AprilTag settings for the [OpenXRMlMarkerDetector].
+	</description>
+	<tutorials>
+	</tutorials>
+	<members>
+		<member name="april_tag_dictionary" type="int" setter="set_april_tag_dictionary" getter="get_april_tag_dictionary" enum="OpenXRMlMarkerDetectorAprilTagSettings.AprilTagDictionary" default="0">
+			AprilTag Dictionary name from which markers will be detected.
+		</member>
+		<member name="april_tag_length" type="float" setter="set_april_tag_length" getter="get_april_tag_length" default="0.0">
+			The physical length of one side of a marker in meters.
+			A higher localization accuracy may be obtained by specifying the marker size.
+			This value is ignored if [member estimate_april_tag_length] is set to [code]true[/code].
+		</member>
+		<member name="estimate_april_tag_length" type="bool" setter="set_estimate_april_tag_length" getter="get_estimate_april_tag_length" default="false">
+			If set to [code]true[/code] the detector will estimate the size of the marker.
+		</member>
+	</members>
+	<constants>
+		<constant name="APRIL_TAG_DICT_16H5" value="0" enum="AprilTagDictionary">
+			4 by 4 bits, minimum Hamming distance between any two codes = 5, 30 codes.
+		</constant>
+		<constant name="APRIL_TAG_DICT_25H9" value="1" enum="AprilTagDictionary">
+			5 by 5 bits, minimum Hamming distance between any two codes = 9, 35 codes.
+		</constant>
+		<constant name="APRIL_TAG_DICT_36H10" value="2" enum="AprilTagDictionary">
+			6 by 6 bits, minimum Hamming distance between any two codes = 10, 2320 codes.
+		</constant>
+		<constant name="APRIL_TAG_DICT_36H11" value="3" enum="AprilTagDictionary">
+			6 by 6 bits, minimum Hamming distance between any two codes = 11, 587 codes.
+		</constant>
+	</constants>
+</class>

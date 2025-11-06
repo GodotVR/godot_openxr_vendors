@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="OpenXRMlMarkerDetectorProfileSettings" inherits="Resource" experimental="Marked as experimental due to lack of community validation on Magic Leap devices." xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		Custom profile settings for the [OpenXRMlMarkerDetector].
+	</brief_description>
+	<description>
+		Custom profile settings for the [OpenXRMlMarkerDetector].
+	</description>
+	<tutorials>
+	</tutorials>
+	<members>
+		<member name="camera" type="int" setter="set_camera" getter="get_camera" enum="OpenXRMlMarkerDetectorProfileSettings.Camera" default="0">
+			A suggestion of the camera set for the detector to use.
+		</member>
+		<member name="corner_refine_method" type="int" setter="set_corner_refine_method" getter="get_corner_refine_method" enum="OpenXRMlMarkerDetectorProfileSettings.CornerRefineMethod" default="0">
+			Selects a method for corner refinement for ArUco/AprilTag detectors. This member is ignored for detectors of other marker types.
+		</member>
+		<member name="fps_hint" type="int" setter="set_fps_hint" getter="get_fps_hint" enum="OpenXRMlMarkerDetectorProfileSettings.Fps" default="0">
+			A suggestion of the category of frame rate for the detector to use.
+		</member>
+		<member name="full_analysis_interval" type="int" setter="set_full_analysis_interval" getter="get_full_analysis_interval" enum="OpenXRMlMarkerDetectorProfileSettings.FullAnalysisInterval" default="0">
+			The suggested interval between fully analyzed frames that introduce new detected markers, in addition to updating the state of already detected markers.
+		</member>
+		<member name="resolution" type="int" setter="set_resolution" getter="get_resolution" enum="OpenXRMlMarkerDetectorProfileSettings.Resolution" default="0">
+			A suggestion of the category of camera resolution for the detector to use.
+		</member>
+		<member name="use_edge_refinement" type="bool" setter="set_use_edge_refinement" getter="get_use_edge_refinement" default="false">
+			Specifies whether to run a refinement step that uses marker edges to generate even more accurate corners, but slow down tracking rate overall by consuming more compute. It affects ArUco/AprilTag markers only: this member is ignored for detectors of other marker types.
+		</member>
+	</members>
+	<constants>
+		<constant name="FPS_LOW" value="0" enum="Fps">
+			Low FPS.
+		</constant>
+		<constant name="FPS_MEDIUM" value="1" enum="Fps">
+			Medium FPS.
+		</constant>
+		<constant name="FPS_HIGH" value="2" enum="Fps">
+			High FPS.
+		</constant>
+		<constant name="FPS_MAX" value="3" enum="Fps">
+			Max possible FPS.
+		</constant>
+		<constant name="RESOLUTION_LOW" value="0" enum="Resolution">
+			Low Resolution.
+		</constant>
+		<constant name="RESOLUTION_MEDIUM" value="1" enum="Resolution">
+			Medium Resolution.
+		</constant>
+		<constant name="RESOLUTION_HIGH" value="2" enum="Resolution">
+			High Resolution.
+		</constant>
+		<constant name="CAMERA_RGB_CAMERA" value="0" enum="Camera">
+			Single RGB camera.
+		</constant>
+		<constant name="CAMERA_WORLD_CAMERAS" value="1" enum="Camera">
+			One or more world cameras.
+		</constant>
+		<constant name="CORNER_REFINE_METHOD_NONE" value="0" enum="CornerRefineMethod">
+			No refinement. Inaccurate corners.
+		</constant>
+		<constant name="CORNER_REFINE_METHOD_SUBPIX" value="1" enum="CornerRefineMethod">
+			Subpixel refinement. Corners have subpixel coordinates. High detection rate, very fast, reasonable accuracy.
+		</constant>
+		<constant name="CORNER_REFINE_METHOD_CONTOUR" value="2" enum="CornerRefineMethod">
+			Contour refinement. High detection rate, fast, reasonable accuracy.
+		</constant>
+		<constant name="CORNER_REFINE_METHOD_APRIL_TAG" value="3" enum="CornerRefineMethod">
+			AprilTag refinement. Reasonable detection rate, slowest, but very accurate. Only valid with AprilTags.
+		</constant>
+		<constant name="FULL_ANALYSIS_INTERVAL_MAX" value="0" enum="FullAnalysisInterval">
+			Detector analyzes every frame fully.
+		</constant>
+		<constant name="FULL_ANALYSIS_INTERVAL_FAST" value="1" enum="FullAnalysisInterval">
+			Detector analyzes frame fully very often.
+		</constant>
+		<constant name="FULL_ANALYSIS_INTERVAL_MEDIUM" value="2" enum="FullAnalysisInterval">
+			Detector analyzes frame fully a few times per second.
+		</constant>
+		<constant name="FULL_ANALYSIS_INTERVAL_SLOW" value="3" enum="FullAnalysisInterval">
+			Detector analyzes frame fully about every second.
+		</constant>
+	</constants>
+</class>

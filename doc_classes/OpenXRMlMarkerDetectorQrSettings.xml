@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="OpenXRMlMarkerDetectorQrSettings" inherits="OpenXRMlMarkerDetectorSettings" experimental="Marked as experimental due to lack of community validation on Magic Leap devices." xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		QR settings for the [OpenXRMlMarkerDetector].
+	</brief_description>
+	<description>
+		QR settings for the [OpenXRMlMarkerDetector].
+	</description>
+	<tutorials>
+	</tutorials>
+	<members>
+		<member name="estimate_qr_length" type="bool" setter="set_estimate_qr_length" getter="get_estimate_qr_length" default="false">
+			If set to [code]true[/code] the detector will estimate the size of the marker.
+		</member>
+		<member name="qr_length" type="float" setter="set_qr_length" getter="get_qr_length" default="0.0">
+			The physical length of one side of a marker in meters.
+			A higher localization accuracy may be obtained by specifying the marker size.
+			This value is ignored if [member estimate_qr_length] is set to [code]true[/code].
+		</member>
+	</members>
+</class>
