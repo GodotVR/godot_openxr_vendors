@@ -54,6 +54,7 @@
 #include "extensions/openxr_android_light_estimation_extension.h"
 #include "extensions/openxr_android_passthrough_camera_state_extension.h"
 #include "extensions/openxr_android_performance_metrics_extension.h"
+#include "extensions/openxr_android_recommended_resolution_extension.h"
 #include "extensions/openxr_android_scene_meshing_extension.h"
 #include "extensions/openxr_fb_android_surface_swapchain_create_extension.h"
 #include "extensions/openxr_fb_body_tracking_extension.h"
@@ -166,6 +167,7 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 
 			GDREGISTER_ABSTRACT_CLASS(OpenXRVendorPerformanceMetricsProvider);
 			GDREGISTER_CLASS(OpenXRVendorPerformanceMetrics);
+			GDREGISTER_CLASS(OpenXRAndroidRecommendedResolutionExtension);
 			GDREGISTER_CLASS(OpenXRMetaPerformanceMetricsExtension);
 
 			GDREGISTER_CLASS(OpenXRAndroidEyeTrackingExtension);
@@ -349,6 +351,10 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 				_register_extension_with_openxr(OpenXRAndroidLightEstimationExtension::get_singleton());
 			}
 
+			if (_get_bool_project_setting("xr/openxr/extensions/androidxr/dynamic_resolution")) {
+				_register_extension_with_openxr(OpenXRAndroidRecommendedResolutionExtension::get_singleton());
+			}
+
 			if (_get_bool_project_setting("xr/openxr/extensions/androidxr/scene_meshing")) {
 				_register_extension_with_openxr(OpenXRAndroidSceneMeshingExtension::get_singleton());
 			}
@@ -384,6 +390,7 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			_register_extension_as_singleton(OpenXRAndroidFaceTrackingExtension::get_singleton());
 			_register_extension_as_singleton(OpenXRAndroidLightEstimationExtension::get_singleton());
 			_register_extension_as_singleton(OpenXRAndroidPassthroughCameraStateExtension::get_singleton());
+			_register_extension_as_singleton(OpenXRAndroidRecommendedResolutionExtension::get_singleton());
 			_register_extension_as_singleton(OpenXRAndroidSceneMeshingExtension::get_singleton());
 			_register_extension_as_singleton(OpenXRFbSpaceWarpExtension::get_singleton());
 			_register_extension_as_singleton(OpenXRMetaEnvironmentDepthExtension::get_singleton());
@@ -560,6 +567,7 @@ void add_plugin_project_settings() {
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/androidxr/face_tracking", false);
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/androidxr/light_estimation", false);
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/androidxr/passthrough_camera_state", false);
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/androidxr/dynamic_resolution", true);
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/androidxr/scene_meshing", false);
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/androidxr/environment_depth", false);
 
