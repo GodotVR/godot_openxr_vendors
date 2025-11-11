@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  editor_plugin.cpp                                                     */
+/*  validation_layers_export_plugin.h                                     */
 /**************************************************************************/
 /*                       This file is part of:                            */
 /*                              GODOT XR                                  */
@@ -27,57 +27,30 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "editor_plugin.h"
+#pragma once
 
-#include "export/khronos_export_plugin.h"
-#include "export/lynx_export_plugin.h"
-#include "export/magicleap_export_plugin.h"
-#include "export/meta_export_plugin.h"
-#include "export/pico_export_plugin.h"
-#include "export/validation_layers_export_plugin.h"
+#include <godot_cpp/classes/editor_export_plugin.hpp>
+#include <godot_cpp/classes/ref.hpp>
 
 using namespace godot;
 
-void OpenXRVendorsEditorPlugin::_add_export_plugin(const Ref<EditorExportPlugin> &p_plugin) {
-	add_export_plugin(p_plugin);
-	export_plugins.push_back(p_plugin);
-}
+class OpenXRValidationLayersEditorExportPlugin : public EditorExportPlugin {
+	GDCLASS(OpenXRValidationLayersEditorExportPlugin, EditorExportPlugin)
 
-void OpenXRVendorsEditorPlugin::_bind_methods() {
-}
+	Dictionary _enable_export_option;
 
-void OpenXRVendorsEditorPlugin::_enter_tree() {
-	Ref<KhronosEditorExportPlugin> khronos_export_plugin;
-	khronos_export_plugin.instantiate();
-	_add_export_plugin(khronos_export_plugin);
+protected:
+	static void _bind_methods() {}
 
-	Ref<LynxEditorExportPlugin> lynx_export_plugin;
-	lynx_export_plugin.instantiate();
-	_add_export_plugin(lynx_export_plugin);
+public:
+	OpenXRValidationLayersEditorExportPlugin();
 
-	Ref<MagicleapEditorExportPlugin> magicleap_export_plugin;
-	magicleap_export_plugin.instantiate();
-	_add_export_plugin(magicleap_export_plugin);
+	String _get_name() const override;
 
-	Ref<MetaEditorExportPlugin> meta_export_plugin;
-	meta_export_plugin.instantiate();
-	_add_export_plugin(meta_export_plugin);
+	bool _supports_platform(const Ref<EditorExportPlatform> &platform) const override;
 
-	Ref<PicoEditorExportPlugin> pico_export_plugin;
-	pico_export_plugin.instantiate();
-	_add_export_plugin(pico_export_plugin);
+	String _get_export_option_warning(const Ref<EditorExportPlatform> &platform, const String &option) const override;
+	TypedArray<Dictionary> _get_export_options(const Ref<EditorExportPlatform> &platform) const override;
 
-	Ref<OpenXRValidationLayersEditorExportPlugin> validation_layers_export_plugin;
-	validation_layers_export_plugin.instantiate();
-	_add_export_plugin(validation_layers_export_plugin);
-}
-
-void OpenXRVendorsEditorPlugin::_exit_tree() {
-	for (const Ref<EditorExportPlugin> &export_plugin : export_plugins) {
-		remove_export_plugin(export_plugin);
-	}
-	export_plugins.clear();
-}
-
-OpenXRVendorsEditorPlugin::OpenXRVendorsEditorPlugin() {
-}
+	PackedStringArray _get_android_libraries(const Ref<EditorExportPlatform> &platform, bool debug) const;
+};
