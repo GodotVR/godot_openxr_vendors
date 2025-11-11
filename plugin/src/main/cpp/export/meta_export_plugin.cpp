@@ -502,22 +502,47 @@ String MetaEditorExportPlugin::_get_android_manifest_application_element_content
 
 	OpenXRHybridApp::HybridMode hybrid_launch_mode = _get_hybrid_app_launch_mode();
 	if (hybrid_launch_mode != OpenXRHybridApp::HYBRID_MODE_NONE) {
-		contents += _get_opening_activity_tag_for_panel_app();
+		contents += vformat(
+				R"(
+		<activity android:name="org.godotengine.openxr.vendors.GodotPanelApp"
+			android:process=":GodotPanelApp"
+			android:theme="@style/GodotAppSplashTheme"
+			android:launchMode="singleInstancePerTask"
+			android:exported="false"
+			android:excludeFromRecents="%s"
+			android:screenOrientation="%s"
+			android:resizeableActivity="%s"
+			android:configChanges="orientation|keyboardHidden|screenSize|smallestScreenSize|density|keyboard|navigation|screenLayout|uiMode"
+			tools:ignore="UnusedAttribute">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
 
-		contents +=
-				"          <intent-filter>\n"
-				"            <action android:name=\"android.intent.action.MAIN\" />\n"
-				"            <category android:name=\"android.intent.category.DEFAULT\" />\n"
-				"            <category android:name=\"org.godotengine.xr.hybrid.PANEL\" />\n"
-				"            <category android:name=\"com.oculus.intent.category.2D\" />\n";
+				<category android:name="android.intent.category.DEFAULT" />
+				<category android:name="org.godotengine.xr.hybrid.PANEL" />
+				<category android:name="com.oculus.intent.category.2D" />
+			</intent-filter>
+		</activity>
+)",
+				_bool_to_string(_get_bool_option("package/exclude_from_recents")),
+				_get_android_orientation_label((DisplayServer::ScreenOrientation)(int)project_settings->get_setting_with_override("display/window/handheld/orientation")),
+				_bool_to_string(project_settings->get_setting_with_override("display/window/size/resizable")));
 
 		if (hybrid_launch_mode == OpenXRHybridApp::HYBRID_MODE_PANEL) {
-			contents += "            <category android:name=\"android.intent.category.LAUNCHER\" />\n";
-		}
+			contents += R"(
+		<activity-alias
+			android:name="org.godotengine.openxr.vendors.GodotPanelAppLauncher"
+			android:exported="true"
+			android:targetActivity="org.godotengine.openxr.vendors.GodotPanelApp">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
 
-		contents +=
-				"          </intent-filter>\n"
-				"        </activity>\n";
+				<category android:name="android.intent.category.DEFAULT" />
+				<category android:name="com.oculus.intent.category.2D" />
+				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
+		</activity-alias>
+)";
+		}
 	}
 
 	return contents;

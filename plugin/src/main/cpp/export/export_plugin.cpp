@@ -102,25 +102,6 @@ OpenXRHybridApp::HybridMode OpenXRVendorsEditorExportPlugin::_get_hybrid_app_lau
 	return (OpenXRHybridApp::HybridMode)(int)ProjectSettings::get_singleton()->get_setting_with_override("xr/hybrid_app/launch_mode");
 }
 
-String OpenXRVendorsEditorExportPlugin::_get_opening_activity_tag_for_panel_app() const {
-	ProjectSettings *project_settings = ProjectSettings::get_singleton();
-
-	return vformat(
-			"        <activity android:name=\"org.godotengine.openxr.vendors.GodotPanelApp\" "
-			"android:process=\":GodotPanelApp\" "
-			"android:theme=\"@style/GodotAppSplashTheme\" "
-			"android:launchMode=\"singleInstancePerTask\" "
-			"android:exported=\"true\" "
-			"android:excludeFromRecents=\"%s\" "
-			"android:screenOrientation=\"%s\" "
-			"android:resizeableActivity=\"%s\" "
-			"android:configChanges=\"orientation|keyboardHidden|screenSize|smallestScreenSize|density|keyboard|navigation|screenLayout|uiMode\" "
-			"tools:ignore=\"UnusedAttribute\">\n",
-			_bool_to_string(_get_bool_option("package/exclude_from_recents")),
-			_get_android_orientation_label((DisplayServer::ScreenOrientation)(int)project_settings->get_setting_with_override("display/window/handheld/orientation")),
-			_bool_to_string(project_settings->get_setting_with_override("display/window/size/resizable")));
-}
-
 String OpenXRVendorsEditorExportPlugin::_get_common_activity_intent_filter_contents() const {
 	String contents;
 
