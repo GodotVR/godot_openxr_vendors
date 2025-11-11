@@ -29,6 +29,7 @@ sources += Glob("#plugin/src/main/cpp/*.cpp")
 sources += Glob("#plugin/src/main/cpp/export/*.cpp")
 sources += Glob("#plugin/src/main/cpp/extensions/*.cpp")
 sources += Glob("#plugin/src/main/cpp/classes/*.cpp")
+sources += Glob("#plugin/src/main/cpp/editor/*.cpp")
 
 if env["target"] in ["editor", "template_debug"]:
   doc_data = env.GodotCPPDocData("#plugin/src/gen/doc_data.gen.cpp", source=Glob("doc_classes/*.xml"))
@@ -37,6 +38,26 @@ if env["target"] in ["editor", "template_debug"]:
 binary_path = '#demo/addons/godotopenxrvendors/.bin'
 android_src_path = '#plugin/src'
 project_name = 'godotopenxrvendors'
+
+from build_raw_headers import build_raw_headers_action
+env.Append(
+    BUILDERS={
+        "RawHeaders": Builder(action=build_raw_headers_action),
+    })
+raw_headers = env.RawHeaders(
+    target=[
+        '#plugin/src/main/cpp/include/raw_headers/mr_startup.tscn.gen.h',
+        '#plugin/src/main/cpp/include/raw_headers/start_mr.gd.gen.h',
+        '#plugin/src/main/cpp/include/raw_headers/start_vr.gd.gen.h',
+        '#plugin/src/main/cpp/include/raw_headers/vr_startup.tscn.gen.h',
+    ],
+    source=[
+        '#plugin/src/main/cpp/include/raw_headers/mr_startup.tscn',
+        '#plugin/src/main/cpp/include/raw_headers/start_mr.gd',
+        '#plugin/src/main/cpp/include/raw_headers/start_vr.gd',
+        '#plugin/src/main/cpp/include/raw_headers/vr_startup.tscn',
+    ],
+)
 
 # Statically link with libgcc and libstdc++ for wider compatibility on Linux and Android.
 if env["platform"] in ["linux", "android"]:
@@ -72,6 +93,7 @@ else:
         source=sources,
     )
 
+env.Depends(library, raw_headers)
 Default(library)
 
 if env["platform"] == "android":

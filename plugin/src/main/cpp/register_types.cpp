@@ -38,6 +38,7 @@
 #include <godot_cpp/godot.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
 
+#include "editor/xr_project_setup_dialog.h"
 #include "editor_plugin.h"
 #include "export/android_xr_export_plugin.h"
 #include "export/export_plugin.h"
@@ -387,6 +388,8 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 		case MODULE_INITIALIZATION_LEVEL_EDITOR: {
 			GDREGISTER_INTERNAL_CLASS(OpenXRVendorsEditorPlugin);
 			GDREGISTER_INTERNAL_CLASS(OpenXRVendorsEditorExportPlugin);
+
+			GDREGISTER_INTERNAL_CLASS(XrProjectSetupDialog);
 
 			GDREGISTER_INTERNAL_CLASS(AndroidXREditorExportPlugin);
 			GDREGISTER_INTERNAL_CLASS(KhronosEditorExportPlugin);
