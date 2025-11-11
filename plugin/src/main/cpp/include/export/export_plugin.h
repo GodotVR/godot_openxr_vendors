@@ -115,8 +115,6 @@ protected:
 	bool _is_hybrid_app_enabled() const;
 	OpenXRHybridApp::HybridMode _get_hybrid_app_launch_mode() const;
 
-	String _get_opening_activity_tag_for_panel_app() const;
-
 	String _get_common_activity_intent_filter_contents() const;
 
 	bool _is_openxr_enabled() const;
