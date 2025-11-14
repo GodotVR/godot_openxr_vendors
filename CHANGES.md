@@ -1,5 +1,35 @@
 # Change history for the Godot OpenXR loaders asset
 
+## 4.2.0
+
+- Add support for the **Android XR** OpenXR vendor
+- Implement `XR_ANDROID_passthrough_camera_state` extension
+- Implement `XR_ANDROID_performance_metrics` extension
+- Document the settings required to make an app have a passthrough loading screen
+- Add experimental support for the `XR_ML_marker_understanding` extension
+- Fix the missing `com.oculus.permission.USE_SCENE` permission for the environment depth feature
+- Add the required permission for enabling spatial entities on Pico devices
+- Fix missing sample links for the passthrough and composition layer documentation pages
+- Only add the global shader uniforms for Meta environment depth when it's enabled
+- Fix missing shader uniform and Godot version in `project.godot` for meta-scene-sample
+- Use `gdformat` to ensure consistent GDScript coding standards in CI
+- Fix `OpenXRFbHandTrackingMesh` changes after startup and detecting when it's not supported
+- Generate native debug symbols for Android
+- Fix the manifest configuration for boundaryless apps: set `android.hardware.vr.headtracking` to `required="true"`
+- Fix running the meta-scene-sample on Godot 4.4
+- Add `quest3s` to the list of supported devices
+- Fix errors reported by `XrApiLayer_core_validation`
+- Allow using bilinear filtering in reprojection and provide example for smoothing in a shader
+- Implement `XR_META_performance_metrics` extension
+- Add documentation page about Meta Environment Depth
+- Add method for getting the Meta environment depth map on the CPU side
+- Clear `XRServer#remove_tracker` errors when closing the Godot editor
+- Fix Meta passthrough when rendering with "Separate" thread model
+- Fix `XR_META_environment_depth` when rendering with "Separate" thread model
+- Fix issues with invalid data returned by `xrGetHandMeshFB`
+- Implement `XR_META_headset_id` extension
+- Implement `XR_META_simultaneous_hands_and_controllers` extension
+
 ## 4.1.1
 
 - Update the export plugin version to match the maven central release
