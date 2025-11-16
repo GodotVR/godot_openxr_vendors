@@ -165,4 +165,8 @@ class GodotOpenXRHybridAppInternal(godot: Godot?) : GodotPlugin(godot) {
 	private fun getHybridAppLaunchData(): String {
 		return hybridLaunchData
 	}
+
+	override fun supportsFeature(featureTag: String): Boolean {
+		return GodotOpenXR.supportsFeature(godot, featureTag) || super.supportsFeature(featureTag)
+	}
 }
