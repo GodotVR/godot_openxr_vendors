@@ -67,6 +67,71 @@ class GodotOpenXR(godot: Godot?) : GodotPlugin(godot) {
 				Log.e(TAG, "Unable to load native libraries")
 			}
 		}
+
+		@JvmStatic
+		fun supportsFeature(godot: Godot, featureTag: String): Boolean {
+			val context = godot.context
+			when (featureTag) {
+				"xr_runtime" -> {
+					return isNativeXRDevice(context)
+				}
+
+				ANDROID_XR_OS -> {
+					return isAndroidXRDevice(context)
+				}
+
+				META_HORIZON_OS -> {
+					return isHorizonOSDevice(context)
+				}
+
+				PICO_OS -> {
+					return isPicoOSDevice()
+				}
+
+				EYE_GAZE_INTERACTION_FEATURE_TAG -> {
+					when (BuildConfig.FLAVOR) {
+						ANDROID_XR_VENDOR_NAME -> {
+							val grantedPermissions = godot.getGrantedPermissions()
+							if (grantedPermissions != null) {
+								for (permission in grantedPermissions) {
+									if (ANDROID_XR_EYE_TRACKING_FINE_PERMISSION == permission) {
+										return true
+									}
+								}
+							}
+						}
+
+						META_VENDOR_NAME -> {
+							val grantedPermissions = godot.getGrantedPermissions()
+							if (grantedPermissions != null) {
+								for (permission in grantedPermissions) {
+									if (META_EYE_TRACKING_PERMISSION == permission) {
+										return true
+									}
+								}
+							}
+						}
+
+						PICO_VENDOR_NAME -> {
+							val grantedPermissions = godot.getGrantedPermissions()
+							if (grantedPermissions != null) {
+								for (permission in grantedPermissions) {
+									if (PICO_EYE_TRACKING_PERMISSION == permission) {
+										return true
+									}
+								}
+							}
+						}
+
+						else -> {
+							// Other vendors don't require the permission.
+							return true;
+						}
+					}
+				}
+			}
+			return false
+		}
 	}
 
 	override fun getPluginName() = "GodotOpenXR"
@@ -109,57 +174,6 @@ class GodotOpenXR(godot: Godot?) : GodotPlugin(godot) {
 	}
 
 	override fun supportsFeature(featureTag: String): Boolean {
-		when (featureTag) {
-			META_HORIZON_OS -> {
-				return BuildConfig.FLAVOR == META_VENDOR_NAME || isHorizonOSDevice(context)
-			}
-
-			PICO_OS -> {
-				return BuildConfig.FLAVOR == PICO_VENDOR_NAME || isPicoOSDevice()
-			}
-
-			EYE_GAZE_INTERACTION_FEATURE_TAG -> {
-				when (BuildConfig.FLAVOR) {
-					ANDROID_XR_VENDOR_NAME -> {
-						val grantedPermissions = godot?.getGrantedPermissions()
-						if (grantedPermissions != null) {
-							for (permission in grantedPermissions) {
-								if (ANDROID_XR_EYE_TRACKING_FINE_PERMISSION == permission) {
-									return true
-								}
-							}
-						}
-					}
-
-					META_VENDOR_NAME -> {
-						val grantedPermissions = godot?.getGrantedPermissions()
-						if (grantedPermissions != null) {
-							for (permission in grantedPermissions) {
-								if (META_EYE_TRACKING_PERMISSION == permission) {
-									return true
-								}
-							}
-						}
-					}
-
-					PICO_VENDOR_NAME -> {
-						val grantedPermissions = godot?.getGrantedPermissions()
-						if (grantedPermissions != null) {
-							for (permission in grantedPermissions) {
-								if (PICO_EYE_TRACKING_PERMISSION == permission) {
-									return true
-								}
-							}
-						}
-					}
-
-					else -> {
-						// Other vendors don't require the permission.
-						return true;
-					}
-				}
-			}
-		}
-		return super.supportsFeature(featureTag)
+		return supportsFeature(godot, featureTag) || super.supportsFeature(featureTag)
 	}
 }

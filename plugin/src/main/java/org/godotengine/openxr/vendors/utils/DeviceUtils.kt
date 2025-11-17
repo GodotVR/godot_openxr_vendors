@@ -39,6 +39,11 @@ import android.os.Build
 
 // Set of supported OS
 /**
+ * Label used to identify the Android XR OS in the Godot engine.
+ */
+const val ANDROID_XR_OS = "androidxr"
+
+/**
  * Label used to identity the Meta Horizon OS in the Godot engine.
  */
 const val META_HORIZON_OS = "horizonos"
