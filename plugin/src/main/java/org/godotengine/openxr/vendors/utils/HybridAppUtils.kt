@@ -34,7 +34,10 @@
 
 package org.godotengine.openxr.vendors.utils
 
+import android.content.Intent
+import android.util.Base64
 import android.util.Log
+import org.godotengine.godot.GodotActivity.Companion.EXTRA_COMMAND_LINE_PARAMS
 import org.godotengine.godot.GodotLib
 
 private const val TAG = "HybridAppUtils"
@@ -58,6 +61,8 @@ enum class HybridMode(private val nativeValue: Int) {
 		}
 	}
 }
+
+const val HYBRID_DATA_ARG = "--openxr-hybrid-data"
 
 const val HYBRID_APP_FEATURE = "godot_openxr_hybrid_app"
 const val HYBRID_APP_PANEL_FEATURE = "godot_openxr_panel_app"
@@ -87,14 +92,17 @@ fun getHybridAppLaunchMode(): HybridMode {
  */
 internal fun updateCommandLineForHybridLaunch(
 	launchMode: HybridMode,
-	originalCommandLine: List<String> = emptyList()
+	originalCommandLine: List<String> = emptyList(),
+	hybridData: String = "",
 ): MutableList<String> {
 	val newCmdline = mutableListOf<String>()
 	if (launchMode == HybridMode.NONE) {
 		return newCmdline
 	}
 
-	// Remove any existing command-line arguments setting the XR mode.
+	// Remove the following command-line arguments:
+	// - XR mode arguments
+	// - Hybrid data arguments
 	var skipNext = false
 	for (arg in originalCommandLine) {
 		if (skipNext) {
@@ -104,7 +112,7 @@ internal fun updateCommandLineForHybridLaunch(
 
 		when (arg) {
 			"--xr_mode_regular", "--xr_mode_openxr" -> continue
-			"--xr-mode" -> {
+			"--xr-mode", HYBRID_DATA_ARG -> {
 				skipNext = true
 				continue
 			}
@@ -120,5 +128,23 @@ internal fun updateCommandLineForHybridLaunch(
 		newCmdline.addAll(listOf("--xr_mode_openxr", "--xr-mode", "on"))
 	}
 
+	if (hybridData.isNotBlank()) {
+		newCmdline.addAll(listOf(HYBRID_DATA_ARG, Base64.encodeToString(hybridData.encodeToByteArray(), Base64.DEFAULT)))
+	}
+
 	return newCmdline
+}
+
+/**
+ * Retrieves hybrid data stored in the launch intent.
+ */
+internal fun retrieveHybridData(launchIntent: Intent?): String {
+	val cmdLineParams = launchIntent?.getStringArrayExtra(EXTRA_COMMAND_LINE_PARAMS) ?: return ""
+	cmdLineParams.forEachIndexed { index, param ->
+		if (param == HYBRID_DATA_ARG && index + 1 < cmdLineParams.size) {
+			return Base64.decode(cmdLineParams[index + 1], Base64.DEFAULT).decodeToString()
+		}
+	}
+
+	return ""
 }
