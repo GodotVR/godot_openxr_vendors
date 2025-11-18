@@ -235,6 +235,7 @@ jobs:
         run: |
           mkdir asset
           cp -r aar/demo/addons asset
+          rm -rf asset/addons/common
           cp aar/CHANGES.md asset/addons/godotopenxrvendors/GodotOpenXRVendors_CHANGES.md
       - name: Adding vendor licences
         run: |
