@@ -93,7 +93,7 @@ bones/25/name = "RightLittleTip"
 hand_tracker = &"/user/hand_tracker/right"
 
 [node name="Floor" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.059405804, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0594058, 0)
 mesh = SubResource("PlaneMesh_mjcgt")
 
 [node name="AvatarOffset" type="Node3D" parent="."]

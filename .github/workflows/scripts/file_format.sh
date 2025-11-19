@@ -41,10 +41,14 @@ while IFS= read -rd '' f; do
     perl -i -ple 's/\s*$//g' "$f"
     # Remove the character sequence "== true" if it has a leading space.
     perl -i -pe 's/\x20== true//g' "$f"
-    # We don't want to change lines around braces in godot/tscn files.
+    # We don't want to change lines around braces in godot/tscn/tres/import files.
     if [[ "$f" == *"godot" ]]; then
         continue
     elif [[ "$f" == *"tscn" ]]; then
+        continue
+    elif [[ "$f" == *"tres" ]]; then
+        continue
+    elif [[ "$f" == *"import" ]]; then
         continue
     fi
     # Disallow empty lines after the opening brace.
