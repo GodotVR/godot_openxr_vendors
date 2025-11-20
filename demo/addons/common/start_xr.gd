@@ -39,6 +39,10 @@ func _ready():
 		xr_interface.session_focussed.connect(_on_openxr_focused_state)
 		xr_interface.session_stopping.connect(_on_openxr_stopping)
 		xr_interface.pose_recentered.connect(_on_openxr_pose_recentered)
+
+		# If blend mode is alpha blended, make viewport background transparent.
+		if xr_interface.get_environment_blend_mode() == XRInterface.XR_ENV_BLEND_MODE_ALPHA_BLEND:
+			vp.transparent_bg = true
 	else:
 		# We couldn't start OpenXR.
 		print("OpenXR not instantiated!")
