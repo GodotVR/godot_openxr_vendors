@@ -27,7 +27,7 @@ jobs:
       - name: Android dependencies
         uses: nttld/setup-ndk@v1
         with:
-          ndk-version: r23c
+          ndk-version: r28b
           link-to-sdk: true
       - name: Install scons
         run: |
@@ -55,10 +55,10 @@ jobs:
         run: |
           # We build with debug symbols which will be stripped by Gradle.
           SCONS_EXTRA="$SCONS_EXTRA debug_symbols=yes"
-          scons platform=android target=template_debug arch=arm64 custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json build_profile=thirdparty/godot_cpp_build_profile/build_profile.json $SCONS_EXTRA
-          scons platform=android target=template_release arch=arm64 custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json build_profile=thirdparty/godot_cpp_build_profile/build_profile.json $SCONS_EXTRA
-          scons platform=android target=template_debug arch=x86_64 custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json build_profile=thirdparty/godot_cpp_build_profile/build_profile.json $SCONS_EXTRA
-          scons platform=android target=template_release arch=x86_64 custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json build_profile=thirdparty/godot_cpp_build_profile/build_profile.json $SCONS_EXTRA
+          scons platform=android target=template_debug arch=arm64 custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json build_profile=thirdparty/godot_cpp_build_profile/build_profile.json ndk_version="28.1.13356709" $SCONS_EXTRA
+          scons platform=android target=template_release arch=arm64 custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json build_profile=thirdparty/godot_cpp_build_profile/build_profile.json ndk_version="28.1.13356709" $SCONS_EXTRA
+          scons platform=android target=template_debug arch=x86_64 custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json build_profile=thirdparty/godot_cpp_build_profile/build_profile.json ndk_version="28.1.13356709" $SCONS_EXTRA
+          scons platform=android target=template_release arch=x86_64 custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json build_profile=thirdparty/godot_cpp_build_profile/build_profile.json ndk_version="28.1.13356709" $SCONS_EXTRA
           ./gradlew -Prelease_version=${{ github.ref_name }} build $GRADLE_EXTRA
 
           # Put the unstripped .so files into ZIPs to use for their debug symbols.
