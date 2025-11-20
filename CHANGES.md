@@ -1,5 +1,12 @@
 # Change history for the Godot OpenXR loaders asset
 
+## 4.2.1
+
+- Fix generation of 16kb page compatible binaries
+- Fix logic to detect when running on Android XR devices
+- Fix the logic used to transfer data between hybrid apps' modes
+- Fix generation of the release asset
+
 ## 4.2.0
 
 - Add support for the **Android XR** OpenXR vendor
