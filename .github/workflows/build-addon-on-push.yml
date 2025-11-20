@@ -147,7 +147,7 @@ jobs:
       - name: Android dependencies
         uses: nttld/setup-ndk@v1
         with:
-          ndk-version: r23c
+          ndk-version: r28b
           link-to-sdk: true
         if: matrix.platform == 'android'
       - name: Download Meta OpenXR Preview headers
@@ -177,8 +177,8 @@ jobs:
       - name: Create extension library
         run: |
           cd aar
-          scons platform=${{ matrix.platform }} target=template_debug ${{ matrix.flags }} custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json build_profile=thirdparty/godot_cpp_build_profile/build_profile.json $SCONS_EXTRA
-          scons platform=${{ matrix.platform }} target=template_release ${{ matrix.flags }} custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json build_profile=thirdparty/godot_cpp_build_profile/build_profile.json $SCONS_EXTRA
+          scons platform=${{ matrix.platform }} target=template_debug ${{ matrix.flags }} custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json build_profile=thirdparty/godot_cpp_build_profile/build_profile.json ndk_version="28.1.13356709" $SCONS_EXTRA
+          scons platform=${{ matrix.platform }} target=template_release ${{ matrix.flags }} custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json build_profile=thirdparty/godot_cpp_build_profile/build_profile.json ndk_version="28.1.13356709" $SCONS_EXTRA
           cd ..
       - name: Save Godot build cache
         uses: ./aar/thirdparty/godot-cpp/.github/actions/godot-cache-save
