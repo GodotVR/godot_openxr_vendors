@@ -35,6 +35,7 @@ import android.content.Intent
 import android.util.Log
 import android.view.View
 import org.godotengine.godot.Godot
+import org.godotengine.godot.GodotActivity.Companion.EXTRA_COMMAND_LINE_PARAMS
 import org.godotengine.godot.GodotHost
 import org.godotengine.godot.plugin.GodotPlugin
 import org.godotengine.godot.plugin.UsedByGodot
@@ -46,9 +47,6 @@ import org.godotengine.openxr.vendors.utils.*
 class GodotOpenXRHybridAppInternal(godot: Godot?) : GodotPlugin(godot) {
 	internal companion object {
 		private val TAG = GodotOpenXRHybridAppInternal::class.java.simpleName
-
-		private const val EXTRA_HYBRID_LAUNCH_DATA = "godot_openxr_vendors_hybrid_launch_data"
-		const val EXTRA_COMMAND_LINE_PARAMS = "command_line_params"
 
 		private fun getHybridMode(activity: Activity?): HybridMode {
 			if (activity !is GodotHost) {
@@ -78,7 +76,7 @@ class GodotOpenXRHybridAppInternal(godot: Godot?) : GodotPlugin(godot) {
 	override fun getPluginName() = "GodotOpenXRHybridAppInternal"
 
 	override fun onMainCreate(activity: Activity?): View? {
-		hybridLaunchData = activity?.intent?.getStringExtra(EXTRA_HYBRID_LAUNCH_DATA) ?: ""
+		hybridLaunchData = retrieveHybridData(activity?.intent)
 		return null
 	}
 
@@ -103,14 +101,12 @@ class GodotOpenXRHybridAppInternal(godot: Godot?) : GodotPlugin(godot) {
 				putExtras(originalExtras)
 			}
 
-			// Override the hybrid launch data
-			putExtra(EXTRA_HYBRID_LAUNCH_DATA, data)
-
 			// Update the command line parameters
 			val previousParams = context.intent.getStringArrayExtra(EXTRA_COMMAND_LINE_PARAMS)
 			val updatedParams = updateCommandLineForHybridLaunch(
-				mode, previousParams?.asList()
-					?: emptyList()
+				mode,
+				previousParams?.asList() ?: emptyList(),
+				data
 			)
 			putExtra(EXTRA_COMMAND_LINE_PARAMS, updatedParams.toTypedArray())
 		}
