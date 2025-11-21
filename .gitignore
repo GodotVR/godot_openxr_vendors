@@ -22,6 +22,9 @@ local.properties
 *.pdb
 *.lib
 
+# Generated headers
+*.gen.h
+
 # Misc
 compile_commands.json
 .DS_Store

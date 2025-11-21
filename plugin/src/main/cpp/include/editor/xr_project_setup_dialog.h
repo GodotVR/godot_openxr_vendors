@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  editor_plugin.h                                                       */
+/*  xr_project_setup_dialog.h                                             */
 /**************************************************************************/
 /*                       This file is part of:                            */
 /*                              GODOT XR                                  */
@@ -29,28 +29,43 @@
 
 #pragma once
 
-#include <godot_cpp/classes/editor_export_plugin.hpp>
-#include <godot_cpp/classes/editor_plugin.hpp>
-
-using namespace godot;
-class XrProjectSetupDialog;
+#include <godot_cpp/classes/accept_dialog.hpp>
+#include <godot_cpp/templates/local_vector.hpp>
 
 namespace godot {
-class LineEdit;
+class HBoxContainer;
+class OptionButton;
+class VBoxContainer;
+class Label;
+} //namespace godot
+
+namespace godot_openxr_vendors {
+class Recommendation;
 }
 
-class OpenXRVendorsEditorPlugin : public EditorPlugin {
-	GDCLASS(OpenXRVendorsEditorPlugin, EditorPlugin)
+using namespace godot;
+using namespace godot_openxr_vendors;
 
-	static OpenXRVendorsEditorPlugin *singleton;
+class XrProjectSetupDialog : public AcceptDialog {
+	GDCLASS(XrProjectSetupDialog, AcceptDialog);
 
-	Vector<Ref<EditorExportPlugin>> export_plugins;
+	LocalVector<Recommendation *> recommendations;
 
-	XrProjectSetupDialog *_xr_project_setup_dialog = nullptr;
+	OptionButton *project_type_selector = nullptr;
+	OptionButton *vendor_type_selector = nullptr;
+	HBoxContainer *restart_editor_hbox = nullptr;
+	VBoxContainer *scroll_vbox = nullptr;
+	Label *rec_list_empty_label = nullptr;
 
-	void _add_export_plugin(const Ref<EditorExportPlugin> &p_plugin);
+	void add_window_entry(Recommendation *p_recommendation);
+	void filter_recommendations();
+	void _on_recommendation_button_pressed(uint64_t p_recommendation);
+	void _on_filter_selected(int p_item_index);
 
-	void _open_project_setup();
+	Ref<Texture2D> error_texture;
+	Ref<Texture2D> warning_texture;
+	Color error_color = Color(1.0, 0.0, 0.0);
+	Color warning_color = Color(1.0, 1.0, 0.0);
 
 protected:
 	static void _bind_methods();
@@ -58,15 +73,8 @@ protected:
 	void _notification(uint32_t p_what);
 
 public:
-	static OpenXRVendorsEditorPlugin *get_singleton();
+	void open();
 
-	void open_asset_library(const String &p_filter_string);
-	void _on_asset_library_request_completed(int p_result, int p_response_code, const PackedStringArray &p_headers, const PackedByteArray &p_body, LineEdit *p_asset_library_filter, String p_search_string);
-
-	void open_project_settings(const String &p_filter_string);
-
-	void open_export_dialog();
-
-	OpenXRVendorsEditorPlugin();
-	~OpenXRVendorsEditorPlugin();
+	XrProjectSetupDialog();
+	~XrProjectSetupDialog();
 };
