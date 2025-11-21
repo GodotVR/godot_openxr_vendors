@@ -1,0 +1,37 @@
+[gd_scene load_steps=6 format=3 uid="uid://debi32dnmrjov"]
+
+[ext_resource type="Script" uid="uid://g6sb6fs28ltg" path="res://main.gd" id="1_0xm2m"]
+[ext_resource type="Script" uid="uid://dx7x4o6fxqf5i" path="res://addons/common/hud/hud.gd" id="1_ig7tw"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_r04s2"]
+
+[sub_resource type="Sky" id="Sky_t47wx"]
+sky_material = SubResource("ProceduralSkyMaterial_r04s2")
+
+[sub_resource type="Environment" id="Environment_v2m65"]
+background_mode = 1
+background_color = Color(0, 0, 0, 0)
+sky = SubResource("Sky_t47wx")
+ambient_light_source = 3
+
+[node name="Main" type="Node3D"]
+script = ExtResource("1_0xm2m")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_v2m65")
+
+[node name="XROrigin3D" type="XROrigin3D" parent="."]
+
+[node name="XRCamera3D" type="XRCamera3D" parent="XROrigin3D"]
+
+[node name="Hud" type="Label3D" parent="XROrigin3D"]
+script = ExtResource("1_ig7tw")
+distance_to_camera = 3.0
+
+[node name="Spheres" type="Node3D" parent="XROrigin3D"]
+
+[node name="Timer" type="Timer" parent="XROrigin3D"]
+wait_time = 10.0
+autostart = true
+
+[connection signal="timeout" from="XROrigin3D/Timer" to="." method="_update_spheres"]
