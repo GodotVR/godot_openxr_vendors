@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="OpenXRAndroidEnvironmentDepth" inherits="VisualInstance3D" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		Populates Godot's depth buffer with reprojected data from the [code]XR_ANDROID_depth_texture[/code] extension.
+	</brief_description>
+	<description>
+		Populates Godot's depth buffer with reprojected data from the [code]XR_ANDROID_depth_texture[/code] extension, which will (by default) allow everything rendered by Godot to be occluded by real world objects.
+		If you want certain objects to not be occluded, set the [code]render_priority[/code] on their materials to a value lower than [member render_priority] so they're rendered before this node fills the depth buffer. If that isn't flexible enough for your needs, you can write your own shaders that directly use the environment depth data.
+		[b]NOTE:[/b] All transparent objects are always rendered after all opaque objects, so there is no [code]render_priority[/code] value that can cause a transparent object to be rendered before this node.
+	</description>
+	<tutorials>
+	</tutorials>
+	<members>
+		<member name="render_priority" type="int" setter="set_render_priority" getter="get_render_priority" default="-50">
+			Determines the order this node will be rendered relative to other objects in the scene. Lower values will be rendered earlier.
+		</member>
+		<member name="reprojection_offset_exponent" type="float" setter="set_reprojection_offset_exponent" getter="get_reprojection_offset_exponent" default="1.0">
+			Used in calculating the offset applied to reprojected data, if [member reprojection_offset_scale] is greater than [code]0.0[/code].
+		</member>
+		<member name="reprojection_offset_scale" type="float" setter="set_reprojection_offset_scale" getter="get_reprojection_offset_scale" default="0.005">
+			If greater than [code]0.0[/code], an offset will be applied to the reprojected environment depth data, moving the depth of real world objects further away.
+			The amount of offset is relative to the distance from the camera:
+			[codeblock]
+			var offset = pow(z_distance_from_camera, reprojection_offset_exponent) * reprojection_offset_scale
+			[/codeblock]
+		</member>
+	</members>
+</class>
