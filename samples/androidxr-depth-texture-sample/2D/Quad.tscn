@@ -1,0 +1,16 @@
+[gd_scene load_steps=2 format=3 uid="uid://b7klcrsqojm0k"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v3yho"]
+bg_color = Color(1, 1, 0, 1)
+
+[node name="Quad" type="Label"]
+custom_minimum_size = Vector2(400, 400)
+anchors_preset = -1
+offset_right = 219.0
+offset_bottom = 99.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 72
+theme_override_styles/normal = SubResource("StyleBoxFlat_v3yho")
+text = "Status"
+horizontal_alignment = 1
+vertical_alignment = 1
