@@ -37,7 +37,6 @@ package org.godotengine.openxr.vendors.utils
 import android.content.Intent
 import android.util.Base64
 import android.util.Log
-import org.godotengine.godot.GodotActivity.Companion.EXTRA_COMMAND_LINE_PARAMS
 import org.godotengine.godot.GodotLib
 
 private const val TAG = "HybridAppUtils"
@@ -62,6 +61,7 @@ enum class HybridMode(private val nativeValue: Int) {
 	}
 }
 
+internal val EXTRA_COMMAND_LINE_PARAMS = "command_line_params"
 const val HYBRID_DATA_ARG = "--openxr-hybrid-data"
 
 const val HYBRID_APP_FEATURE = "godot_openxr_hybrid_app"
