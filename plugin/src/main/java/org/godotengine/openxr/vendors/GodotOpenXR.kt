@@ -70,7 +70,8 @@ class GodotOpenXR(godot: Godot?) : GodotPlugin(godot) {
 
 		@JvmStatic
 		fun supportsFeature(godot: Godot, featureTag: String): Boolean {
-			val context = godot.context
+			// TODO(v5.x): Switch to `godot.context` when bumping the min Godot supported version to 4.5+
+			val context = godot.getActivity()
 			when (featureTag) {
 				"xr_runtime" -> {
 					return isNativeXRDevice(context)
