@@ -56,14 +56,20 @@ const val PICO_OS = "picoos"
 /**
  * Returns true if running on an Android XR device.
  */
-fun isAndroidXRDevice(context: Context): Boolean {
+fun isAndroidXRDevice(context: Context?): Boolean {
+	if (context == null) {
+		return false
+	}
 	return context.packageManager.hasSystemFeature("android.software.xr.api.openxr")
 }
 
 /**
  * Returns true if running on Meta Horizon OS.
  */
-fun isHorizonOSDevice(context: Context): Boolean {
+fun isHorizonOSDevice(context: Context?): Boolean {
+	if (context == null) {
+		return false
+	}
 	return context.packageManager.hasSystemFeature("oculus.hardware.standalone_vr")
 }
 
@@ -77,6 +83,6 @@ fun isPicoOSDevice(): Boolean {
 /**
  * Returns true if running on a native Android XR device.
  */
-fun isNativeXRDevice(context: Context): Boolean {
+fun isNativeXRDevice(context: Context?): Boolean {
 	return isHorizonOSDevice(context) || isPicoOSDevice() || isAndroidXRDevice(context)
 }
