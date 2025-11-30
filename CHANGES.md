@@ -1,5 +1,10 @@
 # Change history for the Godot OpenXR loaders asset
 
+## 4.2.2
+
+- Fix compatibility with Godot 4.4.x
+- Fix background opacity on AndroidXR when using GL Compatibilty mode
+
 ## 4.2.1
 
 - Fix generation of 16kb page compatible binaries
