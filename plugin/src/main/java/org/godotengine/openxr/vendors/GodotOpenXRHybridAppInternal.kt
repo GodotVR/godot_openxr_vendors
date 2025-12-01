@@ -35,7 +35,6 @@ import android.content.Intent
 import android.util.Log
 import android.view.View
 import org.godotengine.godot.Godot
-import org.godotengine.godot.GodotActivity.Companion.EXTRA_COMMAND_LINE_PARAMS
 import org.godotengine.godot.GodotHost
 import org.godotengine.godot.plugin.GodotPlugin
 import org.godotengine.godot.plugin.UsedByGodot
