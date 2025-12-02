@@ -51,6 +51,7 @@ private:
 	MeshInstance3D *mesh_instance = nullptr;
 
 	void setup_hand_mesh(const Ref<Mesh> &p_hand_mesh);
+	void on_request_permissions_result(const String &p_permission, bool p_granted);
 
 protected:
 	void _notification(int p_what);

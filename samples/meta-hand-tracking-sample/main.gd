@@ -31,7 +31,6 @@ const CAPSULE_MATERIAL = preload("res://capsule_material.tres")
 @onready var right_little_pinch: MeshInstance3D = $RightHandInterface/DiscreteIndicators/LittlePinch
 
 var fb_capsule_ext
-var countdown_to_group_hand_meshes := 3
 var left_capsules_loaded := false
 var right_capsules_loaded := false
 
@@ -41,18 +40,17 @@ func _ready() -> void:
 	if xr_interface and xr_interface.is_initialized():
 		fb_capsule_ext = Engine.get_singleton("OpenXRFbHandTrackingCapsulesExtensionWrapper")
 
+	left_hand_skeleton.openxr_fb_hand_tracking_mesh_ready.connect(_add_mesh_group.bind(left_hand_skeleton, "hand_mesh_left"))
+	right_hand_skeleton.openxr_fb_hand_tracking_mesh_ready.connect(_add_mesh_group.bind(right_hand_skeleton, "hand_mesh_right"))
+
+
+func _add_mesh_group(p_parent: Node3D, p_group: String) -> void:
+	for child in p_parent.get_children():
+		if child is MeshInstance3D:
+			child.add_to_group(p_group)
+
 
 func _process(delta):
-	if countdown_to_group_hand_meshes > 0:
-		countdown_to_group_hand_meshes -= 1
-		if countdown_to_group_hand_meshes == 0:
-			for child in right_hand_skeleton.get_children():
-				if child is MeshInstance3D:
-					child.add_to_group("hand_mesh_right")
-			for child in left_hand_skeleton.get_children():
-				if child is MeshInstance3D:
-					child.add_to_group("hand_mesh_left")
-
 	if not left_capsules_loaded:
 		var tracker: XRHandTracker = XRServer.get_tracker("/user/hand_tracker/left")
 		if tracker and tracker.has_tracking_data:
