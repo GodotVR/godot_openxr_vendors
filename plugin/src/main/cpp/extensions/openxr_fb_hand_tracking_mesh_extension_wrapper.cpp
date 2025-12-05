@@ -361,7 +361,7 @@ void OpenXRFbHandTrackingMeshExtensionWrapper::reset_skeleton_pose(Hand p_hand, 
 		XrVector3f pos = bone_data[p_hand].joint_poses[i].position;
 		Transform3D transform = Transform3D(Quaternion(rot.x, rot.y, rot.z, rot.w) * rot_adjustment, Vector3(pos.x, pos.y, pos.z));
 
-		if (i == 1) {
+		if (i == 1 || parent_index == -1) {
 			r_skeleton->set_bone_rest(i, transform);
 		} else {
 			XrQuaternionf parent_rot = bone_data[p_hand].joint_poses[parent_index].orientation;

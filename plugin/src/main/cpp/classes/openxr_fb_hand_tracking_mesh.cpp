@@ -32,6 +32,7 @@
 #include "extensions/openxr_fb_hand_tracking_mesh_extension_wrapper.h"
 
 #include <godot_cpp/classes/engine.hpp>
+#include <godot_cpp/classes/main_loop.hpp>
 #include <godot_cpp/classes/project_settings.hpp>
 #include <godot_cpp/classes/xr_hand_modifier3d.hpp>
 #include <godot_cpp/classes/xr_hand_tracker.hpp>
@@ -61,6 +62,14 @@ void OpenXRFbHandTrackingMesh::setup_hand_mesh(const Ref<Mesh> &p_mesh) {
 	}
 
 	emit_signal("openxr_fb_hand_tracking_mesh_ready");
+}
+
+void OpenXRFbHandTrackingMesh::on_request_permissions_result(const String &p_permission, bool p_granted) {
+	// On Android XR, the data will be unavailable until the permission is granted. So, if we get notified that the permission
+	// was granted, then we try to fetch the hand data again.
+	if (p_permission == "android.permission.HAND_TRACKING" && p_granted) {
+		OpenXRFbHandTrackingMeshExtensionWrapper::get_singleton()->request_hand_mesh_data(hand, callable_mp(this, &OpenXRFbHandTrackingMesh::setup_hand_mesh));
+	}
 }
 
 MeshInstance3D *OpenXRFbHandTrackingMesh::get_mesh_instance() const {
@@ -143,6 +152,11 @@ void OpenXRFbHandTrackingMesh::_notification(int p_what) {
 		case NOTIFICATION_READY: {
 			if (ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/extensions/meta/hand_tracking_mesh")) {
 				OpenXRFbHandTrackingMeshExtensionWrapper::get_singleton()->request_hand_mesh_data(hand, callable_mp(this, &OpenXRFbHandTrackingMesh::setup_hand_mesh));
+
+				MainLoop *main_loop = Engine::get_singleton()->get_main_loop();
+				if (main_loop) {
+					main_loop->connect("on_request_permissions_result", callable_mp(this, &OpenXRFbHandTrackingMesh::on_request_permissions_result));
+				}
 			}
 		} break;
 		case NOTIFICATION_ENTER_TREE: {

@@ -164,6 +164,13 @@ void OpenXRFbHandTrackingAimExtensionWrapper::_on_process() {
 			confidence = XRPose::TrackingConfidence::XR_TRACKING_CONFIDENCE_NONE;
 		}
 
+		// If we get invalid data from the extension (which can happen before permissions are granted by the user),
+		// we clear out the transform to prevent error spam about the transform not being finite.
+		if (!transform.is_finite()) {
+			transform = Transform3D();
+			confidence = XRPose::TrackingConfidence::XR_TRACKING_CONFIDENCE_NONE;
+		}
+
 		trackers[i]->set_pose("default", transform, linear_velocity, angular_velocity, confidence);
 		trackers[i]->set_input("index_pinch", (bool)(aim_state[i].status & XR_HAND_TRACKING_AIM_INDEX_PINCHING_BIT_FB));
 		trackers[i]->set_input("middle_pinch", (bool)(aim_state[i].status & XR_HAND_TRACKING_AIM_MIDDLE_PINCHING_BIT_FB));
