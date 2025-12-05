@@ -107,6 +107,7 @@ CORE_TYPES: List[str] = [
     "MeshInstance3D",
     "Node3D",
     "Object",
+    "PackedByteArray",
     "PackedScene",
     "PackedStringArray",
     "PackedVector2Array",
