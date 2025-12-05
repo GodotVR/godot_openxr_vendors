@@ -208,6 +208,9 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			GDREGISTER_CLASS(OpenXRHtcFacialTrackingExtensionWrapper);
 			GDREGISTER_CLASS(OpenXRHtcPassthroughExtensionWrapper);
 			GDREGISTER_CLASS(OpenXRMlMarkerUnderstandingExtensionWrapper);
+			GDREGISTER_CLASS(OpenXRFbSpaceWarpExtensionWrapper);
+			GDREGISTER_CLASS(OpenXRMetaEnvironmentDepthExtensionWrapper);
+			GDREGISTER_CLASS(OpenXRAndroidEnvironmentDepthExtensionWrapper);
 
 // @todo GH Issue 304: Remove check for meta headers when feature becomes part of OpenXR spec.
 #ifdef META_HEADERS_ENABLED
@@ -310,6 +313,14 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 				_register_extension_with_openxr(OpenXRMetaColocationDiscoveryExtensionWrapper::get_singleton());
 			}
 
+			if (_get_bool_project_setting("xr/openxr/extensions/meta/application_space_warp")) {
+				_register_extension_with_openxr(OpenXRFbSpaceWarpExtensionWrapper::get_singleton());
+			}
+
+			if (_get_bool_project_setting("xr/openxr/extensions/meta/environment_depth")) {
+				_register_extension_with_openxr(OpenXRMetaEnvironmentDepthExtensionWrapper::get_singleton());
+			}
+
 			if (_get_bool_project_setting("xr/openxr/extensions/htc/face_tracking")) {
 				_register_extension_with_openxr(OpenXRHtcFacialTrackingExtensionWrapper::get_singleton());
 			}
@@ -342,23 +353,9 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 				_register_extension_with_openxr(OpenXRAndroidSceneMeshingExtensionWrapper::get_singleton());
 			}
 
-			// Only works with Godot 4.5 or later.
-			if (godot::internal::godot_version.minor >= 5) {
-				GDREGISTER_CLASS(OpenXRFbSpaceWarpExtensionWrapper);
-				GDREGISTER_CLASS(OpenXRMetaEnvironmentDepthExtensionWrapper);
-				GDREGISTER_CLASS(OpenXRAndroidEnvironmentDepthExtensionWrapper);
-
-				if (_get_bool_project_setting("xr/openxr/extensions/meta/application_space_warp")) {
-					_register_extension_with_openxr(OpenXRFbSpaceWarpExtensionWrapper::get_singleton());
-				}
-				if (_get_bool_project_setting("xr/openxr/extensions/meta/environment_depth")) {
-					_register_extension_with_openxr(OpenXRMetaEnvironmentDepthExtensionWrapper::get_singleton());
-				}
-				if (_get_bool_project_setting("xr/openxr/extensions/androidxr/environment_depth")) {
-					_register_extension_with_openxr(OpenXRAndroidEnvironmentDepthExtensionWrapper::get_singleton());
-				}
+			if (_get_bool_project_setting("xr/openxr/extensions/androidxr/environment_depth")) {
+				_register_extension_with_openxr(OpenXRAndroidEnvironmentDepthExtensionWrapper::get_singleton());
 			}
-
 		} break;
 
 		case MODULE_INITIALIZATION_LEVEL_SERVERS:
@@ -388,6 +385,9 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			_register_extension_as_singleton(OpenXRAndroidLightEstimationExtensionWrapper::get_singleton());
 			_register_extension_as_singleton(OpenXRAndroidPassthroughCameraStateExtensionWrapper::get_singleton());
 			_register_extension_as_singleton(OpenXRAndroidSceneMeshingExtensionWrapper::get_singleton());
+			_register_extension_as_singleton(OpenXRFbSpaceWarpExtensionWrapper::get_singleton());
+			_register_extension_as_singleton(OpenXRMetaEnvironmentDepthExtensionWrapper::get_singleton());
+			_register_extension_as_singleton(OpenXRAndroidEnvironmentDepthExtensionWrapper::get_singleton());
 
 // @todo GH Issue 304: Remove check for meta headers when feature becomes part of OpenXR spec.
 #ifdef META_HEADERS_ENABLED
@@ -406,6 +406,8 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			GDREGISTER_CLASS(OpenXRFbSpatialEntityUser);
 			GDREGISTER_CLASS(OpenXRFbPassthroughGeometry);
 			GDREGISTER_CLASS(OpenXRMetaPassthroughColorLut);
+			GDREGISTER_CLASS(OpenXRMetaEnvironmentDepth);
+			GDREGISTER_CLASS(OpenXRAndroidEnvironmentDepth);
 
 			GDREGISTER_CLASS(OpenXRMlMarkerTracker);
 			GDREGISTER_CLASS(OpenXRMlMarkerDetector);
@@ -424,15 +426,6 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 
 			Engine::get_singleton()->register_singleton("OpenXRVendorPerformanceMetrics", OpenXRVendorPerformanceMetrics::get_singleton());
 
-			// Only works with Godot 4.5 or later.
-			if (godot::internal::godot_version.minor >= 5) {
-				_register_extension_as_singleton(OpenXRFbSpaceWarpExtensionWrapper::get_singleton());
-				_register_extension_as_singleton(OpenXRMetaEnvironmentDepthExtensionWrapper::get_singleton());
-				_register_extension_as_singleton(OpenXRAndroidEnvironmentDepthExtensionWrapper::get_singleton());
-
-				GDREGISTER_CLASS(OpenXRMetaEnvironmentDepth);
-				GDREGISTER_CLASS(OpenXRAndroidEnvironmentDepth);
-			}
 		} break;
 
 		case MODULE_INITIALIZATION_LEVEL_EDITOR: {
@@ -450,16 +443,13 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 
 			EditorPlugins::add_by_type<OpenXRVendorsEditorPlugin>();
 
-			// Only works with Godot 4.5 or later.
-			if (godot::internal::godot_version.minor >= 5) {
-				Callable meta_environment_depth_setup_global_uniforms = callable_mp(OpenXRMetaEnvironmentDepthExtensionWrapper::get_singleton(), &OpenXRMetaEnvironmentDepthExtensionWrapper::setup_global_uniforms);
-				meta_environment_depth_setup_global_uniforms.call_deferred();
-				ProjectSettings::get_singleton()->connect("settings_changed", meta_environment_depth_setup_global_uniforms);
+			Callable meta_environment_depth_setup_global_uniforms = callable_mp(OpenXRMetaEnvironmentDepthExtensionWrapper::get_singleton(), &OpenXRMetaEnvironmentDepthExtensionWrapper::setup_global_uniforms);
+			meta_environment_depth_setup_global_uniforms.call_deferred();
+			ProjectSettings::get_singleton()->connect("settings_changed", meta_environment_depth_setup_global_uniforms);
 
-				Callable android_environment_depth_setup_global_uniforms = callable_mp(OpenXRAndroidEnvironmentDepthExtensionWrapper::get_singleton(), &OpenXRAndroidEnvironmentDepthExtensionWrapper::setup_global_uniforms);
-				android_environment_depth_setup_global_uniforms.call_deferred();
-				ProjectSettings::get_singleton()->connect("settings_changed", android_environment_depth_setup_global_uniforms);
-			}
+			Callable android_environment_depth_setup_global_uniforms = callable_mp(OpenXRAndroidEnvironmentDepthExtensionWrapper::get_singleton(), &OpenXRAndroidEnvironmentDepthExtensionWrapper::setup_global_uniforms);
+			android_environment_depth_setup_global_uniforms.call_deferred();
+			ProjectSettings::get_singleton()->connect("settings_changed", android_environment_depth_setup_global_uniforms);
 		} break;
 
 		case MODULE_INITIALIZATION_LEVEL_MAX:
@@ -562,6 +552,8 @@ void add_plugin_project_settings() {
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/dynamic_resolution", true);
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/headset_id", false);
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/colocation_discovery", false);
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/application_space_warp", false);
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/environment_depth", false);
 
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/magic_leap/marker_understanding", false);
 
@@ -570,13 +562,7 @@ void add_plugin_project_settings() {
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/androidxr/light_estimation", false);
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/androidxr/passthrough_camera_state", false);
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/androidxr/scene_meshing", false);
-
-	// Only works with Godot 4.5 or later.
-	if (godot::internal::godot_version.minor >= 5) {
-		_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/application_space_warp", false);
-		_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/environment_depth", false);
-		_add_bool_project_setting(project_settings, "xr/openxr/extensions/androidxr/environment_depth", false);
-	}
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/androidxr/environment_depth", false);
 
 // @todo GH Issue 304: Remove check for meta headers when feature becomes part of OpenXR spec.
 #ifdef META_HEADERS_ENABLED

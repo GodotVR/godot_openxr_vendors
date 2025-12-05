@@ -78,7 +78,7 @@ uint64_t OpenXRFbFaceTrackingExtensionWrapper::_set_system_properties_and_get_ne
 	return reinterpret_cast<uint64_t>(&system_face_tracking_properties2);
 }
 
-godot::Dictionary OpenXRFbFaceTrackingExtensionWrapper::_get_requested_extensions() {
+godot::Dictionary OpenXRFbFaceTrackingExtensionWrapper::_get_requested_extensions(uint64_t p_xr_version) {
 	godot::Dictionary result;
 	for (auto ext : request_extensions) {
 		godot::String key = ext.first;

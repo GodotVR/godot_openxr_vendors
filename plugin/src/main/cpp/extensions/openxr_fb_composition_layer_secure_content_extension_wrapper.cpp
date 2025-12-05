@@ -64,7 +64,7 @@ void OpenXRFbCompositionLayerSecureContentExtensionWrapper::cleanup() {
 	fb_composition_layer_secure_content = false;
 }
 
-Dictionary OpenXRFbCompositionLayerSecureContentExtensionWrapper::_get_requested_extensions() {
+Dictionary OpenXRFbCompositionLayerSecureContentExtensionWrapper::_get_requested_extensions(uint64_t p_xr_version) {
 	Dictionary result;
 	for (auto ext : request_extensions) {
 		uint64_t value = reinterpret_cast<uint64_t>(ext.value);

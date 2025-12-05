@@ -116,7 +116,7 @@ void OpenXRFbPassthroughExtensionWrapper::_bind_methods() {
 	BIND_ENUM_CONSTANT(PASSTHROUGH_ERROR_RESTORED);
 }
 
-godot::Dictionary OpenXRFbPassthroughExtensionWrapper::_get_requested_extensions() {
+godot::Dictionary OpenXRFbPassthroughExtensionWrapper::_get_requested_extensions(uint64_t p_xr_version) {
 	godot::Dictionary result;
 	for (auto ext : request_extensions) {
 		godot::String key = ext.first;

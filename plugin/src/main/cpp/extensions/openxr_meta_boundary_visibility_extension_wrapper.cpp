@@ -61,7 +61,7 @@ OpenXRMetaBoundaryVisibilityExtensionWrapper::~OpenXRMetaBoundaryVisibilityExten
 	singleton = nullptr;
 }
 
-godot::Dictionary OpenXRMetaBoundaryVisibilityExtensionWrapper::_get_requested_extensions() {
+godot::Dictionary OpenXRMetaBoundaryVisibilityExtensionWrapper::_get_requested_extensions(uint64_t p_xr_version) {
 	godot::Dictionary result;
 	for (auto ext : request_extensions) {
 		godot::String key = ext.first;

@@ -224,7 +224,7 @@ uint64_t OpenXRFbColorSpaceExtensionWrapper::_set_system_properties_and_get_next
 	return reinterpret_cast<uint64_t>(p_next_pointer);
 }
 
-godot::Dictionary OpenXRFbColorSpaceExtensionWrapper::_get_requested_extensions() {
+godot::Dictionary OpenXRFbColorSpaceExtensionWrapper::_get_requested_extensions(uint64_t p_xr_version) {
 	godot::Dictionary result;
 	for (auto ext : request_extensions) {
 		godot::String key = ext.first;

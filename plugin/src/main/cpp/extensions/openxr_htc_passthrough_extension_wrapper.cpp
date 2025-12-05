@@ -64,7 +64,7 @@ void OpenXRHtcPassthroughExtensionWrapper::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("is_passthrough_started"), &OpenXRHtcPassthroughExtensionWrapper::is_passthrough_started);
 }
 
-godot::Dictionary OpenXRHtcPassthroughExtensionWrapper::_get_requested_extensions() {
+godot::Dictionary OpenXRHtcPassthroughExtensionWrapper::_get_requested_extensions(uint64_t p_xr_version) {
 	godot::Dictionary result;
 
 	for (auto ext : request_extensions) {

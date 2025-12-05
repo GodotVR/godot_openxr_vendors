@@ -155,7 +155,7 @@ void OpenXRAndroidEnvironmentDepthExtensionWrapper::_bind_methods() {
 	BIND_ENUM_CONSTANT(DEPTH_CAMERA_RESOLUTION_320x320);
 }
 
-Dictionary OpenXRAndroidEnvironmentDepthExtensionWrapper::_get_requested_extensions() {
+Dictionary OpenXRAndroidEnvironmentDepthExtensionWrapper::_get_requested_extensions(uint64_t p_xr_version) {
 	Dictionary result;
 	for (auto ext : request_extensions) {
 		uint64_t value = reinterpret_cast<uint64_t>(ext.value);
