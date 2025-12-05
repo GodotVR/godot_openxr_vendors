@@ -42,7 +42,7 @@ class OpenXRFbCompositionLayerSettingsExtensionWrapper : public OpenXRExtensionW
 	GDCLASS(OpenXRFbCompositionLayerSettingsExtensionWrapper, OpenXRExtensionWrapperExtension);
 
 public:
-	godot::Dictionary _get_requested_extensions() override;
+	godot::Dictionary _get_requested_extensions(uint64_t p_xr_version) override;
 
 	static OpenXRFbCompositionLayerSettingsExtensionWrapper *get_singleton();
 

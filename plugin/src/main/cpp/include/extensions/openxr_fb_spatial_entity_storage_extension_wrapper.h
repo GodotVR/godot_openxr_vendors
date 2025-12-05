@@ -43,7 +43,7 @@ class OpenXRFbSpatialEntityStorageExtensionWrapper : public OpenXRExtensionWrapp
 	GDCLASS(OpenXRFbSpatialEntityStorageExtensionWrapper, OpenXRExtensionWrapperExtension);
 
 public:
-	Dictionary _get_requested_extensions() override;
+	Dictionary _get_requested_extensions(uint64_t p_xr_version) override;
 	void _on_instance_created(uint64_t instance) override;
 	void _on_instance_destroyed() override;
 	virtual bool _on_event_polled(const void *event) override;

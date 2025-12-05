@@ -72,7 +72,7 @@ void OpenXRFbSceneCaptureExtensionWrapper::cleanup() {
 	fb_scene_capture_ext = false;
 }
 
-godot::Dictionary OpenXRFbSceneCaptureExtensionWrapper::_get_requested_extensions() {
+godot::Dictionary OpenXRFbSceneCaptureExtensionWrapper::_get_requested_extensions(uint64_t p_xr_version) {
 	godot::Dictionary result;
 	for (auto ext : request_extensions) {
 		godot::String key = ext.first;
