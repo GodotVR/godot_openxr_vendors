@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="OpenXRAndroidEnvironmentDepthExtensionWrapper" inherits="OpenXRExtensionWrapperExtension" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		Wraps the [code]XR_ANDROID_depth_texture[/code] extension.
+	</brief_description>
+	<description>
+		Wraps the [code]XR_ANDROID_depth_texture[/code] extension.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="get_supported_resolutions" qualifiers="const">
+			<return type="Array" />
+			<description>
+				Return an [Array] of containing [enum DepthCameraResolution], which are supported resolutions to use in [method set_resolution].
+			</description>
+		</method>
+		<method name="is_environment_depth_started">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] if environment depth has been started; otherwise, [code]false[/code].
+			</description>
+		</method>
+		<method name="is_environment_depth_supported">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] if environment depth is supported; otherwise, [code]false[/code].
+			</description>
+		</method>
+		<method name="set_resolution">
+			<return type="bool" />
+			<param index="0" name="resolution" type="int" enum="OpenXRAndroidEnvironmentDepthExtensionWrapper.DepthCameraResolution" />
+			<description>
+				Set the desired depth texture resolution to retrieve in the next frame.
+				Default is [constant DEPTH_CAMERA_RESOLUTION_320x320].
+			</description>
+		</method>
+		<method name="set_smooth">
+			<return type="bool" />
+			<param index="0" name="smooth" type="bool" />
+			<description>
+				Set whether the depth texture should be smooth or not.
+				Default is [code]false[/code].
+			</description>
+		</method>
+		<method name="start_environment_depth">
+			<return type="bool" />
+			<description>
+				Starts environment depth.
+			</description>
+		</method>
+		<method name="stop_environment_depth">
+			<return type="void" />
+			<description>
+				Stops environment depth.
+			</description>
+		</method>
+	</methods>
+	<signals>
+		<signal name="openxr_android_environment_depth_started">
+			<description>
+				Emitted after environment depth successfully starts.
+			</description>
+		</signal>
+		<signal name="openxr_android_environment_depth_stopped">
+			<description>
+				Emitted after environment depth successfully stops.
+			</description>
+		</signal>
+	</signals>
+	<constants>
+		<constant name="DEPTH_CAMERA_RESOLUTION_80x80" value="0" enum="DepthCameraResolution">
+		</constant>
+		<constant name="DEPTH_CAMERA_RESOLUTION_160x160" value="1" enum="DepthCameraResolution">
+		</constant>
+		<constant name="DEPTH_CAMERA_RESOLUTION_320x320" value="2" enum="DepthCameraResolution">
+		</constant>
+	</constants>
+</class>

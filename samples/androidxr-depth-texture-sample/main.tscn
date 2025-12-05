@@ -1,0 +1,39 @@
+[gd_scene load_steps=7 format=3 uid="uid://debi32dnmrjov"]
+
+[ext_resource type="Script" uid="uid://dpb5v8hdohlpc" path="res://main.gd" id="1_ig7tw"]
+[ext_resource type="PackedScene" uid="uid://dcwibwtseri8h" path="res://addons/common/viewport_2d_in_3d/viewport_2d_in_3d.tscn" id="2_h2yge"]
+[ext_resource type="PackedScene" uid="uid://b7klcrsqojm0k" path="res://2D/Quad.tscn" id="3_1bvp3"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_jgrlg"]
+
+[sub_resource type="Sky" id="Sky_6tfcy"]
+sky_material = SubResource("ProceduralSkyMaterial_jgrlg")
+
+[sub_resource type="Environment" id="Environment_tep2q"]
+background_mode = 1
+background_color = Color(0, 0, 0, 0)
+sky = SubResource("Sky_6tfcy")
+ambient_light_source = 3
+
+[node name="Main" type="Node3D"]
+script = ExtResource("1_ig7tw")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_tep2q")
+
+[node name="XROrigin3D" type="XROrigin3D" parent="."]
+
+[node name="XRCamera3D" type="XRCamera3D" parent="XROrigin3D"]
+
+[node name="OpenXRAndroidEnvironmentDepth" type="OpenXRAndroidEnvironmentDepth" parent="XROrigin3D/XRCamera3D"]
+
+[node name="Viewport2Din3D" parent="XROrigin3D/XRCamera3D" instance=ExtResource("2_h2yge")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.5)
+scene = ExtResource("3_1bvp3")
+pixel_size = 0.0010000000038417
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 10.0
+autostart = true
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

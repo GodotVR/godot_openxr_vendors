@@ -293,9 +293,14 @@ String AndroidXREditorExportPlugin::_get_android_manifest_element_contents(const
 		}
 	}
 
-	// Check for spatial entities
-	if ((bool)project_settings->get_setting_with_override("xr/openxr/extensions/spatial_entity/enabled")) {
-		contents += "	<uses-permission android:name=\"android.permission.SCENE_UNDERSTANDING_COARSE\" />\n";
+	// SCENE_UNDERSTANDING_FINE is required for depth texture and other texture access features.
+	// When SCENE_UNDERSTANDING_FINE is requested, SCENE_UNDERSTANDING_COARSE is not needed.
+	// Spatial entity and most of scene understanding features only require
+	// SCENE_UNDERSTANDING_COARSE.
+	if ((bool)project_settings->get_setting_with_override("xr/openxr/extensions/androidxr/environment_depth")) {
+		contents += "    <uses-permission android:name=\"android.permission.SCENE_UNDERSTANDING_FINE\" />\n";
+	} else if ((bool)project_settings->get_setting_with_override("xr/openxr/extensions/spatial_entity/enabled")) {
+		contents += "    <uses-permission android:name=\"android.permission.SCENE_UNDERSTANDING_COARSE\" />\n";
 	}
 
 	return contents;
