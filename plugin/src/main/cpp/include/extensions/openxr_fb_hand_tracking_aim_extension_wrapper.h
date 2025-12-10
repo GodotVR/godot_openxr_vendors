@@ -46,7 +46,7 @@ class OpenXRFbHandTrackingAimExtensionWrapper : public OpenXRExtensionWrapperExt
 public:
 	using Hand = OpenXRInterface::Hand;
 
-	godot::Dictionary _get_requested_extensions() override;
+	godot::Dictionary _get_requested_extensions(uint64_t p_xr_version) override;
 
 	PackedStringArray _get_suggested_tracker_names() override;
 
