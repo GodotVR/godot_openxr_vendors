@@ -602,16 +602,38 @@ static void create_shader_global_uniform(const String &p_name, RenderingServer::
 	}
 }
 
-void OpenXRAndroidEnvironmentDepthExtensionWrapper::setup_global_uniforms() {
-	if (already_setup_global_uniforms) {
-		return;
+static void remove_shader_global_uniform(const String &p_name, RenderingServer *p_rendering_server, ProjectSettings *p_project_settings) {
+	String setting_name = "shader_globals/" + p_name;
+	if (p_project_settings->has_setting(setting_name)) {
+		p_rendering_server->global_shader_parameter_remove(p_name);
+		p_project_settings->clear(setting_name);
 	}
+}
 
+void OpenXRAndroidEnvironmentDepthExtensionWrapper::setup_global_uniforms() {
 	RenderingServer *rs = RenderingServer::get_singleton();
 	ERR_FAIL_NULL(rs);
 
 	ProjectSettings *project_settings = ProjectSettings::get_singleton();
 	ERR_FAIL_NULL(project_settings);
+
+	bool enabled = project_settings->get_setting_with_override("xr/openxr/extensions/androidxr/environment_depth");
+	if (!enabled) {
+		remove_shader_global_uniform(ANDROID_ENVIRONMENT_DEPTH_AVAILABLE_NAME, rs, project_settings);
+		remove_shader_global_uniform(ANDROID_ENVIRONMENT_DEPTH_TEXTURE_NAME, rs, project_settings);
+		remove_shader_global_uniform(ANDROID_ENVIRONMENT_DEPTH_RESOLUTION_NAME, rs, project_settings);
+		remove_shader_global_uniform(ANDROID_ENVIRONMENT_DEPTH_TANFOV_LEFT_NAME, rs, project_settings);
+		remove_shader_global_uniform(ANDROID_ENVIRONMENT_DEPTH_TANFOV_RIGHT_NAME, rs, project_settings);
+		remove_shader_global_uniform(ANDROID_ENVIRONMENT_DEPTH_CAMERA_TO_WORLD_LEFT_NAME, rs, project_settings);
+		remove_shader_global_uniform(ANDROID_ENVIRONMENT_DEPTH_CAMERA_TO_WORLD_RIGHT_NAME, rs, project_settings);
+
+		already_setup_global_uniforms = false;
+		return;
+	}
+
+	if (already_setup_global_uniforms) {
+		return;
+	}
 
 	Engine *engine = Engine::get_singleton();
 	ERR_FAIL_NULL(engine);

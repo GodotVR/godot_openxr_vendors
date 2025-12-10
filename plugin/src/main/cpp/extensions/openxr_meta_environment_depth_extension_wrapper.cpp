@@ -562,22 +562,24 @@ void OpenXRMetaEnvironmentDepthExtensionWrapper::setup_global_uniforms() {
 
 	bool enabled = project_settings->get_setting_with_override("xr/openxr/extensions/meta/environment_depth");
 
-	if (already_setup_global_uniforms) {
-		if (!enabled) {
-			remove_shader_global_uniform(META_ENVIRONMENT_DEPTH_AVAILABLE_NAME, rs, project_settings);
-			remove_shader_global_uniform(META_ENVIRONMENT_DEPTH_TEXTURE_NAME, rs, project_settings);
-			remove_shader_global_uniform(META_ENVIRONMENT_DEPTH_TEXEL_SIZE_NAME, rs, project_settings);
-			remove_shader_global_uniform(META_ENVIRONMENT_DEPTH_PROJECTION_VIEW_LEFT_NAME, rs, project_settings);
-			remove_shader_global_uniform(META_ENVIRONMENT_DEPTH_PROJECTION_VIEW_RIGHT_NAME, rs, project_settings);
-			remove_shader_global_uniform(META_ENVIRONMENT_DEPTH_INV_PROJECTION_VIEW_LEFT_NAME, rs, project_settings);
-			remove_shader_global_uniform(META_ENVIRONMENT_DEPTH_INV_PROJECTION_VIEW_RIGHT_NAME, rs, project_settings);
-			remove_shader_global_uniform(META_ENVIRONMENT_DEPTH_FROM_CAMERA_PROJECTION_LEFT_NAME, rs, project_settings);
-			remove_shader_global_uniform(META_ENVIRONMENT_DEPTH_FROM_CAMERA_PROJECTION_RIGHT_NAME, rs, project_settings);
-			remove_shader_global_uniform(META_ENVIRONMENT_DEPTH_TO_CAMERA_PROJECTION_LEFT_NAME, rs, project_settings);
-			remove_shader_global_uniform(META_ENVIRONMENT_DEPTH_TO_CAMERA_PROJECTION_RIGHT_NAME, rs, project_settings);
+	if (!enabled) {
+		remove_shader_global_uniform(META_ENVIRONMENT_DEPTH_AVAILABLE_NAME, rs, project_settings);
+		remove_shader_global_uniform(META_ENVIRONMENT_DEPTH_TEXTURE_NAME, rs, project_settings);
+		remove_shader_global_uniform(META_ENVIRONMENT_DEPTH_TEXEL_SIZE_NAME, rs, project_settings);
+		remove_shader_global_uniform(META_ENVIRONMENT_DEPTH_PROJECTION_VIEW_LEFT_NAME, rs, project_settings);
+		remove_shader_global_uniform(META_ENVIRONMENT_DEPTH_PROJECTION_VIEW_RIGHT_NAME, rs, project_settings);
+		remove_shader_global_uniform(META_ENVIRONMENT_DEPTH_INV_PROJECTION_VIEW_LEFT_NAME, rs, project_settings);
+		remove_shader_global_uniform(META_ENVIRONMENT_DEPTH_INV_PROJECTION_VIEW_RIGHT_NAME, rs, project_settings);
+		remove_shader_global_uniform(META_ENVIRONMENT_DEPTH_FROM_CAMERA_PROJECTION_LEFT_NAME, rs, project_settings);
+		remove_shader_global_uniform(META_ENVIRONMENT_DEPTH_FROM_CAMERA_PROJECTION_RIGHT_NAME, rs, project_settings);
+		remove_shader_global_uniform(META_ENVIRONMENT_DEPTH_TO_CAMERA_PROJECTION_LEFT_NAME, rs, project_settings);
+		remove_shader_global_uniform(META_ENVIRONMENT_DEPTH_TO_CAMERA_PROJECTION_RIGHT_NAME, rs, project_settings);
 
-			already_setup_global_uniforms = false;
-		}
+		already_setup_global_uniforms = false;
+		return;
+	}
+
+	if (already_setup_global_uniforms) {
 		return;
 	}
 
