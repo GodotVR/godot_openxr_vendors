@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="OpenXRAndroidFaceTrackingExtensionWrapper" inherits="OpenXRExtensionWrapperExtension" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		Wraps the [code]XR_ANDROID_face_tracking[/code] extension.
+	</brief_description>
+	<description>
+		Wraps the [code]XR_ANDROID_face_tracking[/code] extension.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="get_face_calibration_state" qualifiers="const">
+			<return type="int" enum="OpenXRAndroidFaceTrackingExtensionWrapper.CalibrationState" />
+			<description>
+				Returns face tracking calibration state.
+				Applications can use the return value to optionally prompt the user to calibrate face tracking using settings app.
+			</description>
+		</method>
+	</methods>
+	<constants>
+		<constant name="CALIBRATION_STATE_UNAVAILABLE" value="0" enum="CalibrationState">
+			Indicates that the calibration state could not be determined. This possibly due to required permissions not being granted.
+		</constant>
+		<constant name="CALIBRATION_STATE_UNCALIBRATED" value="1" enum="CalibrationState">
+			Indicates that face tracking is not calibrated.
+		</constant>
+		<constant name="CALIBRATION_STATE_CALIBRATED" value="2" enum="CalibrationState">
+			Indicates that face tracking is calibrated.
+		</constant>
+	</constants>
+</class>

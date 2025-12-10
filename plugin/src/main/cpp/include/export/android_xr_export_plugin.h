@@ -41,6 +41,9 @@ class AndroidXREditorExportPlugin : public OpenXRVendorsEditorExportPlugin {
 	static const int EYE_TRACKING_OPTIONAL_VALUE = 0;
 	static const int EYE_TRACKING_REQUIRED_VALUE = 1;
 
+	static const int FACE_TRACKING_OPTIONAL_VALUE = 0;
+	static const int FACE_TRACKING_REQUIRED_VALUE = 1;
+
 	static const int HAND_TRACKING_OPTIONAL_VALUE = 0;
 	static const int HAND_TRACKING_REQUIRED_VALUE = 1;
 
@@ -70,6 +73,7 @@ protected:
 	static void _bind_methods();
 
 	Dictionary _eye_tracking_option;
+	Dictionary _face_tracking_option;
 	Dictionary _hand_tracking_option;
 	Dictionary _tracked_controllers_option;
 	Dictionary _recommended_boundary_type_option;
