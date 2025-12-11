@@ -1,3 +1,6 @@
 [submodule "thirdparty/godot-cpp"]
 	path = thirdparty/godot-cpp
 	url = https://github.com/godotengine/godot-cpp
+[submodule "thirdparty/openxr-source"]
+	path = thirdparty/openxr-source
+	url = https://github.com/KhronosGroup/OpenXR-SDK-Source.git
