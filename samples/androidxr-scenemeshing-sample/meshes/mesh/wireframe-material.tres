@@ -1,0 +1,10 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://cl3ucly7cjhvy"]
+
+[ext_resource type="Shader" uid="uid://cpcqblxissapu" path="res://meshes/mesh/wireframe-material.gdshader" id="1_f1auu"]
+
+[resource]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("1_f1auu")
+shader_parameter/wire_width = 1.0
+shader_parameter/wire_smoothness = 0.033
