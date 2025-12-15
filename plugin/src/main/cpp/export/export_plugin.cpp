@@ -72,7 +72,11 @@ String OpenXRVendorsEditorExportPlugin::_get_android_aar_file_path(bool debug) c
 }
 
 String OpenXRVendorsEditorExportPlugin::_get_android_maven_central_dependency() const {
-	return "org.godotengine:godot-openxr-vendors-" + _vendor + ":" + _plugin_version;
+	String version = _plugin_version;
+	if (!version.to_lower().ends_with("-stable") && !version.to_lower().ends_with("-snapshot")) {
+		version = version + "-SNAPSHOT";
+	}
+	return "org.godotengine:godot-openxr-vendors-" + _vendor + ":" + version;
 }
 
 String OpenXRVendorsEditorExportPlugin::_get_vendor_toggle_option_name(const String &vendor_name) const {
@@ -268,7 +272,7 @@ PackedStringArray OpenXRVendorsEditorExportPlugin::_get_android_dependencies_mav
 		return maven_repos;
 	}
 
-	if (_is_vendor_plugin_enabled() && !_is_android_aar_file_available(debug) && _plugin_version.ends_with("-SNAPSHOT")) {
+	if (_is_vendor_plugin_enabled() && !_is_android_aar_file_available(debug) && !_plugin_version.to_lower().ends_with("-stable")) {
 		maven_repos.append("https://central.sonatype.com/repository/maven-snapshots/");
 	}
 	return maven_repos;
