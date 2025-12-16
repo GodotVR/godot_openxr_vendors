@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://co0a00gndugbg"]
+
+[ext_resource type="Material" uid="uid://cl3ucly7cjhvy" path="res://meshes/mesh/wireframe-material.tres" id="1_64d33"]
+
+[node name="MeshInstance3D" type="MeshInstance3D"]
+material_override = ExtResource("1_64d33")
