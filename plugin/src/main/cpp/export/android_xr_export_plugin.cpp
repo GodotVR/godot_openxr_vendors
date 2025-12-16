@@ -45,15 +45,6 @@ AndroidXREditorExportPlugin::AndroidXREditorExportPlugin() {
 			PROPERTY_USAGE_DEFAULT,
 			EYE_TRACKING_OPTIONAL_VALUE,
 			false);
-	_face_tracking_option = _generate_export_option(
-			"android_xr_features/face_tracking",
-			"",
-			Variant::Type::INT,
-			PROPERTY_HINT_ENUM,
-			"Optional,Required",
-			PROPERTY_USAGE_DEFAULT,
-			FACE_TRACKING_OPTIONAL_VALUE,
-			false);
 	_hand_tracking_option = _generate_export_option(
 			"android_xr_features/hand_tracking",
 			"",
@@ -95,7 +86,6 @@ TypedArray<Dictionary> AndroidXREditorExportPlugin::_get_export_options(const Re
 
 	export_options.append(_get_vendor_toggle_option());
 	export_options.append(_eye_tracking_option);
-	export_options.append(_face_tracking_option);
 	export_options.append(_hand_tracking_option);
 	export_options.append(_tracked_controllers_option);
 	export_options.append(_recommended_boundary_type_option);
@@ -128,10 +118,6 @@ String AndroidXREditorExportPlugin::_get_export_option_warning(const Ref<EditorE
 	if (option == "android_xr_features/eye_tracking") {
 		if (!openxr_enabled && (bool)project_settings->get_setting_with_override("xr/openxr/extensions/eye_gaze_interaction")) {
 			return "\"Eye Tracking\" requires \"XR Mode\" to be \"OpenXR\".\n";
-		}
-	} else if (option == "android_xr_features/face_tracking") {
-		if (!openxr_enabled && _get_int_option(option, FACE_TRACKING_OPTIONAL_VALUE) != FACE_TRACKING_OPTIONAL_VALUE) {
-			return "\"Face Tracking\" requires \"XR Mode\" to be \"OpenXR\".\n";
 		}
 	} else if (option == "android_xr_features/hand_tracking") {
 		if (!openxr_enabled && (bool)project_settings->get_setting_with_override("xr/openxr/extensions/hand_tracking")) {
@@ -296,7 +282,7 @@ String AndroidXREditorExportPlugin::_get_android_manifest_element_contents(const
 	}
 
 	// Check for face tracking
-	if (FACE_TRACKING_REQUIRED_VALUE == _get_int_option("android_xr_features/face_tracking", FACE_TRACKING_OPTIONAL_VALUE)) {
+	if ((bool)project_settings->get_setting_with_override("xr/openxr/extensions/androidxr/face_tracking")) {
 		contents += "    <uses-permission android:name=\"android.permission.FACE_TRACKING\" />\n";
 	}
 
