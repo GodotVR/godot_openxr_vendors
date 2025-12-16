@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="OpenXRStationaryReferenceSpaceExtension" inherits="OpenXRExtensionWrapper" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		Wraps the [code]XR_EXTX2_stationary_reference_space[/code] extension.
+	</brief_description>
+	<description>
+		Wraps the [code]XR_EXTX2_stationary_reference_space[/code] extension.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="get_stationary_reference_space_uuid">
+			<return type="StringName" />
+			<description>
+				Returns a [code]StringName[/code] UUID referencing the active stationary reference space.
+			</description>
+		</method>
+		<method name="is_stationary_reference_space_available">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] if stationary reference space is available for use.
+			</description>
+		</method>
+		<method name="set_stationary_reference_space_enabled">
+			<return type="void" />
+			<param index="0" name="enable" type="bool" />
+			<description>
+				Sets the stationary reference space as enabled or disabled.
+				Note: The Stationary Reference Space project setting must be enabled in order to enable the reference space.
+			</description>
+		</method>
+	</methods>
+</class>

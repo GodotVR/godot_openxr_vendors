@@ -90,6 +90,7 @@
 #include "extensions/openxr_meta_simultaneous_hands_and_controllers_extension.h"
 #include "extensions/openxr_meta_spatial_entity_mesh_extension.h"
 #include "extensions/openxr_ml_marker_understanding_extension.h"
+#include "extensions/openxr_stationary_reference_space_extension.h"
 
 #include "classes/openxr_android_environment_depth.h"
 #include "classes/openxr_android_light_estimation.h"
@@ -215,6 +216,7 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 // @todo GH Issue 304: Remove check for meta headers when feature becomes part of OpenXR spec.
 #ifdef META_HEADERS_ENABLED
 			GDREGISTER_CLASS(OpenXRMetaBoundaryVisibilityExtension);
+			GDREGISTER_CLASS(OpenXRStationaryReferenceSpaceExtension);
 #endif // META_HEADERS_ENABLED
 
 			if (_get_bool_project_setting("xr/openxr/extensions/meta/passthrough")) {
@@ -307,6 +309,10 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			if (_get_bool_project_setting("xr/openxr/extensions/meta/boundary_visibility")) {
 				_register_extension_with_openxr(OpenXRMetaBoundaryVisibilityExtension::get_singleton());
 			}
+
+			if (_get_bool_project_setting("xr/openxr/extensions/stationary_reference_space")) {
+				_register_extension_with_openxr(OpenXRStationaryReferenceSpaceExtension::get_singleton());
+			}
 #endif // META_HEADERS_ENABLED
 
 			if (_get_bool_project_setting("xr/openxr/extensions/meta/colocation_discovery")) {
@@ -392,6 +398,7 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 // @todo GH Issue 304: Remove check for meta headers when feature becomes part of OpenXR spec.
 #ifdef META_HEADERS_ENABLED
 			_register_extension_as_singleton(OpenXRMetaBoundaryVisibilityExtension::get_singleton());
+			_register_extension_as_singleton(OpenXRStationaryReferenceSpaceExtension::get_singleton());
 #endif // META_HEADERS_ENABLED
 
 			GDREGISTER_CLASS(OpenXRAndroidLightEstimation);
@@ -566,6 +573,9 @@ void add_plugin_project_settings() {
 // @todo GH Issue 304: Remove check for meta headers when feature becomes part of OpenXR spec.
 #ifdef META_HEADERS_ENABLED
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/boundary_visibility", false);
+
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/stationary_reference_space", false);
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/stationary_reference_space/enable_on_startup", false);
 #endif // META_HEADERS_ENABLED
 
 	{

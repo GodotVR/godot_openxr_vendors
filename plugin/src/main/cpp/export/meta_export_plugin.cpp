@@ -434,6 +434,11 @@ String MetaEditorExportPlugin::_get_android_manifest_element_contents(const Ref<
 	if ((bool)project_settings->get_setting_with_override("xr/openxr/extensions/meta/boundary_visibility")) {
 		contents += "    <uses-permission android:name=\"com.oculus.permission.BOUNDARY_VISIBILITY\" />\n";
 	}
+
+	// Check for stationary reference space
+	if ((bool)project_settings->get_setting_with_override("xr/openxr/extensions/stationary_reference_space")) {
+		contents += "    <uses-feature android:name=\"com.oculus.experimental.enabled\" />\n";
+	}
 #endif // META_HEADERS_ENABLED
 
 	// Check for overlay keyboard
