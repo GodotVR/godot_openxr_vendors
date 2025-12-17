@@ -28,8 +28,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef OPENXR_FB_PASSTHROUGH_EXTENSION_WRAPPER_H
-#define OPENXR_FB_PASSTHROUGH_EXTENSION_WRAPPER_H
+#pragma once
 
 #include "classes/openxr_fb_passthrough_geometry.h"
 #include "classes/openxr_meta_passthrough_color_lut.h"
@@ -434,5 +433,3 @@ private:
 VARIANT_ENUM_CAST(OpenXRFbPassthroughExtensionWrapper::LayerPurpose);
 VARIANT_ENUM_CAST(OpenXRFbPassthroughExtensionWrapper::PassthroughFilter);
 VARIANT_ENUM_CAST(OpenXRFbPassthroughExtensionWrapper::PassthroughStateChangedEvent);
-
-#endif // OPENXR_FB_PASSTHROUGH_EXTENSION_WRAPPER_H

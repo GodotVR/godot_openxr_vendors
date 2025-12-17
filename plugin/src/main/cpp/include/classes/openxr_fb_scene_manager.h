@@ -27,8 +27,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef OPENXR_FB_SCENE_MANAGER_H
-#define OPENXR_FB_SCENE_MANAGER_H
+#pragma once
 
 #include <openxr/openxr.h>
 
@@ -116,5 +115,3 @@ public:
 	Ref<OpenXRFbSpatialEntity> get_spatial_entity(const StringName &p_uuids) const;
 };
 } // namespace godot
-
-#endif

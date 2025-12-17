@@ -27,8 +27,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef OPENXR_FB_COMPOSITION_LAYER_SECURE_CONTENT_EXTENSION_WRAPPER_H
-#define OPENXR_FB_COMPOSITION_LAYER_SECURE_CONTENT_EXTENSION_WRAPPER_H
+#pragma once
 
 #include <openxr/openxr.h>
 
@@ -76,5 +75,3 @@ private:
 
 	HashMap<const XrCompositionLayerBaseHeader *, XrCompositionLayerSecureContentFB> layer_structs;
 };
-
-#endif // OPENXR_FB_COMPOSITION_LAYER_SECURE_CONTENT_EXTENSION_WRAPPER_H

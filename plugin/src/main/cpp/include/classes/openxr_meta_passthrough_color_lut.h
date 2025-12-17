@@ -27,8 +27,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef OPENXR_FB_PASSTHROUGH_COLOR_LUT_H
-#define OPENXR_FB_PASSTHROUGH_COLOR_LUT_H
+#pragma once
 
 #include <godot_cpp/classes/image.hpp>
 #include <godot_cpp/classes/ref_counted.hpp>
@@ -68,5 +67,3 @@ public:
 } // namespace godot
 
 VARIANT_ENUM_CAST(OpenXRMetaPassthroughColorLut::ColorLutChannels);
-
-#endif

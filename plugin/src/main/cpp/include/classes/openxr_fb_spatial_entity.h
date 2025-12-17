@@ -27,8 +27,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef OPENXR_FB_SPATIAL_ENTITY_H
-#define OPENXR_FB_SPATIAL_ENTITY_H
+#pragma once
 
 #include <openxr/openxr.h>
 
@@ -125,5 +124,3 @@ public:
 
 VARIANT_ENUM_CAST(OpenXRFbSpatialEntity::StorageLocation);
 VARIANT_ENUM_CAST(OpenXRFbSpatialEntity::ComponentType);
-
-#endif

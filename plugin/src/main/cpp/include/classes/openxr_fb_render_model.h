@@ -27,8 +27,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef OPENXR_FB_RENDER_MODEL_H
-#define OPENXR_FB_RENDER_MODEL_H
+#pragma once
 
 #include <godot_cpp/classes/node3d.hpp>
 
@@ -65,5 +64,3 @@ public:
 } //namespace godot
 
 VARIANT_ENUM_CAST(OpenXRFbRenderModel::Model);
-
-#endif

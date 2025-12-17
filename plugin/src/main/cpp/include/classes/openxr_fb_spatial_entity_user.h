@@ -27,8 +27,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef OPENXR_FB_SPATIAL_ENTITY_USER_H
-#define OPENXR_FB_SPATIAL_ENTITY_USER_H
+#pragma once
 
 #include <openxr/openxr.h>
 
@@ -57,5 +56,3 @@ public:
 	OpenXRFbSpatialEntityUser(uint64_t p_user_id);
 };
 } // namespace godot
-
-#endif

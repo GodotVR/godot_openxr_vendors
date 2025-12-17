@@ -28,8 +28,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef OPENXR_ANDROID_FACETRACKING_EXTENSION_WRAPPER_H
-#define OPENXR_ANDROID_FACETRACKING_EXTENSION_WRAPPER_H
+#pragma once
 
 #include <androidxr/androidxr.h>
 
@@ -114,5 +113,3 @@ private:
 };
 
 VARIANT_ENUM_CAST(OpenXRAndroidFaceTrackingExtensionWrapper::CalibrationState);
-
-#endif // OPENXR_ANDROID_FACETRACKING_EXTENSION_WRAPPER_H

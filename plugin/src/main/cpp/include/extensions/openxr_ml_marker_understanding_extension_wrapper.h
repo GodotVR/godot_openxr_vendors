@@ -27,8 +27,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef OPENXR_ML_MARKER_UNDERSTANDING_EXTENSION_WRAPPER_H
-#define OPENXR_ML_MARKER_UNDERSTANDING_EXTENSION_WRAPPER_H
+#pragma once
 
 #include <openxr/openxr.h>
 #include <godot_cpp/classes/open_xr_extension_wrapper_extension.hpp>
@@ -154,5 +153,3 @@ private:
 	std::map<godot::String, bool *> request_extensions;
 	bool ml_marker_understanding_ext = false;
 };
-
-#endif

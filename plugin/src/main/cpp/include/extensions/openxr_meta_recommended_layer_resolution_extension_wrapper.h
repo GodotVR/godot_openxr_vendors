@@ -27,8 +27,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef OPENXR_META_RECOMMENDED_LAYER_RESOLUTION_EXTENSION_WRAPPER_H
-#define OPENXR_META_RECOMMENDED_LAYER_RESOLUTION_EXTENSION_WRAPPER_H
+#pragma once
 
 #include <openxr/openxr.h>
 #include <godot_cpp/classes/open_xr_extension_wrapper_extension.hpp>
@@ -85,5 +84,3 @@ private:
 		false, // isValid
 	};
 };
-
-#endif // OPENXR_META_RECOMMENDED_LAYER_RESOLUTION_EXTENSION_WRAPPER_H

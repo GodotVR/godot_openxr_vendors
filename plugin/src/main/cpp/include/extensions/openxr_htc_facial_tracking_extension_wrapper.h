@@ -27,8 +27,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef OPENXR_HTC_FACIAL_TRACKING_EXTENSION_WRAPPER_H
-#define OPENXR_HTC_FACIAL_TRACKING_EXTENSION_WRAPPER_H
+#pragma once
 
 #include <openxr/openxr.h>
 #include <godot_cpp/classes/open_xr_extension_wrapper_extension.hpp>
@@ -105,5 +104,3 @@ private:
 	// Godot XRFaceTracker instance.
 	Ref<XRFaceTracker> xr_face_tracker;
 };
-
-#endif // OPENXR_HTC_FACIAL_TRACKING_EXTENSION_WRAPPER_H

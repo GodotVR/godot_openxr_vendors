@@ -27,8 +27,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef OPENXR_FB_HAND_TRACKING_MESH_EXTENSION_WRAPPER_H
-#define OPENXR_FB_HAND_TRACKING_MESH_EXTENSION_WRAPPER_H
+#pragma once
 
 #include "classes/openxr_fb_hand_tracking_mesh.h"
 
@@ -113,5 +112,3 @@ private:
 
 	bool fetch_hand_mesh_data(Hand p_hand);
 };
-
-#endif // OPENXR_FB_HAND_TRACKING_MESH_EXTENSION_WRAPPER_H

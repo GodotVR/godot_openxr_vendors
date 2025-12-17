@@ -27,8 +27,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef OPENXR_ML_MARKER_UNDERSTANDING_MANAGER_H
-#define OPENXR_ML_MARKER_UNDERSTANDING_MANAGER_H
+#pragma once
 
 #include <openxr/openxr.h>
 #include <godot_cpp/classes/node.hpp>
@@ -89,5 +88,3 @@ public:
 	void hide();
 };
 } // namespace godot
-
-#endif

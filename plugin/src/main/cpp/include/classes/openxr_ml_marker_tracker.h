@@ -27,8 +27,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef OPENXR_ML_MARKER_TRACKER_H
-#define OPENXR_ML_MARKER_TRACKER_H
+#pragma once
 
 #include "classes/openxr_ml_marker_detector_settings.h"
 #include <openxr/openxr.h>
@@ -78,4 +77,3 @@ public:
 	OpenXRMlMarkerTracker(XrMarkerDetectorML p_marker_detector, XrMarkerML p_marker_atom, OpenXRMlMarkerDetectorSettings::MarkerType p_marker_type);
 };
 } // namespace godot
-#endif
