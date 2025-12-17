@@ -1,0 +1,140 @@
+[gd_scene load_steps=5 format=3 uid="uid://x07cf480vboe"]
+
+[ext_resource type="Script" uid="uid://ceeldg46vn411" path="res://menu.gd" id="1_lti8b"]
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_lti8b"]
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_ouk20"]
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_mae5d"]
+
+[node name="Menu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_lti8b")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.6039216)
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="GridContainer" type="GridContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/v_separation = 30
+columns = 2
+
+[node name="DirectionalLightLabel" type="Label" parent="MarginContainer/GridContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "Directional Light Mode"
+
+[node name="DirectionalLightContainer" type="VBoxContainer" parent="MarginContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="DirectionLightDisabledButton" type="Button" parent="MarginContainer/GridContainer/DirectionalLightContainer"]
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_lti8b")
+text = "Disabled"
+
+[node name="DirectionLightDirectionButton" type="Button" parent="MarginContainer/GridContainer/DirectionalLightContainer"]
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_lti8b")
+text = "Direction Only"
+
+[node name="DirectionLightDirectionIntensityButton" type="Button" parent="MarginContainer/GridContainer/DirectionalLightContainer"]
+layout_mode = 2
+toggle_mode = true
+button_pressed = true
+button_group = SubResource("ButtonGroup_lti8b")
+text = "Direction + Intensity"
+
+[node name="DirectionLightDirectionIntensityColorButton" type="Button" parent="MarginContainer/GridContainer/DirectionalLightContainer"]
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_lti8b")
+text = "Direction + Intensity + Color"
+
+[node name="AmbientLightLabel" type="Label" parent="MarginContainer/GridContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "Ambient Light"
+
+[node name="AmbientLightContainer" type="VBoxContainer" parent="MarginContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="AmbientLightDisabledButton" type="Button" parent="MarginContainer/GridContainer/AmbientLightContainer"]
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_ouk20")
+text = "Disabled"
+
+[node name="AmbientLightColorButton" type="Button" parent="MarginContainer/GridContainer/AmbientLightContainer"]
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_ouk20")
+text = "Color"
+
+[node name="AmbientLightSphericalHarmonicsButton" type="Button" parent="MarginContainer/GridContainer/AmbientLightContainer"]
+layout_mode = 2
+toggle_mode = true
+button_pressed = true
+button_group = SubResource("ButtonGroup_ouk20")
+text = "Spherical Harmonics"
+
+[node name="AmbientLightCustomShaderButton" type="Button" parent="MarginContainer/GridContainer/AmbientLightContainer"]
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_ouk20")
+text = "Custom Shader"
+
+[node name="SphericalHarmonicsLabel" type="Label" parent="MarginContainer/GridContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "Spherical Harmonics Degree"
+
+[node name="SphericalHarmonicsContainer" type="VBoxContainer" parent="MarginContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="SphericalHarmonicsL0Button" type="Button" parent="MarginContainer/GridContainer/SphericalHarmonicsContainer"]
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_mae5d")
+text = "L0"
+
+[node name="SphericalHarmonicsL1Button" type="Button" parent="MarginContainer/GridContainer/SphericalHarmonicsContainer"]
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_mae5d")
+text = "L1"
+
+[node name="SphericalHarmonicsL2Button" type="Button" parent="MarginContainer/GridContainer/SphericalHarmonicsContainer"]
+layout_mode = 2
+toggle_mode = true
+button_pressed = true
+button_group = SubResource("ButtonGroup_mae5d")
+text = "L2"

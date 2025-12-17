@@ -50,6 +50,7 @@
 
 #include "extensions/openxr_android_environment_depth_extension_wrapper.h"
 #include "extensions/openxr_android_face_tracking_extension_wrapper.h"
+#include "extensions/openxr_android_light_estimation_extension_wrapper.h"
 #include "extensions/openxr_android_passthrough_camera_state_extension_wrapper.h"
 #include "extensions/openxr_android_performance_metrics_extension_wrapper.h"
 #include "extensions/openxr_fb_android_surface_swapchain_create_extension_wrapper.h"
@@ -88,6 +89,7 @@
 #include "extensions/openxr_ml_marker_understanding_extension_wrapper.h"
 
 #include "classes/openxr_android_environment_depth.h"
+#include "classes/openxr_android_light_estimation.h"
 #include "classes/openxr_fb_hand_tracking_mesh.h"
 #include "classes/openxr_fb_passthrough_geometry.h"
 #include "classes/openxr_fb_render_model.h"
@@ -163,6 +165,7 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			GDREGISTER_CLASS(OpenXRMetaPerformanceMetricsExtensionWrapper);
 
 			GDREGISTER_CLASS(OpenXRAndroidFaceTrackingExtensionWrapper);
+			GDREGISTER_CLASS(OpenXRAndroidLightEstimationExtensionWrapper);
 			GDREGISTER_CLASS(OpenXRAndroidPassthroughCameraStateExtensionWrapper);
 			GDREGISTER_CLASS(OpenXRAndroidPerformanceMetricsExtensionWrapper);
 			GDREGISTER_CLASS(OpenXRFbPassthroughExtensionWrapper);
@@ -313,6 +316,10 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 				_register_extension_with_openxr(OpenXRAndroidFaceTrackingExtensionWrapper::get_singleton());
 			}
 
+			if (_get_bool_project_setting("xr/openxr/extensions/androidxr/light_estimation")) {
+				_register_extension_with_openxr(OpenXRAndroidLightEstimationExtensionWrapper::get_singleton());
+			}
+
 			// Only works with Godot 4.5 or later.
 			if (godot::internal::godot_version.minor >= 5) {
 				GDREGISTER_CLASS(OpenXRFbSpaceWarpExtensionWrapper);
@@ -354,12 +361,15 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			_register_extension_as_singleton(OpenXRHtcPassthroughExtensionWrapper::get_singleton());
 			_register_extension_as_singleton(OpenXRMlMarkerUnderstandingExtensionWrapper::get_singleton());
 			_register_extension_as_singleton(OpenXRAndroidFaceTrackingExtensionWrapper::get_singleton());
+			_register_extension_as_singleton(OpenXRAndroidLightEstimationExtensionWrapper::get_singleton());
 			_register_extension_as_singleton(OpenXRAndroidPassthroughCameraStateExtensionWrapper::get_singleton());
 
 // @todo GH Issue 304: Remove check for meta headers when feature becomes part of OpenXR spec.
 #ifdef META_HEADERS_ENABLED
 			_register_extension_as_singleton(OpenXRMetaBoundaryVisibilityExtensionWrapper::get_singleton());
 #endif // META_HEADERS_ENABLED
+
+			GDREGISTER_CLASS(OpenXRAndroidLightEstimation);
 
 			GDREGISTER_CLASS(OpenXRFbRenderModel);
 			GDREGISTER_CLASS(OpenXRFbHandTrackingMesh);
@@ -530,6 +540,7 @@ void add_plugin_project_settings() {
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/magic_leap/marker_understanding", false);
 
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/androidxr/face_tracking", false);
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/androidxr/light_estimation", false);
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/androidxr/passthrough_camera_state", false);
 
 	// Only works with Godot 4.5 or later.
