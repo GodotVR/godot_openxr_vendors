@@ -104,12 +104,12 @@ Passthrough Filters
 -------------------
 
 Meta headsets are capable of applying a variety of filters to the passthrough imagery, allowing you to modify the appearance of the user's physical environment.
-There are a number of methods in :ref:`OpenXRFbPassthroughExtensionWrapper <class_openxrfbpassthroughextensionwrapper>` that allow you to access these features.
-You can call these methods on the ``OpenXRFbPassthroughExtensionWrapper`` singleton, which can be obtained like so:
+There are a number of methods in :ref:`OpenXRFbPassthroughExtension <class_openxrfbpassthroughextensionwrapper>` that allow you to access these features.
+You can call these methods on the ``OpenXRFbPassthroughExtension`` singleton, which can be obtained like so:
 
 .. code-block:: gdscript
 
-    var fb_passthrough = Engine.get_singleton("OpenXRFbPassthroughExtensionWrapper")
+    var fb_passthrough = Engine.get_singleton("OpenXRFbPassthroughExtension")
 
 You can check what :ref:`PassthroughFilter <enum_openxrfbpassthroughextensionwrapper_passthroughfilter>` is enabled by calling :ref:`get_current_passthrough_filter <class_openxrfbpassthroughextensionwrapper_method_get_current_passthrough_filter>`.
 By default, the filter mode will be set to ``PASSTHROUGH_FILTER_DISABLED``.

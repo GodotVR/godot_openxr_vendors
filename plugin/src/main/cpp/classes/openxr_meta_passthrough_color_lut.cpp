@@ -29,7 +29,7 @@
 
 #include "classes/openxr_meta_passthrough_color_lut.h"
 
-#include "extensions/openxr_fb_passthrough_extension_wrapper.h"
+#include "extensions/openxr_fb_passthrough_extension.h"
 
 #include <godot_cpp/classes/image.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
@@ -45,7 +45,7 @@ void OpenXRMetaPassthroughColorLut::_bind_methods() {
 
 OpenXRMetaPassthroughColorLut::~OpenXRMetaPassthroughColorLut() {
 	if (color_lut_handle.is_valid()) {
-		OpenXRFbPassthroughExtensionWrapper::get_singleton()->color_lut_free(color_lut_handle);
+		OpenXRFbPassthroughExtension::get_singleton()->color_lut_free(color_lut_handle);
 	}
 }
 
@@ -127,6 +127,6 @@ void OpenXRMetaPassthroughColorLut::populate_buffer(const Ref<Image> &p_image, C
 		}
 	}
 
-	color_lut_handle = OpenXRFbPassthroughExtensionWrapper::get_singleton()->color_lut_create(channels, image_cell_resolution, buffer);
+	color_lut_handle = OpenXRFbPassthroughExtension::get_singleton()->color_lut_create(channels, image_cell_resolution, buffer);
 	;
 }

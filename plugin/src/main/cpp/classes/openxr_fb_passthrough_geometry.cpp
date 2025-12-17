@@ -29,7 +29,7 @@
 
 #include "classes/openxr_fb_passthrough_geometry.h"
 
-#include "extensions/openxr_fb_passthrough_extension_wrapper.h"
+#include "extensions/openxr_fb_passthrough_extension.h"
 
 #include <godot_cpp/classes/engine.hpp>
 #include <godot_cpp/classes/shader.hpp>
@@ -74,7 +74,7 @@ void OpenXRFbPassthroughGeometry::set_mesh(const Ref<Mesh> &p_mesh) {
 		}
 	}
 
-	if (OpenXRFbPassthroughExtensionWrapper::get_singleton()->is_passthrough_started()) {
+	if (OpenXRFbPassthroughExtension::get_singleton()->is_passthrough_started()) {
 		create_passthrough_geometry();
 	}
 }
@@ -90,7 +90,7 @@ void OpenXRFbPassthroughGeometry::set_enable_hole_punch(bool p_enable) {
 
 	enable_hole_punch = p_enable;
 
-	if (!OpenXRFbPassthroughExtensionWrapper::get_singleton()->is_passthrough_started()) {
+	if (!OpenXRFbPassthroughExtension::get_singleton()->is_passthrough_started()) {
 		return;
 	}
 
@@ -111,7 +111,7 @@ OpenXRFbPassthroughGeometry::OpenXRFbPassthroughGeometry() {
 
 void OpenXRFbPassthroughGeometry::create_passthrough_geometry() {
 	if (!geometry_instance.is_valid() && mesh.is_valid()) {
-		geometry_instance = OpenXRFbPassthroughExtensionWrapper::get_singleton()->geometry_instance_create(mesh->surface_get_arrays(0), get_transform());
+		geometry_instance = OpenXRFbPassthroughExtension::get_singleton()->geometry_instance_create(mesh->surface_get_arrays(0), get_transform());
 	}
 
 	if (opaque_mesh == nullptr && enable_hole_punch) {
@@ -123,7 +123,7 @@ void OpenXRFbPassthroughGeometry::create_passthrough_geometry() {
 
 void OpenXRFbPassthroughGeometry::destroy_passthrough_geometry() {
 	if (geometry_instance.is_valid()) {
-		OpenXRFbPassthroughExtensionWrapper::get_singleton()->geometry_instance_free(geometry_instance);
+		OpenXRFbPassthroughExtension::get_singleton()->geometry_instance_free(geometry_instance);
 		geometry_instance = RID();
 	}
 
@@ -134,7 +134,7 @@ void OpenXRFbPassthroughGeometry::destroy_passthrough_geometry() {
 
 void OpenXRFbPassthroughGeometry::update_passthrough_geometry_transform() {
 	if (geometry_instance.is_valid()) {
-		OpenXRFbPassthroughExtensionWrapper::get_singleton()->geometry_instance_set_transform(geometry_instance, get_transform());
+		OpenXRFbPassthroughExtension::get_singleton()->geometry_instance_set_transform(geometry_instance, get_transform());
 	}
 }
 
@@ -177,11 +177,11 @@ void OpenXRFbPassthroughGeometry::delete_opaque_mesh() {
 void OpenXRFbPassthroughGeometry::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_POSTINITIALIZE: {
-			OpenXRFbPassthroughExtensionWrapper::get_singleton()->connect("openxr_fb_projected_passthrough_layer_created", callable_mp(this, &OpenXRFbPassthroughGeometry::create_passthrough_geometry));
-			OpenXRFbPassthroughExtensionWrapper::get_singleton()->connect("openxr_fb_passthrough_stopped", callable_mp(this, &OpenXRFbPassthroughGeometry::destroy_passthrough_geometry));
+			OpenXRFbPassthroughExtension::get_singleton()->connect("openxr_fb_projected_passthrough_layer_created", callable_mp(this, &OpenXRFbPassthroughGeometry::create_passthrough_geometry));
+			OpenXRFbPassthroughExtension::get_singleton()->connect("openxr_fb_passthrough_stopped", callable_mp(this, &OpenXRFbPassthroughGeometry::destroy_passthrough_geometry));
 		} break;
 		case NOTIFICATION_ENTER_TREE: {
-			if (is_visible() && OpenXRFbPassthroughExtensionWrapper::get_singleton()->is_passthrough_started()) {
+			if (is_visible() && OpenXRFbPassthroughExtension::get_singleton()->is_passthrough_started()) {
 				create_passthrough_geometry();
 			}
 		} break;
@@ -191,7 +191,7 @@ void OpenXRFbPassthroughGeometry::_notification(int p_what) {
 			}
 		} break;
 		case NOTIFICATION_VISIBILITY_CHANGED: {
-			if (is_visible() && OpenXRFbPassthroughExtensionWrapper::get_singleton()->is_passthrough_started()) {
+			if (is_visible() && OpenXRFbPassthroughExtension::get_singleton()->is_passthrough_started()) {
 				create_passthrough_geometry();
 			} else {
 				destroy_passthrough_geometry();

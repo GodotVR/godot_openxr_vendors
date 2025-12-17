@@ -38,7 +38,7 @@ var right_capsules_loaded := false
 func _ready() -> void:
 	super._ready()
 	if xr_interface and xr_interface.is_initialized():
-		fb_capsule_ext = Engine.get_singleton("OpenXRFbHandTrackingCapsulesExtensionWrapper")
+		fb_capsule_ext = Engine.get_singleton("OpenXRFbHandTrackingCapsulesExtension")
 
 	left_hand_skeleton.openxr_fb_hand_tracking_mesh_ready.connect(_add_mesh_group.bind(left_hand_skeleton, "hand_mesh_left"))
 	right_hand_skeleton.openxr_fb_hand_tracking_mesh_ready.connect(_add_mesh_group.bind(right_hand_skeleton, "hand_mesh_right"))

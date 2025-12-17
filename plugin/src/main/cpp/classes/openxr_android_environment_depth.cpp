@@ -35,7 +35,7 @@
 #include <godot_cpp/classes/xr_interface.hpp>
 #include <godot_cpp/classes/xr_server.hpp>
 
-#include "extensions/openxr_android_environment_depth_extension_wrapper.h"
+#include "extensions/openxr_android_environment_depth_extension.h"
 
 using namespace godot;
 
@@ -57,27 +57,27 @@ void OpenXRAndroidEnvironmentDepth::_bind_methods() {
 }
 
 void OpenXRAndroidEnvironmentDepth::set_render_priority(int p_render_priority) {
-	OpenXRAndroidEnvironmentDepthExtensionWrapper::get_singleton()->set_reprojection_render_priority(p_render_priority);
+	OpenXRAndroidEnvironmentDepthExtension::get_singleton()->set_reprojection_render_priority(p_render_priority);
 }
 
 int OpenXRAndroidEnvironmentDepth::get_render_priority() const {
-	return OpenXRAndroidEnvironmentDepthExtensionWrapper::get_singleton()->get_reprojection_render_priority();
+	return OpenXRAndroidEnvironmentDepthExtension::get_singleton()->get_reprojection_render_priority();
 }
 
 void OpenXRAndroidEnvironmentDepth::set_reprojection_offset_scale(float p_offset_scale) {
-	OpenXRAndroidEnvironmentDepthExtensionWrapper::get_singleton()->set_reprojection_offset_scale(p_offset_scale);
+	OpenXRAndroidEnvironmentDepthExtension::get_singleton()->set_reprojection_offset_scale(p_offset_scale);
 }
 
 float OpenXRAndroidEnvironmentDepth::get_reprojection_offset_scale() const {
-	return OpenXRAndroidEnvironmentDepthExtensionWrapper::get_singleton()->get_reprojection_offset_scale();
+	return OpenXRAndroidEnvironmentDepthExtension::get_singleton()->get_reprojection_offset_scale();
 }
 
 void OpenXRAndroidEnvironmentDepth::set_reprojection_offset_exponent(float p_offset_exponent) {
-	OpenXRAndroidEnvironmentDepthExtensionWrapper::get_singleton()->set_reprojection_offset_exponent(p_offset_exponent);
+	OpenXRAndroidEnvironmentDepthExtension::get_singleton()->set_reprojection_offset_exponent(p_offset_exponent);
 }
 
 float OpenXRAndroidEnvironmentDepth::get_reprojection_offset_exponent() const {
-	return OpenXRAndroidEnvironmentDepthExtensionWrapper::get_singleton()->get_reprojection_offset_exponent();
+	return OpenXRAndroidEnvironmentDepthExtension::get_singleton()->get_reprojection_offset_exponent();
 }
 
 void OpenXRAndroidEnvironmentDepth::_notification(int p_what) {
@@ -92,7 +92,7 @@ void OpenXRAndroidEnvironmentDepth::_notification(int p_what) {
 
 void OpenXRAndroidEnvironmentDepth::_update_visibility() {
 	bool is_visible = false;
-	OpenXRAndroidEnvironmentDepthExtensionWrapper *env_depth_ext = OpenXRAndroidEnvironmentDepthExtensionWrapper::get_singleton();
+	OpenXRAndroidEnvironmentDepthExtension *env_depth_ext = OpenXRAndroidEnvironmentDepthExtension::get_singleton();
 	if (env_depth_ext && env_depth_ext->is_environment_depth_supported()) {
 		Ref<OpenXRAPIExtension> openxr_api = env_depth_ext->get_openxr_api();
 		is_visible = is_visible_in_tree() && openxr_api->is_running() && env_depth_ext->is_environment_depth_started();
@@ -144,7 +144,7 @@ OpenXRAndroidEnvironmentDepth::OpenXRAndroidEnvironmentDepth() {
 		}
 	}
 
-	OpenXRAndroidEnvironmentDepthExtensionWrapper *env_depth_ext = OpenXRAndroidEnvironmentDepthExtensionWrapper::get_singleton();
+	OpenXRAndroidEnvironmentDepthExtension *env_depth_ext = OpenXRAndroidEnvironmentDepthExtension::get_singleton();
 	if (env_depth_ext) {
 		env_depth_ext->connect("openxr_android_environment_depth_started", callable_mp(this, &OpenXRAndroidEnvironmentDepth::_on_environment_depth_started));
 		env_depth_ext->connect("openxr_android_environment_depth_stopped", callable_mp(this, &OpenXRAndroidEnvironmentDepth::_on_environment_depth_stopped));
@@ -166,7 +166,7 @@ OpenXRAndroidEnvironmentDepth::~OpenXRAndroidEnvironmentDepth() {
 		}
 	}
 
-	OpenXRAndroidEnvironmentDepthExtensionWrapper *env_depth_ext = OpenXRAndroidEnvironmentDepthExtensionWrapper::get_singleton();
+	OpenXRAndroidEnvironmentDepthExtension *env_depth_ext = OpenXRAndroidEnvironmentDepthExtension::get_singleton();
 	if (env_depth_ext) {
 		env_depth_ext->disconnect("openxr_android_environment_depth_started", callable_mp(this, &OpenXRAndroidEnvironmentDepth::_on_environment_depth_started));
 		env_depth_ext->disconnect("openxr_android_environment_depth_stopped", callable_mp(this, &OpenXRAndroidEnvironmentDepth::_on_environment_depth_stopped));

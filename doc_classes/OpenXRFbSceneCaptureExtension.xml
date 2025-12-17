@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="OpenXRFbSceneCaptureExtension" inherits="OpenXRExtensionWrapper" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		Wraps the [code]XR_FB_scene_capture[/code] extension.
+	</brief_description>
+	<description>
+		Wraps the [code]XR_FB_scene_capture[/code] extension.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="is_scene_capture_enabled" deprecated="Use [method OpenXRFbSceneManager.is_scene_capture_enabled] instead.">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] if the scene capture process is currently in progress; otherwise [code]false[/code].
+			</description>
+		</method>
+		<method name="is_scene_capture_supported" deprecated="Use [method OpenXRFbSceneManager.is_scene_capture_supported] instead.">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] if scene capture is supported; otherwise [code]false[/code].
+			</description>
+		</method>
+		<method name="request_scene_capture" deprecated="Use [method OpenXRFbSceneManager.request_scene_capture] instead.">
+			<return type="bool" />
+			<description>
+				Requests the user go through the scene capture process.
+				The [signal scene_capture_completed] signal will be emitted when the process has completed.
+			</description>
+		</method>
+	</methods>
+	<signals>
+		<signal name="scene_capture_completed">
+			<description>
+				Emitted when the scene capture process is completed.
+			</description>
+		</signal>
+	</signals>
+</class>

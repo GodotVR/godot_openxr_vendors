@@ -35,7 +35,7 @@
 #include <godot_cpp/classes/xr_interface.hpp>
 #include <godot_cpp/classes/xr_server.hpp>
 
-#include "extensions/openxr_meta_environment_depth_extension_wrapper.h"
+#include "extensions/openxr_meta_environment_depth_extension.h"
 
 using namespace godot;
 
@@ -61,35 +61,35 @@ void OpenXRMetaEnvironmentDepth::_bind_methods() {
 }
 
 void OpenXRMetaEnvironmentDepth::set_render_priority(int p_render_priority) {
-	OpenXRMetaEnvironmentDepthExtensionWrapper::get_singleton()->set_reprojection_render_priority(p_render_priority);
+	OpenXRMetaEnvironmentDepthExtension::get_singleton()->set_reprojection_render_priority(p_render_priority);
 }
 
 int OpenXRMetaEnvironmentDepth::get_render_priority() const {
-	return OpenXRMetaEnvironmentDepthExtensionWrapper::get_singleton()->get_reprojection_render_priority();
+	return OpenXRMetaEnvironmentDepthExtension::get_singleton()->get_reprojection_render_priority();
 }
 
 void OpenXRMetaEnvironmentDepth::set_reprojection_offset_scale(float p_offset_scale) {
-	OpenXRMetaEnvironmentDepthExtensionWrapper::get_singleton()->set_reprojection_offset_scale(p_offset_scale);
+	OpenXRMetaEnvironmentDepthExtension::get_singleton()->set_reprojection_offset_scale(p_offset_scale);
 }
 
 float OpenXRMetaEnvironmentDepth::get_reprojection_offset_scale() const {
-	return OpenXRMetaEnvironmentDepthExtensionWrapper::get_singleton()->get_reprojection_offset_scale();
+	return OpenXRMetaEnvironmentDepthExtension::get_singleton()->get_reprojection_offset_scale();
 }
 
 void OpenXRMetaEnvironmentDepth::set_reprojection_offset_exponent(float p_offset_exponent) {
-	OpenXRMetaEnvironmentDepthExtensionWrapper::get_singleton()->set_reprojection_offset_exponent(p_offset_exponent);
+	OpenXRMetaEnvironmentDepthExtension::get_singleton()->set_reprojection_offset_exponent(p_offset_exponent);
 }
 
 float OpenXRMetaEnvironmentDepth::get_reprojection_offset_exponent() const {
-	return OpenXRMetaEnvironmentDepthExtensionWrapper::get_singleton()->get_reprojection_offset_exponent();
+	return OpenXRMetaEnvironmentDepthExtension::get_singleton()->get_reprojection_offset_exponent();
 }
 
 void OpenXRMetaEnvironmentDepth::set_bilinear_filtering(bool p_enabled) {
-	OpenXRMetaEnvironmentDepthExtensionWrapper::get_singleton()->set_reprojection_bilinear_filtering(p_enabled);
+	OpenXRMetaEnvironmentDepthExtension::get_singleton()->set_reprojection_bilinear_filtering(p_enabled);
 }
 
 bool OpenXRMetaEnvironmentDepth::get_bilinear_filtering() const {
-	return OpenXRMetaEnvironmentDepthExtensionWrapper::get_singleton()->get_reprojection_bilinear_filtering();
+	return OpenXRMetaEnvironmentDepthExtension::get_singleton()->get_reprojection_bilinear_filtering();
 }
 
 void OpenXRMetaEnvironmentDepth::_notification(int p_what) {
@@ -104,7 +104,7 @@ void OpenXRMetaEnvironmentDepth::_notification(int p_what) {
 
 void OpenXRMetaEnvironmentDepth::_update_visibility() {
 	bool is_visible = false;
-	OpenXRMetaEnvironmentDepthExtensionWrapper *env_depth_ext = OpenXRMetaEnvironmentDepthExtensionWrapper::get_singleton();
+	OpenXRMetaEnvironmentDepthExtension *env_depth_ext = OpenXRMetaEnvironmentDepthExtension::get_singleton();
 	if (env_depth_ext) {
 		Ref<OpenXRAPIExtension> openxr_api = env_depth_ext->get_openxr_api();
 		is_visible = is_visible_in_tree() && openxr_api->is_running() && env_depth_ext->is_environment_depth_started();
@@ -156,7 +156,7 @@ OpenXRMetaEnvironmentDepth::OpenXRMetaEnvironmentDepth() {
 		}
 	}
 
-	OpenXRMetaEnvironmentDepthExtensionWrapper *env_depth_ext = OpenXRMetaEnvironmentDepthExtensionWrapper::get_singleton();
+	OpenXRMetaEnvironmentDepthExtension *env_depth_ext = OpenXRMetaEnvironmentDepthExtension::get_singleton();
 	if (env_depth_ext) {
 		env_depth_ext->connect("openxr_meta_environment_depth_started", callable_mp(this, &OpenXRMetaEnvironmentDepth::_on_environment_depth_started));
 		env_depth_ext->connect("openxr_meta_environment_depth_stopped", callable_mp(this, &OpenXRMetaEnvironmentDepth::_on_environment_depth_stopped));
@@ -178,7 +178,7 @@ OpenXRMetaEnvironmentDepth::~OpenXRMetaEnvironmentDepth() {
 		}
 	}
 
-	OpenXRMetaEnvironmentDepthExtensionWrapper *env_depth_ext = OpenXRMetaEnvironmentDepthExtensionWrapper::get_singleton();
+	OpenXRMetaEnvironmentDepthExtension *env_depth_ext = OpenXRMetaEnvironmentDepthExtension::get_singleton();
 	if (env_depth_ext) {
 		env_depth_ext->disconnect("openxr_meta_environment_depth_started", callable_mp(this, &OpenXRMetaEnvironmentDepth::_on_environment_depth_started));
 		env_depth_ext->disconnect("openxr_meta_environment_depth_stopped", callable_mp(this, &OpenXRMetaEnvironmentDepth::_on_environment_depth_stopped));

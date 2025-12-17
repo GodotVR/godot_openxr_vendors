@@ -16,22 +16,22 @@ func _on_timer_timeout() -> void:
 
 
 func _update() -> void:
-	if !OpenXRAndroidEnvironmentDepthExtensionWrapper.is_environment_depth_started():
-		if !OpenXRAndroidEnvironmentDepthExtensionWrapper.start_environment_depth():
+	if !OpenXRAndroidEnvironmentDepthExtension.is_environment_depth_started():
+		if !OpenXRAndroidEnvironmentDepthExtension.start_environment_depth():
 			push_error("Unable to start environment depth")
 			$Timer.queue_free()
 		smooth = false
 	elif smooth:
-		OpenXRAndroidEnvironmentDepthExtensionWrapper.stop_environment_depth()
+		OpenXRAndroidEnvironmentDepthExtension.stop_environment_depth()
 	else:
 		smooth = true
 
-	if !OpenXRAndroidEnvironmentDepthExtensionWrapper.is_environment_depth_started():
+	if !OpenXRAndroidEnvironmentDepthExtension.is_environment_depth_started():
 		$XROrigin3D/XRCamera3D/Viewport2Din3D.get_scene_root().text = "Depth disabled"
 		return
 
 	var label_text: String = "Depth enabled"
-	if OpenXRAndroidEnvironmentDepthExtensionWrapper.set_smooth(smooth):
+	if OpenXRAndroidEnvironmentDepthExtension.set_smooth(smooth):
 		if smooth:
 			label_text += "\nSmooth"
 		else:

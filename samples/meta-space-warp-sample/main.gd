@@ -41,7 +41,7 @@ func _process(delta: float) -> void:
 	if countdown_to_check_space_warp_enabled > 0:
 		countdown_to_check_space_warp_enabled -= 1
 		if countdown_to_check_space_warp_enabled == 0:
-			var fb_space_warp = Engine.get_singleton("OpenXRFbSpaceWarpExtensionWrapper")
+			var fb_space_warp = Engine.get_singleton("OpenXRFbSpaceWarpExtension")
 			if !fb_space_warp or !fb_space_warp.is_enabled():
 				right_controller_label.text = right_controller_label.text.replace("ENABLED", "DISABLED")
 
@@ -56,7 +56,7 @@ func _physics_process(delta: float) -> void:
 
 func _on_right_hand_button_pressed(name: String) -> void:
 	if name == "ax_button":
-		var fb_space_warp = Engine.get_singleton("OpenXRFbSpaceWarpExtensionWrapper")
+		var fb_space_warp = Engine.get_singleton("OpenXRFbSpaceWarpExtension")
 		if !fb_space_warp:
 			return
 
@@ -86,7 +86,7 @@ func check_turn(name: String, value: Vector2) -> void:
 			if abs(value.x) > SNAP_TURN_THRESHOLD:
 				rotate_player(sign(value.x) * SNAP_TURN_ANGLE)
 				turn_timer.start()
-				var fb_space_warp = Engine.get_singleton("OpenXRFbSpaceWarpExtensionWrapper")
+				var fb_space_warp = Engine.get_singleton("OpenXRFbSpaceWarpExtension")
 				if fb_space_warp:
 					fb_space_warp.skip_space_warp_frame()
 	else:

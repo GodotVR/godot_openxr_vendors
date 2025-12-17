@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="OpenXRFbColorSpaceExtension" inherits="OpenXRExtensionWrapper" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		Wraps the [code]XR_FB_color_space[/code] extension.
+	</brief_description>
+	<description>
+		Wraps the [code]XR_FB_color_space[/code] extension.
+		A color space defines how digital color values are translated into actual visible colors. Specific displays have a native color space that they are capable of producing.
+		This extension allows applications to tell the OpenXR runtime what color space we are rendering in, so that it can potentially translate from that into the native color space of the headset's display.
+		For more information on color management, see: [url=https://developers.meta.com/horizon/resources/color-management-guide/]Color Management in Meta Quest Headsets[/url]
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="get_color_space">
+			<return type="int" enum="OpenXRFbColorSpaceExtension.ColorSpace" />
+			<description>
+				Returns the currently active color space.
+			</description>
+		</method>
+		<method name="get_native_color_space">
+			<return type="int" enum="OpenXRFbColorSpaceExtension.ColorSpace" />
+			<description>
+				Returns the native color space of the XR device.
+			</description>
+		</method>
+		<method name="get_supported_color_spaces">
+			<return type="Array" />
+			<description>
+				Returns an array of supported color spaces that we can pass to [method set_color_space].
+			</description>
+		</method>
+		<method name="is_enabled">
+			<return type="bool" />
+			<description>
+				Checks if the extension is enabled or not.
+			</description>
+		</method>
+		<method name="set_color_space">
+			<return type="void" />
+			<param index="0" name="color_space" type="int" enum="OpenXRFbColorSpaceExtension.ColorSpace" />
+			<description>
+				Sets the color space that the app is rendering in.
+			</description>
+		</method>
+	</methods>
+	<constants>
+		<constant name="COLOR_SPACE_RUNTIME_DEFAULT" value="0" enum="ColorSpace">
+			The color space the OpenXR runtime selects by default, this may vary depending on the XR device.
+			This is not a valid option for [method set_color_space].
+		</constant>
+		<constant name="COLOR_SPACE_UNMANAGED" value="1" enum="ColorSpace">
+			Unmanaged color space. Using this will disable color correction.
+		</constant>
+		<constant name="COLOR_SPACE_REC2020" value="2" enum="ColorSpace">
+			Rec. 2020 color space.
+		</constant>
+		<constant name="COLOR_SPACE_REC709" value="3" enum="ColorSpace">
+			Rec. 709 color space.
+		</constant>
+		<constant name="COLOR_SPACE_RIFT_CV1" value="4" enum="ColorSpace">
+			Rift CV1 color space.
+		</constant>
+		<constant name="COLOR_SPACE_RIFT_S" value="5" enum="ColorSpace">
+			Rift S color space.
+		</constant>
+		<constant name="COLOR_SPACE_QUEST" value="6" enum="ColorSpace">
+			Quest color space.
+		</constant>
+		<constant name="COLOR_SPACE_P3" value="7" enum="ColorSpace">
+			P3 color space.
+		</constant>
+		<constant name="COLOR_SPACE_ADOBE_RGB" value="8" enum="ColorSpace">
+			Adobe RGB color space.
+		</constant>
+	</constants>
+</class>

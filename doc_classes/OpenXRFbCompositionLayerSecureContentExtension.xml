@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="OpenXRFbCompositionLayerSecureContentExtension" inherits="OpenXRExtensionWrapper" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		Wraps the [code]XR_FB_composition_layer_secure_content[/code] extension.
+	</brief_description>
+	<description>
+		Wraps the [code]XR_FB_composition_layer_secure_content[/code] extension.
+	</description>
+	<tutorials>
+	</tutorials>
+</class>
