@@ -31,7 +31,7 @@
 
 #include <godot_cpp/templates/local_vector.hpp>
 
-#include "extensions/openxr_fb_spatial_entity_query_extension_wrapper.h"
+#include "extensions/openxr_fb_spatial_entity_query_extension.h"
 
 using namespace godot;
 
@@ -149,7 +149,7 @@ bool OpenXRFbSpatialEntityQuery::_execute_query_all() {
 	};
 
 	Ref<OpenXRFbSpatialEntityQuery> *userdata = memnew(Ref<OpenXRFbSpatialEntityQuery>(this));
-	return OpenXRFbSpatialEntityQueryExtensionWrapper::get_singleton()->query_spatial_entities((XrSpaceQueryInfoBaseHeaderFB *)&query, &OpenXRFbSpatialEntityQuery::_results_callback, userdata);
+	return OpenXRFbSpatialEntityQueryExtension::get_singleton()->query_spatial_entities((XrSpaceQueryInfoBaseHeaderFB *)&query, &OpenXRFbSpatialEntityQuery::_results_callback, userdata);
 }
 
 bool OpenXRFbSpatialEntityQuery::_execute_query_by_uuid() {
@@ -185,7 +185,7 @@ bool OpenXRFbSpatialEntityQuery::_execute_query_by_uuid() {
 	};
 
 	Ref<OpenXRFbSpatialEntityQuery> *userdata = memnew(Ref<OpenXRFbSpatialEntityQuery>(this));
-	return OpenXRFbSpatialEntityQueryExtensionWrapper::get_singleton()->query_spatial_entities((XrSpaceQueryInfoBaseHeaderFB *)&query, &OpenXRFbSpatialEntityQuery::_results_callback, userdata);
+	return OpenXRFbSpatialEntityQueryExtension::get_singleton()->query_spatial_entities((XrSpaceQueryInfoBaseHeaderFB *)&query, &OpenXRFbSpatialEntityQuery::_results_callback, userdata);
 }
 
 bool OpenXRFbSpatialEntityQuery::_execute_query_by_component() {
@@ -212,7 +212,7 @@ bool OpenXRFbSpatialEntityQuery::_execute_query_by_component() {
 	};
 
 	Ref<OpenXRFbSpatialEntityQuery> *userdata = memnew(Ref<OpenXRFbSpatialEntityQuery>(this));
-	return OpenXRFbSpatialEntityQueryExtensionWrapper::get_singleton()->query_spatial_entities((XrSpaceQueryInfoBaseHeaderFB *)&query, &OpenXRFbSpatialEntityQuery::_results_callback, userdata);
+	return OpenXRFbSpatialEntityQueryExtension::get_singleton()->query_spatial_entities((XrSpaceQueryInfoBaseHeaderFB *)&query, &OpenXRFbSpatialEntityQuery::_results_callback, userdata);
 }
 
 void OpenXRFbSpatialEntityQuery::_results_callback(const Vector<XrSpaceQueryResultFB> &p_results, void *p_userdata) {

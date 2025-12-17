@@ -66,7 +66,7 @@ for both color and alpha. Simply turn on `enable_alpha_blend_extension` and the 
 
 The ``source_color_blend_factor`` and ``source_alpha_blend_factor`` properties will determine the source contributions to the blending, while
 ``destination_color_blend_factor`` and ``destination_alpha_blend_factor`` will do the same for the destination. Each of these properties can be set to
-:ref:`one of six different blend factors <enum_openxrfbcompositionlayeralphablendextensionwrapper_blendfactor>`.
+:ref:`one of six different blend factors <enum_openxrfbcompositionlayeralphablendExtension_blendfactor>`.
 
 .. figure:: img/composition_layers/alpha_blend_example.png
     :align: center

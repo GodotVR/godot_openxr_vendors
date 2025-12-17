@@ -31,8 +31,8 @@
 
 #include <godot_cpp/templates/local_vector.hpp>
 
-#include "extensions/openxr_fb_spatial_entity_sharing_extension_wrapper.h"
-#include "extensions/openxr_fb_spatial_entity_storage_batch_extension_wrapper.h"
+#include "extensions/openxr_fb_spatial_entity_sharing_extension.h"
+#include "extensions/openxr_fb_spatial_entity_storage_batch_extension.h"
 
 #include "classes/openxr_fb_spatial_entity_user.h"
 
@@ -76,7 +76,7 @@ void OpenXRFbSpatialEntityBatch::save_to_storage(OpenXRFbSpatialEntity::StorageL
 	};
 
 	Ref<OpenXRFbSpatialEntityBatch> *userdata = memnew(Ref<OpenXRFbSpatialEntityBatch>(this));
-	OpenXRFbSpatialEntityStorageBatchExtensionWrapper::get_singleton()->save_spaces(&save_info, OpenXRFbSpatialEntityBatch::_on_save_to_storage, userdata);
+	OpenXRFbSpatialEntityStorageBatchExtension::get_singleton()->save_spaces(&save_info, OpenXRFbSpatialEntityBatch::_on_save_to_storage, userdata);
 }
 
 void OpenXRFbSpatialEntityBatch::_on_save_to_storage(XrResult p_result, XrSpaceStorageLocationFB p_location, void *p_userdata) {
@@ -103,7 +103,7 @@ void OpenXRFbSpatialEntityBatch::share_with_users(const TypedArray<OpenXRFbSpati
 	};
 
 	Ref<OpenXRFbSpatialEntityBatch> *userdata = memnew(Ref<OpenXRFbSpatialEntityBatch>(this));
-	OpenXRFbSpatialEntitySharingExtensionWrapper::get_singleton()->share_spaces(&info, OpenXRFbSpatialEntityBatch::_on_share_with_users, userdata);
+	OpenXRFbSpatialEntitySharingExtension::get_singleton()->share_spaces(&info, OpenXRFbSpatialEntityBatch::_on_share_with_users, userdata);
 }
 
 void OpenXRFbSpatialEntityBatch::_on_share_with_users(XrResult p_result, void *p_userdata) {

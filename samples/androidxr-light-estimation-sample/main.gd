@@ -40,7 +40,7 @@ func _ready() -> void:
 	openxr_interface = XRServer.find_interface("OpenXR")
 	openxr_interface.session_begun.connect(_on_openxr_session_begun)
 
-	OpenXRAndroidLightEstimationExtensionWrapper.light_estimate_types = OpenXRAndroidLightEstimationExtensionWrapper.LIGHT_ESTIMATE_TYPE_ALL
+	OpenXRAndroidLightEstimationExtension.light_estimate_types = OpenXRAndroidLightEstimationExtension.LIGHT_ESTIMATE_TYPE_ALL
 
 	var menu: Control = %Viewport2Din3D.get_scene_root()
 	menu.directional_light_mode_changed.connect(_on_directional_light_mode_changed)
@@ -52,11 +52,11 @@ func _on_openxr_session_begun() -> void:
 
 
 func start_light_estimation() -> void:
-	if not OpenXRAndroidLightEstimationExtensionWrapper.is_light_estimation_supported():
+	if not OpenXRAndroidLightEstimationExtension.is_light_estimation_supported():
 		push_error("Light estimation is unsupported")
 		return
 
-	if OpenXRAndroidLightEstimationExtensionWrapper.start_light_estimation():
+	if OpenXRAndroidLightEstimationExtension.start_light_estimation():
 		print("Light estimation started")
 	else:
 		push_error("Unable to start light estimation")
@@ -97,7 +97,7 @@ func _on_ambient_light_mode_changed(p_mode: int) -> void:
 
 
 func _process(_delta: float) -> void:
-	var ale = OpenXRAndroidLightEstimationExtensionWrapper
+	var ale = OpenXRAndroidLightEstimationExtension
 	if ale.is_light_estimation_started():
 		var next_update = ale.get_last_updated_time()
 		if next_update > last_material_update and ale.is_spherical_harmonics_total_valid():

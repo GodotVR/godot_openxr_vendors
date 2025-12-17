@@ -33,7 +33,7 @@
 #include "classes/openxr_ml_marker_detector_profile_settings.h"
 #include "classes/openxr_ml_marker_detector_qr_settings.h"
 #include "classes/openxr_ml_marker_detector_settings.h"
-#include "extensions/openxr_ml_marker_understanding_extension_wrapper.h"
+#include "extensions/openxr_ml_marker_understanding_extension.h"
 #include "godot_cpp/core/error_macros.hpp"
 #include "openxr/openxr.h"
 
@@ -83,7 +83,7 @@ Ref<OpenXRMlMarkerDetectorSettings> OpenXRMlMarkerDetector::get_settings() const
 void OpenXRMlMarkerDetector::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_ENTER_TREE: {
-			OpenXRMlMarkerUnderstandingExtensionWrapper *marker_understanding_extension = OpenXRMlMarkerUnderstandingExtensionWrapper::get_singleton();
+			OpenXRMlMarkerUnderstandingExtension *marker_understanding_extension = OpenXRMlMarkerUnderstandingExtension::get_singleton();
 			if (marker_understanding_extension) {
 				marker_understanding_extension->connect("updating_marker_detectors", callable_mp(this, &OpenXRMlMarkerDetector::_on_updating_marker_detectors));
 			}
@@ -93,7 +93,7 @@ void OpenXRMlMarkerDetector::_notification(int p_what) {
 		case NOTIFICATION_EXIT_TREE: {
 			_destroy_detector();
 
-			OpenXRMlMarkerUnderstandingExtensionWrapper *marker_understanding_extension = OpenXRMlMarkerUnderstandingExtensionWrapper::get_singleton();
+			OpenXRMlMarkerUnderstandingExtension *marker_understanding_extension = OpenXRMlMarkerUnderstandingExtension::get_singleton();
 			if (marker_understanding_extension) {
 				marker_understanding_extension->disconnect("updating_marker_detectors", callable_mp(this, &OpenXRMlMarkerDetector::_on_updating_marker_detectors));
 			}
@@ -113,7 +113,7 @@ void OpenXRMlMarkerDetector::_update_detector() {
 	if (marker_detector == XR_NULL_HANDLE)
 		return;
 
-	OpenXRMlMarkerUnderstandingExtensionWrapper *marker_understanding_extension = OpenXRMlMarkerUnderstandingExtensionWrapper::get_singleton();
+	OpenXRMlMarkerUnderstandingExtension *marker_understanding_extension = OpenXRMlMarkerUnderstandingExtension::get_singleton();
 
 	// Snapshot the detector
 	if (!has_snapshot) {
@@ -187,7 +187,7 @@ void OpenXRMlMarkerDetector::_destroy_detector() {
 		active_profile_settings->disconnect("changed", callable_mp(this, &OpenXRMlMarkerDetector::_on_settings_changed));
 	}
 
-	OpenXRMlMarkerUnderstandingExtensionWrapper *marker_understanding_extension = OpenXRMlMarkerUnderstandingExtensionWrapper::get_singleton();
+	OpenXRMlMarkerUnderstandingExtension *marker_understanding_extension = OpenXRMlMarkerUnderstandingExtension::get_singleton();
 	if (marker_understanding_extension) {
 		marker_understanding_extension->destroy_marker_detector(marker_detector);
 	}
@@ -207,7 +207,7 @@ void OpenXRMlMarkerDetector::_create_detector() {
 	if (!settings.is_valid())
 		return;
 
-	OpenXRMlMarkerUnderstandingExtensionWrapper *marker_understanding_extension = OpenXRMlMarkerUnderstandingExtensionWrapper::get_singleton();
+	OpenXRMlMarkerUnderstandingExtension *marker_understanding_extension = OpenXRMlMarkerUnderstandingExtension::get_singleton();
 	if (!marker_understanding_extension)
 		return;
 

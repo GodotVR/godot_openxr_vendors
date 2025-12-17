@@ -76,16 +76,16 @@ The basic Meta OpenXR body tracking extension ``XR_FB_body_tracking`` only provi
 for upper body tracking. The extension ``XR_META_body_tracking_full_body``, if supported,
 is what provides the lower body data. When supported by the runtime, this requires no further
 setup. You can check if ``XR_META_body_tracking_full_body`` is supported by calling
-:ref:`is_full_body_tracking_supported() <class_openxrfbbodytrackingextensionwrapper_method_is_full_body_tracking_supported>`.
+:ref:`is_full_body_tracking_supported() <class_openxrfbbodytrackingextension_method_is_full_body_tracking_supported>`.
 
 Manual Height Override
 ~~~~~~~~~~~~~~~~~~~~~~
 
 When using body tracking, automatic calibration of a user's height will take place.
 Should you wish to override this, first check to see if the runtime supports the ``XR_META_body_tracking_calibration``
-extension with :ref:`is_body_tracking_height_override_supported() <class_openxrfbbodytrackingextensionwrapper_method_is_body_tracking_height_override_supported>`.
+extension with :ref:`is_body_tracking_height_override_supported() <class_openxrfbbodytrackingextension_method_is_body_tracking_height_override_supported>`.
 If supported, you may suggest an override value within the range of 0.5 and 3.0 meters to
-:ref:`suggest_body_tracking_height_override() <class_openxrfbbodytrackingextensionwrapper_method_suggest_body_tracking_height_override>`.
+:ref:`suggest_body_tracking_height_override() <class_openxrfbbodytrackingextension_method_suggest_body_tracking_height_override>`.
 The runtime then may adjust the returned body tracking data to be scaled to this height.
 
 Body Tracking Fidelity
@@ -93,9 +93,9 @@ Body Tracking Fidelity
 
 The ``XR_META_body_tracking_fidelity`` extension allows users to request that body tracking
 data be collected with either a low or high level of fidelity. Check if this extension is supported with
-:ref:`is_body_tracking_fidelity_supported() <class_openxrfbbodytrackingextensionwrapper_method_is_body_tracking_fidelity_supported>`.
+:ref:`is_body_tracking_fidelity_supported() <class_openxrfbbodytrackingextension_method_is_body_tracking_fidelity_supported>`.
 If supported, you can request your desired fidelity level using
-:ref:`request_body_tracking_fidelity() <class_openxrfbbodytrackingextensionwrapper_method_request_body_tracking_fidelity>`.
+:ref:`request_body_tracking_fidelity() <class_openxrfbbodytrackingextension_method_request_body_tracking_fidelity>`.
 By default, a high level of fidelity is used for body tracking, but low fidelity may be used to
 save CPU resources at the cost of lower body tracking precision.
 

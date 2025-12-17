@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="OpenXRMetaColocationDiscoveryExtension" inherits="OpenXRExtensionWrapper" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		Wraps the [code]XR_META_colocation_discovery[/code] extension.
+	</brief_description>
+	<description>
+		Wraps the [code]XR_META_colocation_discovery[/code] extension which enables nearby device discovery for colocated multiplayer experiences on Meta Quest devices.
+		This extension allows devices running the same application to discover each other via Bluetooth without requiring manual lobby selection or network configuration.
+		[b]Note:[/b] This extension is only supported on Meta Quest devices and requires the colocation_discovery extension to be enabled in Project Settings under [code]xr/openxr/extensions/meta/colocation_discovery[/code].
+		[codeblock]
+		# Check if colocation discovery is supported
+		if OpenXRMetaColocationDiscoveryExtension.is_colocation_discovery_supported():
+		    # Start advertising your session
+		    var session_data = JSON.stringify({"session_id": "my_session", "host": "Player1"}).to_utf8_buffer()
+		    OpenXRMetaColocationDiscoveryExtension.start_advertisement(session_data)
+
+		    # Or start discovering nearby sessions
+		    OpenXRMetaColocationDiscoveryExtension.start_discovery()
+
+		# Connect to signals
+		OpenXRMetaColocationDiscoveryExtension.openxr_meta_colocation_discovery_discovery_result.connect(_on_discovery_result)
+
+		func _on_discovery_result(advertisement_uuid: String, data: PackedByteArray):
+		    var session_info = JSON.parse_string(data.get_string_from_utf8())
+		    print("Found session: ", session_info)
+		[/codeblock]
+	</description>
+	<tutorials>
+		<link title="XR_META_colocation_discovery specification">https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html#XR_META_colocation_discovery</link>
+	</tutorials>
+	<methods>
+		<method name="is_colocation_discovery_supported" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] if the colocation discovery extension is supported on the current device, [code]false[/code] otherwise.
+				This should be checked before attempting to use advertisement or discovery features.
+			</description>
+		</method>
+		<method name="start_advertisement">
+			<return type="bool" />
+			<param index="0" name="buffer" type="PackedByteArray" />
+			<description>
+				Starts advertising the local session to nearby devices. The [param buffer] contains custom session data (max 1024 bytes) that will be transmitted to discovering devices.
+				Typically this data contains session information encoded as JSON, such as session ID, host name, and max players.
+				Returns [code]true[/code] if the advertisement request was successfully initiated, [code]false[/code] otherwise.
+				Listen to the [signal openxr_meta_colocation_discovery_advertisement_started] signal to know when advertising actually begins, or [signal openxr_meta_colocation_discovery_advertisement_failed] if it fails.
+				[b]Note:[/b] Only one advertisement can be active at a time. Call [method stop_advertisement] first if already advertising.
+			</description>
+		</method>
+		<method name="start_discovery">
+			<return type="bool" />
+			<description>
+				Starts discovering nearby advertised sessions. Returns [code]true[/code] if the discovery request was successfully initiated, [code]false[/code] otherwise.
+				Listen to the [signal openxr_meta_colocation_discovery_discovery_started] signal to know when discovery actually begins, and [signal openxr_meta_colocation_discovery_discovery_result] for each discovered session.
+				[b]Note:[/b] Only one discovery operation can be active at a time. Call [method stop_discovery] first if already discovering.
+			</description>
+		</method>
+		<method name="stop_advertisement">
+			<return type="bool" />
+			<description>
+				Stops the current advertisement. Returns [code]true[/code] if the stop request was successfully initiated, [code]false[/code] otherwise.
+				Listen to the [signal openxr_meta_colocation_discovery_advertisement_stopped] signal to know when advertising actually stops.
+			</description>
+		</method>
+		<method name="stop_discovery">
+			<return type="bool" />
+			<description>
+				Stops the current discovery operation. Returns [code]true[/code] if the stop request was successfully initiated, [code]false[/code] otherwise.
+				Listen to the [signal openxr_meta_colocation_discovery_discovery_stopped] signal to know when discovery actually stops.
+			</description>
+		</method>
+	</methods>
+	<signals>
+		<signal name="openxr_meta_colocation_discovery_advertisement_complete">
+			<description>
+				Emitted when advertisement is stopped by the OpenXR runtime (not by user request).
+			</description>
+		</signal>
+		<signal name="openxr_meta_colocation_discovery_advertisement_failed">
+			<param index="0" name="error_code" type="int" />
+			<description>
+				Emitted when an advertisement operation fails. The [param error_code] contains the OpenXR error code.
+			</description>
+		</signal>
+		<signal name="openxr_meta_colocation_discovery_advertisement_started">
+			<param index="0" name="advertisement_uuid" type="String" />
+			<description>
+				Emitted when advertisement successfully starts. The [param advertisement_uuid] uniquely identifies this advertisement session.
+			</description>
+		</signal>
+		<signal name="openxr_meta_colocation_discovery_advertisement_stopped">
+			<description>
+				Emitted when advertisement is successfully stopped by user request via [method stop_advertisement].
+			</description>
+		</signal>
+		<signal name="openxr_meta_colocation_discovery_discovery_complete">
+			<description>
+				Emitted when discovery completes successfully.
+			</description>
+		</signal>
+		<signal name="openxr_meta_colocation_discovery_discovery_failed">
+			<param index="0" name="error_code" type="int" />
+			<description>
+				Emitted when a discovery operation fails. The [param error_code] contains the OpenXR error code.
+			</description>
+		</signal>
+		<signal name="openxr_meta_colocation_discovery_discovery_result">
+			<param index="0" name="advertisement_uuid" type="String" />
+			<param index="1" name="data" type="PackedByteArray" />
+			<description>
+				Emitted when a nearby advertised session is discovered. The [param advertisement_uuid] identifies the discovered session, and [param data] contains the custom session data that was passed to [method start_advertisement] by the advertising device.
+				Parse the [param data] (typically as JSON) to get session information such as session ID, host name, and available player slots.
+			</description>
+		</signal>
+		<signal name="openxr_meta_colocation_discovery_discovery_started">
+			<description>
+				Emitted when discovery successfully starts.
+			</description>
+		</signal>
+		<signal name="openxr_meta_colocation_discovery_discovery_stopped">
+			<description>
+				Emitted when discovery is successfully stopped by user request via [method stop_discovery].
+			</description>
+		</signal>
+	</signals>
+</class>

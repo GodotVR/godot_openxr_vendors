@@ -13,7 +13,7 @@ class MeshInfo:
 
 
 func _ready():
-	var scene_meshing_ext = Engine.get_singleton("OpenXRAndroidSceneMeshingExtensionWrapper")
+	var scene_meshing_ext = Engine.get_singleton("OpenXRAndroidSceneMeshingExtension")
 	var supported_semantic_label_sets = scene_meshing_ext.get_supported_semantic_label_sets()
 
 	var semantic_label_set = OpenXRAndroidSceneMeshing.SEMANTIC_LABEL_SET_NONE

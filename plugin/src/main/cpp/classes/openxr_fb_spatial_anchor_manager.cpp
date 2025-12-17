@@ -39,7 +39,7 @@
 #include <godot_cpp/variant/utility_functions.hpp>
 
 #include "classes/openxr_fb_spatial_entity_query.h"
-#include "extensions/openxr_fb_spatial_entity_extension_wrapper.h"
+#include "extensions/openxr_fb_spatial_entity_extension.h"
 
 using namespace godot;
 

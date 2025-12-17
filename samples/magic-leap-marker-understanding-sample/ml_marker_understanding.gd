@@ -5,7 +5,7 @@ var marker_displays: Dictionary[OpenXRMlMarkerTracker, Node] = {}
 
 
 func _ready() -> void:
-	print("OpenXRMlMarkerUnderstandingExtensionWrapper.is_marker_understanding_supported: ", OpenXRMlMarkerUnderstandingExtensionWrapper.is_marker_understanding_supported())
+	print("OpenXRMlMarkerUnderstandingExtension.is_marker_understanding_supported: ", OpenXRMlMarkerUnderstandingExtension.is_marker_understanding_supported())
 
 
 func _process(delta: float):

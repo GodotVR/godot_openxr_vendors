@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="OpenXRFbHandTrackingAimExtension" inherits="OpenXRExtensionWrapper" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		Wraps the [code]XR_FB_hand_tracking_aim[/code] extension.
+	</brief_description>
+	<description>
+		Wraps the [code]XR_FB_hand_tracking_aim[/code] extension.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="is_enabled">
+			<return type="bool" />
+			<description>
+				Checks if the extension is enabled or not.
+			</description>
+		</method>
+	</methods>
+</class>

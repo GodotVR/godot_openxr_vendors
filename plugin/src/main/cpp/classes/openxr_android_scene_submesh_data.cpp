@@ -29,7 +29,7 @@
 /**************************************************************************/
 
 #include "classes/openxr_android_scene_submesh_data.h"
-#include "extensions/openxr_android_scene_meshing_extension_wrapper.h"
+#include "extensions/openxr_android_scene_meshing_extension.h"
 #include "util.h"
 #include <godot_cpp/classes/mesh.hpp>
 #include <godot_cpp/classes/open_xrapi_extension.hpp>
@@ -96,8 +96,8 @@ void OpenXRAndroidSceneSubmeshData::update(UpdateState p_update_state, uint64_t 
 		return;
 	}
 
-	OpenXRAndroidSceneMeshingExtensionWrapper *wrapper = OpenXRAndroidSceneMeshingExtensionWrapper::get_singleton();
-	ERR_FAIL_NULL_MSG(wrapper, "Cannot get submesh data without an OpenXRAndroidSceneMeshingExtensionWrapper");
+	OpenXRAndroidSceneMeshingExtension *wrapper = OpenXRAndroidSceneMeshingExtension::get_singleton();
+	ERR_FAIL_NULL_MSG(wrapper, "Cannot get submesh data without an OpenXRAndroidSceneMeshingExtension");
 	ERR_FAIL_COND_MSG(!wrapper->is_enabled(), "XR_ANDROID_scene_meshing extension is not enabled");
 
 	// retrieve the counts for vertices and indices

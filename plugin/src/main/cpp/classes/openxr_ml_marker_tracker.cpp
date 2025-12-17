@@ -28,7 +28,7 @@
 /**************************************************************************/
 
 #include "classes/openxr_ml_marker_tracker.h"
-#include "extensions/openxr_ml_marker_understanding_extension_wrapper.h"
+#include "extensions/openxr_ml_marker_understanding_extension.h"
 
 using namespace godot;
 
@@ -95,7 +95,7 @@ void OpenXRMlMarkerTracker::update_marker() {
 	if (marker_detector == XR_NULL_HANDLE)
 		return;
 
-	OpenXRMlMarkerUnderstandingExtensionWrapper *marker_understanding_extension = OpenXRMlMarkerUnderstandingExtensionWrapper::get_singleton();
+	OpenXRMlMarkerUnderstandingExtension *marker_understanding_extension = OpenXRMlMarkerUnderstandingExtension::get_singleton();
 	marker_length = marker_understanding_extension->get_marker_length(marker_detector, marker_atom);
 	if (marker_type == OpenXRMlMarkerDetectorSettings::MarkerType::MARKER_TYPE_QR || marker_type == OpenXRMlMarkerDetectorSettings::MarkerType::MARKER_TYPE_CODE_128 || marker_type == OpenXRMlMarkerDetectorSettings::MarkerType::MARKER_TYPE_EAN_13 || marker_type == OpenXRMlMarkerDetectorSettings::MarkerType::MARKER_TYPE_UPC_A) {
 		// Qr, Code128, Ean13, and UPCA markers contain a string

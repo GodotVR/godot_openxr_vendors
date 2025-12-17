@@ -48,48 +48,48 @@
 #include "export/meta_export_plugin.h"
 #include "export/pico_export_plugin.h"
 
-#include "extensions/openxr_android_environment_depth_extension_wrapper.h"
-#include "extensions/openxr_android_eye_tracking_extension_wrapper.h"
-#include "extensions/openxr_android_face_tracking_extension_wrapper.h"
-#include "extensions/openxr_android_light_estimation_extension_wrapper.h"
-#include "extensions/openxr_android_passthrough_camera_state_extension_wrapper.h"
-#include "extensions/openxr_android_performance_metrics_extension_wrapper.h"
-#include "extensions/openxr_android_scene_meshing_extension_wrapper.h"
-#include "extensions/openxr_fb_android_surface_swapchain_create_extension_wrapper.h"
-#include "extensions/openxr_fb_body_tracking_extension_wrapper.h"
-#include "extensions/openxr_fb_color_space_extension_wrapper.h"
-#include "extensions/openxr_fb_composition_layer_alpha_blend_extension_wrapper.h"
-#include "extensions/openxr_fb_composition_layer_depth_test_extension_wrapper.h"
-#include "extensions/openxr_fb_composition_layer_image_layout_extension_wrapper.h"
-#include "extensions/openxr_fb_composition_layer_secure_content_extension_wrapper.h"
-#include "extensions/openxr_fb_composition_layer_settings_extension_wrapper.h"
-#include "extensions/openxr_fb_face_tracking_extension_wrapper.h"
-#include "extensions/openxr_fb_hand_tracking_aim_extension_wrapper.h"
-#include "extensions/openxr_fb_hand_tracking_capsules_extension_wrapper.h"
-#include "extensions/openxr_fb_hand_tracking_mesh_extension_wrapper.h"
-#include "extensions/openxr_fb_passthrough_extension_wrapper.h"
-#include "extensions/openxr_fb_render_model_extension_wrapper.h"
-#include "extensions/openxr_fb_scene_capture_extension_wrapper.h"
-#include "extensions/openxr_fb_scene_extension_wrapper.h"
-#include "extensions/openxr_fb_space_warp_extension_wrapper.h"
-#include "extensions/openxr_fb_spatial_entity_container_extension_wrapper.h"
-#include "extensions/openxr_fb_spatial_entity_extension_wrapper.h"
-#include "extensions/openxr_fb_spatial_entity_query_extension_wrapper.h"
-#include "extensions/openxr_fb_spatial_entity_sharing_extension_wrapper.h"
-#include "extensions/openxr_fb_spatial_entity_storage_batch_extension_wrapper.h"
-#include "extensions/openxr_fb_spatial_entity_storage_extension_wrapper.h"
-#include "extensions/openxr_fb_spatial_entity_user_extension_wrapper.h"
-#include "extensions/openxr_htc_facial_tracking_extension_wrapper.h"
-#include "extensions/openxr_htc_passthrough_extension_wrapper.h"
-#include "extensions/openxr_meta_boundary_visibility_extension_wrapper.h"
-#include "extensions/openxr_meta_colocation_discovery_extension_wrapper.h"
-#include "extensions/openxr_meta_environment_depth_extension_wrapper.h"
-#include "extensions/openxr_meta_headset_id_extension_wrapper.h"
-#include "extensions/openxr_meta_performance_metrics_extension_wrapper.h"
-#include "extensions/openxr_meta_recommended_layer_resolution_extension_wrapper.h"
-#include "extensions/openxr_meta_simultaneous_hands_and_controllers_extension_wrapper.h"
-#include "extensions/openxr_meta_spatial_entity_mesh_extension_wrapper.h"
-#include "extensions/openxr_ml_marker_understanding_extension_wrapper.h"
+#include "extensions/openxr_android_environment_depth_extension.h"
+#include "extensions/openxr_android_eye_tracking_extension.h"
+#include "extensions/openxr_android_face_tracking_extension.h"
+#include "extensions/openxr_android_light_estimation_extension.h"
+#include "extensions/openxr_android_passthrough_camera_state_extension.h"
+#include "extensions/openxr_android_performance_metrics_extension.h"
+#include "extensions/openxr_android_scene_meshing_extension.h"
+#include "extensions/openxr_fb_android_surface_swapchain_create_extension.h"
+#include "extensions/openxr_fb_body_tracking_extension.h"
+#include "extensions/openxr_fb_color_space_extension.h"
+#include "extensions/openxr_fb_composition_layer_alpha_blend_extension.h"
+#include "extensions/openxr_fb_composition_layer_depth_test_extension.h"
+#include "extensions/openxr_fb_composition_layer_image_layout_extension.h"
+#include "extensions/openxr_fb_composition_layer_secure_content_extension.h"
+#include "extensions/openxr_fb_composition_layer_settings_extension.h"
+#include "extensions/openxr_fb_face_tracking_extension.h"
+#include "extensions/openxr_fb_hand_tracking_aim_extension.h"
+#include "extensions/openxr_fb_hand_tracking_capsules_extension.h"
+#include "extensions/openxr_fb_hand_tracking_mesh_extension.h"
+#include "extensions/openxr_fb_passthrough_extension.h"
+#include "extensions/openxr_fb_render_model_extension.h"
+#include "extensions/openxr_fb_scene_capture_extension.h"
+#include "extensions/openxr_fb_scene_extension.h"
+#include "extensions/openxr_fb_space_warp_extension.h"
+#include "extensions/openxr_fb_spatial_entity_container_extension.h"
+#include "extensions/openxr_fb_spatial_entity_extension.h"
+#include "extensions/openxr_fb_spatial_entity_query_extension.h"
+#include "extensions/openxr_fb_spatial_entity_sharing_extension.h"
+#include "extensions/openxr_fb_spatial_entity_storage_batch_extension.h"
+#include "extensions/openxr_fb_spatial_entity_storage_extension.h"
+#include "extensions/openxr_fb_spatial_entity_user_extension.h"
+#include "extensions/openxr_htc_facial_tracking_extension.h"
+#include "extensions/openxr_htc_passthrough_extension.h"
+#include "extensions/openxr_meta_boundary_visibility_extension.h"
+#include "extensions/openxr_meta_colocation_discovery_extension.h"
+#include "extensions/openxr_meta_environment_depth_extension.h"
+#include "extensions/openxr_meta_headset_id_extension.h"
+#include "extensions/openxr_meta_performance_metrics_extension.h"
+#include "extensions/openxr_meta_recommended_layer_resolution_extension.h"
+#include "extensions/openxr_meta_simultaneous_hands_and_controllers_extension.h"
+#include "extensions/openxr_meta_spatial_entity_mesh_extension.h"
+#include "extensions/openxr_ml_marker_understanding_extension.h"
 
 #include "classes/openxr_android_environment_depth.h"
 #include "classes/openxr_android_light_estimation.h"
@@ -124,18 +124,18 @@ using namespace godot;
 
 struct ExtensionSingleton {
 	String class_name;
-	OpenXRExtensionWrapperExtension *extension;
+	OpenXRExtensionWrapper *extension;
 };
 
-static Vector<OpenXRExtensionWrapperExtension *> extensions_registered;
+static Vector<OpenXRExtensionWrapper *> extensions_registered;
 static Vector<ExtensionSingleton> extensions_singletons;
 
-static inline void _register_extension_with_openxr(OpenXRExtensionWrapperExtension *p_extension) {
+static inline void _register_extension_with_openxr(OpenXRExtensionWrapper *p_extension) {
 	p_extension->register_extension_wrapper();
 	extensions_registered.push_back(p_extension);
 }
 
-static inline void _register_extension_as_singleton(OpenXRExtensionWrapperExtension *p_extension) {
+static inline void _register_extension_as_singleton(OpenXRExtensionWrapper *p_extension) {
 	String class_name = p_extension->get_class();
 	Engine::get_singleton()->register_singleton(class_name, p_extension);
 	extensions_singletons.push_back({ class_name, p_extension });
@@ -166,67 +166,67 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 
 			GDREGISTER_ABSTRACT_CLASS(OpenXRVendorPerformanceMetricsProvider);
 			GDREGISTER_CLASS(OpenXRVendorPerformanceMetrics);
-			GDREGISTER_CLASS(OpenXRMetaPerformanceMetricsExtensionWrapper);
+			GDREGISTER_CLASS(OpenXRMetaPerformanceMetricsExtension);
 
-			GDREGISTER_CLASS(OpenXRAndroidEyeTrackingExtensionWrapper);
-			GDREGISTER_CLASS(OpenXRAndroidFaceTrackingExtensionWrapper);
-			GDREGISTER_CLASS(OpenXRAndroidLightEstimationExtensionWrapper);
+			GDREGISTER_CLASS(OpenXRAndroidEyeTrackingExtension);
+			GDREGISTER_CLASS(OpenXRAndroidFaceTrackingExtension);
+			GDREGISTER_CLASS(OpenXRAndroidLightEstimationExtension);
 			GDREGISTER_CLASS(OpenXRAndroidSceneMeshing);
-			GDREGISTER_CLASS(OpenXRAndroidSceneMeshingExtensionWrapper);
+			GDREGISTER_CLASS(OpenXRAndroidSceneMeshingExtension);
 			GDREGISTER_CLASS(OpenXRAndroidSceneSubmeshData);
 
-			GDREGISTER_CLASS(OpenXRAndroidPassthroughCameraStateExtensionWrapper);
-			GDREGISTER_CLASS(OpenXRAndroidPerformanceMetricsExtensionWrapper);
-			GDREGISTER_CLASS(OpenXRFbPassthroughExtensionWrapper);
-			GDREGISTER_CLASS(OpenXRFbRenderModelExtensionWrapper);
-			GDREGISTER_CLASS(OpenXRFbColorSpaceExtensionWrapper);
-			GDREGISTER_CLASS(OpenXRFbSceneCaptureExtensionWrapper);
-			GDREGISTER_CLASS(OpenXRFbSpatialEntityExtensionWrapper);
-			GDREGISTER_CLASS(OpenXRFbSpatialEntitySharingExtensionWrapper);
-			GDREGISTER_CLASS(OpenXRFbSpatialEntityStorageExtensionWrapper);
-			GDREGISTER_CLASS(OpenXRFbSpatialEntityStorageBatchExtensionWrapper);
-			GDREGISTER_CLASS(OpenXRFbSpatialEntityQueryExtensionWrapper);
-			GDREGISTER_CLASS(OpenXRFbSpatialEntityContainerExtensionWrapper);
-			GDREGISTER_CLASS(OpenXRFbSpatialEntityUserExtensionWrapper);
-			GDREGISTER_CLASS(OpenXRMetaRecommendedLayerResolutionExtensionWrapper);
-			GDREGISTER_CLASS(OpenXRMetaSimultaneousHandsAndControllersExtensionWrapper);
-			GDREGISTER_CLASS(OpenXRMetaHeadsetIDExtensionWrapper);
-			GDREGISTER_CLASS(OpenXRMetaColocationDiscoveryExtensionWrapper);
-			GDREGISTER_CLASS(OpenXRMetaSpatialEntityMeshExtensionWrapper);
-			GDREGISTER_CLASS(OpenXRFbSceneExtensionWrapper);
-			GDREGISTER_CLASS(OpenXRFbFaceTrackingExtensionWrapper);
-			GDREGISTER_CLASS(OpenXRFbBodyTrackingExtensionWrapper);
-			GDREGISTER_CLASS(OpenXRFbHandTrackingMeshExtensionWrapper);
-			GDREGISTER_CLASS(OpenXRFbHandTrackingAimExtensionWrapper);
-			GDREGISTER_CLASS(OpenXRFbHandTrackingCapsulesExtensionWrapper);
-			GDREGISTER_CLASS(OpenXRFbCompositionLayerSecureContentExtensionWrapper);
-			GDREGISTER_CLASS(OpenXRFbCompositionLayerDepthTestExtensionWrapper);
-			GDREGISTER_CLASS(OpenXRFbCompositionLayerAlphaBlendExtensionWrapper);
-			GDREGISTER_CLASS(OpenXRFbCompositionLayerImageLayoutExtensionWrapper);
-			GDREGISTER_CLASS(OpenXRFbCompositionLayerSettingsExtensionWrapper);
-			GDREGISTER_CLASS(OpenXRFbAndroidSurfaceSwapchainCreateExtensionWrapper);
-			GDREGISTER_CLASS(OpenXRHtcFacialTrackingExtensionWrapper);
-			GDREGISTER_CLASS(OpenXRHtcPassthroughExtensionWrapper);
-			GDREGISTER_CLASS(OpenXRMlMarkerUnderstandingExtensionWrapper);
-			GDREGISTER_CLASS(OpenXRFbSpaceWarpExtensionWrapper);
-			GDREGISTER_CLASS(OpenXRMetaEnvironmentDepthExtensionWrapper);
-			GDREGISTER_CLASS(OpenXRAndroidEnvironmentDepthExtensionWrapper);
+			GDREGISTER_CLASS(OpenXRAndroidPassthroughCameraStateExtension);
+			GDREGISTER_CLASS(OpenXRAndroidPerformanceMetricsExtension);
+			GDREGISTER_CLASS(OpenXRFbPassthroughExtension);
+			GDREGISTER_CLASS(OpenXRFbRenderModelExtension);
+			GDREGISTER_CLASS(OpenXRFbColorSpaceExtension);
+			GDREGISTER_CLASS(OpenXRFbSceneCaptureExtension);
+			GDREGISTER_CLASS(OpenXRFbSpatialEntityExtension);
+			GDREGISTER_CLASS(OpenXRFbSpatialEntitySharingExtension);
+			GDREGISTER_CLASS(OpenXRFbSpatialEntityStorageExtension);
+			GDREGISTER_CLASS(OpenXRFbSpatialEntityStorageBatchExtension);
+			GDREGISTER_CLASS(OpenXRFbSpatialEntityQueryExtension);
+			GDREGISTER_CLASS(OpenXRFbSpatialEntityContainerExtension);
+			GDREGISTER_CLASS(OpenXRFbSpatialEntityUserExtension);
+			GDREGISTER_CLASS(OpenXRMetaRecommendedLayerResolutionExtension);
+			GDREGISTER_CLASS(OpenXRMetaSimultaneousHandsAndControllersExtension);
+			GDREGISTER_CLASS(OpenXRMetaHeadsetIDExtension);
+			GDREGISTER_CLASS(OpenXRMetaColocationDiscoveryExtension);
+			GDREGISTER_CLASS(OpenXRMetaSpatialEntityMeshExtension);
+			GDREGISTER_CLASS(OpenXRFbSceneExtension);
+			GDREGISTER_CLASS(OpenXRFbFaceTrackingExtension);
+			GDREGISTER_CLASS(OpenXRFbBodyTrackingExtension);
+			GDREGISTER_CLASS(OpenXRFbHandTrackingMeshExtension);
+			GDREGISTER_CLASS(OpenXRFbHandTrackingAimExtension);
+			GDREGISTER_CLASS(OpenXRFbHandTrackingCapsulesExtension);
+			GDREGISTER_CLASS(OpenXRFbCompositionLayerSecureContentExtension);
+			GDREGISTER_CLASS(OpenXRFbCompositionLayerDepthTestExtension);
+			GDREGISTER_CLASS(OpenXRFbCompositionLayerAlphaBlendExtension);
+			GDREGISTER_CLASS(OpenXRFbCompositionLayerImageLayoutExtension);
+			GDREGISTER_CLASS(OpenXRFbCompositionLayerSettingsExtension);
+			GDREGISTER_CLASS(OpenXRFbAndroidSurfaceSwapchainCreateExtension);
+			GDREGISTER_CLASS(OpenXRHtcFacialTrackingExtension);
+			GDREGISTER_CLASS(OpenXRHtcPassthroughExtension);
+			GDREGISTER_CLASS(OpenXRMlMarkerUnderstandingExtension);
+			GDREGISTER_CLASS(OpenXRFbSpaceWarpExtension);
+			GDREGISTER_CLASS(OpenXRMetaEnvironmentDepthExtension);
+			GDREGISTER_CLASS(OpenXRAndroidEnvironmentDepthExtension);
 
 // @todo GH Issue 304: Remove check for meta headers when feature becomes part of OpenXR spec.
 #ifdef META_HEADERS_ENABLED
-			GDREGISTER_CLASS(OpenXRMetaBoundaryVisibilityExtensionWrapper);
+			GDREGISTER_CLASS(OpenXRMetaBoundaryVisibilityExtension);
 #endif // META_HEADERS_ENABLED
 
 			if (_get_bool_project_setting("xr/openxr/extensions/meta/passthrough")) {
-				_register_extension_with_openxr(OpenXRFbPassthroughExtensionWrapper::get_singleton());
+				_register_extension_with_openxr(OpenXRFbPassthroughExtension::get_singleton());
 			}
 
 			if (_get_bool_project_setting("xr/openxr/extensions/meta/render_model")) {
-				_register_extension_with_openxr(OpenXRFbRenderModelExtensionWrapper::get_singleton());
+				_register_extension_with_openxr(OpenXRFbRenderModelExtension::get_singleton());
 			}
 
 			if (_get_bool_project_setting("xr/openxr/extensions/meta/color_space")) {
-				_register_extension_with_openxr(OpenXRFbColorSpaceExtensionWrapper::get_singleton());
+				_register_extension_with_openxr(OpenXRFbColorSpaceExtension::get_singleton());
 			}
 
 			// Three settings to match the three permissions for the Android manifest.
@@ -235,126 +235,126 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			bool meta_scene_api = _get_bool_project_setting("xr/openxr/extensions/meta/scene_api");
 			if (meta_anchor_api || meta_anchor_sharing || meta_scene_api) {
 				// There are needed by all of them.
-				_register_extension_with_openxr(OpenXRFbSpatialEntityExtensionWrapper::get_singleton());
-				_register_extension_with_openxr(OpenXRFbSpatialEntityStorageExtensionWrapper::get_singleton());
-				_register_extension_with_openxr(OpenXRFbSpatialEntityStorageBatchExtensionWrapper::get_singleton());
-				_register_extension_with_openxr(OpenXRFbSpatialEntityQueryExtensionWrapper::get_singleton());
-				_register_extension_with_openxr(OpenXRFbSpatialEntityContainerExtensionWrapper::get_singleton());
+				_register_extension_with_openxr(OpenXRFbSpatialEntityExtension::get_singleton());
+				_register_extension_with_openxr(OpenXRFbSpatialEntityStorageExtension::get_singleton());
+				_register_extension_with_openxr(OpenXRFbSpatialEntityStorageBatchExtension::get_singleton());
+				_register_extension_with_openxr(OpenXRFbSpatialEntityQueryExtension::get_singleton());
+				_register_extension_with_openxr(OpenXRFbSpatialEntityContainerExtension::get_singleton());
 
 				if (meta_scene_api) {
-					_register_extension_with_openxr(OpenXRFbSceneExtensionWrapper::get_singleton());
-					_register_extension_with_openxr(OpenXRFbSceneCaptureExtensionWrapper::get_singleton());
-					_register_extension_with_openxr(OpenXRMetaSpatialEntityMeshExtensionWrapper::get_singleton());
+					_register_extension_with_openxr(OpenXRFbSceneExtension::get_singleton());
+					_register_extension_with_openxr(OpenXRFbSceneCaptureExtension::get_singleton());
+					_register_extension_with_openxr(OpenXRMetaSpatialEntityMeshExtension::get_singleton());
 				}
 
 				if (meta_anchor_sharing) {
-					_register_extension_with_openxr(OpenXRFbSpatialEntitySharingExtensionWrapper::get_singleton());
-					_register_extension_with_openxr(OpenXRFbSpatialEntityUserExtensionWrapper::get_singleton());
+					_register_extension_with_openxr(OpenXRFbSpatialEntitySharingExtension::get_singleton());
+					_register_extension_with_openxr(OpenXRFbSpatialEntityUserExtension::get_singleton());
 				}
 			}
 
 			if (_get_bool_project_setting("xr/openxr/extensions/meta/dynamic_resolution")) {
-				_register_extension_with_openxr(OpenXRMetaRecommendedLayerResolutionExtensionWrapper::get_singleton());
+				_register_extension_with_openxr(OpenXRMetaRecommendedLayerResolutionExtension::get_singleton());
 			}
 
 			if (_get_bool_project_setting("xr/openxr/extensions/meta/face_tracking")) {
-				_register_extension_with_openxr(OpenXRFbFaceTrackingExtensionWrapper::get_singleton());
+				_register_extension_with_openxr(OpenXRFbFaceTrackingExtension::get_singleton());
 			}
 
 			if (_get_bool_project_setting("xr/openxr/extensions/meta/body_tracking")) {
-				_register_extension_with_openxr(OpenXRFbBodyTrackingExtensionWrapper::get_singleton());
+				_register_extension_with_openxr(OpenXRFbBodyTrackingExtension::get_singleton());
 			}
 
 			if (_get_bool_project_setting("xr/openxr/extensions/meta/headset_id")) {
-				_register_extension_with_openxr(OpenXRMetaHeadsetIDExtensionWrapper::get_singleton());
+				_register_extension_with_openxr(OpenXRMetaHeadsetIDExtension::get_singleton());
 			}
 
 			if (_get_bool_project_setting("xr/openxr/extensions/vendor_performance_metrics")) {
-				_register_extension_with_openxr(OpenXRMetaPerformanceMetricsExtensionWrapper::get_singleton());
-				_register_extension_with_openxr(OpenXRAndroidPerformanceMetricsExtensionWrapper::get_singleton());
+				_register_extension_with_openxr(OpenXRMetaPerformanceMetricsExtension::get_singleton());
+				_register_extension_with_openxr(OpenXRAndroidPerformanceMetricsExtension::get_singleton());
 			}
 
 			// All of the hand tracking extensions depend on the Godot hand tracking setting being set first.
 			if (_get_bool_project_setting("xr/openxr/extensions/hand_tracking")) {
 				if (_get_bool_project_setting("xr/openxr/extensions/meta/hand_tracking_mesh")) {
-					_register_extension_with_openxr(OpenXRFbHandTrackingMeshExtensionWrapper::get_singleton());
+					_register_extension_with_openxr(OpenXRFbHandTrackingMeshExtension::get_singleton());
 				}
 
 				if (_get_bool_project_setting("xr/openxr/extensions/meta/hand_tracking_aim")) {
-					_register_extension_with_openxr(OpenXRFbHandTrackingAimExtensionWrapper::get_singleton());
+					_register_extension_with_openxr(OpenXRFbHandTrackingAimExtension::get_singleton());
 				}
 
 				if (_get_bool_project_setting("xr/openxr/extensions/meta/hand_tracking_capsules")) {
-					_register_extension_with_openxr(OpenXRFbHandTrackingCapsulesExtensionWrapper::get_singleton());
+					_register_extension_with_openxr(OpenXRFbHandTrackingCapsulesExtension::get_singleton());
 				}
 
 				if (_get_bool_project_setting("xr/openxr/extensions/meta/simultaneous_hands_and_controllers")) {
-					_register_extension_with_openxr(OpenXRMetaSimultaneousHandsAndControllersExtensionWrapper::get_singleton());
+					_register_extension_with_openxr(OpenXRMetaSimultaneousHandsAndControllersExtension::get_singleton());
 				}
 			}
 
 			if (_get_bool_project_setting("xr/openxr/extensions/meta/composition_layer_settings")) {
-				_register_extension_with_openxr(OpenXRFbCompositionLayerSecureContentExtensionWrapper::get_singleton());
-				_register_extension_with_openxr(OpenXRFbCompositionLayerAlphaBlendExtensionWrapper::get_singleton());
-				_register_extension_with_openxr(OpenXRFbCompositionLayerSettingsExtensionWrapper::get_singleton());
-				_register_extension_with_openxr(OpenXRFbAndroidSurfaceSwapchainCreateExtensionWrapper::get_singleton());
-				_register_extension_with_openxr(OpenXRFbCompositionLayerDepthTestExtensionWrapper::get_singleton());
-				_register_extension_with_openxr(OpenXRFbCompositionLayerImageLayoutExtensionWrapper::get_singleton());
+				_register_extension_with_openxr(OpenXRFbCompositionLayerSecureContentExtension::get_singleton());
+				_register_extension_with_openxr(OpenXRFbCompositionLayerAlphaBlendExtension::get_singleton());
+				_register_extension_with_openxr(OpenXRFbCompositionLayerSettingsExtension::get_singleton());
+				_register_extension_with_openxr(OpenXRFbAndroidSurfaceSwapchainCreateExtension::get_singleton());
+				_register_extension_with_openxr(OpenXRFbCompositionLayerDepthTestExtension::get_singleton());
+				_register_extension_with_openxr(OpenXRFbCompositionLayerImageLayoutExtension::get_singleton());
 			}
 
 // @todo GH Issue 304: Remove check for meta headers when feature becomes part of OpenXR spec.
 #ifdef META_HEADERS_ENABLED
 			if (_get_bool_project_setting("xr/openxr/extensions/meta/boundary_visibility")) {
-				_register_extension_with_openxr(OpenXRMetaBoundaryVisibilityExtensionWrapper::get_singleton());
+				_register_extension_with_openxr(OpenXRMetaBoundaryVisibilityExtension::get_singleton());
 			}
 #endif // META_HEADERS_ENABLED
 
 			if (_get_bool_project_setting("xr/openxr/extensions/meta/colocation_discovery")) {
-				_register_extension_with_openxr(OpenXRMetaColocationDiscoveryExtensionWrapper::get_singleton());
+				_register_extension_with_openxr(OpenXRMetaColocationDiscoveryExtension::get_singleton());
 			}
 
 			if (_get_bool_project_setting("xr/openxr/extensions/meta/application_space_warp")) {
-				_register_extension_with_openxr(OpenXRFbSpaceWarpExtensionWrapper::get_singleton());
+				_register_extension_with_openxr(OpenXRFbSpaceWarpExtension::get_singleton());
 			}
 
 			if (_get_bool_project_setting("xr/openxr/extensions/meta/environment_depth")) {
-				_register_extension_with_openxr(OpenXRMetaEnvironmentDepthExtensionWrapper::get_singleton());
+				_register_extension_with_openxr(OpenXRMetaEnvironmentDepthExtension::get_singleton());
 			}
 
 			if (_get_bool_project_setting("xr/openxr/extensions/htc/face_tracking")) {
-				_register_extension_with_openxr(OpenXRHtcFacialTrackingExtensionWrapper::get_singleton());
+				_register_extension_with_openxr(OpenXRHtcFacialTrackingExtension::get_singleton());
 			}
 
 			if (_get_bool_project_setting("xr/openxr/extensions/htc/passthrough")) {
-				_register_extension_with_openxr(OpenXRHtcPassthroughExtensionWrapper::get_singleton());
+				_register_extension_with_openxr(OpenXRHtcPassthroughExtension::get_singleton());
 			}
 
 			if (_get_bool_project_setting("xr/openxr/extensions/magic_leap/marker_understanding")) {
-				_register_extension_with_openxr(OpenXRMlMarkerUnderstandingExtensionWrapper::get_singleton());
+				_register_extension_with_openxr(OpenXRMlMarkerUnderstandingExtension::get_singleton());
 			}
 
 			if (_get_bool_project_setting("xr/openxr/extensions/androidxr/passthrough_camera_state")) {
-				_register_extension_with_openxr(OpenXRAndroidPassthroughCameraStateExtensionWrapper::get_singleton());
+				_register_extension_with_openxr(OpenXRAndroidPassthroughCameraStateExtension::get_singleton());
 			}
 
 			if (_get_bool_project_setting("xr/openxr/extensions/androidxr/face_tracking")) {
-				_register_extension_with_openxr(OpenXRAndroidFaceTrackingExtensionWrapper::get_singleton());
+				_register_extension_with_openxr(OpenXRAndroidFaceTrackingExtension::get_singleton());
 			}
 
 			if (_get_bool_project_setting("xr/openxr/extensions/androidxr/eye_tracking")) {
-				_register_extension_with_openxr(OpenXRAndroidEyeTrackingExtensionWrapper::get_singleton());
+				_register_extension_with_openxr(OpenXRAndroidEyeTrackingExtension::get_singleton());
 			}
 
 			if (_get_bool_project_setting("xr/openxr/extensions/androidxr/light_estimation")) {
-				_register_extension_with_openxr(OpenXRAndroidLightEstimationExtensionWrapper::get_singleton());
+				_register_extension_with_openxr(OpenXRAndroidLightEstimationExtension::get_singleton());
 			}
 
 			if (_get_bool_project_setting("xr/openxr/extensions/androidxr/scene_meshing")) {
-				_register_extension_with_openxr(OpenXRAndroidSceneMeshingExtensionWrapper::get_singleton());
+				_register_extension_with_openxr(OpenXRAndroidSceneMeshingExtension::get_singleton());
 			}
 
 			if (_get_bool_project_setting("xr/openxr/extensions/androidxr/environment_depth")) {
-				_register_extension_with_openxr(OpenXRAndroidEnvironmentDepthExtensionWrapper::get_singleton());
+				_register_extension_with_openxr(OpenXRAndroidEnvironmentDepthExtension::get_singleton());
 			}
 		} break;
 
@@ -362,36 +362,36 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			break;
 
 		case MODULE_INITIALIZATION_LEVEL_SCENE: {
-			_register_extension_as_singleton(OpenXRFbPassthroughExtensionWrapper::get_singleton());
-			_register_extension_as_singleton(OpenXRFbRenderModelExtensionWrapper::get_singleton());
-			_register_extension_as_singleton(OpenXRFbColorSpaceExtensionWrapper::get_singleton());
-			_register_extension_as_singleton(OpenXRFbSceneCaptureExtensionWrapper::get_singleton());
-			_register_extension_as_singleton(OpenXRFbSpatialEntityExtensionWrapper::get_singleton());
-			_register_extension_as_singleton(OpenXRFbSpatialEntityStorageExtensionWrapper::get_singleton());
-			_register_extension_as_singleton(OpenXRFbSpatialEntityQueryExtensionWrapper::get_singleton());
-			_register_extension_as_singleton(OpenXRFbSpatialEntityContainerExtensionWrapper::get_singleton());
-			_register_extension_as_singleton(OpenXRFbSceneExtensionWrapper::get_singleton());
-			_register_extension_as_singleton(OpenXRFbHandTrackingAimExtensionWrapper::get_singleton());
-			_register_extension_as_singleton(OpenXRFbHandTrackingCapsulesExtensionWrapper::get_singleton());
-			_register_extension_as_singleton(OpenXRMetaSimultaneousHandsAndControllersExtensionWrapper::get_singleton());
-			_register_extension_as_singleton(OpenXRMetaHeadsetIDExtensionWrapper::get_singleton());
-			_register_extension_as_singleton(OpenXRMetaColocationDiscoveryExtensionWrapper::get_singleton());
-			_register_extension_as_singleton(OpenXRFbBodyTrackingExtensionWrapper::get_singleton());
-			_register_extension_as_singleton(OpenXRHtcFacialTrackingExtensionWrapper::get_singleton());
-			_register_extension_as_singleton(OpenXRHtcPassthroughExtensionWrapper::get_singleton());
-			_register_extension_as_singleton(OpenXRMlMarkerUnderstandingExtensionWrapper::get_singleton());
-			_register_extension_as_singleton(OpenXRAndroidEyeTrackingExtensionWrapper::get_singleton());
-			_register_extension_as_singleton(OpenXRAndroidFaceTrackingExtensionWrapper::get_singleton());
-			_register_extension_as_singleton(OpenXRAndroidLightEstimationExtensionWrapper::get_singleton());
-			_register_extension_as_singleton(OpenXRAndroidPassthroughCameraStateExtensionWrapper::get_singleton());
-			_register_extension_as_singleton(OpenXRAndroidSceneMeshingExtensionWrapper::get_singleton());
-			_register_extension_as_singleton(OpenXRFbSpaceWarpExtensionWrapper::get_singleton());
-			_register_extension_as_singleton(OpenXRMetaEnvironmentDepthExtensionWrapper::get_singleton());
-			_register_extension_as_singleton(OpenXRAndroidEnvironmentDepthExtensionWrapper::get_singleton());
+			_register_extension_as_singleton(OpenXRFbPassthroughExtension::get_singleton());
+			_register_extension_as_singleton(OpenXRFbRenderModelExtension::get_singleton());
+			_register_extension_as_singleton(OpenXRFbColorSpaceExtension::get_singleton());
+			_register_extension_as_singleton(OpenXRFbSceneCaptureExtension::get_singleton());
+			_register_extension_as_singleton(OpenXRFbSpatialEntityExtension::get_singleton());
+			_register_extension_as_singleton(OpenXRFbSpatialEntityStorageExtension::get_singleton());
+			_register_extension_as_singleton(OpenXRFbSpatialEntityQueryExtension::get_singleton());
+			_register_extension_as_singleton(OpenXRFbSpatialEntityContainerExtension::get_singleton());
+			_register_extension_as_singleton(OpenXRFbSceneExtension::get_singleton());
+			_register_extension_as_singleton(OpenXRFbHandTrackingAimExtension::get_singleton());
+			_register_extension_as_singleton(OpenXRFbHandTrackingCapsulesExtension::get_singleton());
+			_register_extension_as_singleton(OpenXRMetaSimultaneousHandsAndControllersExtension::get_singleton());
+			_register_extension_as_singleton(OpenXRMetaHeadsetIDExtension::get_singleton());
+			_register_extension_as_singleton(OpenXRMetaColocationDiscoveryExtension::get_singleton());
+			_register_extension_as_singleton(OpenXRFbBodyTrackingExtension::get_singleton());
+			_register_extension_as_singleton(OpenXRHtcFacialTrackingExtension::get_singleton());
+			_register_extension_as_singleton(OpenXRHtcPassthroughExtension::get_singleton());
+			_register_extension_as_singleton(OpenXRMlMarkerUnderstandingExtension::get_singleton());
+			_register_extension_as_singleton(OpenXRAndroidEyeTrackingExtension::get_singleton());
+			_register_extension_as_singleton(OpenXRAndroidFaceTrackingExtension::get_singleton());
+			_register_extension_as_singleton(OpenXRAndroidLightEstimationExtension::get_singleton());
+			_register_extension_as_singleton(OpenXRAndroidPassthroughCameraStateExtension::get_singleton());
+			_register_extension_as_singleton(OpenXRAndroidSceneMeshingExtension::get_singleton());
+			_register_extension_as_singleton(OpenXRFbSpaceWarpExtension::get_singleton());
+			_register_extension_as_singleton(OpenXRMetaEnvironmentDepthExtension::get_singleton());
+			_register_extension_as_singleton(OpenXRAndroidEnvironmentDepthExtension::get_singleton());
 
 // @todo GH Issue 304: Remove check for meta headers when feature becomes part of OpenXR spec.
 #ifdef META_HEADERS_ENABLED
-			_register_extension_as_singleton(OpenXRMetaBoundaryVisibilityExtensionWrapper::get_singleton());
+			_register_extension_as_singleton(OpenXRMetaBoundaryVisibilityExtension::get_singleton());
 #endif // META_HEADERS_ENABLED
 
 			GDREGISTER_CLASS(OpenXRAndroidLightEstimation);
@@ -425,7 +425,6 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			Engine::get_singleton()->register_singleton("OpenXRHybridApp", OpenXRHybridApp::get_singleton());
 
 			Engine::get_singleton()->register_singleton("OpenXRVendorPerformanceMetrics", OpenXRVendorPerformanceMetrics::get_singleton());
-
 		} break;
 
 		case MODULE_INITIALIZATION_LEVEL_EDITOR: {
@@ -443,11 +442,11 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 
 			EditorPlugins::add_by_type<OpenXRVendorsEditorPlugin>();
 
-			Callable meta_environment_depth_setup_global_uniforms = callable_mp(OpenXRMetaEnvironmentDepthExtensionWrapper::get_singleton(), &OpenXRMetaEnvironmentDepthExtensionWrapper::setup_global_uniforms);
+			Callable meta_environment_depth_setup_global_uniforms = callable_mp(OpenXRMetaEnvironmentDepthExtension::get_singleton(), &OpenXRMetaEnvironmentDepthExtension::setup_global_uniforms);
 			meta_environment_depth_setup_global_uniforms.call_deferred();
 			ProjectSettings::get_singleton()->connect("settings_changed", meta_environment_depth_setup_global_uniforms);
 
-			Callable android_environment_depth_setup_global_uniforms = callable_mp(OpenXRAndroidEnvironmentDepthExtensionWrapper::get_singleton(), &OpenXRAndroidEnvironmentDepthExtensionWrapper::setup_global_uniforms);
+			Callable android_environment_depth_setup_global_uniforms = callable_mp(OpenXRAndroidEnvironmentDepthExtension::get_singleton(), &OpenXRAndroidEnvironmentDepthExtension::setup_global_uniforms);
 			android_environment_depth_setup_global_uniforms.call_deferred();
 			ProjectSettings::get_singleton()->connect("settings_changed", android_environment_depth_setup_global_uniforms);
 		} break;
