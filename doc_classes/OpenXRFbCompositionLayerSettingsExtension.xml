@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="OpenXRFbCompositionLayerSettingsExtension" inherits="OpenXRExtensionWrapper" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		Wraps the [code]XR_FB_composition_layer_settings[/code] extension.
+	</brief_description>
+	<description>
+		Wraps the [code]XR_FB_composition_layer_settings[/code] extension.
+	</description>
+	<tutorials>
+	</tutorials>
+	<constants>
+		<constant name="SUPERSAMPLING_MODE_DISABLED" value="0" enum="SupersamplingMode">
+			Disable supersampling.
+		</constant>
+		<constant name="SUPERSAMPLING_MODE_NORMAL" value="1" enum="SupersamplingMode">
+			Normal supersampling.
+		</constant>
+		<constant name="SUPERSAMPLING_MODE_QUALITY" value="2" enum="SupersamplingMode">
+			Quality supersampling.
+		</constant>
+		<constant name="SHARPENING_MODE_DISABLED" value="0" enum="SharpeningMode">
+			Disable sharpening.
+		</constant>
+		<constant name="SHARPENING_MODE_NORMAL" value="1" enum="SharpeningMode">
+			Normal sharpening.
+		</constant>
+		<constant name="SHARPENING_MODE_QUALITY" value="2" enum="SharpeningMode">
+			Quality sharpening.
+		</constant>
+	</constants>
+</class>

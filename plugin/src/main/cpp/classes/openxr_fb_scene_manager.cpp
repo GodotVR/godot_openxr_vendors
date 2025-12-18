@@ -35,8 +35,8 @@
 #include <godot_cpp/classes/xr_server.hpp>
 
 #include "classes/openxr_fb_spatial_entity_query.h"
-#include "extensions/openxr_fb_scene_capture_extension_wrapper.h"
-#include "extensions/openxr_fb_scene_extension_wrapper.h"
+#include "extensions/openxr_fb_scene_capture_extension.h"
+#include "extensions/openxr_fb_scene_extension.h"
 
 using namespace godot;
 
@@ -80,7 +80,7 @@ void OpenXRFbSceneManager::_bind_methods() {
 bool OpenXRFbSceneManager::_set(const StringName &p_name, const Variant &p_value) {
 	PackedStringArray parts = p_name.split("/", true, 2);
 	if (parts.size() == 2 && parts[0] == "scenes") {
-		const PackedStringArray &semantic_labels = OpenXRFbSceneExtensionWrapper::get_supported_semantic_labels();
+		const PackedStringArray &semantic_labels = OpenXRFbSceneExtension::get_supported_semantic_labels();
 		if (semantic_labels.has(parts[1])) {
 			scenes[parts[1]] = p_value;
 			return true;
@@ -92,7 +92,7 @@ bool OpenXRFbSceneManager::_set(const StringName &p_name, const Variant &p_value
 bool OpenXRFbSceneManager::_get(const StringName &p_name, Variant &r_ret) const {
 	PackedStringArray parts = p_name.split("/", true, 2);
 	if (parts.size() == 2 && parts[0] == "scenes") {
-		const PackedStringArray &semantic_labels = OpenXRFbSceneExtensionWrapper::get_supported_semantic_labels();
+		const PackedStringArray &semantic_labels = OpenXRFbSceneExtension::get_supported_semantic_labels();
 		if (semantic_labels.has(parts[1])) {
 			const Ref<PackedScene> *scene = scenes.getptr(parts[1]);
 			r_ret = scene ? Variant(*scene) : Variant();
@@ -103,7 +103,7 @@ bool OpenXRFbSceneManager::_get(const StringName &p_name, Variant &r_ret) const 
 }
 
 void OpenXRFbSceneManager::_get_property_list(List<PropertyInfo> *p_list) const {
-	const PackedStringArray &semantic_labels = OpenXRFbSceneExtensionWrapper::get_supported_semantic_labels();
+	const PackedStringArray &semantic_labels = OpenXRFbSceneExtension::get_supported_semantic_labels();
 	for (int i = 0; i < semantic_labels.size(); i++) {
 		p_list->push_back(PropertyInfo(Variant::Type::OBJECT, "scenes/" + semantic_labels[i], PROPERTY_HINT_RESOURCE_TYPE, "PackedScene"));
 	}
@@ -339,15 +339,15 @@ bool OpenXRFbSceneManager::are_scene_anchors_created() const {
 
 bool OpenXRFbSceneManager::request_scene_capture(const String &p_request) const {
 	ObjectID *userdata = memnew(ObjectID(get_instance_id()));
-	return OpenXRFbSceneCaptureExtensionWrapper::get_singleton()->request_scene_capture(p_request, &OpenXRFbSceneManager::_scene_capture_callback, userdata);
+	return OpenXRFbSceneCaptureExtension::get_singleton()->request_scene_capture(p_request, &OpenXRFbSceneManager::_scene_capture_callback, userdata);
 }
 
 bool OpenXRFbSceneManager::is_scene_capture_enabled() const {
-	return OpenXRFbSceneCaptureExtensionWrapper::get_singleton()->is_scene_capture_enabled();
+	return OpenXRFbSceneCaptureExtension::get_singleton()->is_scene_capture_enabled();
 }
 
 bool OpenXRFbSceneManager::is_scene_capture_supported() const {
-	return OpenXRFbSceneCaptureExtensionWrapper::get_singleton()->is_scene_capture_supported();
+	return OpenXRFbSceneCaptureExtension::get_singleton()->is_scene_capture_supported();
 }
 
 void OpenXRFbSceneManager::_scene_capture_callback(XrResult p_result, void *p_userdata) {

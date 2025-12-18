@@ -29,7 +29,7 @@
 
 #include "classes/openxr_fb_spatial_entity_user.h"
 
-#include "extensions/openxr_fb_spatial_entity_user_extension_wrapper.h"
+#include "extensions/openxr_fb_spatial_entity_user_extension.h"
 
 using namespace godot;
 
@@ -56,7 +56,7 @@ Ref<OpenXRFbSpatialEntityUser> OpenXRFbSpatialEntityUser::create_user(uint64_t p
 OpenXRFbSpatialEntityUser::OpenXRFbSpatialEntityUser(uint64_t p_user_id) {
 	user_id = p_user_id;
 
-	OpenXRFbSpatialEntityUserExtensionWrapper *spatial_entity_user_extension = OpenXRFbSpatialEntityUserExtensionWrapper::get_singleton();
+	OpenXRFbSpatialEntityUserExtension *spatial_entity_user_extension = OpenXRFbSpatialEntityUserExtension::get_singleton();
 	if (spatial_entity_user_extension) {
 		user = spatial_entity_user_extension->create_user(p_user_id);
 	}
