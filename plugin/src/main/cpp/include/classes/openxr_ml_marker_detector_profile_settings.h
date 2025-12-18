@@ -27,8 +27,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef OPENXR_ML_MARKER_DETECTOR_PROFILE_SETTINGS_H
-#define OPENXR_ML_MARKER_DETECTOR_PROFILE_SETTINGS_H
+#pragma once
 
 #include <godot_cpp/classes/resource.hpp>
 #include <godot_cpp/core/binder_common.hpp>
@@ -103,5 +102,3 @@ VARIANT_ENUM_CAST(OpenXRMlMarkerDetectorProfileSettings::Resolution);
 VARIANT_ENUM_CAST(OpenXRMlMarkerDetectorProfileSettings::Camera);
 VARIANT_ENUM_CAST(OpenXRMlMarkerDetectorProfileSettings::CornerRefineMethod);
 VARIANT_ENUM_CAST(OpenXRMlMarkerDetectorProfileSettings::FullAnalysisInterval);
-
-#endif

@@ -27,8 +27,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef OPENXR_FB_SPATIAL_ENTITY_QUERY_H
-#define OPENXR_FB_SPATIAL_ENTITY_QUERY_H
+#pragma once
 
 #include <openxr/openxr.h>
 #include <godot_cpp/classes/ref_counted.hpp>
@@ -88,5 +87,3 @@ public:
 } // namespace godot
 
 VARIANT_ENUM_CAST(OpenXRFbSpatialEntityQuery::QueryType);
-
-#endif

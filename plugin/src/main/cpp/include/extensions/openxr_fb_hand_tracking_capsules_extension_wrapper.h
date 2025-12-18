@@ -27,8 +27,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef OPENXR_FB_HAND_TRACKING_CAPSULES_EXTENSION_WRAPPER_H
-#define OPENXR_FB_HAND_TRACKING_CAPSULES_EXTENSION_WRAPPER_H
+#pragma once
 
 #include <openxr/openxr.h>
 #include <godot_cpp/classes/open_xr_extension_wrapper_extension.hpp>
@@ -80,5 +79,3 @@ private:
 	static const int HAND_MAX = 2;
 	XrHandTrackingCapsulesStateFB capsules_state[HAND_MAX];
 };
-
-#endif // OPENXR_FB_HAND_TRACKING_CAPSULES_EXTENSION_WRAPPER_H

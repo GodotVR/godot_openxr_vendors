@@ -27,8 +27,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef OPENXR_FB_RENDER_MODEL_EXTENSION_WRAPPER_H
-#define OPENXR_FB_RENDER_MODEL_EXTENSION_WRAPPER_H
+#pragma once
 
 #include <openxr/openxr.h>
 #include <godot_cpp/classes/open_xr_extension_wrapper_extension.hpp>
@@ -108,5 +107,3 @@ private:
 	bool openxr_session_active = false;
 	XrSystemRenderModelPropertiesFB system_render_model_properties;
 };
-
-#endif // OPENXR_FB_RENDER_MODEL_EXTENSION_WRAPPER_H

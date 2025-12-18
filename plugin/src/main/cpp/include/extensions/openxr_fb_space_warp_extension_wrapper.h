@@ -27,8 +27,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef OPENXR_FB_SPACE_WARP_EXTENSION_WRAPPER_H
-#define OPENXR_FB_SPACE_WARP_EXTENSION_WRAPPER_H
+#pragma once
 
 #include <openxr/openxr.h>
 #include <godot_cpp/classes/open_xr_extension_wrapper_extension.hpp>
@@ -98,5 +97,3 @@ private:
 		Transform3D previous_transform = { { 1.0, 0.0, 0.0 }, { 0.0, 1.0, 0.0 }, { 0.0, 0.0, 1.0 }, { 0.0, 0.0, 0.0 } };
 	} render_state;
 };
-
-#endif // OPENXR_FB_SPACE_WARP_EXTENSION_WRAPPER_H

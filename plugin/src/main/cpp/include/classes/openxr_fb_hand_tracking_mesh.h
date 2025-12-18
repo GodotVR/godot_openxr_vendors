@@ -27,8 +27,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef OPENXR_FB_HAND_TRACKING_MESH_H
-#define OPENXR_FB_HAND_TRACKING_MESH_H
+#pragma once
 
 #include <godot_cpp/classes/material.hpp>
 #include <godot_cpp/classes/mesh_instance3d.hpp>
@@ -80,5 +79,3 @@ public:
 } //namespace godot
 
 VARIANT_ENUM_CAST(OpenXRFbHandTrackingMesh::Hand);
-
-#endif

@@ -27,8 +27,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef OPENXR_FB_SPATIAL_ENTITY_BATCH_H
-#define OPENXR_FB_SPATIAL_ENTITY_BATCH_H
+#pragma once
 
 #include <openxr/openxr.h>
 
@@ -63,5 +62,3 @@ public:
 	OpenXRFbSpatialEntityBatch(const TypedArray<OpenXRFbSpatialEntity> &p_entities);
 };
 } // namespace godot
-
-#endif

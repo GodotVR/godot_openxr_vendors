@@ -27,8 +27,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef OPENXR_FB_PASSTHROUGH_GEOMETRY_H
-#define OPENXR_FB_PASSTHROUGH_GEOMETRY_H
+#pragma once
 
 #include <godot_cpp/classes/mesh.hpp>
 #include <godot_cpp/classes/mesh_instance3d.hpp>
@@ -66,5 +65,3 @@ public:
 	bool get_enable_hole_punch() const;
 };
 } //namespace godot
-
-#endif

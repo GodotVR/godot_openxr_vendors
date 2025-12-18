@@ -27,8 +27,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef OPENXR_FB_COMPOSITION_LAYER_ALPHA_BLEND_EXTENSION_WRAPPER_H
-#define OPENXR_FB_COMPOSITION_LAYER_ALPHA_BLEND_EXTENSION_WRAPPER_H
+#pragma once
 
 #include <openxr/openxr.h>
 
@@ -81,5 +80,3 @@ private:
 };
 
 VARIANT_ENUM_CAST(OpenXRFbCompositionLayerAlphaBlendExtensionWrapper::BlendFactor);
-
-#endif // OPENXR_FB_COMPOSITION_LAYER_ALPHA_BLEND_EXTENSION_WRAPPER_H

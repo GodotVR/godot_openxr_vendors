@@ -27,8 +27,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef OPENXR_ML_MARKER_DETECTOR_H
-#define OPENXR_ML_MARKER_DETECTOR_H
+#pragma once
 
 #include <openxr/openxr.h>
 #include <godot_cpp/classes/node.hpp>
@@ -83,5 +82,3 @@ public:
 } // namespace godot
 
 VARIANT_ENUM_CAST(OpenXRMlMarkerDetector::Status);
-
-#endif

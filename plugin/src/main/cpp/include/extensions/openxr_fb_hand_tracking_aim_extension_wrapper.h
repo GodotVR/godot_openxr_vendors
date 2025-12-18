@@ -27,8 +27,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef OPENXR_FB_HAND_TRACKING_AIM_EXTENSION_WRAPPER_H
-#define OPENXR_FB_HAND_TRACKING_AIM_EXTENSION_WRAPPER_H
+#pragma once
 
 #include <openxr/openxr.h>
 #include <godot_cpp/classes/open_xr_extension_wrapper_extension.hpp>
@@ -86,5 +85,3 @@ private:
 
 	XrHandTrackingAimStateFB aim_state[Hand::HAND_MAX];
 };
-
-#endif // OPENXR_FB_HAND_TRACKING_AIM_EXTENSION_WRAPPER_H

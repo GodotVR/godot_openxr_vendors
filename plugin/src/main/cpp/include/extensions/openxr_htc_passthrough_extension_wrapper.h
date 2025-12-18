@@ -27,8 +27,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef OPENXR_HTC_PASSTHROUGH_EXTENSION_WRAPPER_H
-#define OPENXR_HTC_PASSTHROUGH_EXTENSION_WRAPPER_H
+#pragma once
 
 #include <godot_cpp/classes/open_xr_extension_wrapper_extension.hpp>
 #include <godot_cpp/classes/xr_interface.hpp>
@@ -118,5 +117,3 @@ private:
 		return XRInterface::XR_ENV_BLEND_MODE_OPAQUE;
 	}
 };
-
-#endif // OPENXR_HTC_PASSTHROUGH_EXTENSION_WRAPPER_H

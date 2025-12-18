@@ -27,8 +27,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef OPENXR_FB_BODY_TRACKING_EXTENSION_WRAPPER_H
-#define OPENXR_FB_BODY_TRACKING_EXTENSION_WRAPPER_H
+#pragma once
 
 // @todo GH Issue 304: Remove check for meta headers when feature becomes part of OpenXR spec.
 #ifdef META_HEADERS_ENABLED
@@ -210,5 +209,3 @@ private:
 VARIANT_ENUM_CAST(OpenXRFbBodyTrackingExtensionWrapper::BodyTrackingFidelity);
 VARIANT_ENUM_CAST(OpenXRFbBodyTrackingExtensionWrapper::BodyTrackingCalibrationState);
 #endif
-
-#endif // OPENXR_FB_BODY_TRACKING_EXTENSION_WRAPPER_H

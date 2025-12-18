@@ -28,8 +28,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef AndroidXR_PASSTHROUGH_CAMERA_STATE_EXTENSION_H
-#define AndroidXR_PASSTHROUGH_CAMERA_STATE_EXTENSION_H
+#pragma once
 
 #include <androidxr/androidxr.h>
 #include <godot_cpp/classes/open_xr_extension_wrapper_extension.hpp>
@@ -75,5 +74,3 @@ private:
 };
 
 VARIANT_ENUM_CAST(OpenXRAndroidPassthroughCameraStateExtensionWrapper::PassthroughCameraState);
-
-#endif // AndroidXR_PASSTHROUGH_CAMERA_STATE_EXTENSION_H

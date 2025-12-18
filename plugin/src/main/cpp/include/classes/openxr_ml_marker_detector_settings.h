@@ -27,8 +27,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef OPENXR_ML_MARKER_DETECTOR_SETTINGS_H
-#define OPENXR_ML_MARKER_DETECTOR_SETTINGS_H
+#pragma once
 
 #include "classes/openxr_ml_marker_detector_profile_settings.h"
 #include <godot_cpp/classes/resource.hpp>
@@ -81,5 +80,3 @@ public:
 
 VARIANT_ENUM_CAST(OpenXRMlMarkerDetectorSettings::MarkerType);
 VARIANT_ENUM_CAST(OpenXRMlMarkerDetectorSettings::MarkerDetectorProfile);
-
-#endif

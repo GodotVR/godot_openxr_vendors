@@ -27,8 +27,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef OPENXR_ML_MARKER_DETECTOR_ARUCO_SETTINGS_H
-#define OPENXR_ML_MARKER_DETECTOR_ARUCO_SETTINGS_H
+#pragma once
 
 #include "classes/openxr_ml_marker_detector_settings.h"
 
@@ -81,5 +80,3 @@ public:
 } // namespace godot
 
 VARIANT_ENUM_CAST(OpenXRMlMarkerDetectorArucoSettings::ArucoDictionary);
-
-#endif

@@ -27,8 +27,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef UTIL_H
-#define UTIL_H
+#pragma once
 
 #include <godot_cpp/variant/string_name.hpp>
 
@@ -129,5 +128,3 @@ namespace OpenXRUtilities {
 godot::StringName uuid_to_string_name(const XrUuid &p_uuid);
 void xrMatrix4x4f_to_godot_projection(XrMatrix4x4f *m, godot::Projection &p);
 }; //namespace OpenXRUtilities
-
-#endif // UTIL_H

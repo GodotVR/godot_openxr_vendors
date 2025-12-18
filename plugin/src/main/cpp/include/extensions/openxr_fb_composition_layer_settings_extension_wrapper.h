@@ -27,8 +27,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef OPENXR_FB_COMPOSITION_LAYER_SETTINGS_EXTENSION_WRAPPER_H
-#define OPENXR_FB_COMPOSITION_LAYER_SETTINGS_EXTENSION_WRAPPER_H
+#pragma once
 
 #include <openxr/openxr.h>
 
@@ -84,5 +83,3 @@ private:
 
 VARIANT_ENUM_CAST(OpenXRFbCompositionLayerSettingsExtensionWrapper::SupersamplingMode);
 VARIANT_ENUM_CAST(OpenXRFbCompositionLayerSettingsExtensionWrapper::SharpeningMode);
-
-#endif // OPENXR_FB_COMPOSITION_LAYER_SETTINGS_EXTENSION_WRAPPER_H
