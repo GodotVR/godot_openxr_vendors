@@ -55,7 +55,7 @@ public:
 		DEPTH_CAMERA_RESOLUTION_320x320,
 	};
 
-	Dictionary _get_requested_extensions() override;
+	Dictionary _get_requested_extensions(uint64_t p_xr_version) override;
 
 	virtual void _on_instance_created(uint64_t instance) override;
 	virtual void _on_instance_destroyed() override;
