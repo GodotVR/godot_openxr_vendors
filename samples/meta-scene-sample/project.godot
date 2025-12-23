@@ -8,11 +8,15 @@
 
 config_version=5
 
+[animation]
+
+compatibility/default_parent_skeleton_in_mesh_instance_3d=true
+
 [application]
 
 config/name="Meta Scene Sample"
 run/main_scene="res://main.tscn"
-config/features=PackedStringArray("4.4", "GL Compatibility")
+config/features=PackedStringArray("4.6", "GL Compatibility")
 config/icon="res://icon.svg"
 
 [layer_names]
@@ -85,3 +89,5 @@ openxr/extensions/meta/anchor_api=true
 openxr/extensions/meta/scene_api=true
 openxr/extensions/meta/environment_depth=true
 openxr/extensions/meta/color_space/starting_color_space=3
+openxr/extensions/stationary_reference_space=true
+openxr/extensions/stationary_reference_space/enable_on_startup=true

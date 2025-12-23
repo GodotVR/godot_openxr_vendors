@@ -56,7 +56,7 @@ public:
 
 	uint64_t _set_system_properties_and_get_next_pointer(void *next_pointer) override;
 
-	godot::Dictionary _get_requested_extensions() override;
+	godot::Dictionary _get_requested_extensions(uint64_t p_xr_version) override;
 
 	void _on_instance_created(uint64_t instance) override;
 	void _on_instance_destroyed() override;
