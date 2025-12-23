@@ -8,6 +8,7 @@ Meta
     :name: toc-meta
 
     application_space_warp
+    body_tracking
     color_space
     composition_layers
     dynamic_resolution
