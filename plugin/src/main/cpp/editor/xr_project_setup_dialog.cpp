@@ -88,6 +88,7 @@ enum VendorType {
 	VENDOR_TYPE_LYNX,
 	VENDOR_TYPE_MAGIC_LEAP,
 	VENDOR_TYPE_ANDROID_XR,
+	VENDOR_TYPE_VALVE,
 };
 
 namespace godot_openxr_vendors {
@@ -402,6 +403,12 @@ void XrProjectSetupDialog::_notification(uint32_t p_what) {
 #endif // !ANDROID_ENABLED
 			recommendations.push_back(memnew(ExportSettingRecommendation("Android XR Plugin", "No Android export preset with Android XR plugin enabled was found", "Open", ALERT_TYPE_ERROR, PROJECT_TYPE_ANY, VENDOR_TYPE_ANDROID_XR, false, "xr_features/enable_androidxr_plugin")));
 
+			// Steam Frame general errors.
+#ifndef ANDROID_ENABLED
+			recommendations.push_back(memnew(ExportSettingRecommendation("Gradle Build", "No Android export preset with Gradle build enabled was found", "Open", ALERT_TYPE_ERROR, PROJECT_TYPE_ANY, VENDOR_TYPE_VALVE, false, "gradle_build/use_gradle_build")));
+#endif // !ANDROID_ENABLED
+			recommendations.push_back(memnew(ExportSettingRecommendation("Khronos Plugin", "No Android export preset with Khronos plugin enabled was found", "Open", ALERT_TYPE_ERROR, PROJECT_TYPE_ANY, VENDOR_TYPE_VALVE, false, "xr_features/enable_khronos_plugin")));
+
 			// Vendor neutral general warnings.
 			recommendations.push_back(memnew(BootSplashRecommendation("Boot Splash", "No valid boot splash image was found", "Open", ALERT_TYPE_WARNING, PROJECT_TYPE_ANY, VENDOR_TYPE_ANY, false)));
 			recommendations.push_back(memnew(SimpleProjectSettingRecommendation("MSAA", "Recommended to set MSAA to 2x", "Apply", ALERT_TYPE_WARNING, PROJECT_TYPE_ANY, VENDOR_TYPE_ANY, false, "rendering/anti_aliasing/quality/msaa_3d", 1)));
@@ -476,6 +483,7 @@ void XrProjectSetupDialog::_notification(uint32_t p_what) {
 			vendor_type_selector->add_item("Lynx", VENDOR_TYPE_LYNX);
 			vendor_type_selector->add_item("Magic Leap", VENDOR_TYPE_MAGIC_LEAP);
 			vendor_type_selector->add_item("Android XR", VENDOR_TYPE_ANDROID_XR);
+			vendor_type_selector->add_item("Valve", VENDOR_TYPE_VALVE);
 			vendor_type_selector->select(project_type_selector->get_item_index(VENDOR_TYPE_META));
 			vendor_type_hbox->add_child(vendor_type_selector);
 			vendor_type_selector->connect("item_selected", callable_mp(this, &XrProjectSetupDialog::_on_filter_selected));
