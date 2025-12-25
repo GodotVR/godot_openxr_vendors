@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3 uid="uid://xga880omsrpm"]
+
+[ext_resource type="Script" uid="uid://1nit8ovimkj4" path="res://addons/sgxr/view_pivot.gd" id="1_tpea8"]
+
+[node name="ViewPivot" type="Node3D"]
+script = ExtResource("1_tpea8")
+
+[node name="Timer" type="Timer" parent="."]
+unique_name_in_owner = true
+one_shot = true
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

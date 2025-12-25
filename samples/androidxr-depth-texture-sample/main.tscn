@@ -30,6 +30,7 @@ environment = SubResource("Environment_tep2q")
 [node name="Viewport2Din3D" parent="XROrigin3D/XRCamera3D" instance=ExtResource("2_h2yge")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.5)
 scene = ExtResource("3_1bvp3")
+viewport_size = Vector2i(512, 512)
 pixel_size = 0.0010000000038417
 
 [node name="Timer" type="Timer" parent="."]
