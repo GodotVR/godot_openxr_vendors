@@ -1,0 +1,29 @@
+[gd_scene load_steps=5 format=3 uid="uid://cqs8c3rq6cxvk"]
+
+[ext_resource type="Script" uid="uid://qe5cwrdl7ri2" path="res://addons/common/function_pointer/function_pointer.gd" id="1_pjipa"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pjipa"]
+shading_mode = 0
+disable_receive_shadows = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_g1l7f"]
+shading_mode = 0
+albedo_color = Color(0, 0.478431, 1, 1)
+disable_receive_shadows = true
+
+[sub_resource type="BoxMesh" id="BoxMesh_6h6mo"]
+resource_local_to_scene = true
+size = Vector3(0.005, 0.005, 5)
+
+[node name="FunctionPointer" type="Node3D" groups=["function_pointer"]]
+script = ExtResource("1_pjipa")
+select_action = "trigger"
+released_material = SubResource("StandardMaterial3D_pjipa")
+pressed_material = SubResource("StandardMaterial3D_g1l7f")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2.57)
+mesh = SubResource("BoxMesh_6h6mo")
+skeleton = NodePath("../../LeftHand")
+surface_material_override/0 = SubResource("StandardMaterial3D_pjipa")
