@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="OpenXRAndroidSceneMeshingExtensionWrapper" inherits="OpenXRExtensionWrapperExtension" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		Wraps the [code]XR_ANDROID_scene_meshing[/code] extension.
+	</brief_description>
+	<description>
+		Wraps the [code]XR_ANDROID_scene_meshing[/code] extension.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="get_supported_semantic_label_sets">
+			<return type="Array" />
+			<description>
+				Get the [Array] of supported [enum OpenXRAndroidSceneMeshing.SemanticLabelSet]s.
+				This function always returns the same result.
+			</description>
+		</method>
+	</methods>
+</class>
