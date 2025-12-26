@@ -406,7 +406,8 @@ String MetaEditorExportPlugin::_get_android_manifest_element_contents(const Ref<
 	}
 
 	// Check for anchor api
-	if ((bool)project_settings->get_setting_with_override("xr/openxr/extensions/meta/anchor_api")) {
+	if ((bool)project_settings->get_setting_with_override("xr/openxr/extensions/spatial_entity/enabled") ||
+			(bool)project_settings->get_setting_with_override("xr/openxr/extensions/meta/anchor_api")) {
 		contents += "    <uses-permission android:name=\"com.oculus.permission.USE_ANCHOR_API\" />\n";
 	}
 
@@ -416,7 +417,9 @@ String MetaEditorExportPlugin::_get_android_manifest_element_contents(const Ref<
 	}
 
 	// Check for scene api or environment depth
-	if ((bool)project_settings->get_setting_with_override("xr/openxr/extensions/meta/scene_api") || (bool)project_settings->get_setting_with_override("xr/openxr/extensions/meta/environment_depth")) {
+	if ((bool)project_settings->get_setting_with_override("xr/openxr/extensions/spatial_entity/enabled") ||
+			(bool)project_settings->get_setting_with_override("xr/openxr/extensions/meta/scene_api") ||
+			(bool)project_settings->get_setting_with_override("xr/openxr/extensions/meta/environment_depth")) {
 		contents += "    <uses-permission android:name=\"com.oculus.permission.USE_SCENE\" />\n";
 	}
 
