@@ -76,6 +76,7 @@
         "XRAnchor3D",
         "XRBodyTracker",
         "XRCamera3D",
+        "XRControllerTracker",
         "XRFaceTracker",
         "XRHandModifier3D",
         "XRHandTracker",
