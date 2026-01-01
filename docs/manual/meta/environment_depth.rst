@@ -17,12 +17,12 @@ To use Meta Environment Depth, the OpenXR extension must be enabled in project s
 Starting and stopping
 ---------------------
 
-Before Meta Envirnoment Depth can be used, it needs to be started:
+Before Meta Environment Depth can be used, it needs to be started:
 
 .. code::
 
-	if OpenXRMetaEnvironmentDepthWrapper.is_environment_depth_supported():
-		OpenXRMetaEnvironmentDepthWrapper.start_environment_depth()
+	if OpenXRMetaEnvironmentDepthExtensionWrapper.is_environment_depth_supported():
+		OpenXRMetaEnvironmentDepthExtensionWrapper.start_environment_depth()
 
 This will only work if there is an active OpenXR session. You can connect to the ``OpenXRInterface.session_begun`` signal to run code right when the session starts.
 
@@ -30,15 +30,15 @@ There is a performance cost to using Meta Environment Depth, so you should only 
 
 .. code::
 
-	if OpenXRMetaEnvironmentDepthWrapper.is_environment_depth_started():
-		OpenXRMetaEnvironmentDepthWrapper.stop_environment_depth()
+	if OpenXRMetaEnvironmentDepthExtensionWrapper.is_environment_depth_started():
+		OpenXRMetaEnvironmentDepthExtensionWrapper.stop_environment_depth()
 
 Sometimes it can be useful to omit the player's hands from the depth data:
 
 .. code::
 
 	# This will only take effect if run after environment depth is started.
-	OpenXRMetaEnvironmentDepthWrapper.set_hand_removal_enabled(true)
+	OpenXRMetaEnvironmentDepthExtensionWrapper.set_hand_removal_enabled(true)
 
 This is commonly done in combination with virtual hand models animated by hand tracking.
 
@@ -245,7 +245,7 @@ To request the data:
 		timer.start()
 
 	func _on_timer_timeout() -> void:
-		OpenXRMetaEnvironmentDepthWrapper.get_environment_depth_map_async(process_depth_map)
+		OpenXRMetaEnvironmentDepthExtensionWrapper.get_environment_depth_map_async(process_depth_map)
 
 	func process_depth_map(p_data: Array) -> void:
 		var data_for_left_eye: Dictionary = p_data[0]
