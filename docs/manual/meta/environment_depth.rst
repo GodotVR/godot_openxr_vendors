@@ -24,7 +24,7 @@ Before Meta Environment Depth can be used, it needs to be started:
 	if OpenXRMetaEnvironmentDepthExtensionWrapper.is_environment_depth_supported():
 		OpenXRMetaEnvironmentDepthExtensionWrapper.start_environment_depth()
 
-This will only work if there is an active OpenXR session. You can connect to the ``OpenXRInterface.session_begun`` signal to run code right when the session starts.
+This will only work if there is both an active OpenXR session, and relevant Android permissions have all been granted in advance of the call. Namely, explicitly, "dangerous" permission ``android.permission.CAMERA``, and runtime permission ``USE_SCENE``. The latter can be automatically requested via the extension settings, Project Settings > OpenXR > Extensions > Automatically Request Runtime Permissions, or explicitly in code like the camera one.
 
 There is a performance cost to using Meta Environment Depth, so you should only start it when needed, and stop it when no longer needed. For example, if your application has both a VR and AR mode, you should make sure that Meta Environment Depth is only running in AR mode.
 
@@ -240,7 +240,7 @@ To request the data:
 		# Request the data every 1 second.
 		var timer := Timer.new()
 		timer.wait_time = 1.0
-		time.connect.timeout(_on_timer_timeout)
+		timer.timeout.connect(_on_timer_timeout)
 		add_child(timer)
 		timer.start()
 
@@ -256,6 +256,6 @@ To request the data:
 
 		# Do processing...
 
-It's not recommend to request the depth map every frame, as it's not the most performant operation, but also, the depth map image won't change every frame anyway. The depth sensor captures at lower frame rate than we are rendering to the display, so will only update every few frames.
+It's not recommended to request the depth map every frame, as it's not the most performant operation, but also, the depth map image won't change every frame anyway. The depth sensor captures at lower frame rate than we are rendering to the display, so will only update every few frames.
 
 Also, due to this being an asynchronous operation, the data you receive won't be up-to-date for the current frame - most likely it'll be the data from the previous frame. So, if you need to use the depth map for rendering something on the current frame, it's recommended to do that in a shader instead (as described in the previous section).
