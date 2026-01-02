@@ -64,7 +64,7 @@ void OpenXRFbCompositionLayerDepthTestExtensionWrapper::cleanup() {
 	fb_composition_layer_depth_test_ext = false;
 }
 
-Dictionary OpenXRFbCompositionLayerDepthTestExtensionWrapper::_get_requested_extensions() {
+Dictionary OpenXRFbCompositionLayerDepthTestExtensionWrapper::_get_requested_extensions(uint64_t p_xr_version) {
 	Dictionary result;
 	for (auto ext : request_extensions) {
 		uint64_t value = reinterpret_cast<uint64_t>(ext.value);
