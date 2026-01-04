@@ -24,7 +24,7 @@ Before Meta Environment Depth can be used, it needs to be started:
 	if OpenXRMetaEnvironmentDepthExtensionWrapper.is_environment_depth_supported():
 		OpenXRMetaEnvironmentDepthExtensionWrapper.start_environment_depth()
 
-This will only work if there is both an active OpenXR session, and relevant Android permissions have all been granted in advance of the call. Namely, explicitly, "dangerous" permission ``android.permission.CAMERA``, and runtime permission ``USE_SCENE``. The latter can be automatically requested via the extension settings, Project Settings > OpenXR > Extensions > Automatically Request Runtime Permissions, or explicitly in code like the camera one.
+This will only work if there is an active OpenXR session. You can connect to the ``OpenXRInterface.session_begun`` signal to run code right when the session starts.
 
 There is a performance cost to using Meta Environment Depth, so you should only start it when needed, and stop it when no longer needed. For example, if your application has both a VR and AR mode, you should make sure that Meta Environment Depth is only running in AR mode.
 
