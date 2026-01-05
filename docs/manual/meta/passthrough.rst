@@ -9,6 +9,7 @@ Meta Passthrough
 If your project requires the user to see their physical environment, you'll need to use the headset's passthrough functionality.
 The Godot OpenXR Vendors Plugin provides access to several passthrough modes and filters supported on the Meta Quest, all of which will be broken down in this tutorial.
 
+.. _passthrough_project_settings:
 Project Settings
 -----------------
 
@@ -251,3 +252,33 @@ If ``meta_color_lut`` is fully applied, we can smoothly transition to ``meta_col
 
     var tween = create_tween()
     tween.tween_method(fb_passthrough.set_interpolated_color_lut.bind(meta_color_lut, meta_color_lut2), 0.0, 1.0, 2.0)
+
+Boundary visibility
+-------------------
+
+In passthrough mode, boundary visibility can be toggled by making use of the ``XR_META_boundary_visibility`` extension.
+
+This requires enabling the **Boundary Visibility** extension in `Project Settings > XR > OpenXR > Meta`
+(as well as the **Passthrough** extension in the same place, as described above under :ref:`passthrough_project_settings`).
+
+.. figure:: img/passthrough/boundary_visibility_settings.webp
+    :align: center
+
+    Project settings required for the **Boundary Visibility** extension.
+
+Note that the extension isn't in the OpenXR spec yet, so depending on the plugin release used
+(especially if self built), it needs to be built with the Meta SDK headers included as described in the
+`Pull Request <https://github.com/GodotVR/godot_openxr_vendors/pull/302>`__.
+
+After enabling the extension in **Project Settings**, the
+:ref:`OpenXRMetaBoundaryVisibilityExtensionWrapper <class_openxrmetaboundaryvisibilityextensionwrapper>` singleton
+and its method :ref:`set_boundary_visible <class_openxrmetaboundaryvisibilityextensionwrapper_method_set_boundary_visible>`
+can be used to control whether the boundary is visible:
+
+.. code-block:: gdscript
+
+    func toggle_boundary_visibility():
+        if not OpenXRMetaBoundaryVisibilityExtensionWrapper.is_boundary_visibility_supported():
+            return
+        var is_boundary_visible = OpenXRMetaBoundaryVisibilityExtensionWrapper.is_boundary_visible
+        OpenXRMetaBoundaryVisibilityExtensionWrapper.set_boundary_visible(!is_boundary_visible)
