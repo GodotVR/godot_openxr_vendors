@@ -42,7 +42,7 @@ class OpenXRMetaSpatialEntityMeshExtensionWrapper : public OpenXRExtensionWrappe
 	GDCLASS(OpenXRMetaSpatialEntityMeshExtensionWrapper, OpenXRExtensionWrapperExtension);
 
 public:
-	Dictionary _get_requested_extensions() override;
+	Dictionary _get_requested_extensions(uint64_t p_xr_version) override;
 
 	void _on_instance_created(uint64_t instance) override;
 	void _on_instance_destroyed() override;

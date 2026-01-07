@@ -64,7 +64,7 @@ void OpenXRFbSpatialEntityQueryExtensionWrapper::cleanup() {
 	fb_spatial_entity_query_ext = false;
 }
 
-Dictionary OpenXRFbSpatialEntityQueryExtensionWrapper::_get_requested_extensions() {
+Dictionary OpenXRFbSpatialEntityQueryExtensionWrapper::_get_requested_extensions(uint64_t p_xr_version) {
 	Dictionary result;
 	for (auto ext : request_extensions) {
 		uint64_t value = reinterpret_cast<uint64_t>(ext.value);
