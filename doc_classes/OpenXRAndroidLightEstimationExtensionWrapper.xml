@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="OpenXRAndroidLightEstimationExtensionWrapper" inherits="OpenXRExtensionWrapperExtension" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		Wraps the [code]XR_ANDROID_light_estimation[/code] extension.
+	</brief_description>
+	<description>
+		Wraps the [code]XR_ANDROID_light_estimation[/code] extension.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="get_ambient_light_color_correction" qualifiers="const">
+			<return type="Color" />
+			<description>
+				Gets the color correction in gamma space, which can be multiplied with a gamma corrected output color.
+				Only valid if [method is_ambient_light_valid] returns [code]true[/code].
+			</description>
+		</method>
+		<method name="get_ambient_light_intensity" qualifiers="const">
+			<return type="Color" />
+			<description>
+				Gets the ambient light color in linear space, premultiplied with intensity (so values can be greater than [code]1.0[/code]).
+				Only valid if [method is_ambient_light_valid] returns [code]true[/code].
+			</description>
+		</method>
+		<method name="get_directional_light_direction" qualifiers="const">
+			<return type="Vector3" />
+			<description>
+				Gets the direction of the directional light as a normalized vector.
+				Only valid if [method is_directional_light_valid] returns [code]true[/code].
+			</description>
+		</method>
+		<method name="get_directional_light_intensity" qualifiers="const">
+			<return type="Color" />
+			<description>
+				Gets the directional light color in linear space, premultiplied with intensity (so values can be greater than [code]1.0[/code]).
+				Only valid if [method is_directional_light_valid] returns [code]true[/code].
+			</description>
+		</method>
+		<method name="get_last_updated_time" qualifiers="const">
+			<return type="int" />
+			<description>
+				Gets a value representing the last time the light estimation data was updated.
+				This is can be used to check if the data has changed since the last time you checked.
+			</description>
+		</method>
+		<method name="get_spherical_harmonics_ambient_coefficients" qualifiers="const">
+			<return type="PackedVector3Array" />
+			<description>
+				Gets 9 spherical harmonics coefficients representing the environment light radiance, excluding the contribution from the directional light.
+				Only valid if [method is_spherical_harmonics_ambient_valid] returns [code]true[/code].
+			</description>
+		</method>
+		<method name="get_spherical_harmonics_total_coefficients" qualifiers="const">
+			<return type="PackedVector3Array" />
+			<description>
+				Gets 9 spherical harmonics coefficients representing the environment light radiance, including the contribution from the directional light.
+				Only valid if [method is_spherical_harmonics_total_valid] returns [code]true[/code].
+			</description>
+		</method>
+		<method name="is_ambient_light_valid" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] if the current ambient light data is valid; otherwise, [code]false[/code].
+			</description>
+		</method>
+		<method name="is_directional_light_valid" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] if the current directional light data is valid; otherwise, [code]false[/code].
+			</description>
+		</method>
+		<method name="is_estimate_valid" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] if any of the current data is valid; otherwise, [code]false[/code].
+			</description>
+		</method>
+		<method name="is_light_estimation_started">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] if light estimation has successfully started; otherwise, [code]false[/code].
+			</description>
+		</method>
+		<method name="is_light_estimation_supported">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] if light estimation is supported on this headset; otherwise, [code]false[/code].
+			</description>
+		</method>
+		<method name="is_spherical_harmonics_ambient_valid" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] if the current ambient spherical harmonics data is valid; otherwise, [code]false[/code].
+			</description>
+		</method>
+		<method name="is_spherical_harmonics_total_valid" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] if the current total spherical harmonics data is valid; otherwise, [code]false[/code].
+			</description>
+		</method>
+		<method name="start_light_estimation">
+			<return type="bool" />
+			<description>
+				Attempts to start light estimation, and returns [code]true[/code] if successful.
+			</description>
+		</method>
+		<method name="stop_light_estimation">
+			<return type="void" />
+			<description>
+				Stops light estimation.
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="light_estimate_types" type="int" setter="set_light_estimate_types" getter="get_light_estimate_types" enum="OpenXRAndroidLightEstimationExtensionWrapper.LightEstimateType" is_bitfield="true" default="0">
+			Bitfield of all the types of light estimation data that will be queried when light estimation is running.
+			If a light estimation type isn't OR'd into this field, then its data will always be invalid.
+		</member>
+	</members>
+	<constants>
+		<constant name="LIGHT_ESTIMATE_TYPE_DIRECTIONAL_LIGHT" value="1" enum="LightEstimateType">
+			Directional light data.
+		</constant>
+		<constant name="LIGHT_ESTIMATE_TYPE_AMBIENT" value="2" enum="LightEstimateType">
+			Simple ambient light data.
+		</constant>
+		<constant name="LIGHT_ESTIMATE_TYPE_SPHERICAL_HARMONICS_AMBIENT" value="4" enum="LightEstimateType">
+			Ambient spherical harmonics data.
+		</constant>
+		<constant name="LIGHT_ESTIMATE_TYPE_SPHERICAL_HARMONICS_TOTAL" value="8" enum="LightEstimateType">
+			Total spherical harmonics data.
+		</constant>
+		<constant name="LIGHT_ESTIMATE_TYPE_ALL" value="2147483647" enum="LightEstimateType">
+			All available types of light estimation data.
+		</constant>
+	</constants>
+</class>

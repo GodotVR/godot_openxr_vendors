@@ -168,6 +168,7 @@ func _intersect_to_viewport_pos(p_intersection: Vector2) -> Vector2:
 	return NO_INTERSECTION
 
 
+## Returns a normalized point (UV) in 2D space.
 func intersects_ray(p_origin: Vector3, p_direction: Vector3) -> Vector2:
 	if not visible:
 		return NO_INTERSECTION
@@ -176,7 +177,7 @@ func intersects_ray(p_origin: Vector3, p_direction: Vector3) -> Vector2:
 	var quad_normal: Vector3 = quad_transform.basis.z
 
 	var denom: float = quad_normal.dot(p_direction)
-	if absf(denom) > 0.0001:
+	if denom < -0.0001:
 		var vector: Vector3 = quad_transform.origin - p_origin
 		var t: float = vector.dot(quad_normal) / denom
 		if t < 0.0:

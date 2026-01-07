@@ -24,8 +24,10 @@ const Viewport2Din3D = preload("res://addons/common/viewport_2d_in_3d/viewport_2
 		pressed_material = v
 		_update_pointer_material()
 
-@export var pointer_length := 5.0
-@export var pointer_offset := 0.07
+@export var pointer_length := 5.0:
+	set = set_pointer_length
+@export var pointer_offset := 0.07:
+	set = set_pointer_offset
 
 @onready var _mesh_instance: MeshInstance3D = %MeshInstance3D
 
@@ -36,11 +38,24 @@ var _pressed := false
 
 func set_enabled(p_enabled: bool) -> void:
 	enabled = p_enabled
+	set_process(enabled)
 	if not enabled and _cur_layer:
 		_cur_layer.pointer_leave(self)
 		_cur_layer = null
 	_update_pointer_visibility()
 	_update_pointer_material()
+
+
+func set_pointer_length(p_pointer_length: float) -> void:
+	pointer_length = p_pointer_length
+	if _cur_layer == null:
+		_update_pointer_length(pointer_length)
+
+
+func set_pointer_offset(p_pointer_offset: float) -> void:
+	pointer_offset = p_pointer_offset
+	if _cur_layer == null:
+		_update_pointer_length(pointer_length)
 
 
 func _ready() -> void:
@@ -66,23 +81,23 @@ func _exit_tree() -> void:
 		_controller.button_released.disconnect(_on_controller_button_released)
 
 
+# Note: this virtual method will only run if "enabled" is true.
 func _process(_delta: float) -> void:
-	if enabled:
-		for layer in _get_ui_layers():
-			if not layer is Viewport2Din3D or not layer.visible:
-				continue
-			if layer.pointer_intersects(self):
-				if layer != _cur_layer:
-					if _cur_layer:
-						_cur_layer.pointer_leave(self)
-					_cur_layer = layer
-					_update_pointer_visibility()
-				break
-			elif _cur_layer == layer:
-				_cur_layer.pointer_leave(self)
-				_cur_layer = null
+	for layer in _get_ui_layers():
+		if not layer is Viewport2Din3D or not layer.visible:
+			continue
+		if layer.pointer_intersects(self):
+			if layer != _cur_layer:
+				if _cur_layer:
+					_cur_layer.pointer_leave(self)
+				_cur_layer = layer
 				_update_pointer_visibility()
-				_update_pointer_length(pointer_length)
+			break
+		elif _cur_layer == layer:
+			_cur_layer.pointer_leave(self)
+			_cur_layer = null
+			_update_pointer_visibility()
+			_update_pointer_length(pointer_length)
 
 
 func _get_ui_layers() -> Array:
@@ -132,42 +147,29 @@ func _update_pointer_material() -> void:
 		_mesh_instance.set_surface_override_material(0, pressed_material if _pressed else released_material)
 
 
+func _do_select(p_pressed: bool) -> void:
+	_pressed = p_pressed
+	_update_pointer_material()
+	if _cur_layer:
+		_cur_layer.pointer_set_pressed(self, p_pressed)
+
+
 func _on_controller_input_float_changed(p_name: String, p_value: float) -> void:
 	if p_name == select_action:
 		if not _pressed and p_value > select_pressed_threshold:
-			_pressed = true
-			_update_pointer_material()
-			if _cur_layer:
-				_cur_layer.pointer_set_pressed(self, true)
+			_do_select(true)
 		elif _pressed and p_value < select_release_threshold:
-			_pressed = false
-			_update_pointer_material()
-			if _cur_layer:
-				_cur_layer.pointer_set_pressed(self, false)
-
-
-func _do_select_press() -> void:
-	_pressed = true
-	_update_pointer_material()
-	if _cur_layer:
-		_cur_layer.pointer_set_pressed(self, true)
-
-
-func _do_select_release() -> void:
-	_pressed = false
-	_update_pointer_material()
-	if _cur_layer:
-		_cur_layer.pointer_set_pressed(self, false)
+			_do_select(false)
 
 
 func _on_controller_button_pressed(p_name: String) -> void:
 	if p_name == select_action:
-		_do_select_press()
+		_do_select(true)
 
 
 func _on_controller_button_released(p_name: String) -> void:
 	if p_name == select_action:
-		_do_select_release()
+		_do_select(false)
 
 
 func _get_hand_index() -> int:
