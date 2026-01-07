@@ -1,0 +1,8 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://bxpkb1wvl3kfv"]
+
+[ext_resource type="Texture2D" uid="uid://cp03g2eyiqfhk" path="res://assets/test_kun/Tex/Eyebrows.png" id="1_mro4n"]
+
+[resource]
+transparency = 1
+depth_draw_mode = 1
+albedo_texture = ExtResource("1_mro4n")
