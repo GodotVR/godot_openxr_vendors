@@ -263,3 +263,13 @@ If ``meta_color_lut`` is fully applied, we can smoothly transition to ``meta_col
 
     var tween = create_tween()
     tween.tween_method(fb_passthrough.set_interpolated_color_lut.bind(meta_color_lut, meta_color_lut2), 0.0, 1.0, 2.0)
+
+Boundary visibility
+-------------------
+
+In passthrough mode, boundary visibility can be toggled by making use of the ``XR_META_boundary_visibility`` extension.
+After enabling the extension in **Project Settings**, the
+:ref:`OpenXRMetaBoundaryVisibilityExtensionWrapper <class_openxrmetaboundaryvisibilityextensionwrapper>` singleton
+and its method :ref:`set_boundary_visible <class_openxrmetaboundaryvisibilityextensionwrapper_method_set_boundary_visible>`
+can be used to control whether the boundary is visible.
+
