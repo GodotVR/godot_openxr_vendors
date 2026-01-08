@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://4xtek5r6bs74"]
+
+[ext_resource type="Script" uid="uid://cf7e700pje3wd" path="res://meshes/meshes.gd" id="1_w4p32"]
+
+[node name="Meshes" type="Node3D"]
+script = ExtResource("1_w4p32")

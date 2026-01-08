@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="OpenXRAndroidSceneMeshing" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		An object for retrieving submesh data from [code]XR_ANDROID_scene_meshing[/code] extension.
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="are_normals_enabled" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Returns whether this instance was initialized with normals enabled in [method initialize].
+			</description>
+		</method>
+		<method name="get_semantic_label_set" qualifiers="const">
+			<return type="int" enum="OpenXRAndroidSceneMeshing.SemanticLabelSet" />
+			<description>
+				Returns the [enum SemanticLabelSet] used when this instance was initialized in [method initialize].
+			</description>
+		</method>
+		<method name="get_submesh_data">
+			<return type="Dictionary" />
+			<param index="0" name="pose" type="Transform3D" />
+			<param index="1" name="extents" type="Vector3" />
+			<description>
+				Get a [Dictionary] that maps all found submesh uuids ([StringName]) to [OpenXRAndroidSceneSubmeshData]s.
+			</description>
+		</method>
+		<method name="initialize">
+			<return type="bool" />
+			<param index="0" name="semantic_label_set" type="int" enum="OpenXRAndroidSceneMeshing.SemanticLabelSet" />
+			<param index="1" name="enable_normals" type="bool" />
+			<description>
+				Initialize this [OpenXRAndroidSceneMeshing] instance.
+				Only one [OpenXRAndroidSceneMeshing] is needed, however creating multiple is okay.
+				[param semantic_label_set] is one of the [enum SemanticLabelSet]s returned by [method OpenXRAndroidSceneMeshingExtensionWrapper.get_supported_semantic_label_sets].
+				When [param enable_normals] is true, then the [constant Mesh.ARRAY_NORMAL] index in [method OpenXRAndroidSceneSubmeshData.get_arrays] will be populated.
+			</description>
+		</method>
+	</methods>
+	<constants>
+		<constant name="SEMANTIC_LABEL_SET_NONE" value="0" enum="SemanticLabelSet">
+			One of the labels that can be used in [method initialize].
+			This label means [method OpenXRAndroidSceneSubmeshData.get_vertex_semantics] will always return an empty array.
+		</constant>
+		<constant name="SEMANTIC_LABEL_SET_DEFAULT" value="1" enum="SemanticLabelSet">
+			One of the labels that can be used in [method initialize].
+			This label means [method OpenXRAndroidSceneSubmeshData.get_vertex_semantics] may return a non-empty array.
+		</constant>
+	</constants>
+</class>
