@@ -5,7 +5,10 @@ devices (e.g: Meta, Pico devices) and access vendor-specific OpenXR extensions
 
 **Note:**
 
-Version `2.x` and higher of this plugin requires **Godot 4.2**.
+- Version `2.x` and higher of this plugin requires **Godot 4.2 or newer**
+- Version `3.x` and higher of this plugin requires **Godot 4.3 or newer**
+- Version `4.x` and higher of this plugin requires **Godot 4.4 or newer**
+
 Check the [`1.x` branch](https://github.com/GodotVR/godot_openxr_vendors/tree/1.x) and releases
 for support on prior versions of Godot 4.
 
