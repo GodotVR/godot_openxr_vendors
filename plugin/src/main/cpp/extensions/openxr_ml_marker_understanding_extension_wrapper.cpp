@@ -66,7 +66,7 @@ void OpenXRMlMarkerUnderstandingExtensionWrapper::cleanup() {
 	ml_marker_understanding_ext = false;
 }
 
-godot::Dictionary OpenXRMlMarkerUnderstandingExtensionWrapper::_get_requested_extensions() {
+godot::Dictionary OpenXRMlMarkerUnderstandingExtensionWrapper::_get_requested_extensions(uint64_t p_xr_version) {
 	godot::Dictionary result;
 	for (auto ext : request_extensions) {
 		godot::String key = ext.first;
