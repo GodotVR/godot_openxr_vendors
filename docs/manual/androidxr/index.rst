@@ -8,3 +8,4 @@ Android XR
     :name: toc-androidxr
 
     environment_depth
+    light_estimation
