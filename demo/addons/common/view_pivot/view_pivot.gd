@@ -19,7 +19,7 @@ extends Node3D
 
 var _current_direction: Vector3 = Vector3.FORWARD
 var _current_position: Vector3
-var _pivot_transform: Transform3D
+var _pivot_tween: Tween
 
 
 func set_movement_delay(p_delay: float) -> void:
@@ -72,15 +72,14 @@ func _get_camera_position() -> Vector3:
 
 
 func update_transform_immediately() -> void:
+	if _pivot_tween:
+		_pivot_tween.kill()
+		_pivot_tween = null
+
 	_current_direction = _get_camera_direction()
 	_current_position = _get_camera_position()
-	_pivot_transform.origin = Vector3(_current_position.x, 0.0, _current_position.z)
-	_pivot_transform.basis = Basis.looking_at(_current_direction)
-	_update_transform()
-
-
-func _update_transform() -> void:
-	global_transform = _pivot_transform
+	global_transform.origin = Vector3(_current_position.x, global_transform.origin.y, _current_position.z)
+	global_transform.basis = Basis.looking_at(_current_direction)
 
 
 func _process(_delta: float) -> void:
@@ -109,16 +108,16 @@ func _on_timer_timeout() -> void:
 	_current_direction = _get_camera_direction()
 	var new_basis = Basis.looking_at(_current_direction)
 
-	var pivot_tween = get_tree().create_tween()
-	pivot_tween.tween_method(self._tween_pivot_transform_basis, _pivot_transform.basis.get_rotation_quaternion(), new_basis.get_rotation_quaternion(), 1.0).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
-	pivot_tween.parallel().tween_method(self._tween_pivot_transform_origin, _pivot_transform.origin, Vector3(_current_position.x, 0.0, _current_position.z), 1.0).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
+	if _pivot_tween:
+		_pivot_tween.kill()
+		_pivot_tween = null
+
+	var gt := global_transform
+
+	_pivot_tween = get_tree().create_tween()
+	_pivot_tween.tween_method(self._tween_global_quaternion, gt.basis.get_rotation_quaternion(), new_basis.get_rotation_quaternion(), movement_delay).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
+	_pivot_tween.parallel().tween_property(self, "global_position", Vector3(_current_position.x, gt.origin.y, _current_position.z), movement_delay).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
 
 
-func _tween_pivot_transform_basis(p_rotation: Quaternion) -> void:
-	_pivot_transform.basis = Basis(p_rotation)
-	_update_transform()
-
-
-func _tween_pivot_transform_origin(p_origin: Vector3) -> void:
-	_pivot_transform.origin = p_origin
-	_update_transform()
+func _tween_global_quaternion(p_rotation: Quaternion) -> void:
+	global_transform.basis = Basis(p_rotation)
