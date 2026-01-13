@@ -46,7 +46,7 @@ class OpenXRFbAndroidSurfaceSwapchainCreateExtensionWrapper : public OpenXRExten
 	GDCLASS(OpenXRFbAndroidSurfaceSwapchainCreateExtensionWrapper, OpenXRExtensionWrapperExtension);
 
 public:
-	Dictionary _get_requested_extensions() override;
+	Dictionary _get_requested_extensions(uint64_t p_xr_version) override;
 
 	bool is_enabled() const {
 		return fb_android_surface_swapchain_create_ext;

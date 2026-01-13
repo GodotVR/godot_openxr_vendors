@@ -188,7 +188,7 @@ void OpenXRMetaEnvironmentDepthExtensionWrapper::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("openxr_meta_environment_depth_stopped"));
 }
 
-Dictionary OpenXRMetaEnvironmentDepthExtensionWrapper::_get_requested_extensions() {
+Dictionary OpenXRMetaEnvironmentDepthExtensionWrapper::_get_requested_extensions(uint64_t p_xr_version) {
 	Dictionary result;
 	for (auto ext : request_extensions) {
 		uint64_t value = reinterpret_cast<uint64_t>(ext.value);

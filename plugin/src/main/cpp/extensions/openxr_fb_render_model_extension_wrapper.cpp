@@ -71,7 +71,7 @@ uint64_t OpenXRFbRenderModelExtensionWrapper::_set_system_properties_and_get_nex
 	return reinterpret_cast<uint64_t>(&system_render_model_properties);
 }
 
-godot::Dictionary OpenXRFbRenderModelExtensionWrapper::_get_requested_extensions() {
+godot::Dictionary OpenXRFbRenderModelExtensionWrapper::_get_requested_extensions(uint64_t p_xr_version) {
 	godot::Dictionary result;
 	for (auto ext : request_extensions) {
 		godot::String key = ext.first;

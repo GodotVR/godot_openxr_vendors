@@ -74,7 +74,7 @@ void OpenXRFbHandTrackingAimExtensionWrapper::cleanup() {
 	fb_hand_tracking_aim_ext = false;
 }
 
-godot::Dictionary OpenXRFbHandTrackingAimExtensionWrapper::_get_requested_extensions() {
+godot::Dictionary OpenXRFbHandTrackingAimExtensionWrapper::_get_requested_extensions(uint64_t p_xr_version) {
 	godot::Dictionary result;
 	for (auto ext : request_extensions) {
 		godot::String key = ext.first;

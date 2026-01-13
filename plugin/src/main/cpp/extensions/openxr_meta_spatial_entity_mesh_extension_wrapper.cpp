@@ -65,7 +65,7 @@ void OpenXRMetaSpatialEntityMeshExtensionWrapper::cleanup() {
 	meta_spatial_entity_mesh_ext = false;
 }
 
-Dictionary OpenXRMetaSpatialEntityMeshExtensionWrapper::_get_requested_extensions() {
+Dictionary OpenXRMetaSpatialEntityMeshExtensionWrapper::_get_requested_extensions(uint64_t p_xr_version) {
 	Dictionary result;
 	for (auto ext : request_extensions) {
 		uint64_t value = reinterpret_cast<uint64_t>(ext.value);
