@@ -14,6 +14,9 @@ signal pinch_held
 ## pinch_tapped] or [signal pinch_held] if they were emitted too.[br]
 signal pinch_released
 
+## The pinch action.
+@export var pinch_action: String = "pinch_value"
+
 ## The maximum time, in milliseconds, to detect pinch-then-release (or "pinch tap")
 @export var pinch_tap_duration := 300:
 	set = set_pinch_tap_duration
@@ -82,7 +85,7 @@ func set_pinch_held_duration(new_pinch_held_duration: float) -> void:
 
 
 func _on_input_float_changed(action_name: String, value: float) -> void:
-	if action_name != "pinch_value":
+	if action_name != pinch_action:
 		return
 
 	if !_pinching:

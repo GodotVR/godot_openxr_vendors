@@ -1,6 +1,17 @@
 extends StartXR
 
-var smooth: bool = false
+@onready var viewport_2d_in_3d = %Viewport2Din3D
+@onready var left_hand = %LeftHand
+@onready var right_hand = %RightHand
+
+enum DepthMode {
+	DISABLED,
+	SMOOTH,
+	RAW,
+	MAX,
+}
+
+var depth_mode: DepthMode = DepthMode.SMOOTH
 
 
 func _ready():
@@ -8,37 +19,33 @@ func _ready():
 
 	OS.request_permissions()
 
-	_update()
+	xr_interface.session_begun.connect(_update)
 
 
-func _on_timer_timeout() -> void:
-	_update()
+func _process(_delta: float) -> void:
+	# Can't use "Show When Tracked" because we only want to show the hands in SMOOTH mode.
+	left_hand.visible = (left_hand.get_has_tracking_data() and depth_mode == DepthMode.SMOOTH)
+	right_hand.visible = (right_hand.get_has_tracking_data() and depth_mode == DepthMode.SMOOTH)
 
 
 func _update() -> void:
-	if !OpenXRAndroidEnvironmentDepthExtensionWrapper.is_environment_depth_started():
-		if !OpenXRAndroidEnvironmentDepthExtensionWrapper.start_environment_depth():
-			push_error("Unable to start environment depth")
-			$Timer.queue_free()
-		smooth = false
-	elif smooth:
-		OpenXRAndroidEnvironmentDepthExtensionWrapper.stop_environment_depth()
-	else:
-		smooth = true
-
-	if !OpenXRAndroidEnvironmentDepthExtensionWrapper.is_environment_depth_started():
-		$XROrigin3D/XRCamera3D/Viewport2Din3D.get_scene_root().text = "Depth disabled"
+	if depth_mode == DepthMode.DISABLED:
+		if OpenXRAndroidEnvironmentDepthExtensionWrapper.is_environment_depth_started():
+			OpenXRAndroidEnvironmentDepthExtensionWrapper.stop_environment_depth()
+		viewport_2d_in_3d.get_scene_root().set_label_text("Depth disabled")
 		return
 
-	var label_text: String = "Depth enabled"
-	if OpenXRAndroidEnvironmentDepthExtensionWrapper.set_smooth(smooth):
-		if smooth:
-			label_text += "\nSmooth"
-		else:
-			label_text += "\nNot smooth"
-	else:
-		# NOTE: this label may be misleading if we've never changed smoothness (so 'smooth' is out of
-		# sync with the actual smoothness setting)
-		smooth = !smooth
-		label_text += "\nUnable to change smooth; smooth is still %s" % smooth
-	$XROrigin3D/XRCamera3D/Viewport2Din3D.get_scene_root().text = label_text
+	if not OpenXRAndroidEnvironmentDepthExtensionWrapper.is_environment_depth_started():
+		if not OpenXRAndroidEnvironmentDepthExtensionWrapper.start_environment_depth():
+			viewport_2d_in_3d.get_scene_root().set_label_text("Error starting depth")
+			return
+
+	OpenXRAndroidEnvironmentDepthExtensionWrapper.set_smooth(depth_mode == DepthMode.SMOOTH)
+	viewport_2d_in_3d.get_scene_root().set_label_text("Smooth" if depth_mode == DepthMode.SMOOTH else "Not smooth")
+
+
+func _on_hand_pinch_detector_pinch_tapped() -> void:
+	depth_mode += 1
+	if depth_mode >= DepthMode.MAX:
+		depth_mode = DepthMode.DISABLED
+	_update()

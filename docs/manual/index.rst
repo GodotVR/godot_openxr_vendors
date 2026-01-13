@@ -9,4 +9,4 @@ Manual
 
     hybrid_apps
     meta/index
-
+    androidxr/index
