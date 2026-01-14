@@ -1,0 +1,6 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://b0pc856lpw18k"]
+
+[ext_resource type="Texture2D" uid="uid://cqjrebt2ncupl" path="res://assets/test_kun/Tex/Pants.png" id="1_k4wyu"]
+
+[resource]
+albedo_texture = ExtResource("1_k4wyu")

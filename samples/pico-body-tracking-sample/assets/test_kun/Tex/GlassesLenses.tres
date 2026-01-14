@@ -1,0 +1,8 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://qht1oxpujx2d"]
+
+[ext_resource type="Texture2D" uid="uid://b44emcbeicyyk" path="res://assets/test_kun/Tex/GlassesLenses.png" id="1_iaa6h"]
+
+[resource]
+transparency = 1
+cull_mode = 2
+albedo_texture = ExtResource("1_iaa6h")
