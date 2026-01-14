@@ -14,7 +14,6 @@ ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
 sky_material = SubResource("ProceduralSkyMaterial_0x6cv")
 
 [sub_resource type="Environment" id="Environment_m0xew"]
-background_mode = 2
 background_color = Color(0, 0, 0, 0)
 sky = SubResource("Sky_dqyx0")
 ambient_light_source = 2

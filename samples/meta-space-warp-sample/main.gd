@@ -48,8 +48,8 @@ func _process(delta: float) -> void:
 
 func _physics_process(delta: float) -> void:
 	if movement_input != Vector2.ZERO:
-		xr_origin.position.z += -movement_input.y * delta * MOVE_SPEED
-		xr_origin.position.x += movement_input.x * delta * MOVE_SPEED
+		xr_origin.global_position += movement_input.y * (-xr_camera.global_transform.basis.z * Vector3(1.0, 0.0, 1.0)).normalized() * delta * MOVE_SPEED
+		xr_origin.global_position += movement_input.x * (xr_camera.global_transform.basis.x * Vector3(1.0, 0.0, 1.0)).normalized() * delta * MOVE_SPEED
 	if smooth_turn_input != 0.0:
 		rotate_player(smooth_turn_input * SMOOTH_TURN_SPEED)
 
