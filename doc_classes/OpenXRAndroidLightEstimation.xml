@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="OpenXRAndroidLightEstimation" inherits="Node3D" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		Applies light estimation data from [code]XR_ANDROID_light_estimation[/code] to a [DirectionalLight3D] and [WorldEnvironment].
+	</brief_description>
+	<description>
+		Applies light estimation data from [code]XR_ANDROID_light_estimation[/code] to a [DirectionalLight3D] and [WorldEnvironment].
+	</description>
+	<tutorials>
+	</tutorials>
+	<members>
+		<member name="ambient_light_mode" type="int" setter="set_ambient_light_mode" getter="get_ambient_light_mode" enum="OpenXRAndroidLightEstimation.AmbientLightMode" default="1">
+			Controls how ambient light data is applied to the [WorldEnvironment].
+		</member>
+		<member name="directional_light" type="DirectionalLight3D" setter="set_directional_light" getter="get_directional_light">
+			The [DirectionalLight3D] that the light estimation data is applied to.
+		</member>
+		<member name="directional_light_mode" type="int" setter="set_directional_light_mode" getter="get_directional_light_mode" enum="OpenXRAndroidLightEstimation.DirectionalLightMode" default="1">
+			Controls how directional light data is applied to the [DirectionalLight3D].
+		</member>
+		<member name="world_environment" type="WorldEnvironment" setter="set_world_environment" getter="get_world_environment">
+			The [WorldEnvironment] that the light estimation data is applied to.
+		</member>
+	</members>
+	<constants>
+		<constant name="DIRECTIONAL_LIGHT_MODE_DISABLED" value="0" enum="DirectionalLightMode">
+			Don't make any changes to the directional light.
+		</constant>
+		<constant name="DIRECTIONAL_LIGHT_MODE_DIRECTION_ONLY" value="1" enum="DirectionalLightMode">
+			Only update the direction of the directional light.
+		</constant>
+		<constant name="DIRECTIONAL_LIGHT_MODE_DIRECTION_INTENSITY" value="2" enum="DirectionalLightMode">
+			Update the direction and intensity of the directional light.
+		</constant>
+		<constant name="DIRECTIONAL_LIGHT_MODE_DIRECTION_COLOR_INTENSITY" value="3" enum="DirectionalLightMode">
+			Update the direction, color, and intensity of the directional light.
+		</constant>
+		<constant name="AMBIENT_LIGHT_MODE_DISABLED" value="0" enum="AmbientLightMode">
+			Don't make any changes to the environment.
+		</constant>
+		<constant name="AMBIENT_LIGHT_MODE_COLOR" value="1" enum="AmbientLightMode">
+			Only update the environment's ambient color.
+		</constant>
+		<constant name="AMBIENT_LIGHT_MODE_SPHERICAL_HARMONICS" value="2" enum="AmbientLightMode">
+			Use spherical harmonics from the light estimation data to update the environment's radiance map.
+		</constant>
+	</constants>
+</class>

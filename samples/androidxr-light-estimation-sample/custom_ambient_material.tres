@@ -1,0 +1,10 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://5dyysnqihfj1"]
+
+[ext_resource type="Shader" uid="uid://cxnrvad1kl1cc" path="res://custom_ambient_material.gdshader" id="1_bwqm2"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_bwqm2")
+shader_parameter/albedo = Color(0.7490196, 0.7490196, 0.7490196, 1)
+shader_parameter/coefficients = PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/rotation = Basis(1, 0, 0, 0, 1, 0, 0, 0, 1)
