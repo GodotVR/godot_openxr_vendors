@@ -8,5 +8,6 @@ Manual
     :name: toc-manual
 
     hybrid_apps
+    performance_metrics
     meta/index
     androidxr/index
