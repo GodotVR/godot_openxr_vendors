@@ -94,6 +94,7 @@ private:
 
 	struct RenderState {
 		bool skip_space_warp_frame = false;
-		Transform3D previous_transform = { { 1.0, 0.0, 0.0 }, { 0.0, 1.0, 0.0 }, { 0.0, 0.0, 1.0 }, { 0.0, 0.0, 0.0 } };
+		Vector3 previous_origin;
+		Quaternion previous_quat;
 	} render_state;
 };
