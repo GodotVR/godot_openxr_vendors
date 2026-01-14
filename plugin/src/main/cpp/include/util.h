@@ -30,7 +30,9 @@
 #pragma once
 
 #include <godot_cpp/variant/string_name.hpp>
+#include <godot_cpp/variant/transform3d.hpp>
 
+struct XrPosef;
 struct XrUuid;
 struct XrMatrix4x4f;
 
@@ -127,4 +129,5 @@ struct XrMatrix4x4f;
 namespace OpenXRUtilities {
 godot::StringName uuid_to_string_name(const XrUuid &p_uuid);
 void xrMatrix4x4f_to_godot_projection(XrMatrix4x4f *m, godot::Projection &p);
+godot::Transform3D xrPosef_to_godot_transform3d(const XrPosef &pose);
 }; //namespace OpenXRUtilities

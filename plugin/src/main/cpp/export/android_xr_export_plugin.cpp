@@ -116,7 +116,7 @@ String AndroidXREditorExportPlugin::_get_export_option_warning(const Ref<EditorE
 
 	bool openxr_enabled = _is_openxr_enabled();
 	if (option == "android_xr_features/eye_tracking") {
-		if (!openxr_enabled && (bool)project_settings->get_setting_with_override("xr/openxr/extensions/eye_gaze_interaction")) {
+		if (!openxr_enabled && ((bool)project_settings->get_setting_with_override("xr/openxr/extensions/eye_gaze_interaction") || (bool)project_settings->get_setting_with_override("xr/openxr/extensions/androidxr/eye_tracking"))) {
 			return "\"Eye Tracking\" requires \"XR Mode\" to be \"OpenXR\".\n";
 		}
 	} else if (option == "android_xr_features/hand_tracking") {
@@ -134,7 +134,7 @@ String AndroidXREditorExportPlugin::_get_export_option_warning(const Ref<EditorE
 
 bool AndroidXREditorExportPlugin::_get_export_option_visibility(const Ref<godot::EditorExportPlatform> &p_platform, const godot::String &p_option) const {
 	if (p_option == "android_xr_features/eye_tracking") {
-		return (bool)ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/extensions/eye_gaze_interaction");
+		return (bool)ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/extensions/eye_gaze_interaction") || (bool)ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/extensions/androidxr/eye_tracking");
 	} else if (p_option == "android_xr_features/hand_tracking") {
 		return (bool)ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/extensions/hand_tracking");
 	}
@@ -270,11 +270,22 @@ String AndroidXREditorExportPlugin::_get_android_manifest_element_contents(const
 	ProjectSettings *project_settings = ProjectSettings::get_singleton();
 
 	// Check for eye tracking
-	if ((bool)project_settings->get_setting_with_override("xr/openxr/extensions/eye_gaze_interaction")) {
-		contents += "    <uses-permission android:name=\"android.permission.EYE_TRACKING_FINE\" />\n";
+	bool eye_gaze_interaction_enabled = project_settings->get_setting_with_override("xr/openxr/extensions/eye_gaze_interaction");
+	bool eye_tracking_enabled = project_settings->get_setting_with_override("xr/openxr/extensions/androidxr/eye_tracking");
 
-		int eye_tracking_value = _get_int_option("android_xr_features/eye_tracking", EYE_TRACKING_OPTIONAL_VALUE);
-		if (eye_tracking_value == EYE_TRACKING_REQUIRED_VALUE) {
+	if (eye_gaze_interaction_enabled) {
+		// XR_EXT_eye_gaze_interaction always requires EYE_TRACKING_FINE.
+		contents += "    <uses-permission android:name=\"android.permission.EYE_TRACKING_FINE\" />\n";
+	}
+
+	if (eye_tracking_enabled) {
+		// XR_ANDROID_eye_tracking coarse tracking permission requires EYE_TRACKING_COARSE.
+		// Fine eye tracking using XR_ANDROID_eye_tracking is not supported in current implementation.
+		contents += "    <uses-permission android:name=\"android.permission.EYE_TRACKING_COARSE\" />\n";
+	}
+
+	if (eye_gaze_interaction_enabled || eye_tracking_enabled) {
+		if (EYE_TRACKING_REQUIRED_VALUE == _get_int_option("android_xr_features/eye_tracking", EYE_TRACKING_OPTIONAL_VALUE)) {
 			contents += "    <uses-feature android:name=\"android.hardware.xr.input.eye_tracking\" android:required=\"true\" />\n";
 		} else {
 			contents += "    <uses-feature android:name=\"android.hardware.xr.input.eye_tracking\" android:required=\"false\" />\n";

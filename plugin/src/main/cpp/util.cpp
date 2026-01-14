@@ -57,3 +57,12 @@ void OpenXRUtilities::xrMatrix4x4f_to_godot_projection(XrMatrix4x4f *m, godot::P
 		}
 	}
 }
+
+Transform3D OpenXRUtilities::xrPosef_to_godot_transform3d(const XrPosef &pose) {
+	Transform3D out;
+	out.origin.x = pose.position.x;
+	out.origin.y = pose.position.y;
+	out.origin.z = pose.position.z;
+	out.basis = Basis{ Quaternion{ pose.orientation.x, pose.orientation.y, pose.orientation.z, pose.orientation.w } };
+	return out;
+}
