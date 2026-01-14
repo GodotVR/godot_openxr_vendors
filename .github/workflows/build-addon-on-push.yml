@@ -50,6 +50,14 @@ jobs:
             artifact_name: build-files-linux-x86_64
             artifact_path: aar/demo/addons/godotopenxrvendors/.bin/linux/*/*/*.so
             cache-name: linux-x86_64
+          - name: 🐧 Linux (arm64, GCC)
+            os: ubuntu-22.04-arm
+            platform: linux
+            preview-headers: true
+            flags: arch=arm64
+            artifact_name: build-files-linux-arm64
+            artifact_path: aar/demo/addons/godotopenxrvendors/.bin/linux/*/*/*.so
+            cache-name: linux-arm64
           - name: 🏁 Windows (x86_64, MSVC)
             os: windows-latest
             platform: windows
@@ -93,6 +101,14 @@ jobs:
             artifact_name: build-files-linux-x86_64-nopreview
             artifact_path: aar/demo/addons/godotopenxrvendors/.bin/linux/*/*/*.so
             cache-name: linux-x86_64-nopreview
+          - name: 🐧 Linux (arm64, GCC, No preview)
+            os: ubuntu-22.04-arm
+            platform: linux
+            preview-headers: false
+            flags: arch=arm64
+            artifact_name: build-files-linux-arm64-nopreview
+            artifact_path: aar/demo/addons/godotopenxrvendors/.bin/linux/*/*/*.so
+            cache-name: linux-arm64-nopreview
           - name: 🏁 Windows (x86_64, MSVC, No preview)
             os: windows-latest
             platform: windows
@@ -269,6 +285,7 @@ jobs:
 
           mkdir -p asset/addons/godotopenxrvendors/.bin/linux/
           cp -r build-files-linux-x86_64/* asset/addons/godotopenxrvendors/.bin/linux/
+          cp -r build-files-linux-arm64/* asset/addons/godotopenxrvendors/.bin/linux/
 
           mkdir -p asset/addons/godotopenxrvendors/.bin/windows/
           cp -r build-files-windows/* asset/addons/godotopenxrvendors/.bin/windows/
