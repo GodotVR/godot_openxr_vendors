@@ -9,3 +9,4 @@ Android XR
 
     environment_depth
     light_estimation
+    passthrough_camera_state
