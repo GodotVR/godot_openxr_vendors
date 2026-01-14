@@ -22,46 +22,6 @@ environment/defaults/default_clear_color=Color(0, 0, 0, 0)
 
 [shader_globals]
 
-META_ENVIRONMENT_DEPTH_AVAILABLE={
-"type": "bool",
-"value": false
-}
-META_ENVIRONMENT_DEPTH_TEXTURE={
-"type": "sampler2DArray",
-"value": ""
-}
-META_ENVIRONMENT_DEPTH_PROJECTION_VIEW_LEFT={
-"type": "mat4",
-"value": Projection(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)
-}
-META_ENVIRONMENT_DEPTH_PROJECTION_VIEW_RIGHT={
-"type": "mat4",
-"value": Projection(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)
-}
-META_ENVIRONMENT_DEPTH_INV_PROJECTION_VIEW_LEFT={
-"type": "mat4",
-"value": Projection(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)
-}
-META_ENVIRONMENT_DEPTH_INV_PROJECTION_VIEW_RIGHT={
-"type": "mat4",
-"value": Projection(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)
-}
-META_ENVIRONMENT_DEPTH_FROM_CAMERA_PROJECTION_LEFT={
-"type": "mat4",
-"value": Projection(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)
-}
-META_ENVIRONMENT_DEPTH_FROM_CAMERA_PROJECTION_RIGHT={
-"type": "mat4",
-"value": Projection(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)
-}
-META_ENVIRONMENT_DEPTH_TO_CAMERA_PROJECTION_LEFT={
-"type": "mat4",
-"value": Projection(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)
-}
-META_ENVIRONMENT_DEPTH_TO_CAMERA_PROJECTION_RIGHT={
-"type": "mat4",
-"value": Projection(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)
-}
 ANDROID_ENVIRONMENT_DEPTH_AVAILABLE={
 "type": "bool",
 "value": false
@@ -95,5 +55,8 @@ ANDROID_ENVIRONMENT_DEPTH_CAMERA_TO_WORLD_RIGHT={
 
 openxr/enabled=true
 openxr/environment_blend_mode=2
+openxr/extensions/hand_tracking=true
+openxr/extensions/hand_interaction_profile=true
 shaders/enabled=true
 openxr/extensions/androidxr/environment_depth=true
+openxr/extensions/meta/hand_tracking_mesh=true

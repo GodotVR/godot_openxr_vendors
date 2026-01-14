@@ -1,8 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://debi32dnmrjov"]
+[gd_scene load_steps=11 format=3 uid="uid://debi32dnmrjov"]
 
 [ext_resource type="Script" uid="uid://dpb5v8hdohlpc" path="res://main.gd" id="1_ig7tw"]
 [ext_resource type="PackedScene" uid="uid://dcwibwtseri8h" path="res://addons/common/viewport_2d_in_3d/viewport_2d_in_3d.tscn" id="2_h2yge"]
-[ext_resource type="PackedScene" uid="uid://b7klcrsqojm0k" path="res://2D/Quad.tscn" id="3_1bvp3"]
+[ext_resource type="PackedScene" uid="uid://b7klcrsqojm0k" path="res://panel.tscn" id="3_1bvp3"]
+[ext_resource type="PackedScene" uid="uid://xga880omsrpm" path="res://addons/common/view_pivot/view_pivot.tscn" id="3_lquwl"]
+[ext_resource type="PackedScene" uid="uid://bxtjclrpxkao" path="res://addons/common/hand_pinch_detector/hand_pinch_detector.tscn" id="4_1bvp3"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_jgrlg"]
 
@@ -14,6 +16,12 @@ background_mode = 1
 background_color = Color(0, 0, 0, 0)
 sky = SubResource("Sky_6tfcy")
 ambient_light_source = 3
+
+[sub_resource type="BoxMesh" id="BoxMesh_lquwl"]
+size = Vector3(0.1, 0.1, 0.1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7mycd"]
+albedo_color = Color(0, 0, 1, 1)
 
 [node name="Main" type="Node3D"]
 script = ExtResource("1_ig7tw")
@@ -27,14 +35,80 @@ environment = SubResource("Environment_tep2q")
 
 [node name="OpenXRAndroidEnvironmentDepth" type="OpenXRAndroidEnvironmentDepth" parent="XROrigin3D/XRCamera3D"]
 
-[node name="Viewport2Din3D" parent="XROrigin3D/XRCamera3D" instance=ExtResource("2_h2yge")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.5)
+[node name="LeftHand" type="XRController3D" parent="XROrigin3D"]
+unique_name_in_owner = true
+tracker = &"/user/hand_tracker/left"
+
+[node name="OpenXRFbHandTrackingMesh" type="OpenXRFbHandTrackingMesh" parent="XROrigin3D/LeftHand"]
+
+[node name="XRHandModifier3D" type="XRHandModifier3D" parent="XROrigin3D/LeftHand/OpenXRFbHandTrackingMesh"]
+
+[node name="RightHand" type="XRController3D" parent="XROrigin3D"]
+unique_name_in_owner = true
+tracker = &"/user/hand_tracker/right"
+
+[node name="OpenXRFbHandTrackingMesh" type="OpenXRFbHandTrackingMesh" parent="XROrigin3D/RightHand"]
+hand = 1
+bones/0/name = "RightPalm"
+bones/1/name = "RightHand"
+bones/2/name = "RightThumbMetacarpal"
+bones/3/name = "RightThumbProximal"
+bones/4/name = "RightThumbDistal"
+bones/5/name = "RightThumbTip"
+bones/6/name = "RightIndexMetacarpal"
+bones/7/name = "RightIndexProximal"
+bones/8/name = "RightIndexIntermediate"
+bones/9/name = "RightIndexDistal"
+bones/10/name = "RightIndexTip"
+bones/11/name = "RightMiddleMetacarpal"
+bones/12/name = "RightMiddleProximal"
+bones/13/name = "RightMiddleIntermediate"
+bones/14/name = "RightMiddleDistal"
+bones/15/name = "RightMiddleTip"
+bones/16/name = "RightRingMetacarpal"
+bones/17/name = "RightRingProximal"
+bones/18/name = "RightRingIntermediate"
+bones/19/name = "RightRingDistal"
+bones/20/name = "RightRingTip"
+bones/21/name = "RightLittleMetacarpal"
+bones/22/name = "RightLittleProximal"
+bones/23/name = "RightLittleIntermediate"
+bones/24/name = "RightLittleDistal"
+bones/25/name = "RightLittleTip"
+
+[node name="XRHandModifier3D" type="XRHandModifier3D" parent="XROrigin3D/RightHand/OpenXRFbHandTrackingMesh"]
+hand_tracker = &"/user/hand_tracker/right"
+
+[node name="LeftController" type="XRController3D" parent="XROrigin3D"]
+tracker = &"left_hand"
+
+[node name="HandPinchDetector" parent="XROrigin3D/LeftController" instance=ExtResource("4_1bvp3")]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/LeftController"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.3)
+mesh = SubResource("BoxMesh_lquwl")
+surface_material_override/0 = SubResource("StandardMaterial3D_7mycd")
+
+[node name="RightController" type="XRController3D" parent="XROrigin3D"]
+tracker = &"right_hand"
+
+[node name="HandPinchDetector" parent="XROrigin3D/RightController" instance=ExtResource("4_1bvp3")]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/RightController"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.3)
+mesh = SubResource("BoxMesh_lquwl")
+skeleton = NodePath("../../LeftController")
+surface_material_override/0 = SubResource("StandardMaterial3D_7mycd")
+
+[node name="ViewPivot" parent="." instance=ExtResource("3_lquwl")]
+
+[node name="Viewport2Din3D" parent="ViewPivot" instance=ExtResource("2_h2yge")]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -2)
 scene = ExtResource("3_1bvp3")
 viewport_size = Vector2i(512, 512)
 pixel_size = 0.0010000000038417
+no_depth_test = true
 
-[node name="Timer" type="Timer" parent="."]
-wait_time = 10.0
-autostart = true
-
-[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
+[connection signal="pinch_tapped" from="XROrigin3D/LeftController/HandPinchDetector" to="." method="_on_hand_pinch_detector_pinch_tapped"]
+[connection signal="pinch_tapped" from="XROrigin3D/RightController/HandPinchDetector" to="." method="_on_hand_pinch_detector_pinch_tapped"]
