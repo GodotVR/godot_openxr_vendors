@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="OpenXRAndroidSceneSubmeshData" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		Wraps the [code]XrSceneSubmeshDataANDROID[/code] struct.
+	</brief_description>
+	<description>
+		Wraps the [code]XrSceneSubmeshDataANDROID[/code] struct.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="get_arrays" qualifiers="const">
+			<return type="Array" />
+			<description>
+				Returns an [Array] that can be used as the [code]arrays[/code] parameter in [method ArrayMesh.add_surface_from_arrays] with [constant Mesh.PRIMITIVE_TRIANGLES].
+				The [Array] contains data at the [constant Mesh.ARRAY_VERTEX] index.
+				The [Array] may contain data at the [constant Mesh.ARRAY_NORMAL] index if [code]enable_normals[/code] was [b]true[/b] in [method OpenXRAndroidSceneMeshing.initialize].
+				The [Array] may contain data at the [constant Mesh.ARRAY_CUSTOM0] index if [code]semantic_label_set[/code] was [b]true[/b] in [method OpenXRAndroidSceneMeshing.initialize].
+			</description>
+		</method>
+		<method name="get_bounds" qualifiers="const">
+			<return type="Vector3" />
+			<description>
+				Get the global bounds of the mesh as a [Vector3] where [code]x[/code], [code]y[/code], [code]z[/code] correspond to the width, height, and depth, in meters, of a bounding box centered and oriented at [method get_transform].
+			</description>
+		</method>
+		<method name="get_indexed_arrays" qualifiers="const">
+			<return type="Array" />
+			<description>
+				Returns an indexed [Array] that can be used as the [code]arrays[/code] parameter in [method ArrayMesh.add_surface_from_arrays] with [constant Mesh.PRIMITIVE_TRIANGLES].
+				The [Array] contains data at the [constant Mesh.ARRAY_VERTEX] index.
+				The [Array] contains data at the [constant Mesh.ARRAY_INDEX] index.
+				The [Array] may contain data at the [constant Mesh.ARRAY_NORMAL] index if [code]enable_normals[/code] was [b]true[/b] in [method OpenXRAndroidSceneMeshing.initialize].
+				The [Array] may contain data at the [constant Mesh.ARRAY_CUSTOM0] index if [code]semantic_label_set[/code] was [b]true[/b] in [method OpenXRAndroidSceneMeshing.initialize].
+			</description>
+		</method>
+		<method name="get_indexed_vertex_semantics" qualifiers="const">
+			<return type="Array" />
+			<description>
+				An [Array] of [enum SemanticLabel]s, which is identical to indexing the [Array] from [method get_indexed_arrays] at [constant Mesh.ARRAY_CUSTOM0].
+				[b]NOTE:[/b] This [Array] is always empty when [method OpenXRAndroidSceneMeshing.initialize] was called with [constant OpenXRAndroidSceneMeshing.SEMANTIC_LABEL_SET_NONE].
+			</description>
+		</method>
+		<method name="get_last_update_time" qualifiers="const">
+			<return type="int" />
+			<description>
+				Get the time when the submesh was last updated.
+			</description>
+		</method>
+		<method name="get_submesh_id" qualifiers="const">
+			<return type="StringName" />
+			<description>
+				Get the UUID for this mesh.
+				This UUID can be used as a key for the [Dictionary] returned by [method OpenXRAndroidSceneMeshing.get_submesh_data].
+			</description>
+		</method>
+		<method name="get_transform" qualifiers="const">
+			<return type="Transform3D" />
+			<description>
+				Get the global [Transform3D] of the center and orientation of the mesh.
+			</description>
+		</method>
+		<method name="get_update_state" qualifiers="const">
+			<return type="int" enum="OpenXRAndroidSceneSubmeshData.UpdateState" />
+			<description>
+				Get the state of the mesh.
+			</description>
+		</method>
+		<method name="get_vertex_semantics" qualifiers="const">
+			<return type="Array" />
+			<description>
+				An [Array] of [enum SemanticLabel]s, which is identical to indexing the [Array] from [method get_arrays] at [constant Mesh.ARRAY_CUSTOM0].
+				[b]NOTE:[/b] This [Array] is always empty when [method OpenXRAndroidSceneMeshing.initialize] was called with [constant OpenXRAndroidSceneMeshing.SEMANTIC_LABEL_SET_NONE].
+			</description>
+		</method>
+	</methods>
+	<constants>
+		<constant name="UPDATE_STATE_CREATED" value="0" enum="UpdateState">
+			The submesh was just created.
+		</constant>
+		<constant name="UPDATE_STATE_UNCHANGED" value="1" enum="UpdateState">
+			The submesh is unchanged since the last call to [method OpenXRAndroidSceneMeshing.get_submesh_data].
+			[b]NOTE:[/b] [method get_transform] may have changed; the array data (vertices, indices, etc) are not changed.
+		</constant>
+		<constant name="UPDATE_STATE_UPDATED" value="2" enum="UpdateState">
+			The submesh's array data (vertices, indices, etc) have changed.
+		</constant>
+		<constant name="UPDATE_STATE_DELETED" value="3" enum="UpdateState">
+			The submesh was deleted.
+		</constant>
+		<constant name="SEMANTIC_LABEL_OTHER" value="0" enum="SemanticLabel">
+			A vertex is for something else.
+		</constant>
+		<constant name="SEMANTIC_LABEL_FLOOR" value="1" enum="SemanticLabel">
+			A vertex is for a floor.
+		</constant>
+		<constant name="SEMANTIC_LABEL_CEILING" value="2" enum="SemanticLabel">
+			A vertex is for a ceiling.
+		</constant>
+		<constant name="SEMANTIC_LABEL_WALL" value="3" enum="SemanticLabel">
+			A vertex is for a wall.
+		</constant>
+		<constant name="SEMANTIC_LABEL_TABLE" value="4" enum="SemanticLabel">
+			A vertex is for a table.
+		</constant>
+	</constants>
+</class>
