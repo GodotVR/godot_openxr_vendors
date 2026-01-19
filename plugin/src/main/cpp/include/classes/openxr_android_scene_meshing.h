@@ -1,11 +1,12 @@
 /**************************************************************************/
-/*  util.cpp                                                              */
+/*  openxr_android_meshing.h                                              */
 /**************************************************************************/
-/*                       This file is part of:                            */
-/*                              GODOT XR                                  */
-/*                      https://godotengine.org                           */
+/*                         This file is part of:                          */
+/*                             GODOT ENGINE                               */
+/*                        https://godotengine.org                         */
 /**************************************************************************/
-/* Copyright (c) 2022-present Godot XR contributors (see CONTRIBUTORS.md) */
+/* Copyright (c) 2014-present Godot Engine contributors (see AUTHORS.md). */
+/* Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.                  */
 /*                                                                        */
 /* Permission is hereby granted, free of charge, to any person obtaining  */
 /* a copy of this software and associated documentation files (the        */
@@ -27,50 +28,46 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "util.h"
+#ifndef OPENXR_ANDROID_SCENE_MESHING_H
+#define OPENXR_ANDROID_SCENE_MESHING_H
 
-#include <openxr/internal/xr_linear.h>
-#include <openxr/openxr.h>
-#include <stdio.h>
-#include <godot_cpp/variant/projection.hpp>
+#include <androidxr/androidxr.h>
+#include <godot_cpp/classes/ref_counted.hpp>
+#include <godot_cpp/templates/local_vector.hpp>
 
 using namespace godot;
 
-StringName OpenXRUtilities::uuid_to_string_name(const XrUuid &p_uuid) {
-	const uint8_t *data = p_uuid.data;
-	char uuid_str[37];
+class OpenXRAndroidSceneMeshing : public RefCounted {
+	GDCLASS(OpenXRAndroidSceneMeshing, RefCounted);
 
-	sprintf(uuid_str, "%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x",
-			data[0], data[1], data[2], data[3],
-			data[4], data[5],
-			data[6], data[7],
-			data[8], data[9],
-			data[10], data[11], data[12], data[13], data[14], data[15]);
+public:
+	OpenXRAndroidSceneMeshing();
+	virtual ~OpenXRAndroidSceneMeshing() override;
 
-	return StringName(uuid_str);
-}
+	enum SemanticLabelSet {
+		SEMANTIC_LABEL_SET_NONE,
+		SEMANTIC_LABEL_SET_DEFAULT,
+	};
 
-void OpenXRUtilities::xrMatrix4x4f_to_godot_projection(XrMatrix4x4f *m, godot::Projection &p) {
-	for (int j = 0; j < 4; j++) {
-		for (int i = 0; i < 4; i++) {
-			p.columns[j][i] = m->m[j * 4 + i];
-		}
-	}
-}
+	bool initialize(SemanticLabelSet p_semantic_label_set, bool p_enable_normals);
+	SemanticLabelSet get_semantic_label_set() const;
+	bool are_normals_enabled() const;
+	Dictionary get_submesh_data(const Transform3D &p_pose, const Vector3 &p_extents);
 
-Transform3D OpenXRUtilities::xrPosef_to_godot_transform3d(const XrPosef &pose) {
-	Transform3D out;
-	out.origin.x = pose.position.x;
-	out.origin.y = pose.position.y;
-	out.origin.z = pose.position.z;
-	out.basis = Basis{ Quaternion{ pose.orientation.x, pose.orientation.y, pose.orientation.z, pose.orientation.w } };
-	return out;
-}
+protected:
+	static void _bind_methods();
 
-Vector3 OpenXRUtilities::XrVector3f_to_godot_vector3(const XrVector3f &vector) {
-	Vector3 out;
-	out.x = vector.x;
-	out.y = vector.y;
-	out.z = vector.z;
-	return out;
-}
+private:
+	XrSceneMeshSnapshotANDROID _create_snapshot(const Transform3D &p_pose, const Vector3 &p_extents);
+	LocalVector<XrSceneSubmeshStateANDROID> _get_all_submesh_states(XrSceneMeshSnapshotANDROID xr_snapshot);
+
+	XrSceneMeshingTrackerANDROID tracker = XR_NULL_HANDLE;
+	SemanticLabelSet semantic_label_set = SEMANTIC_LABEL_SET_NONE;
+	bool enable_normals = false;
+	uint64_t update_idx = 0;
+	Dictionary submeshes;
+};
+
+VARIANT_ENUM_CAST(OpenXRAndroidSceneMeshing::SemanticLabelSet);
+
+#endif // OPENXR_ANDROID_SCENE_MESHING_H
