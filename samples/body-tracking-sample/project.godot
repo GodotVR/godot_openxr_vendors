@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="Meta Body Tracking Sample"
+config/name="Body Tracking Sample"
 run/main_scene="res://main.tscn"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 config/icon="res://icon.svg"
@@ -18,6 +18,10 @@ config/icon="res://icon.svg"
 [debug]
 
 settings/stdout/verbose_stdout=true
+
+[gui]
+
+theme/custom="uid://b4ktp1tt24ih0"
 
 [layer_names]
 
@@ -36,6 +40,7 @@ textures/vram_compression/import_etc2_astc=true
 openxr/enabled=true
 openxr/reference_space=2
 openxr/extensions/hand_tracking=true
+openxr/extensions/hand_interaction_profile=true
 openxr/extensions/eye_gaze_interaction=true
 shaders/enabled=true
 openxr/extensions/androidxr/face_tracking=true
@@ -43,3 +48,4 @@ openxr/extensions/meta/face_tracking=true
 openxr/extensions/meta/body_tracking=true
 openxr/extensions/meta/hand_tracking_mesh=true
 openxr/extensions/meta/color_space/starting_color_space=3
+openxr/extensions/androidxr/eye_tracking=true
