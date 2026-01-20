@@ -8,5 +8,3 @@ script = ExtResource("1_0xm2m")
 [node name="XROrigin3D" type="XROrigin3D" parent="."]
 
 [node name="XRCamera3D" type="XRCamera3D" parent="XROrigin3D"]
-
-[node name="Meshes" type="Node3D" parent="XROrigin3D"]
