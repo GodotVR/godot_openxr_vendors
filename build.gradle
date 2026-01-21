@@ -34,6 +34,7 @@ task clean(type: Delete) {
     dependsOn 'cleanScons'
 
     dependsOn ':plugin:clean'
+    dependsOn ':validation_layers:clean'
 }
 
 /**
@@ -51,6 +52,7 @@ task buildPlugin {
     // Generate the editor gdextension binaries
     dependsOn ':buildSconsArtifacts'
     dependsOn ":plugin:build"
+    dependsOn ":validation_layers:build"
     finalizedBy "copyBuildToSamples"
 }
 

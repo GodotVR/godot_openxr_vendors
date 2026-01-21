@@ -36,6 +36,7 @@
 #include "export/magicleap_export_plugin.h"
 #include "export/meta_export_plugin.h"
 #include "export/pico_export_plugin.h"
+#include "export/validation_layers_export_plugin.h"
 
 #include <godot_cpp/classes/button.hpp>
 #include <godot_cpp/classes/http_request.hpp>
@@ -93,6 +94,10 @@ void OpenXRVendorsEditorPlugin::_notification(uint32_t p_what) {
 			Ref<PicoEditorExportPlugin> pico_export_plugin;
 			pico_export_plugin.instantiate();
 			_add_export_plugin(pico_export_plugin);
+
+			Ref<OpenXRValidationLayersEditorExportPlugin> validation_layers_export_plugin;
+			validation_layers_export_plugin.instantiate();
+			_add_export_plugin(validation_layers_export_plugin);
 		} break;
 
 		case NOTIFICATION_EXIT_TREE: {

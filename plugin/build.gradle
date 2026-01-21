@@ -5,6 +5,8 @@ plugins {
 
 ext {
     PUBLISH_ARTIFACT_ID = 'godot-openxr-vendors'
+    PUBLISH_ARTIFACT_VERSION = getReleaseVersion()
+    PUBLISH_ARTIFACT_DESCRIPTION_LABEL = 'Godot OpenXR Vendors'
 }
 
 apply from: "../scripts/publish-module.gradle"
