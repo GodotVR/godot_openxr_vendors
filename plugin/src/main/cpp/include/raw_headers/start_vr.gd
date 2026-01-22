@@ -1,4 +1,3 @@
-class_name StartXR
 extends Node
 
 # This script uses "A Better XR Start Script" in the Godot Docs as a starting template
