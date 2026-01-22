@@ -52,6 +52,7 @@ void OpenXRFbHandTrackingMesh::setup_hand_mesh(const Ref<Mesh> &p_mesh) {
 		mesh_instance = memnew(MeshInstance3D);
 		mesh_instance->set_material_override(material);
 		mesh_instance->set_mesh(p_mesh);
+		mesh_instance->set_skeleton_path("..");
 		add_child(mesh_instance);
 	} else {
 		// We need to remove/add the mesh instance for the mesh and skeleton to become connected.
