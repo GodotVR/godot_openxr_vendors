@@ -505,7 +505,13 @@ String MetaEditorExportPlugin::_get_android_manifest_application_element_content
 
 	if ((int)project_settings->get_setting_with_override("xr/openxr/environment_blend_mode") != XRInterface::XR_ENV_BLEND_MODE_OPAQUE) {
 		// Show the splash screen in passthrough, if the user launches it from passthrough.
-		contents += "        <meta-data android:name=\"com.oculus.ossplash.background\" android:value=\"passthrough-contextual\" />\n";
+		// Note: These entries are required to pass VRC.Quest.Functional.14
+		// This section is undocumented - another Unreal dev pointed out that recently
+		// com.oculus.ossplash.type was changed by an OS update to a new default. 
+		// Ultimately these are the settings which got it working again
+		contents += "        <meta-data android:name=\"com.oculus.ossplash.type\" android:value=\"mono\"/>\n";
+		contents += "        <meta-data android:name=\"com.oculus.ossplash.colorspace\" android:value=\"Rec.2020\"/>\n";
+		contents += "        <meta-data android:name=\"com.oculus.ossplash.background\" android:value=\"passthrough-contextual\"/>\n";
 	}
 
 	OpenXRHybridApp::HybridMode hybrid_launch_mode = _get_hybrid_app_launch_mode();
