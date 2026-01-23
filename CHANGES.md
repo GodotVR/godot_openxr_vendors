@@ -1,5 +1,33 @@
 # Change history for the Godot OpenXR loaders asset
 
+## 4.3.0
+
+- Fix issue with instant splash screen
+- Explicitly assign hand tracking mesh skeleton property to parent Skeleton3D
+- Add Linux arm64 builds
+- Minor tweaks to `XR_FB_space_warp` delta pose calculation and the sample
+- Add support and manual page for `XR_ANDROID_scene_meshing` extension
+- Add manual page for Android XR Passthrough Camera State
+- Add documentation about Meta Boundary Visibility extension
+- Add manual page for vendor performance metrics
+- Add support and manual page for `XR_ANDROID_light_estimation` extension
+- Add support and documentation for `XR_ANDROID_eye_tracking` extension
+- Add support for `XR_META_colocation_discovery` extension
+- Add the necessary permissions to enable EXT spatial entities on Meta headsets
+- Fix errors in Meta Environment Depth documentation
+- Add manual page for Body and Face Tracking
+- Add manual page for Meta Color Space
+- Only add shader globals when the environment depth extensions are enabled
+- Add support and documentation for `XR_ANDROID_face_tracking` extension
+- Fix issues with Meta hand-tracking extensions on Android XR
+- Add support and manual page for `XR_ANDROID_depth_texture` extension
+- Add XR Project Setup Wizard
+
+## 4.2.2
+
+- Fix crashes when using the plugin on Godot 4.4.x
+- Fix background opacity on Android XR when using Compatibility renderer
+
 ## 4.2.1
 
 - Fix generation of 16kb page compatible binaries

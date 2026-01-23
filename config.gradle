@@ -23,7 +23,7 @@ ext {
 
     // Parse the release version from the gradle project properties (e.g: -Prelease_version=<version>)
     getReleaseVersion = { ->
-        final String defaultVersion = "4.3.0-dev" // Also update 'plugin/src/main/cpp/include/export/export_plugin.h#PLUGIN_VERSION'
+        final String defaultVersion = "4.3.0-stable" // Also update 'plugin/src/main/cpp/include/export/export_plugin.h#PLUGIN_VERSION'
 
         String releaseVersion = project.hasProperty("release_version") ? project.property("release_version") : defaultVersion
         if (releaseVersion == null || releaseVersion.isEmpty()) {
