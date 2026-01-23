@@ -501,6 +501,11 @@ String MetaEditorExportPlugin::_get_android_manifest_application_element_content
 	bool instant_splash_screen = _get_bool_option("meta_xr_features/instant_splash_screen");
 	if (instant_splash_screen) {
 		contents += "        <meta-data android:name=\"com.oculus.ossplash\" android:value=\"true\"/>\n";
+
+		// Unfortunately, this metadata is undocumented, but this seems to work in our testing.
+		// @todo Allow for configurable splash type and color space.
+		contents += "        <meta-data android:name=\"com.oculus.ossplash.type\" android:value=\"mono\"/>\n";
+		contents += "        <meta-data android:name=\"com.oculus.ossplash.colorspace\" android:value=\"Rec.709\"/>\n";
 	}
 
 	if ((int)project_settings->get_setting_with_override("xr/openxr/environment_blend_mode") != XRInterface::XR_ENV_BLEND_MODE_OPAQUE) {
