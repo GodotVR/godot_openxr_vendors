@@ -29,13 +29,13 @@
 
 #pragma once
 
-#include <godot_cpp/classes/open_xr_extension_wrapper_extension.hpp>
+#include <godot_cpp/classes/open_xr_extension_wrapper.hpp>
 #include <godot_cpp/variant/packed_string_array.hpp>
 
 using namespace godot;
 
-class OpenXRVendorPerformanceMetricsProvider : public OpenXRExtensionWrapperExtension {
-	GDCLASS(OpenXRVendorPerformanceMetricsProvider, OpenXRExtensionWrapperExtension)
+class OpenXRVendorPerformanceMetricsProvider : public OpenXRExtensionWrapper {
+	GDCLASS(OpenXRVendorPerformanceMetricsProvider, OpenXRExtensionWrapper);
 
 public:
 	virtual bool is_enabled() = 0;

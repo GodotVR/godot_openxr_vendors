@@ -35,7 +35,7 @@
 			<description>
 				Initialize this [OpenXRAndroidSceneMeshing] instance.
 				Only one [OpenXRAndroidSceneMeshing] is needed, however creating multiple is okay.
-				[param semantic_label_set] is one of the [enum SemanticLabelSet]s returned by [method OpenXRAndroidSceneMeshingExtensionWrapper.get_supported_semantic_label_sets].
+				[param semantic_label_set] is one of the [enum SemanticLabelSet]s returned by [method OpenXRAndroidSceneMeshingExtension.get_supported_semantic_label_sets].
 				When [param enable_normals] is true, then the [constant Mesh.ARRAY_NORMAL] index in [method OpenXRAndroidSceneSubmeshData.get_arrays] will be populated.
 			</description>
 		</method>

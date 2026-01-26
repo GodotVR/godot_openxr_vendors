@@ -17,13 +17,13 @@ The **Passthrough Camera State** setting should be listed under **Extensions** i
 Querying Passthrough Camera State
 ---------------------------------
 
-To check the passthrough camera state, retrieve the :ref:`OpenXRAndroidPassthroughCameraStateExtensionWrapper  <class_openxrandroidpassthroughcamerastateextensionwrapper>` singleton
-and call :ref:`get_passthrough_camera_state <class_openxrandroidpassthroughcamerastateextensionwrapper_method_get_passthrough_camera_state>`.
+To check the passthrough camera state, retrieve the :ref:`OpenXRAndroidPassthroughCameraStateExtension  <class_openxrandroidpassthroughcamerastateextension>` singleton
+and call :ref:`get_passthrough_camera_state <class_openxrandroidpassthroughcamerastateextension_method_get_passthrough_camera_state>`.
 
 .. code-block:: gdscript
 
-    var passthrough_camera_state = Engine.get_singleton("OpenXRAndroidPassthroughCameraStateExtensionWrapper")
+    var passthrough_camera_state = Engine.get_singleton("OpenXRAndroidPassthroughCameraStateExtension")
     if passthrough_camera_state:
         var camera_state = passthrough_camera_state.get_passthrough_camera_state()
 
-This will return a :ref:`PassthroughCameraState <enum_openxrandroidpassthroughcamerastateextensionwrapper_passthroughcamerastate>` value indicating the state of the camera.
+This will return a :ref:`PassthroughCameraState <enum_openxrandroidpassthroughcamerastateExtension_passthroughcamerastate>` value indicating the state of the camera.

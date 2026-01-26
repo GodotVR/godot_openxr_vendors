@@ -29,7 +29,7 @@
 
 #include "classes/openxr_fb_hand_tracking_mesh.h"
 
-#include "extensions/openxr_fb_hand_tracking_mesh_extension_wrapper.h"
+#include "extensions/openxr_fb_hand_tracking_mesh_extension.h"
 
 #include <godot_cpp/classes/engine.hpp>
 #include <godot_cpp/classes/main_loop.hpp>
@@ -46,7 +46,7 @@ void OpenXRFbHandTrackingMesh::setup_hand_mesh(const Ref<Mesh> &p_mesh) {
 		return;
 	}
 
-	OpenXRFbHandTrackingMeshExtensionWrapper::get_singleton()->reset_skeleton_pose(hand, this);
+	OpenXRFbHandTrackingMeshExtension::get_singleton()->reset_skeleton_pose(hand, this);
 
 	if (!mesh_instance) {
 		mesh_instance = memnew(MeshInstance3D);
@@ -69,7 +69,7 @@ void OpenXRFbHandTrackingMesh::on_request_permissions_result(const String &p_per
 	// On Android XR, the data will be unavailable until the permission is granted. So, if we get notified that the permission
 	// was granted, then we try to fetch the hand data again.
 	if (p_permission == "android.permission.HAND_TRACKING" && p_granted) {
-		OpenXRFbHandTrackingMeshExtensionWrapper::get_singleton()->request_hand_mesh_data(hand, callable_mp(this, &OpenXRFbHandTrackingMesh::setup_hand_mesh));
+		OpenXRFbHandTrackingMeshExtension::get_singleton()->request_hand_mesh_data(hand, callable_mp(this, &OpenXRFbHandTrackingMesh::setup_hand_mesh));
 	}
 }
 
@@ -98,7 +98,7 @@ void OpenXRFbHandTrackingMesh::set_hand(Hand p_hand) {
 
 	// If we already have mesh data, but now we're changing hands, we need to request it again.
 	if (is_node_ready() && ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/extensions/meta/hand_tracking_mesh")) {
-		OpenXRFbHandTrackingMeshExtensionWrapper::get_singleton()->request_hand_mesh_data(hand, callable_mp(this, &OpenXRFbHandTrackingMesh::setup_hand_mesh));
+		OpenXRFbHandTrackingMeshExtension::get_singleton()->request_hand_mesh_data(hand, callable_mp(this, &OpenXRFbHandTrackingMesh::setup_hand_mesh));
 	}
 
 	notify_property_list_changed();
@@ -120,19 +120,19 @@ Ref<Material> OpenXRFbHandTrackingMesh::get_material() const {
 }
 
 void OpenXRFbHandTrackingMesh::set_use_scale_override(bool p_use) {
-	OpenXRFbHandTrackingMeshExtensionWrapper::get_singleton()->set_use_scale_override(hand, p_use);
+	OpenXRFbHandTrackingMeshExtension::get_singleton()->set_use_scale_override(hand, p_use);
 }
 
 bool OpenXRFbHandTrackingMesh::get_use_scale_override() const {
-	return OpenXRFbHandTrackingMeshExtensionWrapper::get_singleton()->get_use_scale_override(hand);
+	return OpenXRFbHandTrackingMeshExtension::get_singleton()->get_use_scale_override(hand);
 }
 
 void OpenXRFbHandTrackingMesh::set_scale_override(float p_scale) {
-	OpenXRFbHandTrackingMeshExtensionWrapper::get_singleton()->set_scale_override(hand, p_scale);
+	OpenXRFbHandTrackingMeshExtension::get_singleton()->set_scale_override(hand, p_scale);
 }
 
 float OpenXRFbHandTrackingMesh::get_scale_override() const {
-	return OpenXRFbHandTrackingMeshExtensionWrapper::get_singleton()->get_scale_override(hand);
+	return OpenXRFbHandTrackingMeshExtension::get_singleton()->get_scale_override(hand);
 }
 
 PackedStringArray OpenXRFbHandTrackingMesh::_get_configuration_warnings() const {
@@ -147,12 +147,12 @@ void OpenXRFbHandTrackingMesh::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_POSTINITIALIZE: {
 			if (ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/extensions/meta/hand_tracking_mesh")) {
-				OpenXRFbHandTrackingMeshExtensionWrapper::get_singleton()->construct_skeleton(this);
+				OpenXRFbHandTrackingMeshExtension::get_singleton()->construct_skeleton(this);
 			}
 		} break;
 		case NOTIFICATION_READY: {
 			if (ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/extensions/meta/hand_tracking_mesh")) {
-				OpenXRFbHandTrackingMeshExtensionWrapper::get_singleton()->request_hand_mesh_data(hand, callable_mp(this, &OpenXRFbHandTrackingMesh::setup_hand_mesh));
+				OpenXRFbHandTrackingMeshExtension::get_singleton()->request_hand_mesh_data(hand, callable_mp(this, &OpenXRFbHandTrackingMesh::setup_hand_mesh));
 
 				MainLoop *main_loop = Engine::get_singleton()->get_main_loop();
 				if (main_loop) {

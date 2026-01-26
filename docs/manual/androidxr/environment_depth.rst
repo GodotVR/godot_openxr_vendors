@@ -19,8 +19,8 @@ Before Android XR Environment Depth can be used, it needs to be started:
 
 .. code::
 
-	if OpenXRAndroidEnvironmentDepthExtensionWrapper.is_environment_depth_supported():
-		OpenXRAndroidEnvironmentDepthExtensionWrapper.start_environment_depth()
+	if OpenXRAndroidEnvironmentDepthExtension.is_environment_depth_supported():
+		OpenXRAndroidEnvironmentDepthExtension.start_environment_depth()
 
 This will only work if there is an active OpenXR session. You can connect to the
 ``OpenXRInterface.session_begun`` signal to run code right when the session starts.
@@ -31,8 +31,8 @@ you should make sure that Android XR Environment Depth is only running in AR mod
 
 .. code::
 
-	if OpenXRAndroidEnvironmentDepthExtensionWrapper.is_environment_depth_started():
-		OpenXRAndroidEnvironmentDepthExtensionWrapper.stop_environment_depth()
+	if OpenXRAndroidEnvironmentDepthExtension.is_environment_depth_started():
+		OpenXRAndroidEnvironmentDepthExtension.stop_environment_depth()
 
 Smooth data
 -----------
@@ -48,7 +48,7 @@ To enable smooth data:
 
 .. code::
 
-	OpenXRAndroidEnvironmentDepthExtensionWrapper.set_smooth(true)
+	OpenXRAndroidEnvironmentDepthExtension.set_smooth(true)
 
 When using smooth data, since the user's hands have been removed, it's common to also use virtual hand
 models animated by hand tracking.

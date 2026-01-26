@@ -29,7 +29,7 @@
 
 #include "classes/openxr_fb_render_model.h"
 
-#include "extensions/openxr_fb_render_model_extension_wrapper.h"
+#include "extensions/openxr_fb_render_model_extension.h"
 
 #include <godot_cpp/classes/engine.hpp>
 #include <godot_cpp/classes/gltf_document.hpp>
@@ -43,7 +43,7 @@ using namespace godot;
 
 void OpenXRFbRenderModel::set_render_model_type(Model p_model) {
 	render_model_type = p_model;
-	if (is_inside_tree() && OpenXRFbRenderModelExtensionWrapper::get_singleton()->is_openxr_session_active()) {
+	if (is_inside_tree() && OpenXRFbRenderModelExtension::get_singleton()->is_openxr_session_active()) {
 		load_render_model();
 	}
 }
@@ -81,7 +81,7 @@ void OpenXRFbRenderModel::load_render_model() {
 		return;
 	}
 
-	PackedByteArray render_model_buffer = OpenXRFbRenderModelExtensionWrapper::get_singleton()->get_buffer(render_model_path);
+	PackedByteArray render_model_buffer = OpenXRFbRenderModelExtension::get_singleton()->get_buffer(render_model_path);
 	if (render_model_buffer.is_empty()) {
 		UtilityFunctions::print_verbose("Failed to load render model buffer from path [", render_model_path, "] in OpenXRFbRenderModel node");
 		return;
@@ -118,7 +118,7 @@ void OpenXRFbRenderModel::_notification(int p_what) {
 			}
 		} break;
 		case NOTIFICATION_ENTER_TREE: {
-			if (OpenXRFbRenderModelExtensionWrapper::get_singleton()->is_openxr_session_active()) {
+			if (OpenXRFbRenderModelExtension::get_singleton()->is_openxr_session_active()) {
 				load_render_model();
 			}
 			if (Engine::get_singleton()->is_editor_hint()) {

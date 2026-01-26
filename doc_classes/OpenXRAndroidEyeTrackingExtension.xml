@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="OpenXRAndroidEyeTrackingExtension" inherits="OpenXRExtensionWrapper" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		Wraps the [code]XR_ANDROID_eye_tracking[/code] extension.
+	</brief_description>
+	<description>
+		Wraps the [code]XR_ANDROID_eye_tracking[/code] extension.
+		This class is not meant to be used directly.
+		Instantiate a [XRController3D] with [code]"/user/eye_tracker_android/left"[/code] to track left eye or [code]"/user/eye_tracker_android/right"[/code] to track right eye.
+		Blink state is exposed as a input button named [code]"blink"[/code]. On eyelid close, the button indicates pressed and on eyelid open, the button indicates released.
+		Fine eye tracking information is not supported.
+	</description>
+	<tutorials>
+	</tutorials>
+</class>

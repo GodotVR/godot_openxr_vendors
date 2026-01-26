@@ -98,40 +98,40 @@ To accomplish this, open **Project Settings**. In the **OpenXR** section, ensure
 .. image:: img/passthrough/passthrough_loading_screen_project_settings.png
 
 With this setting updated, the app will load in passthrough if the user launches the app while their device's home environment is in passthrough.
-If your app has both an MR and VR mode, consider using :ref:`is_passthrough_preferred <class_openxrfbpassthroughextensionwrapper_method_is_passthrough_preferred>`
+If your app has both an MR and VR mode, consider using :ref:`is_passthrough_preferred <class_openxrfbpassthroughextension_method_is_passthrough_preferred>`
 to determine which mode to enter once the app has completed loading.
 
 Passthrough Filters
 -------------------
 
 Meta headsets are capable of applying a variety of filters to the passthrough imagery, allowing you to modify the appearance of the user's physical environment.
-There are a number of methods in :ref:`OpenXRFbPassthroughExtensionWrapper <class_openxrfbpassthroughextensionwrapper>` that allow you to access these features.
-You can call these methods on the ``OpenXRFbPassthroughExtensionWrapper`` singleton, which can be obtained like so:
+There are a number of methods in :ref:`OpenXRFbPassthroughExtension <class_openxrfbpassthroughextension>` that allow you to access these features.
+You can call these methods on the ``OpenXRFbPassthroughExtension`` singleton, which can be obtained like so:
 
 .. code-block:: gdscript
 
-    var fb_passthrough = Engine.get_singleton("OpenXRFbPassthroughExtensionWrapper")
+    var fb_passthrough = Engine.get_singleton("OpenXRFbPassthroughExtension")
 
-You can check what :ref:`PassthroughFilter <enum_openxrfbpassthroughextensionwrapper_passthroughfilter>` is enabled by calling :ref:`get_current_passthrough_filter <class_openxrfbpassthroughextensionwrapper_method_get_current_passthrough_filter>`.
+You can check what :ref:`PassthroughFilter <enum_openxrfbpassthroughExtension_passthroughfilter>` is enabled by calling :ref:`get_current_passthrough_filter <class_openxrfbpassthroughextension_method_get_current_passthrough_filter>`.
 By default, the filter mode will be set to ``PASSTHROUGH_FILTER_DISABLED``.
 
 To change the current passthrough filter, you can call one of the following functions:
 
-* :ref:`set_color_map <class_openxrfbpassthroughextensionwrapper_method_set_color_map>`
-* :ref:`set_mono_map <class_openxrfbpassthroughextensionwrapper_method_set_mono_map>`
-* :ref:`set_brightness_contrast_saturation <class_openxrfbpassthroughextensionwrapper_method_set_brightness_contrast_saturation>`
-* :ref:`set_color_lut <class_openxrfbpassthroughextensionwrapper_method_set_color_lut>`
-* :ref:`set_interpolated_color_lut <class_openxrfbpassthroughextensionwrapper_method_set_interpolated_color_lut>`
+* :ref:`set_color_map <class_openxrfbpassthroughextension_method_set_color_map>`
+* :ref:`set_mono_map <class_openxrfbpassthroughextension_method_set_mono_map>`
+* :ref:`set_brightness_contrast_saturation <class_openxrfbpassthroughextension_method_set_brightness_contrast_saturation>`
+* :ref:`set_color_lut <class_openxrfbpassthroughextension_method_set_color_lut>`
+* :ref:`set_interpolated_color_lut <class_openxrfbpassthroughextension_method_set_interpolated_color_lut>`
 
-The current passthrough filter can also be updated by calling :ref:`set_passthrough_filter <class_openxrfbpassthroughextensionwrapper_method_set_passthrough_filter>`.
+The current passthrough filter can also be updated by calling :ref:`set_passthrough_filter <class_openxrfbpassthroughextension_method_set_passthrough_filter>`.
 This function will most often be used to **disable** passthrough filters, as calling it with ``PASSTHROUGH_FILTER_DISABLED`` is the only way to return to that filter mode.
 Swapping to any other filter mode using this function will require its corresponding setter function in the above list to have been called previously.
 
 Also note that there are two filter properties that can be set regardless of the current filter mode.
 These can be set using the functions:
 
-* :ref:`set_edge_color <class_openxrfbpassthroughextensionwrapper_method_set_edge_color>`
-* :ref:`set_texture_opacity_factor <class_openxrfbpassthroughextensionwrapper_method_set_texture_opacity_factor>`
+* :ref:`set_edge_color <class_openxrfbpassthroughextension_method_set_edge_color>`
+* :ref:`set_texture_opacity_factor <class_openxrfbpassthroughextension_method_set_texture_opacity_factor>`
 
 .. figure:: img/passthrough/edge_color_passthrough_filter.jpg
     :align: center
@@ -144,8 +144,8 @@ These can be set using the functions:
 Color Map Filter
 ----------------
 
-The :ref:`set_color_map <class_openxrfbpassthroughextensionwrapper_method_set_color_map>` method accepts a `Gradient <https://docs.godotengine.org/en/stable/classes/class_gradient.html>`_
-resource and will set the filter mode to :ref:`PASSTHROUGH_FILTER_COLOR_MAP <class_openxrfbpassthroughextensionwrapper_constant_passthrough_filter_color_map>`.
+The :ref:`set_color_map <class_openxrfbpassthroughextension_method_set_color_map>` method accepts a `Gradient <https://docs.godotengine.org/en/stable/classes/class_gradient.html>`_
+resource and will set the filter mode to :ref:`PASSTHROUGH_FILTER_COLOR_MAP <class_openxrfbpassthroughextension_constant_passthrough_filter_color_map>`.
 This filter will map the input luminance value of the passthrough imagery to the corresponding RGBA value of the given gradient.
 
 .. image:: img/passthrough/color_map_passthrough_filter.jpg
@@ -165,8 +165,8 @@ Here's what it might look like in the script and inspector to achieve this:
 Mono Map Filter
 ---------------
 
-The :ref:`set_mono_map <class_openxrfbpassthroughextensionwrapper_method_set_mono_map>` method accepts a `Curve <https://docs.godotengine.org/en/stable/classes/class_curve.html>`_
-resource and will set the filter mode to :ref:`PASSTHROUGH_FILTER_MONO_MAP <class_openxrfbpassthroughextensionwrapper_constant_passthrough_filter_mono_map>`.
+The :ref:`set_mono_map <class_openxrfbpassthroughextension_method_set_mono_map>` method accepts a `Curve <https://docs.godotengine.org/en/stable/classes/class_curve.html>`_
+resource and will set the filter mode to :ref:`PASSTHROUGH_FILTER_MONO_MAP <class_openxrfbpassthroughextension_constant_passthrough_filter_mono_map>`.
 This filter will map the input luminance value of the passthrough imagery with the corresponding grayscale value of the given curve.
 
 .. image:: img/passthrough/mono_map_passthrough_filter.jpg
@@ -186,9 +186,9 @@ Here's what it might look like in the script and inspector to achieve this:
 Brightness Contrast Saturation Filter
 -------------------------------------
 
-The :ref:`set_brightness_contrast_saturation <class_openxrfbpassthroughextensionwrapper_method_set_brightness_contrast_saturation>` method accepts three ``float`` values
-and will set the filter mode to :ref:`PASSTHROUGH_FILTER_BRIGHTNESS_CONTRAST_SATURATION <class_openxrfbpassthroughextensionwrapper_constant_passthrough_filter_brightness_contrast_saturation>`.
-This filter will adjust the brightness, contrast, and saturation of the passthrough imagery. The valid ranges of each value are noted in the method description of :ref:`set_brightness_contrast_saturation <class_openxrfbpassthroughextensionwrapper_method_set_brightness_contrast_saturation>`.
+The :ref:`set_brightness_contrast_saturation <class_openxrfbpassthroughextension_method_set_brightness_contrast_saturation>` method accepts three ``float`` values
+and will set the filter mode to :ref:`PASSTHROUGH_FILTER_BRIGHTNESS_CONTRAST_SATURATION <class_openxrfbpassthroughextension_constant_passthrough_filter_brightness_contrast_saturation>`.
+This filter will adjust the brightness, contrast, and saturation of the passthrough imagery. The valid ranges of each value are noted in the method description of :ref:`set_brightness_contrast_saturation <class_openxrfbpassthroughextension_method_set_brightness_contrast_saturation>`.
 
 .. image:: img/passthrough/bcs_passthrough_filter.jpg
 
@@ -210,9 +210,9 @@ Color LUT Filter
 .. note::
     `This article <https://spark.meta.com/learn/articles/textures-and-materials/color-LUTs/>`_ by Meta provides a good introductory explanation on how to create a color LUT (Look Up Table / Look Up Texture).
 
-The :ref:`set_color_lut <class_openxrfbpassthroughextensionwrapper_method_set_color_lut>` method accepts an :ref:`OpenXRMetaPassthroughColorLut <class_openxrmetapassthroughcolorlut>` resource
+The :ref:`set_color_lut <class_openxrfbpassthroughextension_method_set_color_lut>` method accepts an :ref:`OpenXRMetaPassthroughColorLut <class_openxrmetapassthroughcolorlut>` resource
 along with a ``float`` between ``0.0`` and ``1.0`` that is used to blend linearly between the original passthrough input colors and the mapped color LUT.
-This method will set the filter mode to :ref:`PASSTHROUGH_FILTER_COLOR_MAP_LUT <class_openxrfbpassthroughextensionwrapper_constant_passthrough_filter_color_map_lut>`.
+This method will set the filter mode to :ref:`PASSTHROUGH_FILTER_COLOR_MAP_LUT <class_openxrfbpassthroughextension_constant_passthrough_filter_color_map_lut>`.
 
 .. image:: img/passthrough/color_lut_passthrough_filter.jpg
 
@@ -240,7 +240,7 @@ Then, to fully apply the color LUT, we pass in ``meta_color_lut`` with a ``weigh
     fb_passthrough.set_color_lut(1.0, meta_color_lut)
 
 .. note::
-    You can check the maximum color LUT resolution supported by the headset at runtime using the :ref:`get_max_color_lut_resolution <class_openxrfbpassthroughextensionwrapper_method_get_max_color_lut_resolution>` method.
+    You can check the maximum color LUT resolution supported by the headset at runtime using the :ref:`get_max_color_lut_resolution <class_openxrfbpassthroughextension_method_get_max_color_lut_resolution>` method.
 
 Lastly, if you want to smoothly interpolate between two given color LUT ``weight`` values over time, you can use a tween! The following example will interpolate the weight from ``0.0`` to ``1.0`` over a period of two seconds.
 
@@ -253,8 +253,8 @@ Interpolated Color LUT Filter
 -----------------------------
 
 This filter mode works the same way as the :ref:`color-lut-filter`, only it requires the use of two :ref:`OpenXRMetaPassthroughColorLut <class_openxrmetapassthroughcolorlut>` resources.
-The :ref:`set_interpolated_color_lut <class_openxrfbpassthroughextensionwrapper_method_set_interpolated_color_lut>` method will accept those two resources, along with a ``float`` value between ``0.0`` and ``1.0``
-that will be used to blend linearly between the two color LUTs. Calling this function will set the filter mode to :ref:`PASSTHROUGH_FILTER_COLOR_MAP_INTERPOLATED_LUT <class_openxrfbpassthroughextensionwrapper_constant_passthrough_filter_color_map_interpolated_lut>`,
+The :ref:`set_interpolated_color_lut <class_openxrfbpassthroughextension_method_set_interpolated_color_lut>` method will accept those two resources, along with a ``float`` value between ``0.0`` and ``1.0``
+that will be used to blend linearly between the two color LUTs. Calling this function will set the filter mode to :ref:`PASSTHROUGH_FILTER_COLOR_MAP_INTERPOLATED_LUT <class_openxrfbpassthroughextension_constant_passthrough_filter_color_map_interpolated_lut>`,
 which will map the passthrough input to this interpolated color LUT.
 
 The main purpose of this filter mode is to smoothly transition between two distinct color LUTs. Let's assume we have two valid ``OpenXRMetaPassthroughColorLut`` resources named ``meta_color_lut`` and ``meta_color_lut2``.
@@ -283,14 +283,14 @@ Note that the extension isn't in the OpenXR spec yet, so depending on the plugin
 `Pull Request <https://github.com/GodotVR/godot_openxr_vendors/pull/302>`__.
 
 After enabling the extension in **Project Settings**, the
-:ref:`OpenXRMetaBoundaryVisibilityExtensionWrapper <class_openxrmetaboundaryvisibilityextensionwrapper>` singleton
-and its method :ref:`set_boundary_visible <class_openxrmetaboundaryvisibilityextensionwrapper_method_set_boundary_visible>`
+:ref:`OpenXRMetaBoundaryVisibilityExtension <class_openxrmetaboundaryvisibilityextension>` singleton
+and its method :ref:`set_boundary_visible <class_openxrmetaboundaryvisibilityextension_method_set_boundary_visible>`
 can be used to control whether the boundary is visible:
 
 .. code-block:: gdscript
 
     func toggle_boundary_visibility():
-        if not OpenXRMetaBoundaryVisibilityExtensionWrapper.is_boundary_visibility_supported():
+        if not OpenXRMetaBoundaryVisibilityExtension.is_boundary_visibility_supported():
             return
-        var is_boundary_visible = OpenXRMetaBoundaryVisibilityExtensionWrapper.is_boundary_visible
-        OpenXRMetaBoundaryVisibilityExtensionWrapper.set_boundary_visible(!is_boundary_visible)
+        var is_boundary_visible = OpenXRMetaBoundaryVisibilityExtension.is_boundary_visible
+        OpenXRMetaBoundaryVisibilityExtension.set_boundary_visible(!is_boundary_visible)

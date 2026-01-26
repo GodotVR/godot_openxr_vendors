@@ -13,7 +13,7 @@ There are two ways to use Android XR Light Estimation:
 1. The :ref:`OpenXRAndroidLightEstimation <class_openxrandroidlightestimation>`
    node, which can automatically update ``DirectionalLight3D`` and
    ``WorldEnvironment`` nodes in your scene. Or,
-2. Passing data from the :ref:`OpenXRAndroidLightEstimationExtensionWrapper <class_openxrandroidlightestimationextensionwrapper>`
+2. Passing data from the :ref:`OpenXRAndroidLightEstimationExtension <class_openxrandroidlightestimationextension>`
    singleton to custom shaders.
 
 .. note::
@@ -39,8 +39,8 @@ Before Android XR Light Estimation can be used, it needs to be started:
 
 .. code::
 
-	if OpenXRAndroidLightEstimationExtensionWrapper.is_light_estimation_supported():
-		OpenXRAndroidLightEstimationExtensionWrapper.start_light_estimation()
+	if OpenXRAndroidLightEstimationExtension.is_light_estimation_supported():
+		OpenXRAndroidLightEstimationExtension.start_light_estimation()
 
 This will only work if there is an active OpenXR session. You can connect
 to the ``OpenXRInterface.session_begun`` signal to run code right when
@@ -116,16 +116,16 @@ If the way that the ``OpenXRAndroidLightEstimation`` node incorporates the light
 data isn't to your liking, you can get the data yourself and pass it to custom shaders.
 
 There are a few different types of data that can be provided, so first you'll need to update the
-:ref:`OpenXRAndroidLightEstimationExtensionWrapper.light_estimate_types<class_openxrandroidlightestimationextensionwrapper_property_light_estimate_types>`
+:ref:`OpenXRAndroidLightEstimationExtension.light_estimate_types<class_openxrandroidlightestimationextension_property_light_estimate_types>`
 property with the types that you need.
 
 For example:
 
 .. code::
 
-	OpenXRAndroidLightEstimationExtensionWrapper.light_estimate_types = \
-		OpenXRAndroidLightEstimationExtensionWrapper.LIGHT_ESTIMATE_TYPE_DIRECTIONAL_LIGHT | \
-		OpenXRAndroidLightEstimationExtensionWrapper.LIGHT_ESTIMATE_TYPE_SPHERICAL_HARMONICS_TOTAL
+	OpenXRAndroidLightEstimationExtension.light_estimate_types = \
+		OpenXRAndroidLightEstimationExtension.LIGHT_ESTIMATE_TYPE_DIRECTIONAL_LIGHT | \
+		OpenXRAndroidLightEstimationExtension.LIGHT_ESTIMATE_TYPE_SPHERICAL_HARMONICS_TOTAL
 
 Then, every frame, you can update the data, see if it's changed since the previous frame,
 and then update your shader's parameters:
@@ -135,7 +135,7 @@ and then update your shader's parameters:
 	var last_material_update := 0
 
 	func _process(_delta: float) -> void:
-		var ale = OpenXRAndroidLightEstimationExtensionWrapper
+		var ale = OpenXRAndroidLightEstimationExtension
 		if ale.is_light_estimation_started():
 			var next_update = ale.get_last_updated_time()
 			if next_update > last_material_update and ale.is_spherical_harmonics_total_valid():
@@ -150,9 +150,9 @@ and then update your shader's parameters:
 
 Each of the types of data has its own "valid method" that should be called
 before accessing that data. For example, in the code snippet above, we called
-:ref:`is_spherical_harmonics_total_valid()<class_openxrandroidlightestimationextensionwrapper_method_is_spherical_harmonics_total_valid>`
+:ref:`is_spherical_harmonics_total_valid()<class_openxrandroidlightestimationextension_method_is_spherical_harmonics_total_valid>`
 before calling
-:ref:`get_spherical_harmonics_total_coefficients()<class_openxrandroidlightestimationextensionwrapper_method_get_spherical_harmonics_total_coefficients>`.
+:ref:`get_spherical_harmonics_total_coefficients()<class_openxrandroidlightestimationextension_method_get_spherical_harmonics_total_coefficients>`.
 
 Take a look at the `sample project <https://github.com/GodotVR/godot_openxr_vendors/tree/master/samples/androidxr-light-estimation-sample>`_
 for a complete example of using a custom shader for ambient lighting.

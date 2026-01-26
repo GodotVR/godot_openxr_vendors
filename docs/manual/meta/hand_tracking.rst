@@ -54,7 +54,7 @@ Hand Capsules
 .. image:: img/hand_tracking/hand_capsules_mesh.png
 
 The ``XR_FB_hand_tracking_capsules`` extension provides data that can be used in Godot to construct a number of capsule shapes that resemble a user's hand.
-For accessing this data, a number of methods are available on :ref:`OpenXRFbHandTrackingCapsulesExtensionWrapper <class_openxrfbhandtrackingcapsulesextensionwrapper>`.
+For accessing this data, a number of methods are available on :ref:`OpenXRFbHandTrackingCapsulesExtension <class_openxrfbhandtrackingcapsulesextension>`.
 
 To use these methods, store the extension singleton in a script variable:
 
@@ -63,18 +63,18 @@ To use these methods, store the extension singleton in a script variable:
     var fb_capsule_ext
 
     func _ready() -> void:
-        fb_capsule_ext = Engine.get_singleton("OpenXRFbHandTrackingCapsulesExtensionWrapper")
+        fb_capsule_ext = Engine.get_singleton("OpenXRFbHandTrackingCapsulesExtension")
 
 If persistent, moving capsule meshes or collision shapes are desired, it is more performant to construct capsules once using ``fb_capsule_ext``
 and let the transform of the capsule be driven by a skeleton rather than building capsules and placing them by hand every frame.
 The skeleton constructed by :ref:`OpenXRFbHandTrackingMesh <class_openxrfbhandtrackingmesh>` can be used for this purpose.
 
-The :ref:`get_hand_capsule_joint <class_openxrfbhandtrackingcapsulesextensionwrapper_method_get_hand_capsule_joint>` provides the joint ID
+The :ref:`get_hand_capsule_joint <class_openxrfbhandtrackingcapsulesextension_method_get_hand_capsule_joint>` provides the joint ID
 that drives the transform of the given capsule. The bone index of the ``OpenXRFbHandTrackingMesh`` bones equates to these joint IDs.
 So, if a capsule is child to a `BoneAttachment3D <https://docs.godotengine.org/en/stable/classes/class_boneattachment3d.html>`_ with a matching
 ``bone_idx``, the capsules will be positioned properly if they are given the correct transform on instatiation.
 
-The capsule positions given by ``OpenXRFbHandTrackingCapsulesExtensionWrapper`` are relative to the position of the ``XROrigin3D``.
+The capsule positions given by ``OpenXRFbHandTrackingCapsulesExtension`` are relative to the position of the ``XROrigin3D``.
 To align a capsule's transform with the hand tracked skeleton, you'll have to multiply its transform by the inverse of the associated
 hand capsule joint transform. This can be obtained using `XRHandTracker <https://docs.godotengine.org/en/latest/classes/class_xrhandtracker.html>`_.
 

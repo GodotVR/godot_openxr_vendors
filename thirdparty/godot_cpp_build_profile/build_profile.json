@@ -44,7 +44,7 @@
         "OS",
         "Object",
         "OpenXRAPIExtension",
-        "OpenXRExtensionWrapperExtension",
+        "OpenXRExtensionWrapper",
         "OpenXRInterface",
         "OptionButton",
         "PackedScene",

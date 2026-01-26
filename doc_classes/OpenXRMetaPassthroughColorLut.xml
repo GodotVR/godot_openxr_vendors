@@ -5,7 +5,7 @@
 	</brief_description>
 	<description>
 		Uses the [code]XR_META_passthrough_color_lut[/code] extension to provide a color LUT (Look Up Table) for recoloring passthrough imagery.
-		See [method OpenXRFbPassthroughExtensionWrapper.set_color_lut] and [method OpenXRFbPassthroughExtensionWrapper.set_interpolated_color_lut]
+		See [method OpenXRFbPassthroughExtension.set_color_lut] and [method OpenXRFbPassthroughExtension.set_interpolated_color_lut]
 	</description>
 	<tutorials>
 	</tutorials>

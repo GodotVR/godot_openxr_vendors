@@ -30,17 +30,17 @@ func _process(_delta: float) -> void:
 
 func _update() -> void:
 	if depth_mode == DepthMode.DISABLED:
-		if OpenXRAndroidEnvironmentDepthExtensionWrapper.is_environment_depth_started():
-			OpenXRAndroidEnvironmentDepthExtensionWrapper.stop_environment_depth()
+		if OpenXRAndroidEnvironmentDepthExtension.is_environment_depth_started():
+			OpenXRAndroidEnvironmentDepthExtension.stop_environment_depth()
 		viewport_2d_in_3d.get_scene_root().set_label_text("Depth disabled")
 		return
 
-	if not OpenXRAndroidEnvironmentDepthExtensionWrapper.is_environment_depth_started():
-		if not OpenXRAndroidEnvironmentDepthExtensionWrapper.start_environment_depth():
+	if not OpenXRAndroidEnvironmentDepthExtension.is_environment_depth_started():
+		if not OpenXRAndroidEnvironmentDepthExtension.start_environment_depth():
 			viewport_2d_in_3d.get_scene_root().set_label_text("Error starting depth")
 			return
 
-	OpenXRAndroidEnvironmentDepthExtensionWrapper.set_smooth(depth_mode == DepthMode.SMOOTH)
+	OpenXRAndroidEnvironmentDepthExtension.set_smooth(depth_mode == DepthMode.SMOOTH)
 	viewport_2d_in_3d.get_scene_root().set_label_text("Smooth" if depth_mode == DepthMode.SMOOTH else "Not smooth")
 
 

@@ -94,22 +94,22 @@ func update(button_name: String) -> void:
 
 	match button_name:
 		"DisabledSupersampling":
-			settings_composition_layer.set("XR_FB_composition_layer_settings/manual/supersampling_mode", OpenXRFbCompositionLayerSettingsExtensionWrapper.SUPERSAMPLING_MODE_DISABLED)
+			settings_composition_layer.set("XR_FB_composition_layer_settings/manual/supersampling_mode", OpenXRFbCompositionLayerSettingsExtension.SUPERSAMPLING_MODE_DISABLED)
 			disabled_supersampling_mesh.get_surface_override_material(0).albedo_color = Color.GREEN
 		"NormalSupersampling":
-			settings_composition_layer.set("XR_FB_composition_layer_settings/manual/supersampling_mode", OpenXRFbCompositionLayerSettingsExtensionWrapper.SUPERSAMPLING_MODE_NORMAL)
+			settings_composition_layer.set("XR_FB_composition_layer_settings/manual/supersampling_mode", OpenXRFbCompositionLayerSettingsExtension.SUPERSAMPLING_MODE_NORMAL)
 			normal_supersampling_mesh.get_surface_override_material(0).albedo_color = Color.GREEN
 		"QualitySupersampling":
-			settings_composition_layer.set("XR_FB_composition_layer_settings/manual/supersampling_mode", OpenXRFbCompositionLayerSettingsExtensionWrapper.SUPERSAMPLING_MODE_QUALITY)
+			settings_composition_layer.set("XR_FB_composition_layer_settings/manual/supersampling_mode", OpenXRFbCompositionLayerSettingsExtension.SUPERSAMPLING_MODE_QUALITY)
 			quality_supersampling_mesh.get_surface_override_material(0).albedo_color = Color.GREEN
 		"DisabledSharpening":
-			settings_composition_layer.set("XR_FB_composition_layer_settings/manual/sharpening_mode", OpenXRFbCompositionLayerSettingsExtensionWrapper.SHARPENING_MODE_DISABLED)
+			settings_composition_layer.set("XR_FB_composition_layer_settings/manual/sharpening_mode", OpenXRFbCompositionLayerSettingsExtension.SHARPENING_MODE_DISABLED)
 			disabled_sharpening_mesh.get_surface_override_material(0).albedo_color = Color.GREEN
 		"NormalSharpening":
-			settings_composition_layer.set("XR_FB_composition_layer_settings/manual/sharpening_mode", OpenXRFbCompositionLayerSettingsExtensionWrapper.SHARPENING_MODE_NORMAL)
+			settings_composition_layer.set("XR_FB_composition_layer_settings/manual/sharpening_mode", OpenXRFbCompositionLayerSettingsExtension.SHARPENING_MODE_NORMAL)
 			normal_sharpening_mesh.get_surface_override_material(0).albedo_color = Color.GREEN
 		"QualitySharpening":
-			settings_composition_layer.set("XR_FB_composition_layer_settings/manual/sharpening_mode", OpenXRFbCompositionLayerSettingsExtensionWrapper.SHARPENING_MODE_QUALITY)
+			settings_composition_layer.set("XR_FB_composition_layer_settings/manual/sharpening_mode", OpenXRFbCompositionLayerSettingsExtension.SHARPENING_MODE_QUALITY)
 			quality_sharpening_mesh.get_surface_override_material(0).albedo_color = Color.GREEN
 		"DisplaySecureContent":
 			secure_content_composition_layer.set("XR_FB_composition_layer_secure_content/external_output", 0)

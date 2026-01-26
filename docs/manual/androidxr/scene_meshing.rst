@@ -31,12 +31,12 @@ Initialize Scene Meshing
 
 Once the needed permission is granted, Scene Meshing can be accessed with the :ref:`OpenXRAndroidSceneMeshing <class_openxrandroidscenemeshing>` object.
 Create a new instance of this object and call the :ref:`initialize <class_openxrandroidscenemeshing_method_initialize>` method.
-You can check if a semantic label set is supported with :ref:`get_supported_semantic_label_sets <class_openxrandroidscenemeshingextensionwrapper_method_get_supported_semantic_label_sets>`.
+You can check if a semantic label set is supported with :ref:`get_supported_semantic_label_sets <class_openxrandroidscenemeshingextension_method_get_supported_semantic_label_sets>`.
 :ref:`SEMANTIC_LABEL_SET_NONE <class_openxrandroidscenemeshing_constant_semantic_label_set_none>` is always supported.
 
 .. code-block:: gdscript
 
-    var scene_meshing_ext = Engine.get_singleton("OpenXRAndroidSceneMeshingExtensionWrapper")
+    var scene_meshing_ext = Engine.get_singleton("OpenXRAndroidSceneMeshingExtension")
     var supported_semantic_label_sets = scene_meshing_ext.get_supported_semantic_label_sets()
 
     var semantic_label_set = OpenXRAndroidSceneMeshing.SEMANTIC_LABEL_SET_NONE

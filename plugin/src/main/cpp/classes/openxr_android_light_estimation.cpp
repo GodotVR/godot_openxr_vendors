@@ -40,7 +40,7 @@
 #include <godot_cpp/classes/world_environment.hpp>
 #include <godot_cpp/classes/xr_server.hpp>
 
-#include "extensions/openxr_android_light_estimation_extension_wrapper.h"
+#include "extensions/openxr_android_light_estimation_extension.h"
 
 using namespace godot;
 
@@ -224,7 +224,7 @@ OpenXRAndroidLightEstimation::AmbientLightMode OpenXRAndroidLightEstimation::get
 }
 
 void OpenXRAndroidLightEstimation::start_or_stop() {
-	OpenXRAndroidLightEstimationExtensionWrapper *light_estimation_extension = OpenXRAndroidLightEstimationExtensionWrapper::get_singleton();
+	OpenXRAndroidLightEstimationExtension *light_estimation_extension = OpenXRAndroidLightEstimationExtension::get_singleton();
 	ERR_FAIL_NULL(light_estimation_extension);
 
 	Ref<OpenXRAPIExtension> openxr_api = light_estimation_extension->get_openxr_api();
@@ -250,20 +250,20 @@ void OpenXRAndroidLightEstimation::start_or_stop() {
 }
 
 void OpenXRAndroidLightEstimation::configure_light_estimate_types() {
-	OpenXRAndroidLightEstimationExtensionWrapper *light_estimation_extension = OpenXRAndroidLightEstimationExtensionWrapper::get_singleton();
+	OpenXRAndroidLightEstimationExtension *light_estimation_extension = OpenXRAndroidLightEstimationExtension::get_singleton();
 	ERR_FAIL_NULL(light_estimation_extension);
 
-	BitField<OpenXRAndroidLightEstimationExtensionWrapper::LightEstimateType> estimate_types = light_estimation_extension->get_light_estimate_types();
+	BitField<OpenXRAndroidLightEstimationExtension::LightEstimateType> estimate_types = light_estimation_extension->get_light_estimate_types();
 
 	if (get_directional_light() && directional_light_mode != DIRECTIONAL_LIGHT_MODE_DISABLED) {
-		estimate_types.set_flag(OpenXRAndroidLightEstimationExtensionWrapper::LIGHT_ESTIMATE_TYPE_DIRECTIONAL_LIGHT);
+		estimate_types.set_flag(OpenXRAndroidLightEstimationExtension::LIGHT_ESTIMATE_TYPE_DIRECTIONAL_LIGHT);
 	}
 
 	if (get_world_environment() && ambient_light_mode != AMBIENT_LIGHT_MODE_DISABLED) {
 		if (ambient_light_mode == AMBIENT_LIGHT_MODE_COLOR) {
-			estimate_types.set_flag(OpenXRAndroidLightEstimationExtensionWrapper::LIGHT_ESTIMATE_TYPE_AMBIENT);
+			estimate_types.set_flag(OpenXRAndroidLightEstimationExtension::LIGHT_ESTIMATE_TYPE_AMBIENT);
 		} else if (ambient_light_mode == AMBIENT_LIGHT_MODE_SPHERICAL_HARMONICS) {
-			estimate_types.set_flag(OpenXRAndroidLightEstimationExtensionWrapper::LIGHT_ESTIMATE_TYPE_SPHERICAL_HARMONICS_TOTAL);
+			estimate_types.set_flag(OpenXRAndroidLightEstimationExtension::LIGHT_ESTIMATE_TYPE_SPHERICAL_HARMONICS_TOTAL);
 		}
 	}
 
@@ -271,7 +271,7 @@ void OpenXRAndroidLightEstimation::configure_light_estimate_types() {
 }
 
 void OpenXRAndroidLightEstimation::update_light_estimate() {
-	OpenXRAndroidLightEstimationExtensionWrapper *light_estimation_extension = OpenXRAndroidLightEstimationExtensionWrapper::get_singleton();
+	OpenXRAndroidLightEstimationExtension *light_estimation_extension = OpenXRAndroidLightEstimationExtension::get_singleton();
 	ERR_FAIL_NULL(light_estimation_extension);
 
 	XRServer *xr_server = XRServer::get_singleton();

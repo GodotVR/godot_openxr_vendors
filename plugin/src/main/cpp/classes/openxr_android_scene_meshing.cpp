@@ -30,7 +30,7 @@
 
 #include "classes/openxr_android_scene_meshing.h"
 #include "classes/openxr_android_scene_submesh_data.h"
-#include "extensions/openxr_android_scene_meshing_extension_wrapper.h"
+#include "extensions/openxr_android_scene_meshing_extension.h"
 
 #include <godot_cpp/classes/open_xrapi_extension.hpp>
 #include <godot_cpp/core/error_macros.hpp>
@@ -41,7 +41,7 @@ using namespace godot;
 OpenXRAndroidSceneMeshing::OpenXRAndroidSceneMeshing() {}
 
 OpenXRAndroidSceneMeshing::~OpenXRAndroidSceneMeshing() {
-	OpenXRAndroidSceneMeshingExtensionWrapper *wrapper = OpenXRAndroidSceneMeshingExtensionWrapper::get_singleton();
+	OpenXRAndroidSceneMeshingExtension *wrapper = OpenXRAndroidSceneMeshingExtension::get_singleton();
 	if (wrapper != nullptr && tracker != XR_NULL_HANDLE) {
 		wrapper->xrDestroySceneMeshingTrackerANDROID(tracker);
 		tracker = XR_NULL_HANDLE;
@@ -49,8 +49,8 @@ OpenXRAndroidSceneMeshing::~OpenXRAndroidSceneMeshing() {
 }
 
 bool OpenXRAndroidSceneMeshing::initialize(SemanticLabelSet p_semantic_label_set, bool p_enable_normals) {
-	OpenXRAndroidSceneMeshingExtensionWrapper *wrapper = OpenXRAndroidSceneMeshingExtensionWrapper::get_singleton();
-	ERR_FAIL_NULL_V_MSG(wrapper, false, "Cannot create tracker data without an OpenXRAndroidSceneMeshingExtensionWrapper");
+	OpenXRAndroidSceneMeshingExtension *wrapper = OpenXRAndroidSceneMeshingExtension::get_singleton();
+	ERR_FAIL_NULL_V_MSG(wrapper, false, "Cannot create tracker data without an OpenXRAndroidSceneMeshingExtension");
 
 	if (tracker != XR_NULL_HANDLE) {
 		if (p_semantic_label_set == semantic_label_set && enable_normals == p_enable_normals) {
@@ -100,8 +100,8 @@ bool OpenXRAndroidSceneMeshing::are_normals_enabled() const {
 }
 
 Dictionary OpenXRAndroidSceneMeshing::get_submesh_data(const Transform3D &p_pose, const Vector3 &p_extents) {
-	OpenXRAndroidSceneMeshingExtensionWrapper *wrapper = OpenXRAndroidSceneMeshingExtensionWrapper::get_singleton();
-	ERR_FAIL_NULL_V_MSG(wrapper, Dictionary(), "Cannot get submesh data without an OpenXRAndroidSceneMeshingExtensionWrapper");
+	OpenXRAndroidSceneMeshingExtension *wrapper = OpenXRAndroidSceneMeshingExtension::get_singleton();
+	ERR_FAIL_NULL_V_MSG(wrapper, Dictionary(), "Cannot get submesh data without an OpenXRAndroidSceneMeshingExtension");
 
 	XrSceneMeshSnapshotANDROID snapshot = _create_snapshot(p_pose, p_extents);
 	if (snapshot == XR_NULL_HANDLE) {
@@ -171,8 +171,8 @@ void OpenXRAndroidSceneMeshing::_bind_methods() {
 }
 
 XrSceneMeshSnapshotANDROID OpenXRAndroidSceneMeshing::_create_snapshot(const Transform3D &p_pose, const Vector3 &p_extents) {
-	OpenXRAndroidSceneMeshingExtensionWrapper *wrapper = OpenXRAndroidSceneMeshingExtensionWrapper::get_singleton();
-	ERR_FAIL_NULL_V_MSG(wrapper, XR_NULL_HANDLE, "Cannot create snapshot without an OpenXRAndroidSceneMeshingExtensionWrapper");
+	OpenXRAndroidSceneMeshingExtension *wrapper = OpenXRAndroidSceneMeshingExtension::get_singleton();
+	ERR_FAIL_NULL_V_MSG(wrapper, XR_NULL_HANDLE, "Cannot create snapshot without an OpenXRAndroidSceneMeshingExtension");
 
 	Quaternion quat = p_pose.basis.get_quaternion();
 	XrSceneMeshSnapshotCreateInfoANDROID create_info{
@@ -206,8 +206,8 @@ XrSceneMeshSnapshotANDROID OpenXRAndroidSceneMeshing::_create_snapshot(const Tra
 
 LocalVector<XrSceneSubmeshStateANDROID> OpenXRAndroidSceneMeshing::_get_all_submesh_states(XrSceneMeshSnapshotANDROID snapshot) {
 	LocalVector<XrSceneSubmeshStateANDROID> ret;
-	OpenXRAndroidSceneMeshingExtensionWrapper *wrapper = OpenXRAndroidSceneMeshingExtensionWrapper::get_singleton();
-	ERR_FAIL_NULL_V_MSG(wrapper, ret, "Cannot create a snapshot without an OpenXRAndroidSceneMeshingExtensionWrapper");
+	OpenXRAndroidSceneMeshingExtension *wrapper = OpenXRAndroidSceneMeshingExtension::get_singleton();
+	ERR_FAIL_NULL_V_MSG(wrapper, ret, "Cannot create a snapshot without an OpenXRAndroidSceneMeshingExtension");
 
 	if (snapshot == XR_NULL_HANDLE) {
 		UtilityFunctions::printerr("OpenXR: Failed to get all submesh states; snapshot is null");
