@@ -42,7 +42,7 @@ class OpenXRFbCompositionLayerDepthTestExtensionWrapper : public OpenXRExtension
 	GDCLASS(OpenXRFbCompositionLayerDepthTestExtensionWrapper, OpenXRExtensionWrapperExtension);
 
 public:
-	Dictionary _get_requested_extensions() override;
+	Dictionary _get_requested_extensions(uint64_t p_xr_version) override;
 	virtual uint64_t _set_viewport_composition_layer_and_get_next_pointer(const void *p_layer, const Dictionary &p_property_values, void *p_next_pointer) override;
 	virtual TypedArray<Dictionary> _get_viewport_composition_layer_extension_properties() override;
 	virtual Dictionary _get_viewport_composition_layer_extension_property_defaults() override;
