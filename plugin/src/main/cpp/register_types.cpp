@@ -586,10 +586,10 @@ void add_plugin_project_settings() {
 	{
 		String starting_color_space = "xr/openxr/extensions/meta/color_space/starting_color_space";
 		if (!project_settings->has_setting(starting_color_space)) {
-			project_settings->set_setting(starting_color_space, 0);
+			project_settings->set_setting(starting_color_space, 3);
 		}
 
-		project_settings->set_initial_value(starting_color_space, 0);
+		project_settings->set_initial_value(starting_color_space, 3);
 		project_settings->set_as_basic(starting_color_space, false);
 		Dictionary property_info;
 		property_info["name"] = starting_color_space;
