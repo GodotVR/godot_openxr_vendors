@@ -126,23 +126,28 @@ void fragment() {
 		discard;
 	}
 	highp vec4 clip_back = vec4(reprojected.xy, depth * 2.0 - 1.0, 1.0);
+	clip_back = depth_to_camera_proj * clip_back;
+
 #ifdef USE_DEPTH_OFFSET_SCALE
 #ifdef USE_DEPTH_OFFSET_EXPONENT
 	highp float z_adjustment = pow(abs(clip_back.w), depth_offset_exponent) * depth_offset_scale;
 #else
 	highp float z_adjustment = abs(clip_back.w) * depth_offset_scale;
 #endif // USE_DEPTH_OFFSET_EXPONENT
-	clip_back.z += PROJECTION_MATRIX[2][2] * z_adjustment;
+#if CURRENT_RENDERER != RENDERER_COMPATIBILITY
+	z_adjustment *= -1.0;
+#endif
+	clip_back.z = clamp(clip_back.z + z_adjustment, -clip_back.w, clip_back.w);
 #endif // USE_DEPTH_OFFSET_SCALE
-	clip_back = depth_to_camera_proj * clip_back;
+
 	highp float camera_ndc_z = clip_back.z / clip_back.w;
 #if CURRENT_RENDERER == RENDERER_COMPATIBILITY
-	highp float camera_depth = camera_ndc_z * 0.5 + 0.5;
+	highp float camera_depth = 1.0 - (camera_ndc_z * 0.5 + 0.5);
 #else
 	highp float camera_depth = camera_ndc_z;
 #endif
 	ALBEDO = vec3(0.0, 0.0, 0.0);
-	DEPTH = 1.0 - camera_depth;
+	DEPTH = camera_depth;
 }
 )";
 
