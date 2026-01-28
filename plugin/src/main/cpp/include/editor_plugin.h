@@ -32,6 +32,8 @@
 #include <godot_cpp/classes/editor_export_plugin.hpp>
 #include <godot_cpp/classes/editor_plugin.hpp>
 
+#include "editor_debugger_plugin.h"
+
 using namespace godot;
 class XrProjectSetupDialog;
 
@@ -45,6 +47,7 @@ class OpenXRVendorsEditorPlugin : public EditorPlugin {
 	static OpenXRVendorsEditorPlugin *singleton;
 
 	Vector<Ref<EditorExportPlugin>> export_plugins;
+	Ref<OpenXRVendorsEditorDebuggerPlugin> debugger_plugin;
 
 	XrProjectSetupDialog *_xr_project_setup_dialog = nullptr;
 
@@ -66,6 +69,8 @@ public:
 	void open_project_settings(const String &p_filter_string);
 
 	void open_export_dialog();
+
+	PackedStringArray _run_scene(const String &p_scene, const PackedStringArray &p_args) const override;
 
 	OpenXRVendorsEditorPlugin();
 	~OpenXRVendorsEditorPlugin();
