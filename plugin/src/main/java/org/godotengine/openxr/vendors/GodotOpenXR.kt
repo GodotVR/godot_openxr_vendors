@@ -58,9 +58,6 @@ class GodotOpenXR(godot: Godot?) : GodotPlugin(godot) {
 
 		init {
 			try {
-				Log.v(TAG, "Loading openxr_loader library")
-				System.loadLibrary("openxr_loader")
-
 				Log.v(TAG, "Loading godotopenxrvendors library")
 				System.loadLibrary("godotopenxrvendors")
 			} catch (e: UnsatisfiedLinkError) {
