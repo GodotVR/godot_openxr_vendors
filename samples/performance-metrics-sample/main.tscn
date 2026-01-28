@@ -1,14 +1,14 @@
-[gd_scene load_steps=3 format=3 uid="uid://debi32dnmrjov"]
+[gd_scene format=3 uid="uid://debi32dnmrjov"]
 
 [ext_resource type="Script" uid="uid://dp6ptkh37xo8s" path="res://main.gd" id="1_0xm2m"]
 [ext_resource type="Script" uid="uid://dx7x4o6fxqf5i" path="res://addons/common/hud/hud.gd" id="2_h2yge"]
 
-[node name="Main" type="Node3D"]
+[node name="Main" type="Node3D" unique_id=524436898]
 script = ExtResource("1_0xm2m")
 
-[node name="XROrigin3D" type="XROrigin3D" parent="."]
+[node name="XROrigin3D" type="XROrigin3D" parent="." unique_id=441067014]
 
-[node name="XRCamera3D" type="XRCamera3D" parent="XROrigin3D"]
+[node name="XRCamera3D" type="XRCamera3D" parent="XROrigin3D" unique_id=1971086539]
 
-[node name="Hud" type="Label3D" parent="XROrigin3D"]
+[node name="Hud" type="Label3D" parent="XROrigin3D" unique_id=447247057]
 script = ExtResource("2_h2yge")

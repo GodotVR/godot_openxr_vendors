@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://x07cf480vboe"]
+[gd_scene format=3 uid="uid://x07cf480vboe"]
 
 [ext_resource type="Script" uid="uid://ceeldg46vn411" path="res://menu.gd" id="1_lti8b"]
 
@@ -6,7 +6,7 @@
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_ouk20"]
 
-[node name="Menu" type="Control"]
+[node name="Menu" type="Control" unique_id=1926845626]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -15,7 +15,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_lti8b")
 
-[node name="ColorRect" type="ColorRect" parent="."]
+[node name="ColorRect" type="ColorRect" parent="." unique_id=107778702]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -24,7 +24,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.6039216)
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=500585574]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -36,76 +36,76 @@ theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 20
 
-[node name="GridContainer" type="GridContainer" parent="MarginContainer"]
+[node name="GridContainer" type="GridContainer" parent="MarginContainer" unique_id=471195860]
 layout_mode = 2
 theme_override_constants/v_separation = 40
 columns = 2
 
-[node name="DirectionalLightLabel" type="Label" parent="MarginContainer/GridContainer"]
+[node name="DirectionalLightLabel" type="Label" parent="MarginContainer/GridContainer" unique_id=1158714417]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
 text = "Directional Light Mode"
 
-[node name="DirectionalLightContainer" type="VBoxContainer" parent="MarginContainer/GridContainer"]
+[node name="DirectionalLightContainer" type="VBoxContainer" parent="MarginContainer/GridContainer" unique_id=1943458721]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="DirectionLightDisabledButton" type="Button" parent="MarginContainer/GridContainer/DirectionalLightContainer"]
+[node name="DirectionLightDisabledButton" type="Button" parent="MarginContainer/GridContainer/DirectionalLightContainer" unique_id=1477669398]
 layout_mode = 2
 toggle_mode = true
 button_group = SubResource("ButtonGroup_lti8b")
 text = "Disabled"
 
-[node name="DirectionLightDirectionButton" type="Button" parent="MarginContainer/GridContainer/DirectionalLightContainer"]
+[node name="DirectionLightDirectionButton" type="Button" parent="MarginContainer/GridContainer/DirectionalLightContainer" unique_id=581780748]
 layout_mode = 2
 toggle_mode = true
 button_group = SubResource("ButtonGroup_lti8b")
 text = "Direction Only"
 
-[node name="DirectionLightDirectionIntensityButton" type="Button" parent="MarginContainer/GridContainer/DirectionalLightContainer"]
+[node name="DirectionLightDirectionIntensityButton" type="Button" parent="MarginContainer/GridContainer/DirectionalLightContainer" unique_id=1447495139]
 layout_mode = 2
 toggle_mode = true
 button_pressed = true
 button_group = SubResource("ButtonGroup_lti8b")
 text = "Direction + Intensity"
 
-[node name="DirectionLightDirectionIntensityColorButton" type="Button" parent="MarginContainer/GridContainer/DirectionalLightContainer"]
+[node name="DirectionLightDirectionIntensityColorButton" type="Button" parent="MarginContainer/GridContainer/DirectionalLightContainer" unique_id=1857810592]
 layout_mode = 2
 toggle_mode = true
 button_group = SubResource("ButtonGroup_lti8b")
 text = "Direction + Intensity + Color"
 
-[node name="AmbientLightLabel" type="Label" parent="MarginContainer/GridContainer"]
+[node name="AmbientLightLabel" type="Label" parent="MarginContainer/GridContainer" unique_id=750494367]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
 text = "Ambient Light"
 
-[node name="AmbientLightContainer" type="VBoxContainer" parent="MarginContainer/GridContainer"]
+[node name="AmbientLightContainer" type="VBoxContainer" parent="MarginContainer/GridContainer" unique_id=1952467246]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="AmbientLightDisabledButton" type="Button" parent="MarginContainer/GridContainer/AmbientLightContainer"]
+[node name="AmbientLightDisabledButton" type="Button" parent="MarginContainer/GridContainer/AmbientLightContainer" unique_id=1234980636]
 layout_mode = 2
 toggle_mode = true
 button_group = SubResource("ButtonGroup_ouk20")
 text = "Disabled"
 
-[node name="AmbientLightColorButton" type="Button" parent="MarginContainer/GridContainer/AmbientLightContainer"]
+[node name="AmbientLightColorButton" type="Button" parent="MarginContainer/GridContainer/AmbientLightContainer" unique_id=1465106303]
 layout_mode = 2
 toggle_mode = true
 button_group = SubResource("ButtonGroup_ouk20")
 text = "Color"
 
-[node name="AmbientLightSphericalHarmonicsButton" type="Button" parent="MarginContainer/GridContainer/AmbientLightContainer"]
+[node name="AmbientLightSphericalHarmonicsButton" type="Button" parent="MarginContainer/GridContainer/AmbientLightContainer" unique_id=1562256375]
 layout_mode = 2
 toggle_mode = true
 button_pressed = true
 button_group = SubResource("ButtonGroup_ouk20")
 text = "Spherical Harmonics"
 
-[node name="AmbientLightCustomShaderButton" type="Button" parent="MarginContainer/GridContainer/AmbientLightContainer"]
+[node name="AmbientLightCustomShaderButton" type="Button" parent="MarginContainer/GridContainer/AmbientLightContainer" unique_id=1178196541]
 layout_mode = 2
 toggle_mode = true
 button_group = SubResource("ButtonGroup_ouk20")

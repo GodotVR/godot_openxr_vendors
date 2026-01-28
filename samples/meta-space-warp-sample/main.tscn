@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://cqsodpswgup8w"]
+[gd_scene format=3 uid="uid://cqsodpswgup8w"]
 
 [ext_resource type="Script" uid="uid://cxxy74r3njgxw" path="res://main.gd" id="1_fsva1"]
 [ext_resource type="Script" uid="uid://w3jfhbcsh0bl" path="res://multi_mesh_move.gd" id="3_h2yge"]
@@ -85,46 +85,46 @@ uv1_triplanar = true
 material = SubResource("StandardMaterial3D_272bh")
 size = Vector2(8, 6)
 
-[node name="Main" type="Node3D"]
+[node name="Main" type="Node3D" unique_id=848029958]
 script = ExtResource("1_fsva1")
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1201909668]
 environment = SubResource("Environment_m0xew")
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=368108714]
 transform = Transform3D(0.677077, -0.692092, 0.25015, 0.264251, 0.545897, 0.79509, -0.686831, -0.472235, 0.552501, 0, 0, 0)
 
-[node name="XROrigin3D" type="XROrigin3D" parent="."]
+[node name="XROrigin3D" type="XROrigin3D" parent="." unique_id=128443680]
 
-[node name="XRCamera3D" type="XRCamera3D" parent="XROrigin3D"]
+[node name="XRCamera3D" type="XRCamera3D" parent="XROrigin3D" unique_id=1227117909]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.352791, 0)
 
-[node name="LeftHand" type="XRController3D" parent="XROrigin3D"]
+[node name="LeftHand" type="XRController3D" parent="XROrigin3D" unique_id=315425985]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.460909, 0.388594, -0.241118)
 tracker = &"left_hand"
 pose = &"grip"
 
-[node name="LeftControllerFbRenderModel" type="OpenXRFbRenderModel" parent="XROrigin3D/LeftHand"]
+[node name="LeftControllerFbRenderModel" type="OpenXRFbRenderModel" parent="XROrigin3D/LeftHand" unique_id=118268137]
 
-[node name="Label3D" type="Label3D" parent="XROrigin3D/LeftHand"]
+[node name="Label3D" type="Label3D" parent="XROrigin3D/LeftHand" unique_id=311675688]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, -0.124, -0.186)
 pixel_size = 0.001
 text = "[Analog Stick] Move"
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/LeftHand/Label3D"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/LeftHand/Label3D" unique_id=1861579649]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.0012819469)
 mesh = SubResource("PlaneMesh_lquwl")
 surface_material_override/0 = SubResource("StandardMaterial3D_7mycd")
 
-[node name="RightHand" type="XRController3D" parent="XROrigin3D"]
+[node name="RightHand" type="XRController3D" parent="XROrigin3D" unique_id=206418852]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.478861, 0.468292, -0.241097)
 tracker = &"right_hand"
 pose = &"grip"
 
-[node name="RightControllerFbRenderModel" type="OpenXRFbRenderModel" parent="XROrigin3D/RightHand"]
+[node name="RightControllerFbRenderModel" type="OpenXRFbRenderModel" parent="XROrigin3D/RightHand" unique_id=1706112716]
 render_model_type = 1
 
-[node name="Label3D" type="Label3D" parent="XROrigin3D/RightHand"]
+[node name="Label3D" type="Label3D" parent="XROrigin3D/RightHand" unique_id=1246221866]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, -0.124, -0.186)
 pixel_size = 0.001
 text = "Turn Mode: SMOOTH
@@ -134,35 +134,35 @@ Space Warp: ENABLED
 [A] Enable/Disable Space Warp
 [Analog Stick] Turn"
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/RightHand/Label3D"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/RightHand/Label3D" unique_id=1888290440]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.0012819469)
 mesh = SubResource("PlaneMesh_272bh")
 surface_material_override/0 = SubResource("StandardMaterial3D_7mycd")
 
-[node name="TurnTimer" type="Timer" parent="XROrigin3D"]
+[node name="TurnTimer" type="Timer" parent="XROrigin3D" unique_id=666520163]
 wait_time = 0.2
 one_shot = true
 
-[node name="Floor" type="MeshInstance3D" parent="."]
+[node name="Floor" type="MeshInstance3D" parent="." unique_id=377274905]
 mesh = SubResource("PlaneMesh_mjcgt")
 
-[node name="FloorCollider" type="Area3D" parent="Floor"]
+[node name="FloorCollider" type="Area3D" parent="Floor" unique_id=452890890]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor/FloorCollider"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor/FloorCollider" unique_id=1124107089]
 shape = SubResource("BoxShape3D_lquwl")
 
-[node name="GPUParticles3D" type="GPUParticles3D" parent="."]
+[node name="GPUParticles3D" type="GPUParticles3D" parent="." unique_id=1113715080]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08746, 1, -4)
 amount = 2
 process_material = SubResource("ParticleProcessMaterial_yvvw4")
 draw_pass_1 = SubResource("BoxMesh_t5jnj")
 
-[node name="Label3D" type="Label3D" parent="GPUParticles3D"]
+[node name="Label3D" type="Label3D" parent="GPUParticles3D" unique_id=1662747929]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.08746, 0, 0)
 text = "GPU
 Particles"
 
-[node name="CPUParticles3D" type="CPUParticles3D" parent="."]
+[node name="CPUParticles3D" type="CPUParticles3D" parent="." unique_id=350056916]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 2.21267, -4)
 amount = 2
 mesh = SubResource("BoxMesh_0xm2m")
@@ -171,32 +171,32 @@ gravity = Vector3(0, 0, 0)
 initial_velocity_min = 3.0
 initial_velocity_max = 3.0
 
-[node name="Label3D" type="Label3D" parent="CPUParticles3D"]
+[node name="Label3D" type="Label3D" parent="CPUParticles3D" unique_id=644938845]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 0)
 text = "CPU
 Particles"
 
-[node name="MultiMeshInstance3D" type="MultiMeshInstance3D" parent="."]
+[node name="MultiMeshInstance3D" type="MultiMeshInstance3D" parent="." unique_id=156612829]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.40488, -4)
 multimesh = SubResource("MultiMesh_1bvp3")
 script = ExtResource("3_h2yge")
 
-[node name="Label3D" type="Label3D" parent="MultiMeshInstance3D"]
+[node name="Label3D" type="Label3D" parent="MultiMeshInstance3D" unique_id=80658970]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 0)
 text = "MultiMesh"
 
-[node name="GPUParticles3D2" type="GPUParticles3D" parent="."]
+[node name="GPUParticles3D2" type="GPUParticles3D" parent="." unique_id=1445290052]
 transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 4, 2, -2.99679)
 amount = 2
 process_material = SubResource("ParticleProcessMaterial_lquwl")
 draw_pass_1 = SubResource("BoxMesh_t5jnj")
 
-[node name="Label3D" type="Label3D" parent="GPUParticles3D2"]
+[node name="Label3D" type="Label3D" parent="GPUParticles3D2" unique_id=171801063]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.96046e-08, -1, 0)
 text = "GPU
 Particles"
 
-[node name="CPUParticles3D2" type="CPUParticles3D" parent="."]
+[node name="CPUParticles3D2" type="CPUParticles3D" parent="." unique_id=1359777901]
 transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 4, 5.15442, -1.19841)
 amount = 2
 mesh = SubResource("BoxMesh_0xm2m")
@@ -206,53 +206,53 @@ gravity = Vector3(0, 0, 0)
 initial_velocity_min = 3.0
 initial_velocity_max = 3.0
 
-[node name="Label3D" type="Label3D" parent="CPUParticles3D2"]
+[node name="Label3D" type="Label3D" parent="CPUParticles3D2" unique_id=1446886565]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.1477, 0)
 text = "CPU
 Particles"
 
-[node name="MultiMeshInstance3D2" type="MultiMeshInstance3D" parent="."]
+[node name="MultiMeshInstance3D2" type="MultiMeshInstance3D" parent="." unique_id=316709014]
 transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 4, 2.9845, 0.891652)
 multimesh = SubResource("MultiMesh_lquwl")
 script = ExtResource("3_h2yge")
 direction = Vector3(0, 1, 0)
 
-[node name="Label3D" type="Label3D" parent="MultiMeshInstance3D2"]
+[node name="Label3D" type="Label3D" parent="MultiMeshInstance3D2" unique_id=681295175]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, 0)
 text = "MultiMesh"
 
-[node name="BoneCube" parent="." instance=ExtResource("4_1bvp3")]
+[node name="BoneCube" parent="." unique_id=1126639640 instance=ExtResource("4_1bvp3")]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -4, 1, -1)
 
-[node name="Label3D" type="Label3D" parent="BoneCube"]
+[node name="Label3D" type="Label3D" parent="BoneCube" unique_id=1843775089]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.52612, 0, 0)
 text = "Skeleton"
 
-[node name="MovingCube" type="Node3D" parent="."]
+[node name="MovingCube" type="Node3D" parent="." unique_id=1367498056]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 3.399, -1)
 
-[node name="MovingCube" type="MeshInstance3D" parent="MovingCube"]
+[node name="MovingCube" type="MeshInstance3D" parent="MovingCube" unique_id=801079923]
 mesh = SubResource("BoxMesh_7mycd")
 skeleton = NodePath("../..")
 script = ExtResource("5_lquwl")
 
-[node name="Label3D" type="Label3D" parent="MovingCube"]
+[node name="Label3D" type="Label3D" parent="MovingCube" unique_id=901781158]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0.000349998, 2)
 text = "Mesh"
 
-[node name="GrassTextures" type="Node3D" parent="."]
+[node name="GrassTextures" type="Node3D" parent="." unique_id=852727057]
 
-[node name="GrassTexture" type="MeshInstance3D" parent="GrassTextures"]
+[node name="GrassTexture" type="MeshInstance3D" parent="GrassTextures" unique_id=1008015932]
 transform = Transform3D(-4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, -5, 2, -1)
 mesh = SubResource("PlaneMesh_5vw27")
 skeleton = NodePath("../..")
 
-[node name="GrassTexture2" type="MeshInstance3D" parent="GrassTextures"]
+[node name="GrassTexture2" type="MeshInstance3D" parent="GrassTextures" unique_id=1655916772]
 transform = Transform3D(1.91069e-15, -4.37114e-08, -1, -1, -4.37114e-08, 0, -4.37114e-08, 1, -4.37114e-08, 0, 2, -5)
 mesh = SubResource("PlaneMesh_5vw27")
 skeleton = NodePath("../..")
 
-[node name="GrassTexture3" type="MeshInstance3D" parent="GrassTextures"]
+[node name="GrassTexture3" type="MeshInstance3D" parent="GrassTextures" unique_id=330019855]
 transform = Transform3D(4.37114e-08, -1, 8.74228e-08, -1, -4.37114e-08, 0, 3.82138e-15, -8.74228e-08, -1, 5, 2, -0.996788)
 mesh = SubResource("PlaneMesh_5vw27")
 skeleton = NodePath("../..")

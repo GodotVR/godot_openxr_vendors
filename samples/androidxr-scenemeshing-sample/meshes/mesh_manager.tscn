@@ -1,11 +1,11 @@
-[gd_scene load_steps=2 format=3 uid="uid://4xtek5r6bs74"]
+[gd_scene format=3 uid="uid://4xtek5r6bs74"]
 
 [ext_resource type="Script" uid="uid://cf7e700pje3wd" path="res://meshes/mesh_manager.gd" id="1_6cykt"]
 
-[node name="Meshes" type="Node3D"]
+[node name="Meshes" type="Node3D" unique_id=1563062233]
 script = ExtResource("1_6cykt")
 
-[node name="MeshUpdateTimer" type="Timer" parent="."]
+[node name="MeshUpdateTimer" type="Timer" parent="." unique_id=1028911943]
 autostart = true
 
 [connection signal="timeout" from="MeshUpdateTimer" to="." method="_on_mesh_update_timer_timeout"]

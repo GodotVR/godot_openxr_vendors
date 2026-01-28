@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://cqs8c3rq6cxvk"]
+[gd_scene format=3 uid="uid://cqs8c3rq6cxvk"]
 
 [ext_resource type="Script" uid="uid://qe5cwrdl7ri2" path="res://addons/common/viewport_2d_in_3d/function_pointer.gd" id="1_pjipa"]
 
@@ -15,13 +15,13 @@ disable_receive_shadows = true
 resource_local_to_scene = true
 size = Vector3(0.005, 0.005, 5)
 
-[node name="FunctionPointer" type="Node3D" groups=["function_pointer"]]
+[node name="FunctionPointer" type="Node3D" unique_id=1169027838 groups=["function_pointer"]]
 script = ExtResource("1_pjipa")
 select_action = "trigger"
 released_material = SubResource("StandardMaterial3D_pjipa")
 pressed_material = SubResource("StandardMaterial3D_g1l7f")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1118912918]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2.57)
 mesh = SubResource("BoxMesh_6h6mo")

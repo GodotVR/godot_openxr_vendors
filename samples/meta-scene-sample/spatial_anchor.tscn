@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://dsfd7xrm6o50p"]
+[gd_scene format=3 uid="uid://dsfd7xrm6o50p"]
 
 [ext_resource type="Script" uid="uid://cx4le35kmk2n2" path="res://spatial_anchor.gd" id="1_dengx"]
 
@@ -15,16 +15,16 @@ albedo_color = Color(0, 0, 1, 1)
 height = 0.2
 radius = 0.1
 
-[node name="SpatialAnchor" type="Area3D"]
+[node name="SpatialAnchor" type="Area3D" unique_id=1870424341]
 collision_layer = 4
 collision_mask = 0
 script = ExtResource("1_dengx")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=988292167]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, -0.1)
 mesh = SubResource("CylinderMesh_gayi3")
 surface_material_override/0 = SubResource("StandardMaterial3D_bat7g")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1129949495]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, -0.1)
 shape = SubResource("CylinderShape3D_d2ows")

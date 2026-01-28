@@ -12,7 +12,7 @@ config_version=5
 
 config/name="MagicLeap Marker Understanding Sample"
 run/main_scene="uid://5e17d4y7whio"
-config/features=PackedStringArray("4.5", "Mobile")
+config/features=PackedStringArray("4.6", "Mobile")
 config/icon="res://icon.svg"
 
 [display]

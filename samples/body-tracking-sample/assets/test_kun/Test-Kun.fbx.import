@@ -15,9 +15,11 @@ dest_files=["res://.godot/imported/Test-Kun.fbx-a417f9c6392805af5f5882b5d3c7854c
 
 nodes/root_type=""
 nodes/root_name=""
+nodes/root_script=null
 nodes/apply_root_scale=true
 nodes/root_scale=1.0
 nodes/import_as_skeleton_bones=false
+nodes/use_name_suffixes=true
 nodes/use_node_type_suffixes=true
 meshes/ensure_tangents=true
 meshes/generate_lods=true
@@ -32,75 +34,95 @@ animation/trimming=false
 animation/remove_immutable_tracks=true
 animation/import_rest_as_RESET=false
 import_script/path=""
+materials/extract=0
+materials/extract_format=0
+materials/extract_path=""
 _subresources={
 "materials": {
 "Body": {
 "use_external/enabled": true,
-"use_external/path": "res://assets/test_kun/Tex/Body.tres"
+"use_external/fallback_path": "res://assets/test_kun/Tex/Body.tres",
+"use_external/path": "uid://dn2ww6vxus33q"
 },
 "EyeIris": {
 "use_external/enabled": true,
-"use_external/path": "res://assets/test_kun/Tex/EyeIris.tres"
+"use_external/fallback_path": "res://assets/test_kun/Tex/EyeIris.tres",
+"use_external/path": "uid://xheqgvyibr6g"
 },
 "EyeSockets": {
 "use_external/enabled": true,
-"use_external/path": "res://assets/test_kun/Tex/EyeSockets.tres"
+"use_external/fallback_path": "res://assets/test_kun/Tex/EyeSockets.tres",
+"use_external/path": "uid://plwy4sw7bylu"
 },
 "Eyebrows": {
 "use_external/enabled": true,
-"use_external/path": "res://assets/test_kun/Tex/Eyebrows.tres"
+"use_external/fallback_path": "res://assets/test_kun/Tex/Eyebrows.tres",
+"use_external/path": "uid://bxpkb1wvl3kfv"
 },
 "Eyelashes": {
 "use_external/enabled": true,
-"use_external/path": "res://assets/test_kun/Tex/Eyelashes.tres"
+"use_external/fallback_path": "res://assets/test_kun/Tex/Eyelashes.tres",
+"use_external/path": "uid://dgu0tgyd2cx8d"
 },
 "Eyelines": {
 "use_external/enabled": true,
-"use_external/path": "res://assets/test_kun/Tex/Eyelines.tres"
+"use_external/fallback_path": "res://assets/test_kun/Tex/Eyelines.tres",
+"use_external/path": "uid://dohkntr3ve3ts"
 },
 "Face": {
 "use_external/enabled": true,
-"use_external/path": "res://assets/test_kun/Tex/Face.tres"
+"use_external/fallback_path": "res://assets/test_kun/Tex/Face.tres",
+"use_external/path": "uid://breke8de8plhh"
 },
 "Glasses": {
 "use_external/enabled": true,
-"use_external/path": "res://assets/test_kun/Tex/Glasses.tres"
+"use_external/fallback_path": "res://assets/test_kun/Tex/Glasses.tres",
+"use_external/path": "uid://u32h1hoe5llu"
 },
 "GlassesLenses": {
 "use_external/enabled": true,
-"use_external/path": "res://assets/test_kun/Tex/GlassesLenses.tres"
+"use_external/fallback_path": "res://assets/test_kun/Tex/GlassesLenses.tres",
+"use_external/path": "uid://qht1oxpujx2d"
 },
 "Hair": {
 "use_external/enabled": true,
-"use_external/path": "res://assets/test_kun/Tex/Hair.tres"
+"use_external/fallback_path": "res://assets/test_kun/Tex/Hair.tres",
+"use_external/path": "uid://8yl3fpkwuucv"
 },
 "HairBack": {
 "use_external/enabled": true,
-"use_external/path": "res://assets/test_kun/Tex/HairBack.tres"
+"use_external/fallback_path": "res://assets/test_kun/Tex/HairBack.tres",
+"use_external/path": "uid://18u26xojnkdf"
 },
 "Highlights": {
 "use_external/enabled": true,
-"use_external/path": "res://assets/test_kun/Tex/Highlights.tres"
+"use_external/fallback_path": "res://assets/test_kun/Tex/Highlights.tres",
+"use_external/path": "uid://2kgovb2ulacb"
 },
 "Mouth": {
 "use_external/enabled": true,
-"use_external/path": "res://assets/test_kun/Tex/Mouth.tres"
+"use_external/fallback_path": "res://assets/test_kun/Tex/Mouth.tres",
+"use_external/path": "uid://20rmivnel20m"
 },
 "NeckTie": {
 "use_external/enabled": true,
-"use_external/path": "res://assets/test_kun/Tex/NeckTie.tres"
+"use_external/fallback_path": "res://assets/test_kun/Tex/NeckTie.tres",
+"use_external/path": "uid://d343gssuykm7t"
 },
 "Pants": {
 "use_external/enabled": true,
-"use_external/path": "res://assets/test_kun/Tex/Pants.tres"
+"use_external/fallback_path": "res://assets/test_kun/Tex/Pants.tres",
+"use_external/path": "uid://b0pc856lpw18k"
 },
 "Shirt": {
 "use_external/enabled": true,
-"use_external/path": "res://assets/test_kun/Tex/Shirt.tres"
+"use_external/fallback_path": "res://assets/test_kun/Tex/Shirt.tres",
+"use_external/path": "uid://8kq6cmqfonps"
 },
 "Shoes": {
 "use_external/enabled": true,
-"use_external/path": "res://assets/test_kun/Tex/Shoes.tres"
+"use_external/fallback_path": "res://assets/test_kun/Tex/Shoes.tres",
+"use_external/path": "uid://c1xgw31tt1um1"
 }
 },
 "nodes": {
@@ -114,3 +136,4 @@ _subresources={
 fbx/importer=0
 fbx/allow_geometry_helper_nodes=false
 fbx/embedded_image_handling=1
+fbx/naming_version=2

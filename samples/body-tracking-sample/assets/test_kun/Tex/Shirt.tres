@@ -1,4 +1,4 @@
-[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://8kq6cmqfonps"]
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://8kq6cmqfonps"]
 
 [ext_resource type="Texture2D" uid="uid://q13opucrmw1f" path="res://assets/test_kun/Tex/Shirt.png" id="1_d7k3u"]
 

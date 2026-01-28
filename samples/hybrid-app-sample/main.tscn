@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://c0ol8en13wpk3"]
+[gd_scene format=3 uid="uid://c0ol8en13wpk3"]
 
 [ext_resource type="Script" uid="uid://cxttlef5wanms" path="res://main.gd" id="1_0xm2m"]
 [ext_resource type="PackedScene" uid="uid://b8a73fckkvdxx" path="res://assets/gltf/turkey.glb" id="2_lrsmu"]
@@ -21,52 +21,52 @@ size = Vector3(0.01, 0.01, 0.5)
 shading_mode = 0
 albedo_color = Color(1, 0, 0, 1)
 
-[node name="Main" type="Node3D"]
+[node name="Main" type="Node3D" unique_id=552623366]
 script = ExtResource("1_0xm2m")
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1524414619]
 environment = SubResource("Environment_jc7i8")
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1519117900]
 transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
 
-[node name="DirectionalLight3D2" type="DirectionalLight3D" parent="."]
+[node name="DirectionalLight3D2" type="DirectionalLight3D" parent="." unique_id=3771682]
 transform = Transform3D(-0.866025, -0.433013, 0.250001, -0.12941, -0.288849, -0.948588, 0.482963, -0.853854, 0.194114, 0, 0, 0)
 
-[node name="Turkey" parent="." instance=ExtResource("2_lrsmu")]
+[node name="Turkey" parent="." unique_id=683971981 instance=ExtResource("2_lrsmu")]
 unique_name_in_owner = true
 transform = Transform3D(0.7, 0, 0, 0, 0.7, 0, 0, 0, 0.7, 0, 0.5, -0.7)
 
-[node name="XROrigin3D" type="XROrigin3D" parent="."]
+[node name="XROrigin3D" type="XROrigin3D" parent="." unique_id=155989517]
 
-[node name="LeftController" type="XRController3D" parent="XROrigin3D"]
+[node name="LeftController" type="XRController3D" parent="XROrigin3D" unique_id=1555462278]
 tracker = &"left_hand"
 pose = &"grip"
 
-[node name="LeftControllerRenderModel" type="OpenXRFbRenderModel" parent="XROrigin3D/LeftController"]
+[node name="LeftControllerRenderModel" type="OpenXRFbRenderModel" parent="XROrigin3D/LeftController" unique_id=940843108]
 
-[node name="RightController" type="XRController3D" parent="XROrigin3D"]
+[node name="RightController" type="XRController3D" parent="XROrigin3D" unique_id=2097939895]
 tracker = &"right_hand"
 pose = &"grip"
 
-[node name="RightControllerRenderModel" type="OpenXRFbRenderModel" parent="XROrigin3D/RightController"]
+[node name="RightControllerRenderModel" type="OpenXRFbRenderModel" parent="XROrigin3D/RightController" unique_id=1420001686]
 render_model_type = 1
 
-[node name="PanelSwitcherMarker" type="Marker3D" parent="XROrigin3D"]
+[node name="PanelSwitcherMarker" type="Marker3D" parent="XROrigin3D" unique_id=871527777]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2779, -1.2729)
 
-[node name="RightControllerPointer" type="XRController3D" parent="XROrigin3D"]
+[node name="RightControllerPointer" type="XRController3D" parent="XROrigin3D" unique_id=685333772]
 unique_name_in_owner = true
 tracker = &"right_hand"
 pose = &"aim"
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/RightControllerPointer"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/RightControllerPointer" unique_id=1354330472]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.25)
 mesh = SubResource("BoxMesh_h2yge")
 surface_material_override/0 = SubResource("StandardMaterial3D_1bvp3")
 
-[node name="XRCamera3D" type="XRCamera3D" parent="XROrigin3D"]
+[node name="XRCamera3D" type="XRCamera3D" parent="XROrigin3D" unique_id=382745155]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.655479, 0)
 current = true
 

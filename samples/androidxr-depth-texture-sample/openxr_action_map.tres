@@ -1,4 +1,4 @@
-[gd_resource type="OpenXRActionMap" load_steps=19 format=3 uid="uid://ds7smlsjad5qh"]
+[gd_resource type="OpenXRActionMap" format=3 uid="uid://ds7smlsjad5qh"]
 
 [sub_resource type="OpenXRAction" id="OpenXRAction_6ivru"]
 resource_name = "default_pose"

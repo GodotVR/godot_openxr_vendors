@@ -1,6 +1,6 @@
-[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://cl3ucly7cjhvy"]
+[gd_resource type="ShaderMaterial" format=3 uid="uid://cl3ucly7cjhvy"]
 
-[ext_resource type="Shader" path="res://assets/wireframe-material.gdshader" id="1_f1auu"]
+[ext_resource type="Shader" uid="uid://cpcqblxissapu" path="res://assets/wireframe-material.gdshader" id="1_f1auu"]
 
 [resource]
 render_priority = 0

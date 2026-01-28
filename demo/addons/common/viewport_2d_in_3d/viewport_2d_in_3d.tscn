@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://dcwibwtseri8h"]
+[gd_scene format=3 uid="uid://dcwibwtseri8h"]
 
 [ext_resource type="Script" uid="uid://ch5we601n513i" path="res://addons/common/viewport_2d_in_3d/viewport_2d_in_3d.gd" id="1_cglsv"]
 [ext_resource type="Texture2D" uid="uid://ygh2w2bgty4x" path="res://addons/common/viewport_2d_in_3d/cursor.svg" id="2_of46t"]
@@ -28,19 +28,19 @@ resource_local_to_scene = true
 material = SubResource("StandardMaterial3D_ej13h")
 size = Vector2(0.1152, 0.0648)
 
-[node name="Viewport2Din3D" type="Node3D" groups=["ui_layer"]]
+[node name="Viewport2Din3D" type="Node3D" unique_id=140649617 groups=["ui_layer"]]
 script = ExtResource("1_cglsv")
 
-[node name="Cursor" type="MeshInstance3D" parent="."]
+[node name="Cursor" type="MeshInstance3D" parent="." unique_id=1277738918]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.005)
 visible = false
 mesh = SubResource("QuadMesh_5sc1k")
 surface_material_override/0 = SubResource("StandardMaterial3D_3y723")
 
-[node name="Quad" type="MeshInstance3D" parent="."]
+[node name="Quad" type="MeshInstance3D" parent="." unique_id=913845856]
 mesh = SubResource("QuadMesh_rd55w")
 
-[node name="SubViewport" type="SubViewport" parent="."]
+[node name="SubViewport" type="SubViewport" parent="." unique_id=545451424]
 disable_3d = true
 transparent_bg = true
 size = Vector2i(1152, 648)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3 uid="uid://cqsodpswgup8w"]
+[gd_scene format=3 uid="uid://cqsodpswgup8w"]
 
 [ext_resource type="Script" uid="uid://bt1xkc6iqghq5" path="res://main.gd" id="1_fsva1"]
 [ext_resource type="Script" uid="uid://bm5tdgvv6ry11" path="res://raycast.gd" id="2_u4cnn"]
@@ -84,233 +84,233 @@ albedo_color = Color(1, 0, 0, 1)
 material = SubResource("StandardMaterial3D_k604q")
 size = Vector2(10, 10)
 
-[node name="Main" type="Node3D"]
+[node name="Main" type="Node3D" unique_id=1705525549]
 script = ExtResource("1_fsva1")
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1700115369]
 environment = SubResource("Environment_m0xew")
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1089064286]
 transform = Transform3D(0.677077, -0.692092, 0.25015, 0.264251, 0.545897, 0.79509, -0.686831, -0.472235, 0.552501, 0, 0, 0)
 
-[node name="XROrigin3D" type="XROrigin3D" parent="."]
+[node name="XROrigin3D" type="XROrigin3D" parent="." unique_id=740102718]
 transform = Transform3D(0.813436, 0, 0.581655, 0, 1, 0, -0.581655, 0, 0.813436, 1.32074, 0, 1.72285)
 
-[node name="XRCamera3D" type="XRCamera3D" parent="XROrigin3D"]
+[node name="XRCamera3D" type="XRCamera3D" parent="XROrigin3D" unique_id=520177401]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.352791, 0)
 
-[node name="LeftController" type="XRController3D" parent="XROrigin3D"]
+[node name="LeftController" type="XRController3D" parent="XROrigin3D" unique_id=1739072320]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.460909, 0.388594, -0.241118)
 tracker = &"left_hand"
 pose = &"grip"
 
-[node name="OpenXRFbRenderModel" type="OpenXRFbRenderModel" parent="XROrigin3D/LeftController"]
+[node name="OpenXRFbRenderModel" type="OpenXRFbRenderModel" parent="XROrigin3D/LeftController" unique_id=1201792837]
 
-[node name="LeftControllerRayCast" type="RayCast3D" parent="XROrigin3D/LeftController"]
+[node name="LeftControllerRayCast" type="RayCast3D" parent="XROrigin3D/LeftController" unique_id=2143442811]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.059, -0.052)
 target_position = Vector3(0, -10, 0)
 script = ExtResource("2_u4cnn")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/LeftController/LeftControllerRayCast"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/LeftController/LeftControllerRayCast" unique_id=144716449]
 mesh = SubResource("CylinderMesh_is4ih")
 surface_material_override/0 = SubResource("StandardMaterial3D_xpljd")
 
-[node name="RightController" type="XRController3D" parent="XROrigin3D"]
+[node name="RightController" type="XRController3D" parent="XROrigin3D" unique_id=373804741]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.479, 0.389, -0.241)
 tracker = &"right_hand"
 pose = &"grip"
 
-[node name="OpenXRFbRenderModel" type="OpenXRFbRenderModel" parent="XROrigin3D/RightController"]
+[node name="OpenXRFbRenderModel" type="OpenXRFbRenderModel" parent="XROrigin3D/RightController" unique_id=1217639359]
 render_model_type = 1
 
-[node name="RightControllerRayCast" type="RayCast3D" parent="XROrigin3D/RightController"]
+[node name="RightControllerRayCast" type="RayCast3D" parent="XROrigin3D/RightController" unique_id=1433566197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.059, -0.052)
 target_position = Vector3(0, -10, 0)
 script = ExtResource("2_u4cnn")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/RightController/RightControllerRayCast"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/RightController/RightControllerRayCast" unique_id=1313934585]
 mesh = SubResource("CylinderMesh_k07us")
 surface_material_override/0 = SubResource("StandardMaterial3D_0b4kl")
 
-[node name="TurnTimer" type="Timer" parent="XROrigin3D"]
+[node name="TurnTimer" type="Timer" parent="XROrigin3D" unique_id=782637821]
 wait_time = 0.2
 one_shot = true
 
-[node name="OpenXRCompositionLayerQuad" type="OpenXRCompositionLayerQuad" parent="XROrigin3D" node_paths=PackedStringArray("layer_viewport") groups=["composition_layer"]]
+[node name="OpenXRCompositionLayerQuad" type="OpenXRCompositionLayerQuad" parent="XROrigin3D" unique_id=388394520 node_paths=PackedStringArray("layer_viewport") groups=["composition_layer"]]
 transform = Transform3D(1, 0, -2.98023e-08, 0, 0.945712, -0.325007, 0, 0.325007, 0.945712, -5.96046e-08, 1.568, -2.37176)
 layer_viewport = NodePath("../../QuadViewport")
 sort_order = -1
 enable_hole_punch = true
 quad_size = Vector2(1.5, 1.5)
 
-[node name="OpenXRCompositionLayerCylinder" type="OpenXRCompositionLayerCylinder" parent="XROrigin3D" node_paths=PackedStringArray("layer_viewport") groups=["composition_layer"]]
+[node name="OpenXRCompositionLayerCylinder" type="OpenXRCompositionLayerCylinder" parent="XROrigin3D" unique_id=1708647841 node_paths=PackedStringArray("layer_viewport") groups=["composition_layer"]]
 transform = Transform3D(0.671385, 0.0782645, 0.736964, -1.10785e-08, 0.994408, -0.105605, -0.741109, 0.0709012, 0.66763, -0.772507, 1.55166, -1.30867)
 layer_viewport = NodePath("../../CylinderViewport")
 sort_order = -1
 enable_hole_punch = true
 radius = 0.75
 
-[node name="OpenXRCompositionLayerEquirect" type="OpenXRCompositionLayerEquirect" parent="XROrigin3D" node_paths=PackedStringArray("layer_viewport") groups=["composition_layer"]]
+[node name="OpenXRCompositionLayerEquirect" type="OpenXRCompositionLayerEquirect" parent="XROrigin3D" unique_id=771875361 node_paths=PackedStringArray("layer_viewport") groups=["composition_layer"]]
 transform = Transform3D(0.765506, -0.0578683, -0.640822, 2.39438e-09, 0.995947, -0.0899373, 0.643429, 0.0688475, 0.762403, 0.916254, 1.51524, -1.27907)
 layer_viewport = NodePath("../../EquirectViewport")
 sort_order = -1
 enable_hole_punch = true
 radius = 0.75
 
-[node name="HPDisabledCompositionLayer" type="OpenXRCompositionLayerQuad" parent="XROrigin3D" node_paths=PackedStringArray("layer_viewport") groups=["composition_layer"]]
+[node name="HPDisabledCompositionLayer" type="OpenXRCompositionLayerQuad" parent="XROrigin3D" unique_id=1415356353 node_paths=PackedStringArray("layer_viewport") groups=["composition_layer"]]
 transform = Transform3D(0.140538, 0, -0.990075, 0, 1, 0, 0.990075, 0, 0.140538, 1.89042, 1.11189, -0.494546)
 layer_viewport = NodePath("../../NonHPViewport")
 
-[node name="HPEnabledCompositionLayer" type="OpenXRCompositionLayerQuad" parent="XROrigin3D" node_paths=PackedStringArray("layer_viewport") groups=["composition_layer"]]
+[node name="HPEnabledCompositionLayer" type="OpenXRCompositionLayerQuad" parent="XROrigin3D" unique_id=1815521095 node_paths=PackedStringArray("layer_viewport") groups=["composition_layer"]]
 transform = Transform3D(0.140538, 0, -0.990074, 0, 1, 0, 0.990074, 0, 0.140538, 1.88959, 2.13777, -0.497513)
 layer_viewport = NodePath("../../HPViewport")
 sort_order = -1
 enable_hole_punch = true
 
-[node name="SettingsCompositionLayer" type="OpenXRCompositionLayerCylinder" parent="XROrigin3D" node_paths=PackedStringArray("layer_viewport") groups=["composition_layer"]]
+[node name="SettingsCompositionLayer" type="OpenXRCompositionLayerCylinder" parent="XROrigin3D" unique_id=1324329021 node_paths=PackedStringArray("layer_viewport") groups=["composition_layer"]]
 transform = Transform3D(-0.447884, 0, 0.894091, 0, 1, 0, -0.894091, 0, -0.447884, -0.876689, 1.43458, 2.10925)
 layer_viewport = NodePath("../../SettingsViewport")
 
-[node name="Label3D" type="Label3D" parent="XROrigin3D/SettingsCompositionLayer"]
+[node name="Label3D" type="Label3D" parent="XROrigin3D/SettingsCompositionLayer" unique_id=1171884224]
 transform = Transform3D(1, 0, 1.49012e-07, 0, 1, 0, -1.49012e-07, 0, 1, 0.757602, 0.990318, -0.724057)
 text = "Manual Layer Filtering"
 
-[node name="DisabledSupersampling" type="StaticBody3D" parent="XROrigin3D/SettingsCompositionLayer"]
+[node name="DisabledSupersampling" type="StaticBody3D" parent="XROrigin3D/SettingsCompositionLayer" unique_id=715006933]
 transform = Transform3D(1, 0, -2.98023e-08, 0, 1, 0, 2.98023e-08, 0, 1, 1.25252, 0.432407, -0.74741)
 metadata/_edit_group_ = true
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="XROrigin3D/SettingsCompositionLayer/DisabledSupersampling"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="XROrigin3D/SettingsCompositionLayer/DisabledSupersampling" unique_id=532702781]
 shape = SubResource("BoxShape3D_7mtgu")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/SettingsCompositionLayer/DisabledSupersampling"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/SettingsCompositionLayer/DisabledSupersampling" unique_id=243899983]
 mesh = SubResource("BoxMesh_3ttch")
 surface_material_override/0 = SubResource("StandardMaterial3D_ccovu")
 
-[node name="Label3D" type="Label3D" parent="XROrigin3D/SettingsCompositionLayer/DisabledSupersampling"]
+[node name="Label3D" type="Label3D" parent="XROrigin3D/SettingsCompositionLayer/DisabledSupersampling" unique_id=1999199438]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.0654687)
 text = "Disabled
 Supersampling"
 font_size = 16
 
-[node name="NormalSupersampling" type="StaticBody3D" parent="XROrigin3D/SettingsCompositionLayer"]
+[node name="NormalSupersampling" type="StaticBody3D" parent="XROrigin3D/SettingsCompositionLayer" unique_id=332537571]
 transform = Transform3D(1, 0, -2.98023e-08, 0, 1, 0, 2.98023e-08, 0, 1, 1.25252, 0.0872573, -0.74741)
 metadata/_edit_group_ = true
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="XROrigin3D/SettingsCompositionLayer/NormalSupersampling"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="XROrigin3D/SettingsCompositionLayer/NormalSupersampling" unique_id=1304902492]
 shape = SubResource("BoxShape3D_7mtgu")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/SettingsCompositionLayer/NormalSupersampling"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/SettingsCompositionLayer/NormalSupersampling" unique_id=1434220312]
 mesh = SubResource("BoxMesh_2e18c")
 surface_material_override/0 = SubResource("StandardMaterial3D_7qm33")
 
-[node name="Label3D" type="Label3D" parent="XROrigin3D/SettingsCompositionLayer/NormalSupersampling"]
+[node name="Label3D" type="Label3D" parent="XROrigin3D/SettingsCompositionLayer/NormalSupersampling" unique_id=1607555324]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.0654687)
 text = "Normal
 Supersampling"
 font_size = 16
 
-[node name="QualitySupersampling" type="StaticBody3D" parent="XROrigin3D/SettingsCompositionLayer"]
+[node name="QualitySupersampling" type="StaticBody3D" parent="XROrigin3D/SettingsCompositionLayer" unique_id=2093980447]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.25252, -0.270333, -0.74741)
 metadata/_edit_group_ = true
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="XROrigin3D/SettingsCompositionLayer/QualitySupersampling"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="XROrigin3D/SettingsCompositionLayer/QualitySupersampling" unique_id=667812523]
 shape = SubResource("BoxShape3D_7mtgu")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/SettingsCompositionLayer/QualitySupersampling"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/SettingsCompositionLayer/QualitySupersampling" unique_id=1801576519]
 mesh = SubResource("BoxMesh_2e18c")
 surface_material_override/0 = SubResource("StandardMaterial3D_81dfm")
 
-[node name="Label3D" type="Label3D" parent="XROrigin3D/SettingsCompositionLayer/QualitySupersampling"]
+[node name="Label3D" type="Label3D" parent="XROrigin3D/SettingsCompositionLayer/QualitySupersampling" unique_id=1073278021]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.0654687)
 text = "Quality
 Supersampling"
 font_size = 16
 
-[node name="DisabledSharpening" type="StaticBody3D" parent="XROrigin3D/SettingsCompositionLayer"]
+[node name="DisabledSharpening" type="StaticBody3D" parent="XROrigin3D/SettingsCompositionLayer" unique_id=1509934046]
 transform = Transform3D(1, 0, -2.98023e-08, 0, 1, 0, 2.98023e-08, 0, 1, 1.96023, 0.432407, -0.74741)
 metadata/_edit_group_ = true
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="XROrigin3D/SettingsCompositionLayer/DisabledSharpening"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="XROrigin3D/SettingsCompositionLayer/DisabledSharpening" unique_id=1474052809]
 shape = SubResource("BoxShape3D_7mtgu")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/SettingsCompositionLayer/DisabledSharpening"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/SettingsCompositionLayer/DisabledSharpening" unique_id=739942706]
 mesh = SubResource("BoxMesh_2e18c")
 surface_material_override/0 = SubResource("StandardMaterial3D_uo2xa")
 
-[node name="Label3D" type="Label3D" parent="XROrigin3D/SettingsCompositionLayer/DisabledSharpening"]
+[node name="Label3D" type="Label3D" parent="XROrigin3D/SettingsCompositionLayer/DisabledSharpening" unique_id=6310511]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.0654687)
 text = "Disabled
 Sharpening"
 font_size = 16
 
-[node name="NormalSharpening" type="StaticBody3D" parent="XROrigin3D/SettingsCompositionLayer"]
+[node name="NormalSharpening" type="StaticBody3D" parent="XROrigin3D/SettingsCompositionLayer" unique_id=1114471925]
 transform = Transform3D(1, 0, -2.98023e-08, 0, 1, 0, 2.98023e-08, 0, 1, 1.96023, 0.0872573, -0.74741)
 metadata/_edit_group_ = true
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="XROrigin3D/SettingsCompositionLayer/NormalSharpening"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="XROrigin3D/SettingsCompositionLayer/NormalSharpening" unique_id=1648298265]
 shape = SubResource("BoxShape3D_7mtgu")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/SettingsCompositionLayer/NormalSharpening"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/SettingsCompositionLayer/NormalSharpening" unique_id=1594352831]
 mesh = SubResource("BoxMesh_2e18c")
 surface_material_override/0 = SubResource("StandardMaterial3D_sl84k")
 
-[node name="Label3D" type="Label3D" parent="XROrigin3D/SettingsCompositionLayer/NormalSharpening"]
+[node name="Label3D" type="Label3D" parent="XROrigin3D/SettingsCompositionLayer/NormalSharpening" unique_id=1838461622]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.0654687)
 text = "Normal
 Sharpening"
 font_size = 16
 
-[node name="QualitySharpening" type="StaticBody3D" parent="XROrigin3D/SettingsCompositionLayer"]
+[node name="QualitySharpening" type="StaticBody3D" parent="XROrigin3D/SettingsCompositionLayer" unique_id=1922958860]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.96023, -0.270333, -0.74741)
 metadata/_edit_group_ = true
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="XROrigin3D/SettingsCompositionLayer/QualitySharpening"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="XROrigin3D/SettingsCompositionLayer/QualitySharpening" unique_id=340009350]
 shape = SubResource("BoxShape3D_7mtgu")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/SettingsCompositionLayer/QualitySharpening"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/SettingsCompositionLayer/QualitySharpening" unique_id=33842362]
 mesh = SubResource("BoxMesh_2e18c")
 surface_material_override/0 = SubResource("StandardMaterial3D_au24c")
 
-[node name="Label3D" type="Label3D" parent="XROrigin3D/SettingsCompositionLayer/QualitySharpening"]
+[node name="Label3D" type="Label3D" parent="XROrigin3D/SettingsCompositionLayer/QualitySharpening" unique_id=71097866]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.0654687)
 text = "Quality
 Sharpening"
 font_size = 16
 
-[node name="AutoSettingsCompositionLayer" type="OpenXRCompositionLayerCylinder" parent="XROrigin3D" node_paths=PackedStringArray("layer_viewport") groups=["composition_layer"]]
+[node name="AutoSettingsCompositionLayer" type="OpenXRCompositionLayerCylinder" parent="XROrigin3D" unique_id=2121326395 node_paths=PackedStringArray("layer_viewport") groups=["composition_layer"]]
 transform = Transform3D(0.485222, 0, 0.874391, 0, 1, 0, -0.874391, 0, 0.485222, -1.40387, 1.43458, -0.184307)
 layer_viewport = NodePath("../../AutoSettingsViewport")
 XR_FB_composition_layer_settings/auto/enable_auto_filter = true
 XR_FB_composition_layer_settings/auto/options = 15
 
-[node name="Label3D" type="Label3D" parent="XROrigin3D/AutoSettingsCompositionLayer"]
+[node name="Label3D" type="Label3D" parent="XROrigin3D/AutoSettingsCompositionLayer" unique_id=1478071561]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0189411, 0.962373, -0.895034)
 text = "Auto Layer Filtering"
 
-[node name="ABBaseCompositionLayer" type="OpenXRCompositionLayerQuad" parent="XROrigin3D" node_paths=PackedStringArray("layer_viewport") groups=["composition_layer"]]
+[node name="ABBaseCompositionLayer" type="OpenXRCompositionLayerQuad" parent="XROrigin3D" unique_id=1533267977 node_paths=PackedStringArray("layer_viewport") groups=["composition_layer"]]
 transform = Transform3D(-0.24551, 0, -0.969392, 0, 1, 0, 0.969392, 0, -0.24551, 1.67856, 1.6875, 1.46923)
 layer_viewport = NodePath("../../AlphaBlendBaseViewport")
 sort_order = -1
 enable_hole_punch = true
 quad_size = Vector2(2, 2)
 
-[node name="Label3D" type="Label3D" parent="XROrigin3D/ABBaseCompositionLayer"]
+[node name="Label3D" type="Label3D" parent="XROrigin3D/ABBaseCompositionLayer" unique_id=1612834948]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0189411, 1.17098, 0.0236711)
 text = "Alpha Blend"
 
-[node name="ABNormalCompositionLayer" type="OpenXRCompositionLayerQuad" parent="XROrigin3D" node_paths=PackedStringArray("layer_viewport") groups=["composition_layer"]]
+[node name="ABNormalCompositionLayer" type="OpenXRCompositionLayerQuad" parent="XROrigin3D" unique_id=1462224687 node_paths=PackedStringArray("layer_viewport") groups=["composition_layer"]]
 transform = Transform3D(-0.24551, 0, -0.969392, 0, 1, 0, 0.969392, 0, -0.24551, 1.77818, 2.00648, 0.85672)
 layer_viewport = NodePath("../../AlphaBlendNormalViewport")
 sort_order = 2
 alpha_blend = true
 quad_size = Vector2(0.33, 0.33)
 
-[node name="Label3D" type="Label3D" parent="XROrigin3D/ABNormalCompositionLayer"]
+[node name="Label3D" type="Label3D" parent="XROrigin3D/ABNormalCompositionLayer" unique_id=80789654]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.395301, 0)
 text = "Normal Alpha"
 font_size = 16
 
-[node name="ABOneCompositionLayer" type="OpenXRCompositionLayerQuad" parent="XROrigin3D" node_paths=PackedStringArray("layer_viewport") groups=["composition_layer"]]
+[node name="ABOneCompositionLayer" type="OpenXRCompositionLayerQuad" parent="XROrigin3D" unique_id=1823409828 node_paths=PackedStringArray("layer_viewport") groups=["composition_layer"]]
 transform = Transform3D(-0.24551, 0, -0.969392, 0, 1, 0, 0.969392, 0, -0.24551, 1.62958, 2.00648, 1.44344)
 layer_viewport = NodePath("../../AlphaBlendOneViewport")
 sort_order = 2
@@ -319,7 +319,7 @@ XR_FB_composition_layer_alpha_blend/destination_color_blend_factor = 1
 XR_FB_composition_layer_alpha_blend/destination_alpha_blend_factor = 1
 quad_size = Vector2(0.33, 0.33)
 
-[node name="Label3D" type="Label3D" parent="XROrigin3D/ABOneCompositionLayer"]
+[node name="Label3D" type="Label3D" parent="XROrigin3D/ABOneCompositionLayer" unique_id=1659124278]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.395301, 0)
 text = "Src Color: One
 Dst Color: One
@@ -327,7 +327,7 @@ Src Alpha: One
 Dst Alpha: One"
 font_size = 16
 
-[node name="ABZeroCompositionLayer" type="OpenXRCompositionLayerQuad" parent="XROrigin3D" node_paths=PackedStringArray("layer_viewport") groups=["composition_layer"]]
+[node name="ABZeroCompositionLayer" type="OpenXRCompositionLayerQuad" parent="XROrigin3D" unique_id=2083354497 node_paths=PackedStringArray("layer_viewport") groups=["composition_layer"]]
 transform = Transform3D(-0.24551, 0, -0.969392, 0, 1, 0, 0.969392, 0, -0.24551, 1.47291, 2.00648, 2.06203)
 layer_viewport = NodePath("../../AlphaBlendZeroViewport")
 sort_order = 2
@@ -336,7 +336,7 @@ XR_FB_composition_layer_alpha_blend/source_color_blend_factor = 0
 XR_FB_composition_layer_alpha_blend/source_alpha_blend_factor = 0
 quad_size = Vector2(0.33, 0.33)
 
-[node name="Label3D" type="Label3D" parent="XROrigin3D/ABZeroCompositionLayer"]
+[node name="Label3D" type="Label3D" parent="XROrigin3D/ABZeroCompositionLayer" unique_id=254445173]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.395301, 0)
 text = "Src Color: Zero
 Dst Color: Zero
@@ -344,14 +344,14 @@ Src Alpha: Zero
 Dst Alpha: Zero"
 font_size = 16
 
-[node name="ABSrcOneCompositionLayer" type="OpenXRCompositionLayerQuad" parent="XROrigin3D" node_paths=PackedStringArray("layer_viewport") groups=["composition_layer"]]
+[node name="ABSrcOneCompositionLayer" type="OpenXRCompositionLayerQuad" parent="XROrigin3D" unique_id=858772513 node_paths=PackedStringArray("layer_viewport") groups=["composition_layer"]]
 transform = Transform3D(-0.24551, 0, -0.969392, 0, 1, 0, 0.969392, 0, -0.24551, 1.78034, 1.09783, 0.848158)
 layer_viewport = NodePath("../../AlphaBlendSrcOneViewport")
 sort_order = 2
 XR_FB_composition_layer_alpha_blend/enable_alpha_blend_extension = true
 quad_size = Vector2(0.33, 0.33)
 
-[node name="Label3D" type="Label3D" parent="XROrigin3D/ABSrcOneCompositionLayer"]
+[node name="Label3D" type="Label3D" parent="XROrigin3D/ABSrcOneCompositionLayer" unique_id=1203389618]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.395301, 0)
 text = "Src Color: One
 Dst Color: Zero
@@ -359,7 +359,7 @@ Src Alpha: One
 Dst Alpha: Zero"
 font_size = 16
 
-[node name="ABDstOneCompositionLayer" type="OpenXRCompositionLayerQuad" parent="XROrigin3D" node_paths=PackedStringArray("layer_viewport") groups=["composition_layer"]]
+[node name="ABDstOneCompositionLayer" type="OpenXRCompositionLayerQuad" parent="XROrigin3D" unique_id=1651969899 node_paths=PackedStringArray("layer_viewport") groups=["composition_layer"]]
 transform = Transform3D(-0.24551, 0, -0.969392, 0, 1, 0, 0.969392, 0, -0.24551, 1.62833, 1.09783, 1.44836)
 layer_viewport = NodePath("../../AlphaBlendDstOneViewport")
 sort_order = 2
@@ -370,7 +370,7 @@ XR_FB_composition_layer_alpha_blend/source_alpha_blend_factor = 0
 XR_FB_composition_layer_alpha_blend/destination_alpha_blend_factor = 1
 quad_size = Vector2(0.33, 0.33)
 
-[node name="Label3D" type="Label3D" parent="XROrigin3D/ABDstOneCompositionLayer"]
+[node name="Label3D" type="Label3D" parent="XROrigin3D/ABDstOneCompositionLayer" unique_id=2094732543]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.395301, 0)
 text = "Src Color: Zero
 Dst Color: One
@@ -378,7 +378,7 @@ Src Alpha: Zero
 Dst Alpha: One"
 font_size = 16
 
-[node name="ABOneMinusCompositionLayer" type="OpenXRCompositionLayerQuad" parent="XROrigin3D" node_paths=PackedStringArray("layer_viewport") groups=["composition_layer"]]
+[node name="ABOneMinusCompositionLayer" type="OpenXRCompositionLayerQuad" parent="XROrigin3D" unique_id=820064860 node_paths=PackedStringArray("layer_viewport") groups=["composition_layer"]]
 transform = Transform3D(-0.24551, 0, -0.969392, 0, 1, 0, 0.969392, 0, -0.24551, 1.47416, 1.09783, 2.05712)
 layer_viewport = NodePath("../../AlphaBlendOneMinusViewport")
 sort_order = 2
@@ -387,7 +387,7 @@ XR_FB_composition_layer_alpha_blend/source_color_blend_factor = 3
 XR_FB_composition_layer_alpha_blend/source_alpha_blend_factor = 3
 quad_size = Vector2(0.33, 0.33)
 
-[node name="Label3D" type="Label3D" parent="XROrigin3D/ABOneMinusCompositionLayer"]
+[node name="Label3D" type="Label3D" parent="XROrigin3D/ABOneMinusCompositionLayer" unique_id=1865699190]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.395301, 0)
 text = "Src Color: 1-SA
 Dst Color: Zero
@@ -395,99 +395,99 @@ Src Alpha: 1-SA
 Dst Alpha: Zero"
 font_size = 16
 
-[node name="SecureContentCompositionLayer" type="OpenXRCompositionLayerCylinder" parent="XROrigin3D" node_paths=PackedStringArray("layer_viewport") groups=["composition_layer"]]
+[node name="SecureContentCompositionLayer" type="OpenXRCompositionLayerCylinder" parent="XROrigin3D" unique_id=582573169 node_paths=PackedStringArray("layer_viewport") groups=["composition_layer"]]
 transform = Transform3D(-0.966657, 0, -0.25607, 0, 1, 0, 0.25607, 0, -0.966657, 0.245687, 1.88364, 2.10131)
 layer_viewport = NodePath("../../SecureContentViewport")
 
-[node name="Label3D" type="Label3D" parent="XROrigin3D/SecureContentCompositionLayer"]
+[node name="Label3D" type="Label3D" parent="XROrigin3D/SecureContentCompositionLayer" unique_id=931734185]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0189411, 0.962373, -0.895034)
 text = "Secure Content"
 
-[node name="Label3D2" type="Label3D" parent="XROrigin3D/SecureContentCompositionLayer"]
+[node name="Label3D2" type="Label3D" parent="XROrigin3D/SecureContentCompositionLayer" unique_id=892438898]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.365376, -1.15321, -0.895034)
 text = "These settings will change
 how the composition layer
 appears when viewed via casting"
 
-[node name="DisplaySecureContent" type="StaticBody3D" parent="XROrigin3D/SecureContentCompositionLayer"]
+[node name="DisplaySecureContent" type="StaticBody3D" parent="XROrigin3D/SecureContentCompositionLayer" unique_id=1411966143]
 transform = Transform3D(1, 0, -2.98023e-08, 0, 1, 0, 2.98023e-08, 0, 1, 1.12945, 0.489884, -0.855458)
 metadata/_edit_group_ = true
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="XROrigin3D/SecureContentCompositionLayer/DisplaySecureContent"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="XROrigin3D/SecureContentCompositionLayer/DisplaySecureContent" unique_id=1927075110]
 shape = SubResource("BoxShape3D_7mtgu")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/SecureContentCompositionLayer/DisplaySecureContent"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/SecureContentCompositionLayer/DisplaySecureContent" unique_id=1101748236]
 mesh = SubResource("BoxMesh_3ttch")
 surface_material_override/0 = SubResource("StandardMaterial3D_j2lf0")
 
-[node name="Label3D" type="Label3D" parent="XROrigin3D/SecureContentCompositionLayer/DisplaySecureContent"]
+[node name="Label3D" type="Label3D" parent="XROrigin3D/SecureContentCompositionLayer/DisplaySecureContent" unique_id=1524704323]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.0654687)
 text = "Display"
 font_size = 16
 
-[node name="ReplaceSecureContent" type="StaticBody3D" parent="XROrigin3D/SecureContentCompositionLayer"]
+[node name="ReplaceSecureContent" type="StaticBody3D" parent="XROrigin3D/SecureContentCompositionLayer" unique_id=1657954407]
 transform = Transform3D(1, 0, -2.98023e-08, 0, 1, 0, 2.98023e-08, 0, 1, 1.12945, 0.0932691, -0.855458)
 metadata/_edit_group_ = true
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="XROrigin3D/SecureContentCompositionLayer/ReplaceSecureContent"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="XROrigin3D/SecureContentCompositionLayer/ReplaceSecureContent" unique_id=1585399430]
 shape = SubResource("BoxShape3D_7mtgu")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/SecureContentCompositionLayer/ReplaceSecureContent"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/SecureContentCompositionLayer/ReplaceSecureContent" unique_id=1932397186]
 mesh = SubResource("BoxMesh_3ttch")
 surface_material_override/0 = SubResource("StandardMaterial3D_x4pwl")
 
-[node name="Label3D" type="Label3D" parent="XROrigin3D/SecureContentCompositionLayer/ReplaceSecureContent"]
+[node name="Label3D" type="Label3D" parent="XROrigin3D/SecureContentCompositionLayer/ReplaceSecureContent" unique_id=1973165466]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.0654687)
 text = "Replace"
 font_size = 16
 
-[node name="ExcludeSecureContent" type="StaticBody3D" parent="XROrigin3D/SecureContentCompositionLayer"]
+[node name="ExcludeSecureContent" type="StaticBody3D" parent="XROrigin3D/SecureContentCompositionLayer" unique_id=1028148201]
 transform = Transform3D(1, 0, -2.98023e-08, 0, 1, 0, 2.98023e-08, 0, 1, 1.12945, -0.334742, -0.855458)
 metadata/_edit_group_ = true
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="XROrigin3D/SecureContentCompositionLayer/ExcludeSecureContent"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="XROrigin3D/SecureContentCompositionLayer/ExcludeSecureContent" unique_id=1054462293]
 shape = SubResource("BoxShape3D_7mtgu")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/SecureContentCompositionLayer/ExcludeSecureContent"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/SecureContentCompositionLayer/ExcludeSecureContent" unique_id=1333697362]
 mesh = SubResource("BoxMesh_3ttch")
 surface_material_override/0 = SubResource("StandardMaterial3D_53uq1")
 
-[node name="Label3D" type="Label3D" parent="XROrigin3D/SecureContentCompositionLayer/ExcludeSecureContent"]
+[node name="Label3D" type="Label3D" parent="XROrigin3D/SecureContentCompositionLayer/ExcludeSecureContent" unique_id=344623518]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.0654687)
 text = "Exclude"
 font_size = 16
 
-[node name="Floor" type="MeshInstance3D" parent="."]
+[node name="Floor" type="MeshInstance3D" parent="." unique_id=1383929615]
 mesh = SubResource("PlaneMesh_mjcgt")
 
-[node name="QuadViewport" type="SubViewport" parent="."]
+[node name="QuadViewport" type="SubViewport" parent="." unique_id=789171331]
 disable_3d = true
 gui_embed_subwindows = true
 render_target_update_mode = 4
 
-[node name="ExamplePanel" parent="QuadViewport" instance=ExtResource("6_kubns")]
+[node name="ExamplePanel" parent="QuadViewport" unique_id=1670091113 instance=ExtResource("6_kubns")]
 display_string = "This is a Quad!"
 
-[node name="CylinderViewport" type="SubViewport" parent="."]
+[node name="CylinderViewport" type="SubViewport" parent="." unique_id=1970240033]
 disable_3d = true
 gui_embed_subwindows = true
 render_target_update_mode = 4
 
-[node name="ExamplePanel" parent="CylinderViewport" instance=ExtResource("6_kubns")]
+[node name="ExamplePanel" parent="CylinderViewport" unique_id=1045337420 instance=ExtResource("6_kubns")]
 display_string = "This is a Cylinder!"
 
-[node name="EquirectViewport" type="SubViewport" parent="."]
+[node name="EquirectViewport" type="SubViewport" parent="." unique_id=906008315]
 disable_3d = true
 gui_embed_subwindows = true
 render_target_update_mode = 4
 
-[node name="ExamplePanel" parent="EquirectViewport" instance=ExtResource("6_kubns")]
+[node name="ExamplePanel" parent="EquirectViewport" unique_id=1380373037 instance=ExtResource("6_kubns")]
 display_string = "This is an Equirect!"
 
-[node name="NonHPViewport" type="SubViewport" parent="."]
+[node name="NonHPViewport" type="SubViewport" parent="." unique_id=549700846]
 render_target_update_mode = 4
 
-[node name="Label" type="Label" parent="NonHPViewport"]
+[node name="Label" type="Label" parent="NonHPViewport" unique_id=1002377214]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -499,10 +499,10 @@ Sort order = 1"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="HPViewport" type="SubViewport" parent="."]
+[node name="HPViewport" type="SubViewport" parent="." unique_id=1806572512]
 render_target_update_mode = 4
 
-[node name="Label" type="Label" parent="HPViewport"]
+[node name="Label" type="Label" parent="HPViewport" unique_id=1199384581]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -514,11 +514,11 @@ Sort order = -1"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="SettingsViewport" type="SubViewport" parent="."]
+[node name="SettingsViewport" type="SubViewport" parent="." unique_id=2107927552]
 size = Vector2i(2048, 2048)
 render_target_update_mode = 4
 
-[node name="TextEdit" type="TextEdit" parent="SettingsViewport"]
+[node name="TextEdit" type="TextEdit" parent="SettingsViewport" unique_id=1923937367]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -557,11 +557,11 @@ Ac tortor vitae purus faucibus ornare suspendisse sed nisi. Eget gravida cum soc
 Egestas congue quisque egestas diam in arcu cursus euismod. Eu lobortis elementum nibh tellus molestie nunc non. Arcu dui vivamus arcu felis bibendum. Sagittis vitae et leo duis ut. Lorem sed risus ultricies tristique nulla aliquet enim tortor at. Nec tincidunt praesent semper feugiat nibh sed pulvinar proin. Id eu nisl nunc mi. Sed vulputate mi sit amet mauris commodo. Diam donec adipiscing tristique risus nec feugiat in fermentum. Condimentum mattis pellentesque id nibh tortor id aliquet lectus proin. Vitae turpis massa sed elementum tempus egestas sed. Enim ut sem viverra aliquet eget. Mauris rhoncus aenean vel elit. Ornare arcu odio ut sem nulla pharetra diam sit amet. Nisl nisi scelerisque eu ultrices vitae auctor eu augue ut. Adipiscing elit pellentesque habitant morbi tristique senectus et netus. Convallis aenean et tortor at risus viverra adipiscing at in. Ipsum dolor sit amet consectetur adipiscing elit."
 wrap_mode = 1
 
-[node name="AutoSettingsViewport" type="SubViewport" parent="."]
+[node name="AutoSettingsViewport" type="SubViewport" parent="." unique_id=2075616852]
 size = Vector2i(2048, 2048)
 render_target_update_mode = 4
 
-[node name="TextEdit" type="TextEdit" parent="AutoSettingsViewport"]
+[node name="TextEdit" type="TextEdit" parent="AutoSettingsViewport" unique_id=360643075]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -600,11 +600,11 @@ Ac tortor vitae purus faucibus ornare suspendisse sed nisi. Eget gravida cum soc
 Egestas congue quisque egestas diam in arcu cursus euismod. Eu lobortis elementum nibh tellus molestie nunc non. Arcu dui vivamus arcu felis bibendum. Sagittis vitae et leo duis ut. Lorem sed risus ultricies tristique nulla aliquet enim tortor at. Nec tincidunt praesent semper feugiat nibh sed pulvinar proin. Id eu nisl nunc mi. Sed vulputate mi sit amet mauris commodo. Diam donec adipiscing tristique risus nec feugiat in fermentum. Condimentum mattis pellentesque id nibh tortor id aliquet lectus proin. Vitae turpis massa sed elementum tempus egestas sed. Enim ut sem viverra aliquet eget. Mauris rhoncus aenean vel elit. Ornare arcu odio ut sem nulla pharetra diam sit amet. Nisl nisi scelerisque eu ultrices vitae auctor eu augue ut. Adipiscing elit pellentesque habitant morbi tristique senectus et netus. Convallis aenean et tortor at risus viverra adipiscing at in. Ipsum dolor sit amet consectetur adipiscing elit."
 wrap_mode = 1
 
-[node name="AlphaBlendBaseViewport" type="SubViewport" parent="."]
+[node name="AlphaBlendBaseViewport" type="SubViewport" parent="." unique_id=1319146531]
 transparent_bg = true
 render_target_update_mode = 4
 
-[node name="TextureRect" type="TextureRect" parent="AlphaBlendBaseViewport"]
+[node name="TextureRect" type="TextureRect" parent="AlphaBlendBaseViewport" unique_id=519966415]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -612,11 +612,11 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("4_wy534")
 
-[node name="AlphaBlendNormalViewport" type="SubViewport" parent="."]
+[node name="AlphaBlendNormalViewport" type="SubViewport" parent="." unique_id=421903080]
 transparent_bg = true
 render_target_update_mode = 4
 
-[node name="TextureRect" type="TextureRect" parent="AlphaBlendNormalViewport"]
+[node name="TextureRect" type="TextureRect" parent="AlphaBlendNormalViewport" unique_id=1628815118]
 modulate = Color(1, 1, 1, 0.588235)
 anchors_preset = 15
 anchor_right = 1.0
@@ -625,11 +625,11 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("4_wy534")
 
-[node name="AlphaBlendOneViewport" type="SubViewport" parent="."]
+[node name="AlphaBlendOneViewport" type="SubViewport" parent="." unique_id=1147373956]
 transparent_bg = true
 render_target_update_mode = 4
 
-[node name="TextureRect" type="TextureRect" parent="AlphaBlendOneViewport"]
+[node name="TextureRect" type="TextureRect" parent="AlphaBlendOneViewport" unique_id=1559194848]
 modulate = Color(1, 1, 1, 0.588235)
 anchors_preset = 15
 anchor_right = 1.0
@@ -638,11 +638,11 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("4_wy534")
 
-[node name="AlphaBlendZeroViewport" type="SubViewport" parent="."]
+[node name="AlphaBlendZeroViewport" type="SubViewport" parent="." unique_id=1104132511]
 transparent_bg = true
 render_target_update_mode = 4
 
-[node name="TextureRect" type="TextureRect" parent="AlphaBlendZeroViewport"]
+[node name="TextureRect" type="TextureRect" parent="AlphaBlendZeroViewport" unique_id=617128661]
 modulate = Color(1, 1, 1, 0.588235)
 anchors_preset = 15
 anchor_right = 1.0
@@ -651,11 +651,11 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("4_wy534")
 
-[node name="AlphaBlendSrcOneViewport" type="SubViewport" parent="."]
+[node name="AlphaBlendSrcOneViewport" type="SubViewport" parent="." unique_id=1142996362]
 transparent_bg = true
 render_target_update_mode = 4
 
-[node name="TextureRect" type="TextureRect" parent="AlphaBlendSrcOneViewport"]
+[node name="TextureRect" type="TextureRect" parent="AlphaBlendSrcOneViewport" unique_id=752689011]
 modulate = Color(1, 1, 1, 0.588235)
 anchors_preset = 15
 anchor_right = 1.0
@@ -664,11 +664,11 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("4_wy534")
 
-[node name="AlphaBlendDstOneViewport" type="SubViewport" parent="."]
+[node name="AlphaBlendDstOneViewport" type="SubViewport" parent="." unique_id=39134222]
 transparent_bg = true
 render_target_update_mode = 4
 
-[node name="TextureRect" type="TextureRect" parent="AlphaBlendDstOneViewport"]
+[node name="TextureRect" type="TextureRect" parent="AlphaBlendDstOneViewport" unique_id=459297492]
 modulate = Color(1, 1, 1, 0.588235)
 anchors_preset = 15
 anchor_right = 1.0
@@ -677,11 +677,11 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("4_wy534")
 
-[node name="AlphaBlendOneMinusViewport" type="SubViewport" parent="."]
+[node name="AlphaBlendOneMinusViewport" type="SubViewport" parent="." unique_id=1604793537]
 transparent_bg = true
 render_target_update_mode = 4
 
-[node name="TextureRect" type="TextureRect" parent="AlphaBlendOneMinusViewport"]
+[node name="TextureRect" type="TextureRect" parent="AlphaBlendOneMinusViewport" unique_id=306971646]
 modulate = Color(1, 1, 1, 0.588235)
 anchors_preset = 15
 anchor_right = 1.0
@@ -690,10 +690,10 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("4_wy534")
 
-[node name="SecureContentViewport" type="SubViewport" parent="."]
+[node name="SecureContentViewport" type="SubViewport" parent="." unique_id=146327072]
 render_target_update_mode = 4
 
-[node name="TextureRect" type="TextureRect" parent="SecureContentViewport"]
+[node name="TextureRect" type="TextureRect" parent="SecureContentViewport" unique_id=990738230]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
