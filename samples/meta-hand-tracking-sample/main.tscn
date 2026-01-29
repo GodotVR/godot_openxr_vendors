@@ -1,4 +1,4 @@
-[gd_scene load_steps=45 format=3 uid="uid://cyfhw445f4w0v"]
+[gd_scene format=3 uid="uid://cyfhw445f4w0v"]
 
 [ext_resource type="Script" uid="uid://c5t8v7uqjf1ia" path="res://main.gd" id="1_37itx"]
 [ext_resource type="Material" uid="uid://becyo36svkmbm" path="res://hand_material.tres" id="3_5ytic"]
@@ -167,60 +167,60 @@ size = Vector3(1, 0.65, 0.1)
 [sub_resource type="BoxShape3D" id="BoxShape3D_tan38"]
 size = Vector3(1, 0.652344, 0.132812)
 
-[node name="Main" type="Node3D"]
+[node name="Main" type="Node3D" unique_id=1621876565]
 script = ExtResource("1_37itx")
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=744869973]
 transform = Transform3D(0.924573, 0.227053, -0.305961, 0, 0.803036, 0.595931, 0.381006, -0.550981, 0.742465, 0, 3.85782, 0)
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=363309352]
 environment = SubResource("Environment_fjqtr")
 
-[node name="XROrigin3D" type="XROrigin3D" parent="."]
+[node name="XROrigin3D" type="XROrigin3D" parent="." unique_id=2094485805]
 
-[node name="LeftController" type="XRController3D" parent="XROrigin3D"]
+[node name="LeftController" type="XRController3D" parent="XROrigin3D" unique_id=1354356167]
 tracker = &"left_hand"
 
-[node name="RightController" type="XRController3D" parent="XROrigin3D"]
+[node name="RightController" type="XRController3D" parent="XROrigin3D" unique_id=783473012]
 tracker = &"right_hand"
 
-[node name="LeftHandAimController" type="XRController3D" parent="XROrigin3D"]
+[node name="LeftHandAimController" type="XRController3D" parent="XROrigin3D" unique_id=2093998992]
 tracker = &"/user/fbhandaim/left"
 
-[node name="RayCast3D" type="RayCast3D" parent="XROrigin3D/LeftHandAimController"]
+[node name="RayCast3D" type="RayCast3D" parent="XROrigin3D/LeftHandAimController" unique_id=1341349204]
 target_position = Vector3(0, 0, -10)
 script = ExtResource("4_rjdwo")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/LeftHandAimController/RayCast3D"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/LeftHandAimController/RayCast3D" unique_id=1201871035]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
 mesh = SubResource("CylinderMesh_fjd07")
 surface_material_override/0 = SubResource("StandardMaterial3D_tfb28")
 
-[node name="RightHandAimController" type="XRController3D" parent="XROrigin3D"]
+[node name="RightHandAimController" type="XRController3D" parent="XROrigin3D" unique_id=333667263]
 tracker = &"/user/fbhandaim/right"
 
-[node name="RayCast3D" type="RayCast3D" parent="XROrigin3D/RightHandAimController"]
+[node name="RayCast3D" type="RayCast3D" parent="XROrigin3D/RightHandAimController" unique_id=449381146]
 target_position = Vector3(0, 0, -10)
 script = ExtResource("4_rjdwo")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/RightHandAimController/RayCast3D"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/RightHandAimController/RayCast3D" unique_id=2089405430]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
 mesh = SubResource("CylinderMesh_d5lax")
 surface_material_override/0 = SubResource("StandardMaterial3D_k6edk")
 
-[node name="LeftHandTracker" type="XRNode3D" parent="XROrigin3D"]
+[node name="LeftHandTracker" type="XRNode3D" parent="XROrigin3D" unique_id=1751105804]
 tracker = &"/user/hand_tracker/left"
 show_when_tracked = true
 
-[node name="OpenXRFbHandTrackingMesh" type="OpenXRFbHandTrackingMesh" parent="XROrigin3D/LeftHandTracker"]
+[node name="OpenXRFbHandTrackingMesh" type="OpenXRFbHandTrackingMesh" parent="XROrigin3D/LeftHandTracker" unique_id=526439814]
 material = ExtResource("3_5ytic")
 
-[node name="XRHandModifier3D" type="XRHandModifier3D" parent="XROrigin3D/LeftHandTracker/OpenXRFbHandTrackingMesh"]
+[node name="XRHandModifier3D" type="XRHandModifier3D" parent="XROrigin3D/LeftHandTracker/OpenXRFbHandTrackingMesh" unique_id=720090029]
 
-[node name="RightHandTracker" type="XRNode3D" parent="XROrigin3D"]
+[node name="RightHandTracker" type="XRNode3D" parent="XROrigin3D" unique_id=2105002314]
 tracker = &"/user/hand_tracker/right"
 
-[node name="OpenXRFbHandTrackingMesh" type="OpenXRFbHandTrackingMesh" parent="XROrigin3D/RightHandTracker"]
+[node name="OpenXRFbHandTrackingMesh" type="OpenXRFbHandTrackingMesh" parent="XROrigin3D/RightHandTracker" unique_id=1865254051]
 hand = 1
 material = ExtResource("3_5ytic")
 bones/0/name = "RightPalm"
@@ -250,421 +250,421 @@ bones/23/name = "RightLittleIntermediate"
 bones/24/name = "RightLittleDistal"
 bones/25/name = "RightLittleTip"
 
-[node name="XRHandModifier3D" type="XRHandModifier3D" parent="XROrigin3D/RightHandTracker/OpenXRFbHandTrackingMesh"]
+[node name="XRHandModifier3D" type="XRHandModifier3D" parent="XROrigin3D/RightHandTracker/OpenXRFbHandTrackingMesh" unique_id=178481962]
 hand_tracker = &"/user/hand_tracker/right"
 
-[node name="XRCamera3D" type="XRCamera3D" parent="XROrigin3D"]
+[node name="XRCamera3D" type="XRCamera3D" parent="XROrigin3D" unique_id=763553444]
 
-[node name="HandAimInterface" type="Node3D" parent="."]
+[node name="HandAimInterface" type="Node3D" parent="." unique_id=40007294]
 
-[node name="LeftHand" type="Node3D" parent="HandAimInterface"]
+[node name="LeftHand" type="Node3D" parent="HandAimInterface" unique_id=1157664589]
 transform = Transform3D(-1, -8.74228e-08, 0, 8.74228e-08, -1, 0, 0, 0, 1, -1, 1, -4)
 
-[node name="StrengthIndicators" type="Node3D" parent="HandAimInterface/LeftHand"]
+[node name="StrengthIndicators" type="Node3D" parent="HandAimInterface/LeftHand" unique_id=1323716236]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.58728075, 5.9604645e-08, 0)
 
-[node name="Label3D" type="Label3D" parent="HandAimInterface/LeftHand/StrengthIndicators"]
+[node name="Label3D" type="Label3D" parent="HandAimInterface/LeftHand/StrengthIndicators" unique_id=1973150816]
 transform = Transform3D(-0.8660254, -6.399792e-08, -0.5, 9.9135235e-08, -1, -4.37114e-08, -0.5, -8.74228e-08, 0.8660254, 1.8884865, -2.9103498, 0.0021409988)
 text = "Left Hand Pinch Strengths"
 
-[node name="LeftIndexStrength" type="MeshInstance3D" parent="HandAimInterface/LeftHand/StrengthIndicators"]
+[node name="LeftIndexStrength" type="MeshInstance3D" parent="HandAimInterface/LeftHand/StrengthIndicators" unique_id=1190870228]
 transform = Transform3D(0.8660254, -0.5, 3.3568135e-08, -1.1712437e-08, -8.74228e-08, -1, 0.5, 0.8660254, -8.156658e-08, 1.118538, -1.514489, -0.442389)
 mesh = SubResource("PlaneMesh_14vhb")
 skeleton = NodePath("../..")
 surface_material_override/0 = SubResource("ShaderMaterial_1tk6d")
 
-[node name="Label3D" type="Label3D" parent="HandAimInterface/LeftHand/StrengthIndicators/LeftIndexStrength"]
+[node name="Label3D" type="Label3D" parent="HandAimInterface/LeftHand/StrengthIndicators/LeftIndexStrength" unique_id=355267980]
 transform = Transform3D(-1, 1.42109e-14, 8.74228e-08, 8.74228e-08, 1.31134e-07, 1, -1.09268e-14, 1, -1.31134e-07, -1.19209e-07, 0, 1.1573)
 text = "Index"
 
-[node name="LeftMiddleStrength" type="MeshInstance3D" parent="HandAimInterface/LeftHand/StrengthIndicators"]
+[node name="LeftMiddleStrength" type="MeshInstance3D" parent="HandAimInterface/LeftHand/StrengthIndicators" unique_id=81557473]
 transform = Transform3D(0.8660254, -0.5, 3.3568135e-08, -1.1712437e-08, -8.74228e-08, -1, 0.5, 0.8660254, -8.156658e-08, 1.6381532, -1.514, -0.1423893)
 mesh = SubResource("PlaneMesh_14vhb")
 skeleton = NodePath("../..")
 surface_material_override/0 = SubResource("ShaderMaterial_pqfle")
 
-[node name="Label3D" type="Label3D" parent="HandAimInterface/LeftHand/StrengthIndicators/LeftMiddleStrength"]
+[node name="Label3D" type="Label3D" parent="HandAimInterface/LeftHand/StrengthIndicators/LeftMiddleStrength" unique_id=170791042]
 transform = Transform3D(-1, 1.42109e-14, 8.74228e-08, 8.74228e-08, 1.31134e-07, 1, -1.09268e-14, 1, -1.31134e-07, 0, 0, 1.1573)
 text = "Middle"
 
-[node name="LeftRingStrength" type="MeshInstance3D" parent="HandAimInterface/LeftHand/StrengthIndicators"]
+[node name="LeftRingStrength" type="MeshInstance3D" parent="HandAimInterface/LeftHand/StrengthIndicators" unique_id=1899130852]
 transform = Transform3D(0.8660254, -0.5, 3.3568135e-08, -1.1712437e-08, -8.74228e-08, -1, 0.5, 0.8660254, -8.156658e-08, 2.1577687, -1.514, 0.1576109)
 mesh = SubResource("PlaneMesh_14vhb")
 skeleton = NodePath("../..")
 surface_material_override/0 = SubResource("ShaderMaterial_uird2")
 
-[node name="Label3D" type="Label3D" parent="HandAimInterface/LeftHand/StrengthIndicators/LeftRingStrength"]
+[node name="Label3D" type="Label3D" parent="HandAimInterface/LeftHand/StrengthIndicators/LeftRingStrength" unique_id=1265317910]
 transform = Transform3D(-1, 1.42109e-14, 8.74228e-08, 8.74228e-08, 1.31134e-07, 1, -1.09268e-14, 1, -1.31134e-07, 0, 0, 1.1573)
 text = "Ring"
 
-[node name="LeftLittleStrength" type="MeshInstance3D" parent="HandAimInterface/LeftHand/StrengthIndicators"]
+[node name="LeftLittleStrength" type="MeshInstance3D" parent="HandAimInterface/LeftHand/StrengthIndicators" unique_id=855979629]
 transform = Transform3D(0.8660254, -0.5, 3.3568135e-08, -1.1712437e-08, -8.74228e-08, -1, 0.5, 0.8660254, -8.156658e-08, 2.677384, -1.5139998, 0.45761108)
 mesh = SubResource("PlaneMesh_14vhb")
 skeleton = NodePath("../..")
 surface_material_override/0 = SubResource("ShaderMaterial_53gah")
 
-[node name="Label3D" type="Label3D" parent="HandAimInterface/LeftHand/StrengthIndicators/LeftLittleStrength"]
+[node name="Label3D" type="Label3D" parent="HandAimInterface/LeftHand/StrengthIndicators/LeftLittleStrength" unique_id=717079437]
 transform = Transform3D(-1, 1.42109e-14, 8.74228e-08, 8.74228e-08, 1.31134e-07, 1, -1.09268e-14, 1, -1.31134e-07, 0, 0, 1.1573)
 text = "Little"
 
-[node name="DiscreteIndicators" type="Node3D" parent="HandAimInterface/LeftHand"]
+[node name="DiscreteIndicators" type="Node3D" parent="HandAimInterface/LeftHand" unique_id=148884816]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.2069364, 0.8654842, 0)
 
-[node name="Label3D" type="Label3D" parent="HandAimInterface/LeftHand/DiscreteIndicators"]
+[node name="Label3D" type="Label3D" parent="HandAimInterface/LeftHand/DiscreteIndicators" unique_id=1994135974]
 transform = Transform3D(-0.8660254, 8.74228e-08, -0.5, -7.571036e-08, -1, -4.37114e-08, -0.5, 0, 0.8660254, 0.26867723, -1.0912764, 0.0020523071)
 text = "Left Hand Discrete Signals"
 
-[node name="LeftMenuGesture" type="MeshInstance3D" parent="HandAimInterface/LeftHand/DiscreteIndicators"]
+[node name="LeftMenuGesture" type="MeshInstance3D" parent="HandAimInterface/LeftHand/DiscreteIndicators" unique_id=117735841]
 transform = Transform3D(0.86602545, -0.4999999, 1.09278496e-07, 7.571037e-08, -8.74228e-08, -1, 0.4999999, 0.86602545, -3.785518e-08, -0.72265506, -0.10106701, -0.5702939)
 mesh = SubResource("CylinderMesh_buxf3")
 surface_material_override/0 = SubResource("StandardMaterial3D_egdkp")
 
-[node name="Label3D" type="Label3D" parent="HandAimInterface/LeftHand/DiscreteIndicators/LeftMenuGesture"]
+[node name="Label3D" type="Label3D" parent="HandAimInterface/LeftHand/DiscreteIndicators/LeftMenuGesture" unique_id=1072774587]
 transform = Transform3D(-1, -1.09268e-14, -8.74228e-08, -8.74228e-08, 4.37114e-08, 1, -1.74949e-14, 1, -4.37114e-08, 0, 0, 0.522952)
 text = "Menu
 Gesture"
 
-[node name="LeftMenuPressed" type="MeshInstance3D" parent="HandAimInterface/LeftHand/DiscreteIndicators"]
+[node name="LeftMenuPressed" type="MeshInstance3D" parent="HandAimInterface/LeftHand/DiscreteIndicators" unique_id=287597918]
 transform = Transform3D(0.86602545, -0.4999999, 1.09278496e-07, 7.571037e-08, -8.74228e-08, -1, 0.4999999, 0.86602545, -3.785518e-08, -1.3717715, -0.10100001, -0.9450612)
 mesh = SubResource("CylinderMesh_buxf3")
 surface_material_override/0 = SubResource("StandardMaterial3D_elvt7")
 
-[node name="Label3D" type="Label3D" parent="HandAimInterface/LeftHand/DiscreteIndicators/LeftMenuPressed"]
+[node name="Label3D" type="Label3D" parent="HandAimInterface/LeftHand/DiscreteIndicators/LeftMenuPressed" unique_id=148956439]
 transform = Transform3D(-1, -1.09268e-14, -8.74228e-08, -8.74228e-08, 4.37114e-08, 1, -1.74949e-14, 1, -4.37114e-08, 0, 0, 0.522952)
 text = "Menu
 Pressed"
 
-[node name="LeftIndexPinch" type="MeshInstance3D" parent="HandAimInterface/LeftHand/DiscreteIndicators"]
+[node name="LeftIndexPinch" type="MeshInstance3D" parent="HandAimInterface/LeftHand/DiscreteIndicators" unique_id=1082766055]
 transform = Transform3D(0.86602545, -0.4999999, 1.09278496e-07, 7.571037e-08, -8.74228e-08, -1, 0.4999999, 0.86602545, -3.785518e-08, -0.0727334, -0.101000026, -0.1950612)
 mesh = SubResource("CylinderMesh_buxf3")
 surface_material_override/0 = SubResource("StandardMaterial3D_v1bfv")
 
-[node name="Label3D" type="Label3D" parent="HandAimInterface/LeftHand/DiscreteIndicators/LeftIndexPinch"]
+[node name="Label3D" type="Label3D" parent="HandAimInterface/LeftHand/DiscreteIndicators/LeftIndexPinch" unique_id=143582534]
 transform = Transform3D(-1, -1.09268e-14, -8.74228e-08, -8.74228e-08, 4.37114e-08, 1, -1.74949e-14, 1, -4.37114e-08, 0, 0, 0.522952)
 text = "Index
 Pinch"
 
-[node name="LeftMiddlePinch" type="MeshInstance3D" parent="HandAimInterface/LeftHand/DiscreteIndicators"]
+[node name="LeftMiddlePinch" type="MeshInstance3D" parent="HandAimInterface/LeftHand/DiscreteIndicators" unique_id=605756656]
 transform = Transform3D(0.86602545, -0.4999999, 1.09278496e-07, 7.571037e-08, -8.74228e-08, -1, 0.4999999, 0.86602545, -3.785518e-08, 0.5763838, -0.101000026, 0.17970657)
 mesh = SubResource("CylinderMesh_buxf3")
 surface_material_override/0 = SubResource("StandardMaterial3D_xna1p")
 
-[node name="Label3D" type="Label3D" parent="HandAimInterface/LeftHand/DiscreteIndicators/LeftMiddlePinch"]
+[node name="Label3D" type="Label3D" parent="HandAimInterface/LeftHand/DiscreteIndicators/LeftMiddlePinch" unique_id=1627416079]
 transform = Transform3D(-1, -1.09268e-14, -8.74228e-08, -8.74228e-08, 4.37114e-08, 1, -1.74949e-14, 1, -4.37114e-08, 0, 0, 0.522952)
 text = "Middle
 Pinch"
 
-[node name="LeftRingPinch" type="MeshInstance3D" parent="HandAimInterface/LeftHand/DiscreteIndicators"]
+[node name="LeftRingPinch" type="MeshInstance3D" parent="HandAimInterface/LeftHand/DiscreteIndicators" unique_id=1971367715]
 transform = Transform3D(0.86602545, -0.4999999, 1.09278496e-07, 7.571037e-08, -8.74228e-08, -1, 0.4999999, 0.86602545, -3.785518e-08, 1.2263045, -0.101000026, 0.5549388)
 mesh = SubResource("CylinderMesh_buxf3")
 surface_material_override/0 = SubResource("StandardMaterial3D_ooqab")
 
-[node name="Label3D" type="Label3D" parent="HandAimInterface/LeftHand/DiscreteIndicators/LeftRingPinch"]
+[node name="Label3D" type="Label3D" parent="HandAimInterface/LeftHand/DiscreteIndicators/LeftRingPinch" unique_id=766262489]
 transform = Transform3D(-1, -1.09268e-14, -8.74228e-08, -8.74228e-08, 4.37114e-08, 1, -1.74949e-14, 1, -4.37114e-08, 0, 0, 0.522952)
 text = "Ring
 Pinch"
 
-[node name="LeftLittlePinch" type="MeshInstance3D" parent="HandAimInterface/LeftHand/DiscreteIndicators"]
+[node name="LeftLittlePinch" type="MeshInstance3D" parent="HandAimInterface/LeftHand/DiscreteIndicators" unique_id=1103137861]
 transform = Transform3D(0.86602545, -0.4999999, 1.09278496e-07, 7.571037e-08, -8.74228e-08, -1, 0.4999999, 0.86602545, -3.785518e-08, 1.8754249, -0.101000085, 0.9297085)
 mesh = SubResource("CylinderMesh_buxf3")
 surface_material_override/0 = SubResource("StandardMaterial3D_hhilj")
 
-[node name="Label3D" type="Label3D" parent="HandAimInterface/LeftHand/DiscreteIndicators/LeftLittlePinch"]
+[node name="Label3D" type="Label3D" parent="HandAimInterface/LeftHand/DiscreteIndicators/LeftLittlePinch" unique_id=2054155287]
 transform = Transform3D(-1, -1.09268e-14, -8.74228e-08, -8.74228e-08, 4.37114e-08, 1, -1.74949e-14, 1, -4.37114e-08, 0, 0, 0.522952)
 text = "Little
 Pinch"
 
-[node name="RightHand" type="Node3D" parent="HandAimInterface"]
+[node name="RightHand" type="Node3D" parent="HandAimInterface" unique_id=1854823244]
 transform = Transform3D(-1, -8.74228e-08, 0, 8.74228e-08, -1, 0, 0, 0, 1, 1, 1, -4)
 
-[node name="StengthIndicators" type="Node3D" parent="HandAimInterface/RightHand"]
+[node name="StengthIndicators" type="Node3D" parent="HandAimInterface/RightHand" unique_id=1259718923]
 
-[node name="Label3D" type="Label3D" parent="HandAimInterface/RightHand/StengthIndicators"]
+[node name="Label3D" type="Label3D" parent="HandAimInterface/RightHand/StengthIndicators" unique_id=103326362]
 transform = Transform3D(-0.8660254, -6.399792e-08, 0.5, 9.9135235e-08, -1, 4.37114e-08, 0.5, 8.74228e-08, 0.8660254, -1.8673918, -2.9103498, -0.0071730614)
 text = "Right Hand Pinch Strengths"
 
-[node name="RightIndexStrength" type="MeshInstance3D" parent="HandAimInterface/RightHand/StengthIndicators"]
+[node name="RightIndexStrength" type="MeshInstance3D" parent="HandAimInterface/RightHand/StengthIndicators" unique_id=1460071938]
 transform = Transform3D(0.8660254, 0.5, -1.01432605e-08, -1.1712437e-08, 0, -1, -0.5, 0.8660254, 5.8562186e-09, -1.1178725, -1.514489, -0.43990803)
 mesh = SubResource("PlaneMesh_14vhb")
 skeleton = NodePath("../..")
 surface_material_override/0 = SubResource("ShaderMaterial_qgx7a")
 
-[node name="Label3D" type="Label3D" parent="HandAimInterface/RightHand/StengthIndicators/RightIndexStrength"]
+[node name="Label3D" type="Label3D" parent="HandAimInterface/RightHand/StengthIndicators/RightIndexStrength" unique_id=1828357338]
 transform = Transform3D(-1, 1.42109e-14, 8.74228e-08, 8.74228e-08, 1.31134e-07, 1, -1.09268e-14, 1, -1.31134e-07, 0, 0, 1.1573)
 text = "Index"
 
-[node name="RightMiddleStrength" type="MeshInstance3D" parent="HandAimInterface/RightHand/StengthIndicators"]
+[node name="RightMiddleStrength" type="MeshInstance3D" parent="HandAimInterface/RightHand/StengthIndicators" unique_id=965006667]
 transform = Transform3D(0.8660254, 0.5, -1.01432605e-08, -1.1712437e-08, 0, -1, -0.5, 0.8660254, 5.8562186e-09, -1.6374874, -1.514, -0.13990831)
 mesh = SubResource("PlaneMesh_14vhb")
 skeleton = NodePath("../..")
 surface_material_override/0 = SubResource("ShaderMaterial_eti6p")
 
-[node name="Label3D" type="Label3D" parent="HandAimInterface/RightHand/StengthIndicators/RightMiddleStrength"]
+[node name="Label3D" type="Label3D" parent="HandAimInterface/RightHand/StengthIndicators/RightMiddleStrength" unique_id=844374479]
 transform = Transform3D(-1, 1.42109e-14, 8.74228e-08, 8.74228e-08, 1.31134e-07, 1, -1.09268e-14, 1, -1.31134e-07, 0, 0, 1.1573)
 text = "Middle"
 
-[node name="RightRingStrength" type="MeshInstance3D" parent="HandAimInterface/RightHand/StengthIndicators"]
+[node name="RightRingStrength" type="MeshInstance3D" parent="HandAimInterface/RightHand/StengthIndicators" unique_id=489365313]
 transform = Transform3D(0.8660254, 0.5, -1.01432605e-08, -1.1712437e-08, 0, -1, -0.5, 0.8660254, 5.8562186e-09, -2.1571028, -1.5139998, 0.16009188)
 mesh = SubResource("PlaneMesh_14vhb")
 skeleton = NodePath("../..")
 surface_material_override/0 = SubResource("ShaderMaterial_gbhtp")
 
-[node name="Label3D" type="Label3D" parent="HandAimInterface/RightHand/StengthIndicators/RightRingStrength"]
+[node name="Label3D" type="Label3D" parent="HandAimInterface/RightHand/StengthIndicators/RightRingStrength" unique_id=541282406]
 transform = Transform3D(-1, 1.42109e-14, 8.74228e-08, 8.74228e-08, 1.31134e-07, 1, -1.09268e-14, 1, -1.31134e-07, 0, 0, 1.1573)
 text = "Ring"
 
-[node name="RightLittleStrength" type="MeshInstance3D" parent="HandAimInterface/RightHand/StengthIndicators"]
+[node name="RightLittleStrength" type="MeshInstance3D" parent="HandAimInterface/RightHand/StengthIndicators" unique_id=1897064147]
 transform = Transform3D(0.8660254, 0.5, -1.01432605e-08, -1.1712437e-08, 0, -1, -0.5, 0.8660254, 5.8562186e-09, -2.676718, -1.5139998, 0.46009183)
 mesh = SubResource("PlaneMesh_14vhb")
 skeleton = NodePath("../..")
 surface_material_override/0 = SubResource("ShaderMaterial_txlku")
 
-[node name="Label3D" type="Label3D" parent="HandAimInterface/RightHand/StengthIndicators/RightLittleStrength"]
+[node name="Label3D" type="Label3D" parent="HandAimInterface/RightHand/StengthIndicators/RightLittleStrength" unique_id=1973439141]
 transform = Transform3D(-1, 1.42109e-14, 8.74228e-08, 8.74228e-08, 1.31134e-07, 1, -1.09268e-14, 1, -1.31134e-07, 0, 0, 1.1573)
 text = "Little"
 
-[node name="DiscreteIndicators" type="Node3D" parent="HandAimInterface/RightHand"]
+[node name="DiscreteIndicators" type="Node3D" parent="HandAimInterface/RightHand" unique_id=774356286]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5080335, 0.865483, 0)
 
-[node name="Label3D" type="Label3D" parent="HandAimInterface/RightHand/DiscreteIndicators"]
+[node name="Label3D" type="Label3D" parent="HandAimInterface/RightHand/DiscreteIndicators" unique_id=83395957]
 transform = Transform3D(-0.8660254, 8.74228e-08, 0.5, -7.571036e-08, -1, 4.37114e-08, 0.5, 0, 0.8660254, 0.6325593, -1.0912765, -0.002506733)
 text = "Right Hand Discrete Signals"
 
-[node name="RightSystemGesture" type="MeshInstance3D" parent="HandAimInterface/RightHand/DiscreteIndicators"]
+[node name="RightSystemGesture" type="MeshInstance3D" parent="HandAimInterface/RightHand/DiscreteIndicators" unique_id=8942206]
 transform = Transform3D(0.8660253, 0.50000006, 6.55671e-08, 7.571036e-08, -3.5527137e-15, -1, -0.50000006, 0.8660253, -3.785518e-08, 1.9240708, -0.10106701, -0.7481613)
 mesh = SubResource("CylinderMesh_buxf3")
 surface_material_override/0 = SubResource("StandardMaterial3D_50era")
 
-[node name="Label3D" type="Label3D" parent="HandAimInterface/RightHand/DiscreteIndicators/RightSystemGesture"]
+[node name="Label3D" type="Label3D" parent="HandAimInterface/RightHand/DiscreteIndicators/RightSystemGesture" unique_id=1696291408]
 transform = Transform3D(-1, -1.09268e-14, -8.74228e-08, -8.74228e-08, 4.37114e-08, 1, -1.74949e-14, 1, -4.37114e-08, 0, 0, 0.522952)
 text = "System
 Gesture"
 
-[node name="RightIndexPinch" type="MeshInstance3D" parent="HandAimInterface/RightHand/DiscreteIndicators"]
+[node name="RightIndexPinch" type="MeshInstance3D" parent="HandAimInterface/RightHand/DiscreteIndicators" unique_id=1356866951]
 transform = Transform3D(0.8660253, 0.50000006, 6.55671e-08, 7.571036e-08, -3.5527137e-15, -1, -0.50000006, 0.8660253, -3.785518e-08, 1.2745521, -0.10100001, -0.37316132)
 mesh = SubResource("CylinderMesh_buxf3")
 surface_material_override/0 = SubResource("StandardMaterial3D_nof0m")
 
-[node name="Label3D" type="Label3D" parent="HandAimInterface/RightHand/DiscreteIndicators/RightIndexPinch"]
+[node name="Label3D" type="Label3D" parent="HandAimInterface/RightHand/DiscreteIndicators/RightIndexPinch" unique_id=1692435000]
 transform = Transform3D(-1, -1.09268e-14, -8.74228e-08, -8.74228e-08, 4.37114e-08, 1, -1.74949e-14, 1, -4.37114e-08, 0, 0, 0.522952)
 text = "Index
 Pinch"
 
-[node name="RightMiddlePinch" type="MeshInstance3D" parent="HandAimInterface/RightHand/DiscreteIndicators"]
+[node name="RightMiddlePinch" type="MeshInstance3D" parent="HandAimInterface/RightHand/DiscreteIndicators" unique_id=1319728148]
 transform = Transform3D(0.8660253, 0.50000006, 6.55671e-08, 7.571036e-08, -3.5527137e-15, -1, -0.50000006, 0.8660253, -3.785518e-08, 0.6250293, -0.10100001, 0.0018405914)
 mesh = SubResource("CylinderMesh_buxf3")
 surface_material_override/0 = SubResource("StandardMaterial3D_hynj5")
 
-[node name="Label3D" type="Label3D" parent="HandAimInterface/RightHand/DiscreteIndicators/RightMiddlePinch"]
+[node name="Label3D" type="Label3D" parent="HandAimInterface/RightHand/DiscreteIndicators/RightMiddlePinch" unique_id=599329671]
 transform = Transform3D(-1, -1.09268e-14, -8.74228e-08, -8.74228e-08, 4.37114e-08, 1, -1.74949e-14, 1, -4.37114e-08, 0, 0, 0.522952)
 text = "Middle
 Pinch"
 
-[node name="RightRingPinch" type="MeshInstance3D" parent="HandAimInterface/RightHand/DiscreteIndicators"]
+[node name="RightRingPinch" type="MeshInstance3D" parent="HandAimInterface/RightHand/DiscreteIndicators" unique_id=991136686]
 transform = Transform3D(0.8660253, 0.50000006, 6.55671e-08, 7.571036e-08, -3.5527137e-15, -1, -0.50000006, 0.8660253, -3.785518e-08, -0.024489641, -0.10100001, 0.3768406)
 mesh = SubResource("CylinderMesh_buxf3")
 surface_material_override/0 = SubResource("StandardMaterial3D_upm8i")
 
-[node name="Label3D" type="Label3D" parent="HandAimInterface/RightHand/DiscreteIndicators/RightRingPinch"]
+[node name="Label3D" type="Label3D" parent="HandAimInterface/RightHand/DiscreteIndicators/RightRingPinch" unique_id=670851624]
 transform = Transform3D(-1, -1.09268e-14, -8.74228e-08, -8.74228e-08, 4.37114e-08, 1, -1.74949e-14, 1, -4.37114e-08, 0, 0, 0.522952)
 text = "Ring
 Pinch"
 
-[node name="RightLittlePinch" type="MeshInstance3D" parent="HandAimInterface/RightHand/DiscreteIndicators"]
+[node name="RightLittlePinch" type="MeshInstance3D" parent="HandAimInterface/RightHand/DiscreteIndicators" unique_id=1152410648]
 transform = Transform3D(0.8660253, 0.50000006, 6.55671e-08, 7.571036e-08, -3.5527137e-15, -1, -0.50000006, 0.8660253, -3.785518e-08, -0.6740086, -0.10100001, 0.7518406)
 mesh = SubResource("CylinderMesh_buxf3")
 surface_material_override/0 = SubResource("StandardMaterial3D_mq3v1")
 
-[node name="Label3D" type="Label3D" parent="HandAimInterface/RightHand/DiscreteIndicators/RightLittlePinch"]
+[node name="Label3D" type="Label3D" parent="HandAimInterface/RightHand/DiscreteIndicators/RightLittlePinch" unique_id=1514364494]
 transform = Transform3D(-1, -1.09268e-14, -8.74228e-08, -8.74228e-08, 4.37114e-08, 1, -1.74949e-14, 1, -4.37114e-08, 0, 0, 0.522952)
 text = "Little
 Pinch"
 
-[node name="NormalInterface" type="Node3D" parent="."]
+[node name="NormalInterface" type="Node3D" parent="." unique_id=2136918266]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.01089251, 0)
 
-[node name="LeftHand" type="Node3D" parent="NormalInterface"]
+[node name="LeftHand" type="Node3D" parent="NormalInterface" unique_id=1549649539]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.2244153, 0, 0)
 
-[node name="MicrogestureIndicators" type="Node3D" parent="NormalInterface/LeftHand"]
+[node name="MicrogestureIndicators" type="Node3D" parent="NormalInterface/LeftHand" unique_id=569812298]
 transform = Transform3D(-1, -8.74228e-08, 0, 8.74228e-08, -1, 0, 0, 0, 1, 1.3746874, 0.13451684, -4)
 
-[node name="Label3D" type="Label3D" parent="NormalInterface/LeftHand/MicrogestureIndicators"]
+[node name="Label3D" type="Label3D" parent="NormalInterface/LeftHand/MicrogestureIndicators" unique_id=1637476547]
 transform = Transform3D(-0.8660254, 8.74228e-08, -0.5, -7.571036e-08, -1, -4.37114e-08, -0.5, 0, 0.8660254, 0.63177085, 0.42865473, 0.005449772)
 text = "Left Hand Microgestures"
 
-[node name="LeftTapThumb" type="MeshInstance3D" parent="NormalInterface/LeftHand/MicrogestureIndicators"]
+[node name="LeftTapThumb" type="MeshInstance3D" parent="NormalInterface/LeftHand/MicrogestureIndicators" unique_id=1631149508]
 transform = Transform3D(0.86602545, -0.4999999, 1.09278496e-07, 7.571037e-08, -8.74228e-08, -1, 0.4999999, 0.86602545, -3.785518e-08, -0.67479396, 1.4188638, -0.74889565)
 mesh = SubResource("CylinderMesh_buxf3")
 surface_material_override/0 = SubResource("StandardMaterial3D_kek77")
 
-[node name="Label3D" type="Label3D" parent="NormalInterface/LeftHand/MicrogestureIndicators/LeftTapThumb"]
+[node name="Label3D" type="Label3D" parent="NormalInterface/LeftHand/MicrogestureIndicators/LeftTapThumb" unique_id=1085745331]
 transform = Transform3D(-1, -1.09268e-14, -8.74228e-08, -8.74228e-08, 4.37114e-08, 1, -1.74949e-14, 1, -4.37114e-08, 0, 0, 0.522952)
 text = "Tap
 Thumb"
 
-[node name="LeftSwipeLeft" type="MeshInstance3D" parent="NormalInterface/LeftHand/MicrogestureIndicators"]
+[node name="LeftSwipeLeft" type="MeshInstance3D" parent="NormalInterface/LeftHand/MicrogestureIndicators" unique_id=714696134]
 transform = Transform3D(0.86602545, -0.4999999, 1.09278496e-07, 7.571037e-08, -8.74228e-08, -1, 0.4999999, 0.86602545, -3.785518e-08, -0.024876356, 1.4189999, -0.37366533)
 mesh = SubResource("CylinderMesh_buxf3")
 surface_material_override/0 = SubResource("StandardMaterial3D_4c57u")
 
-[node name="Label3D" type="Label3D" parent="NormalInterface/LeftHand/MicrogestureIndicators/LeftSwipeLeft"]
+[node name="Label3D" type="Label3D" parent="NormalInterface/LeftHand/MicrogestureIndicators/LeftSwipeLeft" unique_id=370478702]
 transform = Transform3D(-1, -1.09268e-14, -8.74228e-08, -8.74228e-08, 4.37114e-08, 1, -1.74949e-14, 1, -4.37114e-08, 0, 0, 0.522952)
 text = "Swipe
 Left"
 
-[node name="LeftSwipeRight" type="MeshInstance3D" parent="NormalInterface/LeftHand/MicrogestureIndicators"]
+[node name="LeftSwipeRight" type="MeshInstance3D" parent="NormalInterface/LeftHand/MicrogestureIndicators" unique_id=147346809]
 transform = Transform3D(0.86602545, -0.4999999, 1.09278496e-07, 7.571037e-08, -8.74228e-08, -1, 0.4999999, 0.86602545, -3.785518e-08, 0.62424064, 1.4189314, 0.0011024475)
 mesh = SubResource("CylinderMesh_buxf3")
 surface_material_override/0 = SubResource("StandardMaterial3D_efxa6")
 
-[node name="Label3D" type="Label3D" parent="NormalInterface/LeftHand/MicrogestureIndicators/LeftSwipeRight"]
+[node name="Label3D" type="Label3D" parent="NormalInterface/LeftHand/MicrogestureIndicators/LeftSwipeRight" unique_id=1516447079]
 transform = Transform3D(-1, -1.09268e-14, -8.74228e-08, -8.74228e-08, 4.37114e-08, 1, -1.74949e-14, 1, -4.37114e-08, 0, 0, 0.522952)
 text = "Swipe
 Right"
 
-[node name="LeftSwipeForward" type="MeshInstance3D" parent="NormalInterface/LeftHand/MicrogestureIndicators"]
+[node name="LeftSwipeForward" type="MeshInstance3D" parent="NormalInterface/LeftHand/MicrogestureIndicators" unique_id=10834927]
 transform = Transform3D(0.86602545, -0.4999999, 1.09278496e-07, 7.571037e-08, -8.74228e-08, -1, 0.4999999, 0.86602545, -3.785518e-08, 1.274162, 1.419, 0.37633467)
 mesh = SubResource("CylinderMesh_buxf3")
 surface_material_override/0 = SubResource("StandardMaterial3D_dg77c")
 
-[node name="Label3D" type="Label3D" parent="NormalInterface/LeftHand/MicrogestureIndicators/LeftSwipeForward"]
+[node name="Label3D" type="Label3D" parent="NormalInterface/LeftHand/MicrogestureIndicators/LeftSwipeForward" unique_id=1664233804]
 transform = Transform3D(-1, -1.09268e-14, -8.74228e-08, -8.74228e-08, 4.37114e-08, 1, -1.74949e-14, 1, -4.37114e-08, 0, 0, 0.522952)
 text = "Swipe
 Forward"
 
-[node name="LeftSwipeBackward" type="MeshInstance3D" parent="NormalInterface/LeftHand/MicrogestureIndicators"]
+[node name="LeftSwipeBackward" type="MeshInstance3D" parent="NormalInterface/LeftHand/MicrogestureIndicators" unique_id=656349871]
 transform = Transform3D(0.86602545, -0.4999999, 1.09278496e-07, 7.571037e-08, -8.74228e-08, -1, 0.4999999, 0.86602545, -3.785518e-08, 1.9232795, 1.4189315, 0.75110245)
 mesh = SubResource("CylinderMesh_buxf3")
 surface_material_override/0 = SubResource("StandardMaterial3D_ycdy4")
 
-[node name="Label3D" type="Label3D" parent="NormalInterface/LeftHand/MicrogestureIndicators/LeftSwipeBackward"]
+[node name="Label3D" type="Label3D" parent="NormalInterface/LeftHand/MicrogestureIndicators/LeftSwipeBackward" unique_id=658730557]
 transform = Transform3D(-1, -1.09268e-14, -8.74228e-08, -8.74228e-08, 4.37114e-08, 1, -1.74949e-14, 1, -4.37114e-08, 0, 0, 0.522952)
 text = "Swipe
 Backward"
 
-[node name="RightHand" type="Node3D" parent="NormalInterface"]
+[node name="RightHand" type="Node3D" parent="NormalInterface" unique_id=398069009]
 
-[node name="MicrogestureIndicators" type="Node3D" parent="NormalInterface/RightHand"]
+[node name="MicrogestureIndicators" type="Node3D" parent="NormalInterface/RightHand" unique_id=230412036]
 transform = Transform3D(-1, -8.74228e-08, 0, 8.74228e-08, -1, 0, 0, 0, 1, 3.4925053, 0.13451684, -4)
 
-[node name="Label3D" type="Label3D" parent="NormalInterface/RightHand/MicrogestureIndicators"]
+[node name="Label3D" type="Label3D" parent="NormalInterface/RightHand/MicrogestureIndicators" unique_id=2142080492]
 transform = Transform3D(-0.8660254, 8.74228e-08, 0.5, -7.571036e-08, -1, 4.37114e-08, 0.5, 0, 0.8660254, 0.6304791, 0.42865473, -0.010271072)
 text = "Right Hand Microgestures"
 
-[node name="RightTapThumb" type="MeshInstance3D" parent="NormalInterface/RightHand/MicrogestureIndicators"]
+[node name="RightTapThumb" type="MeshInstance3D" parent="NormalInterface/RightHand/MicrogestureIndicators" unique_id=1561848485]
 transform = Transform3D(0.8660253, 0.50000006, 6.55671e-08, 7.571036e-08, -3.5527137e-15, -1, -0.50000006, 0.8660253, -3.785518e-08, 1.9219904, 1.418864, -0.7559252)
 mesh = SubResource("CylinderMesh_buxf3")
 surface_material_override/0 = SubResource("StandardMaterial3D_1bvp3")
 
-[node name="Label3D" type="Label3D" parent="NormalInterface/RightHand/MicrogestureIndicators/RightTapThumb"]
+[node name="Label3D" type="Label3D" parent="NormalInterface/RightHand/MicrogestureIndicators/RightTapThumb" unique_id=1573052079]
 transform = Transform3D(-1, -1.09268e-14, -8.74228e-08, -8.74228e-08, 4.37114e-08, 1, -1.74949e-14, 1, -4.37114e-08, 0, 0, 0.522952)
 text = "Tap
 Thumb"
 
-[node name="RightSwipeLeft" type="MeshInstance3D" parent="NormalInterface/RightHand/MicrogestureIndicators"]
+[node name="RightSwipeLeft" type="MeshInstance3D" parent="NormalInterface/RightHand/MicrogestureIndicators" unique_id=142917792]
 transform = Transform3D(0.8660253, 0.50000006, 6.55671e-08, 7.571036e-08, -3.5527137e-15, -1, -0.50000006, 0.8660253, -3.785518e-08, 1.2724714, 1.4189309, -0.38092518)
 mesh = SubResource("CylinderMesh_buxf3")
 surface_material_override/0 = SubResource("StandardMaterial3D_lquwl")
 
-[node name="Label3D" type="Label3D" parent="NormalInterface/RightHand/MicrogestureIndicators/RightSwipeLeft"]
+[node name="Label3D" type="Label3D" parent="NormalInterface/RightHand/MicrogestureIndicators/RightSwipeLeft" unique_id=86007100]
 transform = Transform3D(-1, -1.09268e-14, -8.74228e-08, -8.74228e-08, 4.37114e-08, 1, -1.74949e-14, 1, -4.37114e-08, 0, 0, 0.522952)
 text = "Swipe
 Left"
 
-[node name="RightSwipeRight" type="MeshInstance3D" parent="NormalInterface/RightHand/MicrogestureIndicators"]
+[node name="RightSwipeRight" type="MeshInstance3D" parent="NormalInterface/RightHand/MicrogestureIndicators" unique_id=221002850]
 transform = Transform3D(0.8660253, 0.50000006, 6.55671e-08, 7.571036e-08, -3.5527137e-15, -1, -0.50000006, 0.8660253, -3.785518e-08, 0.6229489, 1.4189314, -0.005923271)
 mesh = SubResource("CylinderMesh_buxf3")
 surface_material_override/0 = SubResource("StandardMaterial3D_7mycd")
 
-[node name="Label3D" type="Label3D" parent="NormalInterface/RightHand/MicrogestureIndicators/RightSwipeRight"]
+[node name="Label3D" type="Label3D" parent="NormalInterface/RightHand/MicrogestureIndicators/RightSwipeRight" unique_id=163424853]
 transform = Transform3D(-1, -1.09268e-14, -8.74228e-08, -8.74228e-08, 4.37114e-08, 1, -1.74949e-14, 1, -4.37114e-08, 0, 0, 0.522952)
 text = "Swipe
 Right"
 
-[node name="RightSwipeForward" type="MeshInstance3D" parent="NormalInterface/RightHand/MicrogestureIndicators"]
+[node name="RightSwipeForward" type="MeshInstance3D" parent="NormalInterface/RightHand/MicrogestureIndicators" unique_id=272768632]
 transform = Transform3D(0.8660253, 0.50000006, 6.55671e-08, 7.571036e-08, -3.5527137e-15, -1, -0.50000006, 0.8660253, -3.785518e-08, -0.026570082, 1.4189312, 0.36907673)
 mesh = SubResource("CylinderMesh_buxf3")
 surface_material_override/0 = SubResource("StandardMaterial3D_272bh")
 
-[node name="Label3D" type="Label3D" parent="NormalInterface/RightHand/MicrogestureIndicators/RightSwipeForward"]
+[node name="Label3D" type="Label3D" parent="NormalInterface/RightHand/MicrogestureIndicators/RightSwipeForward" unique_id=1824337981]
 transform = Transform3D(-1, -1.09268e-14, -8.74228e-08, -8.74228e-08, 4.37114e-08, 1, -1.74949e-14, 1, -4.37114e-08, 0, 0, 0.522952)
 text = "Swipe
 Forward"
 
-[node name="RightSwipeBackward" type="MeshInstance3D" parent="NormalInterface/RightHand/MicrogestureIndicators"]
+[node name="RightSwipeBackward" type="MeshInstance3D" parent="NormalInterface/RightHand/MicrogestureIndicators" unique_id=20705917]
 transform = Transform3D(0.8660253, 0.50000006, 6.55671e-08, 7.571036e-08, -3.5527137e-15, -1, -0.50000006, 0.8660253, -3.785518e-08, -0.67608905, 1.418931, 0.7440767)
 mesh = SubResource("CylinderMesh_buxf3")
 surface_material_override/0 = SubResource("StandardMaterial3D_5vw27")
 
-[node name="Label3D" type="Label3D" parent="NormalInterface/RightHand/MicrogestureIndicators/RightSwipeBackward"]
+[node name="Label3D" type="Label3D" parent="NormalInterface/RightHand/MicrogestureIndicators/RightSwipeBackward" unique_id=1409683076]
 transform = Transform3D(-1, -1.09268e-14, -8.74228e-08, -8.74228e-08, 4.37114e-08, 1, -1.74949e-14, 1, -4.37114e-08, 0, 0, 0.522952)
 text = "Swipe
 Backward"
 
-[node name="VisibilityButtons" type="Node3D" parent="."]
+[node name="VisibilityButtons" type="Node3D" parent="." unique_id=424427179]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4886761, -0.6859722)
 
-[node name="Label3D" type="Label3D" parent="VisibilityButtons"]
+[node name="Label3D" type="Label3D" parent="VisibilityButtons" unique_id=1544102776]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.55964, -4)
 text = "Visibility"
 
-[node name="LeftHandMesh" type="StaticBody3D" parent="VisibilityButtons"]
+[node name="LeftHandMesh" type="StaticBody3D" parent="VisibilityButtons" unique_id=1018648188]
 transform = Transform3D(-1, -8.74228e-08, 0, 8.74228e-08, -1, 0, 0, 0, 1, -0.67, 1, -4)
 metadata/_edit_group_ = true
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="VisibilityButtons/LeftHandMesh"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="VisibilityButtons/LeftHandMesh" unique_id=1670291006]
 mesh = SubResource("BoxMesh_us1ku")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="VisibilityButtons/LeftHandMesh"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="VisibilityButtons/LeftHandMesh" unique_id=946773332]
 shape = SubResource("BoxShape3D_tan38")
 
-[node name="Label3D" type="Label3D" parent="VisibilityButtons/LeftHandMesh"]
+[node name="Label3D" type="Label3D" parent="VisibilityButtons/LeftHandMesh" unique_id=882935649]
 transform = Transform3D(-1, 8.74228e-08, 0, -8.74228e-08, -1, 0, 0, 0, 1, 0, 0, 0.0662467)
 text = "Left Hand
 Mesh"
 
-[node name="LeftHandCapsules" type="StaticBody3D" parent="VisibilityButtons"]
+[node name="LeftHandCapsules" type="StaticBody3D" parent="VisibilityButtons" unique_id=775514932]
 transform = Transform3D(-1, -8.74228e-08, 0, 8.74228e-08, -1, 0, 0, 0, 1, -0.67, -2.88495e-08, -4)
 metadata/_edit_group_ = true
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="VisibilityButtons/LeftHandCapsules"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="VisibilityButtons/LeftHandCapsules" unique_id=2078123492]
 mesh = SubResource("BoxMesh_us1ku")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="VisibilityButtons/LeftHandCapsules"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="VisibilityButtons/LeftHandCapsules" unique_id=1215223943]
 shape = SubResource("BoxShape3D_tan38")
 
-[node name="Label3D" type="Label3D" parent="VisibilityButtons/LeftHandCapsules"]
+[node name="Label3D" type="Label3D" parent="VisibilityButtons/LeftHandCapsules" unique_id=1991199628]
 transform = Transform3D(-1, 8.74228e-08, 0, -8.74228e-08, -1, 0, 0, 0, 1, 0, 0, 0.0662467)
 text = "Left Hand
 Capsules"
 
-[node name="RightHandMesh" type="StaticBody3D" parent="VisibilityButtons"]
+[node name="RightHandMesh" type="StaticBody3D" parent="VisibilityButtons" unique_id=518645883]
 transform = Transform3D(-1, -8.74228e-08, 0, 8.74228e-08, -1, 0, 0, 0, 1, 0.67, 1, -4)
 metadata/_edit_group_ = true
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="VisibilityButtons/RightHandMesh"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="VisibilityButtons/RightHandMesh" unique_id=153950641]
 mesh = SubResource("BoxMesh_us1ku")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="VisibilityButtons/RightHandMesh"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="VisibilityButtons/RightHandMesh" unique_id=300269822]
 shape = SubResource("BoxShape3D_tan38")
 
-[node name="Label3D" type="Label3D" parent="VisibilityButtons/RightHandMesh"]
+[node name="Label3D" type="Label3D" parent="VisibilityButtons/RightHandMesh" unique_id=1643495247]
 transform = Transform3D(-1, 8.74228e-08, 0, -8.74228e-08, -1, 0, 0, 0, 1, 0, 0, 0.0662467)
 text = "Right Hand
 Mesh"
 
-[node name="RightHandCapsules" type="StaticBody3D" parent="VisibilityButtons"]
+[node name="RightHandCapsules" type="StaticBody3D" parent="VisibilityButtons" unique_id=1609889637]
 transform = Transform3D(-1, -8.74228e-08, 0, 8.74228e-08, -1, 0, 0, 0, 1, 0.67, 2.88495e-08, -4)
 metadata/_edit_group_ = true
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="VisibilityButtons/RightHandCapsules"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="VisibilityButtons/RightHandCapsules" unique_id=309730664]
 mesh = SubResource("BoxMesh_us1ku")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="VisibilityButtons/RightHandCapsules"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="VisibilityButtons/RightHandCapsules" unique_id=168360333]
 shape = SubResource("BoxShape3D_tan38")
 
-[node name="Label3D" type="Label3D" parent="VisibilityButtons/RightHandCapsules"]
+[node name="Label3D" type="Label3D" parent="VisibilityButtons/RightHandCapsules" unique_id=1848046796]
 transform = Transform3D(-1, 8.74228e-08, 0, -8.74228e-08, -1, 0, 0, 0, 1, 0, 0, 0.0662467)
 text = "Right Hand
 Capsules"

@@ -1,8 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://cxqmpcugad575"]
+[gd_scene format=3 uid="uid://cxqmpcugad575"]
 
 [ext_resource type="Script" uid="uid://r5k36k3s7ber" path="res://panel_switcher.gd" id="1_6q3v6"]
 
-[node name="PanelSwitcher" type="Control"]
+[node name="PanelSwitcher" type="Control" unique_id=1636987773]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -11,7 +11,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_6q3v6")
 
-[node name="SwitchButton" type="Button" parent="."]
+[node name="SwitchButton" type="Button" parent="." unique_id=1220167546]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 8

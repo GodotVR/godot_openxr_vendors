@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://cqsodpswgup8w"]
+[gd_scene format=3 uid="uid://cqsodpswgup8w"]
 
 [ext_resource type="Script" uid="uid://bw7i702t87j4y" path="res://main.gd" id="1_lquwl"]
 [ext_resource type="PackedScene" uid="uid://cqs8c3rq6cxvk" path="res://addons/common/viewport_2d_in_3d/function_pointer.tscn" id="2_lquwl"]
@@ -31,63 +31,63 @@ height = 0.05
 material = SubResource("StandardMaterial3D_k604q")
 size = Vector2(10, 10)
 
-[node name="Main" type="Node3D"]
+[node name="Main" type="Node3D" unique_id=1081920327]
 script = ExtResource("1_lquwl")
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1273788958]
 environment = SubResource("Environment_m0xew")
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1950569636]
 transform = Transform3D(0.677077, -0.692092, 0.25015, 0.264251, 0.545897, 0.79509, -0.686831, -0.472235, 0.552501, 0, 0, 0)
 
-[node name="XROrigin3D" type="XROrigin3D" parent="."]
+[node name="XROrigin3D" type="XROrigin3D" parent="." unique_id=932272725]
 
-[node name="XRCamera3D" type="XRCamera3D" parent="XROrigin3D"]
+[node name="XRCamera3D" type="XRCamera3D" parent="XROrigin3D" unique_id=1267450907]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.352791, 0)
 
-[node name="EyeGaze" type="XRController3D" parent="XROrigin3D"]
+[node name="EyeGaze" type="XRController3D" parent="XROrigin3D" unique_id=1877475232]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.977669, 0)
 tracker = &"/user/eyes_ext"
 show_when_tracked = true
 
-[node name="EyeGazeMesh" type="MeshInstance3D" parent="XROrigin3D/EyeGaze"]
+[node name="EyeGazeMesh" type="MeshInstance3D" parent="XROrigin3D/EyeGaze" unique_id=1948957241]
 transform = Transform3D(1, 0, 0, 0, -0.0133513, 0.999911, 0, -0.999911, -0.0133513, 0, 0, -1.18886)
 mesh = SubResource("SphereMesh_5gcab")
 
-[node name="AndroidXRLeftEye" type="XRController3D" parent="XROrigin3D"]
+[node name="AndroidXRLeftEye" type="XRController3D" parent="XROrigin3D" unique_id=1988624766]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.977669, 0)
 visible = false
 tracker = &"/user/eye_tracker_android/left"
 
-[node name="LeftEyeMesh" type="MeshInstance3D" parent="XROrigin3D/AndroidXRLeftEye"]
+[node name="LeftEyeMesh" type="MeshInstance3D" parent="XROrigin3D/AndroidXRLeftEye" unique_id=275333950]
 transform = Transform3D(1, 0, 0, 0, -0.0133513, 0.999911, 0, -0.999911, -0.0133513, 0, 0, -1.18886)
 mesh = SubResource("SphereMesh_5gcab")
 
-[node name="AndroidXRRightEye" type="XRController3D" parent="XROrigin3D"]
+[node name="AndroidXRRightEye" type="XRController3D" parent="XROrigin3D" unique_id=299939530]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.977669, 0)
 visible = false
 tracker = &"/user/eye_tracker_android/right"
 
-[node name="RightEyeMesh" type="MeshInstance3D" parent="XROrigin3D/AndroidXRRightEye"]
+[node name="RightEyeMesh" type="MeshInstance3D" parent="XROrigin3D/AndroidXRRightEye" unique_id=321795492]
 transform = Transform3D(1, 0, 0, 0, -0.0133513, 0.999911, 0, -0.999911, -0.0133513, 0, 0, -1.18886)
 mesh = SubResource("SphereMesh_5gcab")
 
-[node name="LeftHandTracker" type="XRNode3D" parent="XROrigin3D"]
+[node name="LeftHandTracker" type="XRNode3D" parent="XROrigin3D" unique_id=891168343]
 tracker = &"/user/hand_tracker/left"
 show_when_tracked = true
 
-[node name="LeftHandModel" type="OpenXRFbHandTrackingMesh" parent="XROrigin3D/LeftHandTracker"]
+[node name="LeftHandModel" type="OpenXRFbHandTrackingMesh" parent="XROrigin3D/LeftHandTracker" unique_id=829537500]
 
-[node name="LeftXRHandModifier3D" type="XRHandModifier3D" parent="XROrigin3D/LeftHandTracker/LeftHandModel"]
+[node name="LeftXRHandModifier3D" type="XRHandModifier3D" parent="XROrigin3D/LeftHandTracker/LeftHandModel" unique_id=1826440255]
 
-[node name="RightHandTracker" type="XRNode3D" parent="XROrigin3D"]
+[node name="RightHandTracker" type="XRNode3D" parent="XROrigin3D" unique_id=1367610721]
 tracker = &"/user/hand_tracker/right"
 show_when_tracked = true
 
-[node name="RightHandModel" type="OpenXRFbHandTrackingMesh" parent="XROrigin3D/RightHandTracker"]
+[node name="RightHandModel" type="OpenXRFbHandTrackingMesh" parent="XROrigin3D/RightHandTracker" unique_id=698588876]
 hand = 1
 bones/0/name = "RightPalm"
 bones/1/name = "RightHand"
@@ -116,36 +116,36 @@ bones/23/name = "RightLittleIntermediate"
 bones/24/name = "RightLittleDistal"
 bones/25/name = "RightLittleTip"
 
-[node name="RightXRHandModifier3D" type="XRHandModifier3D" parent="XROrigin3D/RightHandTracker/RightHandModel"]
+[node name="RightXRHandModifier3D" type="XRHandModifier3D" parent="XROrigin3D/RightHandTracker/RightHandModel" unique_id=935660234]
 hand_tracker = &"/user/hand_tracker/right"
 
-[node name="LeftController" type="XRController3D" parent="XROrigin3D"]
+[node name="LeftController" type="XRController3D" parent="XROrigin3D" unique_id=1195988182]
 tracker = &"left_hand"
 
-[node name="FunctionPointer" parent="XROrigin3D/LeftController" instance=ExtResource("2_lquwl")]
+[node name="FunctionPointer" parent="XROrigin3D/LeftController" unique_id=1424022040 instance=ExtResource("2_lquwl")]
 
-[node name="RightController" type="XRController3D" parent="XROrigin3D"]
+[node name="RightController" type="XRController3D" parent="XROrigin3D" unique_id=1860686534]
 tracker = &"right_hand"
 
-[node name="FunctionPointer" parent="XROrigin3D/RightController" instance=ExtResource("2_lquwl")]
+[node name="FunctionPointer" parent="XROrigin3D/RightController" unique_id=217444062 instance=ExtResource("2_lquwl")]
 
-[node name="Floor" type="MeshInstance3D" parent="."]
+[node name="Floor" type="MeshInstance3D" parent="." unique_id=515855178]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0594058, 0)
 mesh = SubResource("PlaneMesh_mjcgt")
 
-[node name="AvatarOffset" type="Node3D" parent="."]
+[node name="AvatarOffset" type="Node3D" parent="." unique_id=236987896]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1)
 
-[node name="Test-Kun" parent="AvatarOffset" instance=ExtResource("4_b317s")]
+[node name="Test-Kun" parent="AvatarOffset" unique_id=1221543803 instance=ExtResource("4_b317s")]
 
-[node name="XRBodyModifier3D" type="XRBodyModifier3D" parent="AvatarOffset/Test-Kun/Armature/GeneralSkeleton" index="2"]
+[node name="XRBodyModifier3D" type="XRBodyModifier3D" parent="AvatarOffset/Test-Kun/Armature/GeneralSkeleton" parent_id_path=PackedInt32Array(1221543803, 1052071885) index="2" unique_id=136956997]
 transform = Transform3D(1, 0, 1.74846e-07, 0, 1, 0, -1.74846e-07, 0, 1, -8.74228e-08, 0, -1)
 bone_update = 1
 
-[node name="XRFaceModifier3D" type="XRFaceModifier3D" parent="AvatarOffset"]
+[node name="XRFaceModifier3D" type="XRFaceModifier3D" parent="AvatarOffset" unique_id=102502297]
 target = NodePath("../Test-Kun/Armature/GeneralSkeleton/Body")
 
-[node name="Viewport2Din3D" parent="." instance=ExtResource("3_h2yge")]
+[node name="Viewport2Din3D" parent="." unique_id=1791372790 instance=ExtResource("3_h2yge")]
 unique_name_in_owner = true
 transform = Transform3D(0.49999997, 0, 0.8660253, 0, 1, 0, -0.8660253, 0, 0.49999997, -1.0379996, 1.0181454, -0.49768138)
 scene = ExtResource("4_1bvp3")

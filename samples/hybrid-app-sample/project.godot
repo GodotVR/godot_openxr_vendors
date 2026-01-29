@@ -12,7 +12,7 @@ config_version=5
 
 config/name="Hybrid App Sample"
 run/main_scene="res://main.tscn"
-config/features=PackedStringArray("4.4", "GL Compatibility")
+config/features=PackedStringArray("4.6", "GL Compatibility")
 config/icon="res://icon.svg"
 
 [debug]
@@ -46,4 +46,3 @@ hybrid_app/enabled=true
 hybrid_app/launch_mode=1
 openxr/extensions/meta/passthrough=true
 openxr/extensions/meta/render_model=true
-openxr/extensions/meta/color_space/starting_color_space=3

@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://debi32dnmrjov"]
+[gd_scene format=3 uid="uid://debi32dnmrjov"]
 
 [ext_resource type="Script" uid="uid://dpb5v8hdohlpc" path="res://main.gd" id="1_ig7tw"]
 [ext_resource type="Script" uid="uid://bnjcoo6qce8d6" path="res://addons/common/start_xr.gd" id="2_0xm2m"]
@@ -22,87 +22,87 @@ height = 0.2
 radius = 0.25
 height = 0.5
 
-[node name="Main" type="Node3D"]
+[node name="Main" type="Node3D" unique_id=878451345]
 script = ExtResource("1_ig7tw")
 
-[node name="StartXR" type="Node3D" parent="."]
+[node name="StartXR" type="Node3D" parent="." unique_id=102407613]
 script = ExtResource("2_0xm2m")
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1025414018]
 unique_name_in_owner = true
 transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 1.22606, -1)
 sky_mode = 1
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1063221120]
 environment = SubResource("Environment_tep2q")
 
-[node name="OpenXRAndroidLightEstimation" type="OpenXRAndroidLightEstimation" parent="." node_paths=PackedStringArray("directional_light", "world_environment")]
+[node name="OpenXRAndroidLightEstimation" type="OpenXRAndroidLightEstimation" parent="." unique_id=966010712 node_paths=PackedStringArray("directional_light", "world_environment")]
 directional_light = NodePath("../DirectionalLight3D")
 directional_light_mode = 2
 world_environment = NodePath("../WorldEnvironment")
 ambient_light_mode = 2
 
-[node name="XROrigin3D" type="XROrigin3D" parent="."]
+[node name="XROrigin3D" type="XROrigin3D" parent="." unique_id=990045554]
 
-[node name="XRCamera3D" type="XRCamera3D" parent="XROrigin3D"]
+[node name="XRCamera3D" type="XRCamera3D" parent="XROrigin3D" unique_id=2139115797]
 
-[node name="LeftController" type="XRController3D" parent="XROrigin3D"]
+[node name="LeftController" type="XRController3D" parent="XROrigin3D" unique_id=548191848]
 tracker = &"left_hand"
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/LeftController" groups=["test_sphere"]]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/LeftController" unique_id=370129264 groups=["test_sphere"]]
 mesh = SubResource("SphereMesh_h2yge")
 surface_material_override/0 = ExtResource("3_h2yge")
 
-[node name="FunctionPointer" parent="XROrigin3D/LeftController" instance=ExtResource("4_lquwl")]
+[node name="FunctionPointer" parent="XROrigin3D/LeftController" unique_id=319798119 instance=ExtResource("4_lquwl")]
 
-[node name="RightController" type="XRController3D" parent="XROrigin3D"]
+[node name="RightController" type="XRController3D" parent="XROrigin3D" unique_id=1098605462]
 tracker = &"right_hand"
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/RightController" groups=["test_sphere"]]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/RightController" unique_id=1579181463 groups=["test_sphere"]]
 mesh = SubResource("SphereMesh_h2yge")
 skeleton = NodePath("../../LeftController")
 surface_material_override/0 = ExtResource("3_h2yge")
 
-[node name="FunctionPointer" parent="XROrigin3D/RightController" instance=ExtResource("4_lquwl")]
+[node name="FunctionPointer" parent="XROrigin3D/RightController" unique_id=1088390256 instance=ExtResource("4_lquwl")]
 
-[node name="ViewPivot" parent="." instance=ExtResource("5_272bh")]
+[node name="ViewPivot" parent="." unique_id=52876897 instance=ExtResource("5_272bh")]
 direction_threshold = 0.8
 
-[node name="Viewport2Din3D" parent="ViewPivot" instance=ExtResource("4_1bvp3")]
+[node name="Viewport2Din3D" parent="ViewPivot" unique_id=376611184 instance=ExtResource("4_1bvp3")]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3697349, -2.179494)
 scene = ExtResource("6_7mycd")
 viewport_size = Vector2i(512, 360)
 pixel_size = 0.002
 
-[node name="TestSpheres" type="Node3D" parent="."]
+[node name="TestSpheres" type="Node3D" parent="." unique_id=2024544836]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 
-[node name="Sphere1" type="MeshInstance3D" parent="TestSpheres" groups=["test_sphere"]]
+[node name="Sphere1" type="MeshInstance3D" parent="TestSpheres" unique_id=1616287017 groups=["test_sphere"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, -2)
 mesh = SubResource("SphereMesh_1bvp3")
 skeleton = NodePath("../..")
 surface_material_override/0 = ExtResource("3_h2yge")
 
-[node name="Sphere2" type="MeshInstance3D" parent="TestSpheres" groups=["test_sphere"]]
+[node name="Sphere2" type="MeshInstance3D" parent="TestSpheres" unique_id=1611947768 groups=["test_sphere"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, -2)
 mesh = SubResource("SphereMesh_1bvp3")
 skeleton = NodePath("../..")
 surface_material_override/0 = ExtResource("3_h2yge")
 
-[node name="Sphere3" type="MeshInstance3D" parent="TestSpheres" groups=["test_sphere"]]
+[node name="Sphere3" type="MeshInstance3D" parent="TestSpheres" unique_id=1634607636 groups=["test_sphere"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 2)
 mesh = SubResource("SphereMesh_1bvp3")
 skeleton = NodePath("../..")
 surface_material_override/0 = ExtResource("3_h2yge")
 
-[node name="Sphere4" type="MeshInstance3D" parent="TestSpheres" groups=["test_sphere"]]
+[node name="Sphere4" type="MeshInstance3D" parent="TestSpheres" unique_id=119739587 groups=["test_sphere"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 2)
 mesh = SubResource("SphereMesh_1bvp3")
 skeleton = NodePath("../..")
 surface_material_override/0 = ExtResource("3_h2yge")
 
-[node name="Timer" type="Timer" parent="."]
+[node name="Timer" type="Timer" parent="." unique_id=1827117913]
 autostart = true
 
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

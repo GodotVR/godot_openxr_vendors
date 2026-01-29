@@ -1,10 +1,10 @@
-[gd_scene load_steps=3 format=3 uid="uid://v75csjjxgtpx"]
+[gd_scene format=3 uid="uid://v75csjjxgtpx"]
 
 [ext_resource type="Script" uid="uid://bo1lexc1atsms" path="res://example_panel.gd" id="1_tdwln"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_8sbod"]
 
-[node name="ExamplePanel" type="Control"]
+[node name="ExamplePanel" type="Control" unique_id=1873310519]
 auto_translate_mode = 1
 layout_mode = 3
 anchors_preset = 15
@@ -14,7 +14,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_tdwln")
 
-[node name="Label" type="Label" parent="."]
+[node name="Label" type="Label" parent="." unique_id=405259200]
 auto_translate_mode = 1
 layout_mode = 1
 anchors_preset = 8
@@ -31,13 +31,13 @@ grow_vertical = 2
 text = "Hello!"
 label_settings = SubResource("LabelSettings_8sbod")
 
-[node name="PointerRight" type="ColorRect" parent="."]
+[node name="PointerRight" type="ColorRect" parent="." unique_id=754481413]
 layout_mode = 0
 offset_right = 10.0
 offset_bottom = 10.0
 color = Color(1, 0, 1, 1)
 
-[node name="PointerLeft" type="ColorRect" parent="."]
+[node name="PointerLeft" type="ColorRect" parent="." unique_id=1734755894]
 layout_mode = 0
 offset_right = 10.0
 offset_bottom = 10.0

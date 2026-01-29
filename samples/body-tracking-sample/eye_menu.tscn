@@ -1,10 +1,10 @@
-[gd_scene load_steps=3 format=3 uid="uid://cumaj3uho5mg1"]
+[gd_scene format=3 uid="uid://cumaj3uho5mg1"]
 
 [ext_resource type="Script" uid="uid://boenegpk367xj" path="res://eye_menu.gd" id="1_fyqef"]
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_xb563"]
 
-[node name="UI" type="Control"]
+[node name="UI" type="Control" unique_id=1678118906]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -13,7 +13,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_fyqef")
 
-[node name="ColorRect" type="ColorRect" parent="."]
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1599591991]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -22,7 +22,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.49803922)
 
-[node name="MarginContainer" type="MarginContainer" parent="ColorRect"]
+[node name="MarginContainer" type="MarginContainer" parent="ColorRect" unique_id=646253373]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -34,14 +34,14 @@ theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 20
 
-[node name="VBoxContainer" type="VBoxContainer" parent="ColorRect/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="ColorRect/MarginContainer" unique_id=849530701]
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="HBoxContainer" type="HBoxContainer" parent="ColorRect/MarginContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="ColorRect/MarginContainer/VBoxContainer" unique_id=190347547]
 layout_mode = 2
 
-[node name="EyeGazeInteractionButton" type="Button" parent="ColorRect/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="EyeGazeInteractionButton" type="Button" parent="ColorRect/MarginContainer/VBoxContainer/HBoxContainer" unique_id=1052365750]
 layout_mode = 2
 size_flags_horizontal = 3
 toggle_mode = true
@@ -49,14 +49,14 @@ button_pressed = true
 button_group = SubResource("ButtonGroup_xb563")
 text = "Eye Gaze Interaction"
 
-[node name="AndroidEyeTrackingButton" type="Button" parent="ColorRect/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="AndroidEyeTrackingButton" type="Button" parent="ColorRect/MarginContainer/VBoxContainer/HBoxContainer" unique_id=324928600]
 layout_mode = 2
 size_flags_horizontal = 3
 toggle_mode = true
 button_group = SubResource("ButtonGroup_xb563")
 text = "Android XR Eye Tracking"
 
-[node name="InfoLabel" type="Label" parent="ColorRect/MarginContainer/VBoxContainer"]
+[node name="InfoLabel" type="Label" parent="ColorRect/MarginContainer/VBoxContainer" unique_id=336700843]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3

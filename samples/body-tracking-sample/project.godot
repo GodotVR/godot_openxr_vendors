@@ -12,7 +12,7 @@ config_version=5
 
 config/name="Body Tracking Sample"
 run/main_scene="res://main.tscn"
-config/features=PackedStringArray("4.4", "GL Compatibility")
+config/features=PackedStringArray("4.6", "GL Compatibility")
 config/icon="res://icon.svg"
 
 [debug]
@@ -47,5 +47,4 @@ openxr/extensions/androidxr/face_tracking=true
 openxr/extensions/meta/face_tracking=true
 openxr/extensions/meta/body_tracking=true
 openxr/extensions/meta/hand_tracking_mesh=true
-openxr/extensions/meta/color_space/starting_color_space=3
 openxr/extensions/androidxr/eye_tracking=true
