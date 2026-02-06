@@ -72,6 +72,15 @@ AndroidXREditorExportPlugin::AndroidXREditorExportPlugin() {
 			PROPERTY_USAGE_DEFAULT,
 			RECOMMENDED_BOUNDARY_TYPE_NONE_VALUE,
 			false);
+	_use_experimental_features_option = _generate_export_option(
+			"android_xr_features/use_experimental_features",
+			"",
+			Variant::Type::BOOL,
+			PROPERTY_HINT_NONE,
+			"",
+			PROPERTY_USAGE_DEFAULT,
+			false,
+			false);
 
 	ProjectSettings::get_singleton()->connect("settings_changed", callable_mp(this, &AndroidXREditorExportPlugin::_project_settings_changed));
 }
@@ -89,6 +98,7 @@ TypedArray<Dictionary> AndroidXREditorExportPlugin::_get_export_options(const Re
 	export_options.append(_hand_tracking_option);
 	export_options.append(_tracked_controllers_option);
 	export_options.append(_recommended_boundary_type_option);
+	export_options.append(_use_experimental_features_option);
 
 	return export_options;
 }
@@ -126,6 +136,10 @@ String AndroidXREditorExportPlugin::_get_export_option_warning(const Ref<EditorE
 	} else if (option == "android_xr_features/tracked_controllers") {
 		if (!openxr_enabled && _get_int_option(option, TRACKED_CONTROLLERS_NONE_VALUE) != TRACKED_CONTROLLERS_NONE_VALUE) {
 			return "\"Tracked Controllers\" requires \"XR Mode\" to be \"OpenXR\".\n";
+		}
+	} else if (option == "android_xr_features/use_experimental_features") {
+		if (!openxr_enabled && _get_bool_option(option)) {
+			return "\"Use experimental features\" is only valid when \"XR Mode\" is \"OpenXR\".\n";
 		}
 	}
 
@@ -200,6 +214,12 @@ String AndroidXREditorExportPlugin::_get_android_manifest_application_element_co
 		contents += "    <property\n"
 					"           android:name=\"android.window.PROPERTY_XR_BOUNDARY_TYPE_RECOMMENDED\"\n"
 					"           android:value=\"XR_BOUNDARY_TYPE_NO_RECOMMENDATION\" />\n";
+	}
+
+	// Check for experimental features
+	bool use_experimental_features = _get_bool_option("android_xr_features/use_experimental_features");
+	if (use_experimental_features) {
+		contents += "    <meta-data android:name=\"com.android.extensions.xr.uses_experimental_openxr_feature\" android:value=\"true\" />\n";
 	}
 
 	OpenXRHybridApp::HybridMode hybrid_launch_mode = _get_hybrid_app_launch_mode();
