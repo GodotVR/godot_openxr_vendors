@@ -73,6 +73,7 @@ protected:
 	Dictionary _hand_tracking_option;
 	Dictionary _tracked_controllers_option;
 	Dictionary _recommended_boundary_type_option;
+	Dictionary _use_experimental_features_option;
 
 	mutable bool _should_update_options = false;
 
