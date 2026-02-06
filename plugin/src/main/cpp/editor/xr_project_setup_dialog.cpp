@@ -66,7 +66,7 @@
 #include <godot_cpp/templates/hash_map.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
 
-static const char *XR_STARTUP_SCENE_PATH = "res://xr_startup.tscn";
+static const char *XR_MAIN_SCENE_PATH = "res://xr_main.tscn";
 static const char *START_XR_SCRIPT_PATH = "res://start_xr.gd";
 
 enum AlertType {
@@ -299,23 +299,23 @@ public:
 			ERR_FAIL_EDMSG(vformat("XR startup script %s already exists", START_XR_SCRIPT_PATH));
 		}
 
-		if (FileAccess::file_exists(XR_STARTUP_SCENE_PATH)) {
-			ERR_FAIL_EDMSG(vformat("XR startup scene xr_startup.tscn already exists", XR_STARTUP_SCENE_PATH));
+		if (FileAccess::file_exists(XR_MAIN_SCENE_PATH)) {
+			ERR_FAIL_EDMSG(vformat("XR main scene xr_main.tscn already exists", XR_MAIN_SCENE_PATH));
 		}
 
 		Ref<FileAccess> start_xr = FileAccess::open(START_XR_SCRIPT_PATH, FileAccess::WRITE);
 		start_xr->store_string(start_xr_script_content);
 		start_xr->close();
 
-		Ref<FileAccess> startup_scene = FileAccess::open(XR_STARTUP_SCENE_PATH, FileAccess::WRITE);
+		Ref<FileAccess> startup_scene = FileAccess::open(XR_MAIN_SCENE_PATH, FileAccess::WRITE);
 		startup_scene->store_string(xr_startup_scene_content);
 		startup_scene->close();
 
-		project_settings->set_setting("application/run/main_scene", XR_STARTUP_SCENE_PATH);
+		project_settings->set_setting("application/run/main_scene", XR_MAIN_SCENE_PATH);
 		project_settings->save();
 
 		editor_interface->get_resource_filesystem()->scan();
-		editor_interface->open_scene_from_path(XR_STARTUP_SCENE_PATH);
+		editor_interface->open_scene_from_path(XR_MAIN_SCENE_PATH);
 
 		button->set_disabled(true);
 	}
