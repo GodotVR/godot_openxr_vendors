@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="OpenXRAndroidUnboundedReferenceSpaceExtension" inherits="OpenXRExtensionWrapper" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		Wraps the [code]XR_ANDROID_unbounded_reference_space[/code] extension.
+	</brief_description>
+	<description>
+		Wraps the [code]XR_ANDROID_unbounded_reference_space[/code] extension.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="is_play_space_unbounded">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] if play space is set to unbounded reference space.
+			</description>
+		</method>
+		<method name="is_unbounded_reference_space_available">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] if unbounded reference space is available for use.
+			</description>
+		</method>
+		<method name="set_unbounded_reference_space_enabled">
+			<return type="void" />
+			<param index="0" name="enable" type="bool" />
+			<description>
+				Sets the unbounded reference space as enabled or disabled.
+				Note: The AndroidXR Unbounded Reference Space project setting must be enabled in order to enable the reference space.
+			</description>
+		</method>
+	</methods>
+</class>
