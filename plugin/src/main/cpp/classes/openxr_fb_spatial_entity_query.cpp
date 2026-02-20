@@ -50,7 +50,7 @@ void OpenXRFbSpatialEntityQuery::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("execute"), &OpenXRFbSpatialEntityQuery::execute);
 
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "max_results", PROPERTY_HINT_NONE, ""), "set_max_results", "get_max_results");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "timeout", PROPERTY_HINT_RANGE, "0.001,4096,0.001,or_greater,exp,suffix:s"), "set_timeout", "get_timeout");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "timeout", PROPERTY_HINT_RANGE, "0.001,4096,0.001,or_greater,exp,suffix:s"), "set_timeout", "get_timeout");
 
 	BIND_ENUM_CONSTANT(QUERY_ALL);
 	BIND_ENUM_CONSTANT(QUERY_BY_UUID);
