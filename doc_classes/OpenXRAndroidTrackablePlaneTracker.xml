@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="OpenXRAndroidTrackablePlaneTracker" inherits="OpenXRAndroidTrackableTracker" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		A tracker for a plane (from [code]XR_ANDROID_trackables[/code]).
+	</brief_description>
+	<description>
+		A tracker for a plane (from [code]XR_ANDROID_trackables[/code]).
+		See also [OpenXRAndroidTrackablesExtension].
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="get_extents">
+			<return type="Vector2" />
+			<description>
+				Returns the width and height, or [member Vector2.x] and [member Vector2.y] respectively.
+				The width and height are centered on the pose from [method OpenXRAndroidTrackableTracker.get_center_pose].
+				For example, a width of [code]2[/code] means the extents extend [code]1[/code] to the left and right of the center pose.
+			</description>
+		</method>
+		<method name="get_mesh">
+			<return type="ArrayMesh" />
+			<description>
+				Returns an indexed [ArrayMesh], which can be assigned to [member MeshInstance3D.mesh].
+				This mesh is constructed from the same vertices returned by [method get_vertices].
+			</description>
+		</method>
+		<method name="get_plane_label">
+			<return type="int" enum="OpenXRAndroidTrackablePlaneTracker.PlaneLabel" />
+			<description>
+				Return the [enum PlaneLabel] for this tracker.
+			</description>
+		</method>
+		<method name="get_plane_type">
+			<return type="int" enum="OpenXRAndroidTrackablePlaneTracker.PlaneType" />
+			<description>
+				Return the [enum PlaneType] for this tracker.
+			</description>
+		</method>
+		<method name="get_shape">
+			<return type="ConcavePolygonShape3D" />
+			<param index="0" name="thickness" type="float" />
+			<description>
+				Returns a [ConcavePolygonShape3D] representing the plane, which can be assigned to [member CollisionShape3D.shape].
+				[param thickness] is how thick to make the shape, in meters.  Positive values extend the thickness behind the plane, while negative values extend the thickness in front of the plane.  A thickness of [code]0.0[/code] will return [code]null[/code].
+			</description>
+		</method>
+		<method name="get_subsumed_by_plane">
+			<return type="OpenXRAndroidTrackablePlaneTracker" />
+			<description>
+				Return the [OpenXRAndroidTrackablePlaneTracker] that subsumes this plane.  Can be [code]null[/code].
+			</description>
+		</method>
+		<method name="get_vertices">
+			<return type="PackedVector3Array" />
+			<description>
+				Return a [PackedVector3Array] of vertices that outline the plane, counterclockwise.
+				These vertices are in local space (i.e centered about the origin) and do not form a valid mesh.
+				Use [method get_mesh] if all you need is a mesh.
+			</description>
+		</method>
+	</methods>
+	<constants>
+		<constant name="PLANE_TYPE_HORIZONTAL_DOWNWARD_FACING" value="0" enum="PlaneType">
+			The plane is horizontal, facing downward, like a ceiling.
+		</constant>
+		<constant name="PLANE_TYPE_HORIZONTAL_UPWARD_FACING" value="1" enum="PlaneType">
+			The plane is horizontal, facing upward, like a floor or tabletop.
+		</constant>
+		<constant name="PLANE_TYPE_VERTICAL" value="2" enum="PlaneType">
+			The plane is vertical, like a wall.
+		</constant>
+		<constant name="PLANE_TYPE_ARBITRARY" value="3" enum="PlaneType">
+			The plane is none of the other types.
+		</constant>
+		<constant name="PLANE_LABEL_UNKNOWN" value="0" enum="PlaneLabel">
+			The plane is none of the other labels.
+		</constant>
+		<constant name="PLANE_LABEL_WALL" value="1" enum="PlaneLabel">
+			The plane is a wall.
+		</constant>
+		<constant name="PLANE_LABEL_FLOOR" value="2" enum="PlaneLabel">
+			The plane is a floor.
+		</constant>
+		<constant name="PLANE_LABEL_CEILING" value="3" enum="PlaneLabel">
+			The plane is a ceiling.
+		</constant>
+		<constant name="PLANE_LABEL_TABLE" value="4" enum="PlaneLabel">
+			The plane is a table.
+		</constant>
+	</constants>
+</class>

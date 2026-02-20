@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="OpenXRAndroidTrackablesExtension" inherits="OpenXRExtensionWrapper" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		Implementation for trackables (from [code]XR_ANDROID_trackables[/code] and [code]XR_ANDROID_trackables_object[/code]).
+	</brief_description>
+	<description>
+		Implementation for trackables (from [code]XR_ANDROID_trackables[/code] and [code]XR_ANDROID_trackables_object[/code]).
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="can_create_more_anchors" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Check if any more anchor trackers can be created.
+				Always returns [code]false[/code] if anchors are not supported.
+			</description>
+		</method>
+		<method name="create_anchor_tracker">
+			<return type="OpenXRAndroidAnchorTracker" />
+			<param index="0" name="pose" type="Transform3D" />
+			<param index="1" name="trackable" type="OpenXRAndroidTrackableTracker" default="null" />
+			<description>
+				Create a new [OpenXRAndroidAnchorTracker], positioned at [param pose].
+				Unlike trackables, anchor trackers are not "discovered", as in, they must always be explicitly created.
+				Note that the [OpenXRAndroidAnchorTracker]'s location may not be ready.  See also [method OpenXRAndroidAnchorTracker.get_location_pose].
+				If [param trackable] is not [code]null[/code], then the [OpenXRAndroidAnchorTracker] will only be available when the trackable is found.
+			</description>
+		</method>
+		<method name="destroy_anchor_tracker">
+			<return type="void" />
+			<param index="0" name="anchor_tracker" type="OpenXRAndroidAnchorTracker" />
+			<description>
+				Destroys the underlying tracker.
+				[param anchor_tracker] can be discarded after calling this function.
+			</description>
+		</method>
+		<method name="discover_trackables">
+			<return type="void" />
+			<param index="0" name="update_trackers" type="bool" />
+			<description>
+				Query all available trackables detected by the OpenXR runtime.
+				This API is called automatically by default (see [method set_trackable_discovery_cooldown]).
+				If [param update_trackers] is [code]true[/code], all found trackers are updated.
+				If [param update_trackers] is [code]false[/code], all found trackers are not updated.  This is useful if you need to find new trackers/discard old trackers without updating all of them too.
+				Each new tracker is added to [XRServer].
+				Each absent tracker is removed from [XRServer].
+			</description>
+		</method>
+		<method name="get_anchor_trackers" qualifiers="const">
+			<return type="OpenXRAndroidAnchorTracker[]" />
+			<description>
+				Retrieve an [Array] of all [OpenXRAndroidAnchorTracker]s that have been created, and not yet destroyed, this session.
+			</description>
+		</method>
+		<method name="get_location_flags" qualifiers="const">
+			<return type="int" enum="OpenXRAndroidAnchorTracker.LocationFlags" is_bitfield="true" />
+			<param index="0" name="anchor_tracker" type="OpenXRAndroidAnchorTracker" />
+			<param index="1" name="update" type="bool" default="false" />
+			<description>
+				Convenience function to turn this:
+				[codeblock]
+				var anchor_flags: OpenXRAndroidAnchorTracker.LocationFlags
+				if anchor_tracker:
+				    anchor_flags = anchor_tracker.get_location_flags(update)
+				[/codeblock]
+				Into:
+				[codeblock]
+				var anchor_flags: OpenXRAndroidAnchorTracker.LocationFlags = OpenXRAndroidTrackablesExtension.get_location_flags(anchor_tracker, update)
+				[/codeblock]
+				See also [method OpenXRAndroidAnchorTracker.get_location_flags].
+			</description>
+		</method>
+		<method name="get_location_pose" qualifiers="const">
+			<return type="Transform3D" />
+			<param index="0" name="anchor_tracker" type="OpenXRAndroidAnchorTracker" />
+			<param index="1" name="update" type="bool" default="false" />
+			<description>
+				Convenience function to turn this:
+				[codeblock]
+				var anchor_pose: Transform3D
+				if anchor_tracker:
+				    anchor_pose = anchor_tracker.get_location_pose(update)
+				[/codeblock]
+				Into:
+				[codeblock]
+				var anchor_pose: Transform3D = OpenXRAndroidTrackablesExtension.get_location_pose(anchor_tracker, update)
+				[/codeblock]
+				See also [method OpenXRAndroidAnchorTracker.get_location_pose].
+			</description>
+		</method>
+		<method name="is_trackables_supported" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] if trackables is supported; otherwise [code]false[/code].
+			</description>
+		</method>
+		<method name="set_anchor_tracker_update_cooldown">
+			<return type="void" />
+			<param index="0" name="cooldown" type="int" />
+			<description>
+				Set how many frames to wait before automatically calling [method update_anchor_trackers].
+				When [param cooldown] is [code]0[/code], [method update_anchor_trackers] is called every frame. Note that the XR runtime may not always have new data to retrieve.
+				When [param cooldown] is less than zero, [method update_anchor_trackers] is no longer called automatically.  Your app can explicitly update anchors by calling [method update_anchor_trackers].
+				Default is [code]60[/code].
+			</description>
+		</method>
+		<method name="set_trackable_discovery_cooldown">
+			<return type="void" />
+			<param index="0" name="cooldown" type="int" />
+			<description>
+				Set how many frames to wait before automatically calling [method discover_trackables].
+				When [param cooldown] is [code]0[/code], [method discover_trackables] is called every frame. Note that the XR runtime may not always have new data to retrieve.
+				When [param cooldown] is less than zero, [method discover_trackables] is no longer called automatically.  Your app can explicitly add/remove/update all trackables by calling [method discover_trackables], or update individual trackers by calling any getter function in [OpenXRAndroidTrackableTracker] or deriving classes.
+				Default is [code]60[/code].
+			</description>
+		</method>
+		<method name="update_anchor_trackers">
+			<return type="void" />
+			<description>
+				Update all anchor trackers; updating their pose (see [method OpenXRAndroidAnchorTracker.get_location_pose]).
+				This API is called automatically by default (see [method set_anchor_tracker_update_cooldown]).
+			</description>
+		</method>
+	</methods>
+</class>

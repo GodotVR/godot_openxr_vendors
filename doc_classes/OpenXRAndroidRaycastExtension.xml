@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="OpenXRAndroidRaycastExtension" inherits="OpenXRExtensionWrapper" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		Implements raycasting into the physical environment (using [code]XR_ANDROID_raycast[/code]).
+	</brief_description>
+	<description>
+		Implements raycasting into the physical environment (using [code]XR_ANDROID_raycast[/code]).
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="is_raycast_supported" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] if raycast is supported; otherwise [code]false[/code].
+			</description>
+		</method>
+		<method name="raycast">
+			<return type="OpenXRAndroidHitResult[]" />
+			<param index="0" name="trackable_types" type="Array" />
+			<param index="1" name="origin" type="Vector3" />
+			<param index="2" name="trajectory" type="Vector3" />
+			<param index="3" name="max_results" type="int" />
+			<description>
+				Performs a raycast against the [Array] of [enum TrackableType]s, from [param origin] in the direction of [param trajectory].
+				Returns an [Array] of up to [param max_results] [OpenXRAndroidHitResult]s.
+			</description>
+		</method>
+	</methods>
+	<constants>
+		<constant name="TRACKABLE_TYPE_PLANE" value="0" enum="TrackableType">
+			One of the trackable types that can be provided in [method raycast], for raycasting real world planes (like ceilings, walls, tables, etc).
+			For each [OpenXRAndroidHitResult] returned with this type, [method OpenXRAndroidHitResult.get_tracker] will return a [OpenXRAndroidTrackablePlaneTracker].
+		</constant>
+		<constant name="TRACKABLE_TYPE_DEPTH" value="1" enum="TrackableType">
+			One of the trackable types that can be provided in [method raycast], for raycasting any solid real world surface.
+			For each [OpenXRAndroidHitResult] returned with this type, [method OpenXRAndroidHitResult.get_tracker] will return null.
+		</constant>
+	</constants>
+</class>
