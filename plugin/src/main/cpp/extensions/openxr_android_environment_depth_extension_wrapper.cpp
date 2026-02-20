@@ -68,8 +68,8 @@ uniform highp float depth_offset_exponent = 1.0;
 #endif // USE_DEPTH_OFFSET_EXPONENT
 #endif // USE_DEPTH_OFFSET_SCALE
 void vertex() {
-	highp vec4 tanfov = VIEW_INDEX == 0 ? ANDROID_ENVIRONMENT_DEPTH_TANFOV_LEFT : ANDROID_ENVIRONMENT_DEPTH_TANFOV_RIGHT;
-	highp mat4 depth_to_world = VIEW_INDEX == 0 ? ANDROID_ENVIRONMENT_DEPTH_CAMERA_TO_WORLD_LEFT : ANDROID_ENVIRONMENT_DEPTH_CAMERA_TO_WORLD_RIGHT;
+	highp vec4 tanfov = VIEW_INDEX == VIEW_MONO_LEFT ? ANDROID_ENVIRONMENT_DEPTH_TANFOV_LEFT : ANDROID_ENVIRONMENT_DEPTH_TANFOV_RIGHT;
+	highp mat4 depth_to_world = VIEW_INDEX == VIEW_MONO_LEFT ? ANDROID_ENVIRONMENT_DEPTH_CAMERA_TO_WORLD_LEFT : ANDROID_ENVIRONMENT_DEPTH_CAMERA_TO_WORLD_RIGHT;
 	highp vec2 uv = vec2((float(VERTEX_ID % ANDROID_ENVIRONMENT_DEPTH_RESOLUTION) + 0.5) / float(ANDROID_ENVIRONMENT_DEPTH_RESOLUTION), (float(VERTEX_ID / ANDROID_ENVIRONMENT_DEPTH_RESOLUTION) + 0.5) / float(ANDROID_ENVIRONMENT_DEPTH_RESOLUTION));
 
 	// Depth texel corresponds to top left so we need to flip v.
@@ -100,7 +100,7 @@ void fragment() {
 #else
 	highp float z_adjustment = abs(clip_back.w) * depth_offset_scale;
 #endif // USE_DEPTH_OFFSET_EXPONENT
-	clip_back.z += PROJECTION_MATRIX[2][2] * z_adjustment;
+	clip_back.z = clamp(clip_back.z - z_adjustment, -clip_back.w, clip_back.w);
 #endif // USE_DEPTH_OFFSET_SCALE
 	highp float camera_ndc_z = clip_back.z / clip_back.w;
 #if CURRENT_RENDERER == RENDERER_COMPATIBILITY
