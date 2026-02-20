@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="OpenXRAndroidTrackableObjectTracker" inherits="OpenXRAndroidTrackableTracker" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		A tracker for an object (from [code]XR_ANDROID_trackables[/code]).
+	</brief_description>
+	<description>
+		A tracker for an object (from [code]XR_ANDROID_trackables[/code]).
+		See also [OpenXRAndroidTrackablesExtension].
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="get_extents">
+			<return type="Vector3" />
+			<description>
+				Returns the width, height, and depth, or [member Vector3.x], [member Vector3.y], and [member Vector3.z] respectively.
+				The width, height, and depth are centered on the pose from [method OpenXRAndroidTrackableTracker.get_center_pose].
+				For example, a width of [code]2[/code] means the extents extend [code]1[/code] to the left and right of the center pose.
+			</description>
+		</method>
+		<method name="get_object_label">
+			<return type="int" enum="OpenXRAndroidTrackableObjectTracker.ObjectLabel" />
+			<description>
+				Return the [enum ObjectLabel] for this tracker.
+			</description>
+		</method>
+	</methods>
+	<constants>
+		<constant name="OBJECT_LABEL_UNKNOWN" value="0" enum="ObjectLabel">
+			The object is none of the other types.
+		</constant>
+		<constant name="OBJECT_LABEL_KEYBOARD" value="1" enum="ObjectLabel">
+			The object is a keyboard.
+		</constant>
+		<constant name="OBJECT_LABEL_MOUSE" value="2" enum="ObjectLabel">
+			The object is a computer mouse.
+		</constant>
+		<constant name="OBJECT_LABEL_LAPTOP" value="3" enum="ObjectLabel">
+			The object is a laptop.
+		</constant>
+	</constants>
+</class>
