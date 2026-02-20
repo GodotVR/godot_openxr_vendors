@@ -1,0 +1,24 @@
+[gd_scene format=3 uid="uid://debi32dnmrjov"]
+
+[ext_resource type="Script" uid="uid://cya4n40e85ijh" path="res://main.gd" id="1_0xm2m"]
+[ext_resource type="PackedScene" uid="uid://b102s1dc4bqsg" path="res://menu_3d/menu_3d.tscn" id="2_h2yge"]
+[ext_resource type="PackedScene" uid="uid://bxtjclrpxkao" path="res://addons/common/hand_pinch_detector/hand_pinch_detector.tscn" id="3_h2yge"]
+
+[node name="Main" type="Node3D" unique_id=328323955]
+script = ExtResource("1_0xm2m")
+
+[node name="XROrigin3D" type="XROrigin3D" parent="." unique_id=1547172593]
+
+[node name="XRCamera3D" type="XRCamera3D" parent="XROrigin3D" unique_id=1005972866]
+
+[node name="Menu3D" parent="XROrigin3D" unique_id=871719975 instance=ExtResource("2_h2yge")]
+
+[node name="XRController3DLeftHand" type="XRController3D" parent="XROrigin3D" unique_id=1219506884]
+tracker = &"left_hand"
+
+[node name="HandPinchDetector" parent="XROrigin3D/XRController3DLeftHand" unique_id=535120271 instance=ExtResource("3_h2yge")]
+
+[node name="XRController3DRightHand" type="XRController3D" parent="XROrigin3D" unique_id=1521837603]
+tracker = &"right_hand"
+
+[node name="HandPinchDetector" parent="XROrigin3D/XRController3DRightHand" unique_id=39149584 instance=ExtResource("3_h2yge")]

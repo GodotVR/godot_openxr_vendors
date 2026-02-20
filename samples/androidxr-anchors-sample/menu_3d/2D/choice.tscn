@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://bbb3knilomn7"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qqrtu"]
+resource_local_to_scene = true
+draw_center = false
+
+[node name="Label" type="Label"]
+theme_override_styles/normal = SubResource("StyleBoxFlat_qqrtu")

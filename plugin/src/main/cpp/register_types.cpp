@@ -49,6 +49,7 @@
 #include "export/pico_export_plugin.h"
 #include "export/validation_layers_export_plugin.h"
 
+#include "extensions/openxr_android_device_anchor_persistence_extension.h"
 #include "extensions/openxr_android_environment_depth_extension.h"
 #include "extensions/openxr_android_eye_tracking_extension.h"
 #include "extensions/openxr_android_face_tracking_extension.h"
@@ -185,6 +186,7 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			GDREGISTER_CLASS(OpenXRAndroidSceneMeshingExtension);
 			GDREGISTER_CLASS(OpenXRAndroidSceneSubmeshData);
 
+			GDREGISTER_CLASS(OpenXRAndroidDeviceAnchorPersistenceExtension);
 			GDREGISTER_CLASS(OpenXRAndroidHitResult);
 			GDREGISTER_CLASS(OpenXRAndroidRaycastExtension);
 			GDREGISTER_CLASS(OpenXRAndroidTrackablesExtension);
@@ -387,6 +389,10 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			if (_get_bool_project_setting("xr/openxr/extensions/androidxr/raycast")) {
 				_register_extension_with_openxr(OpenXRAndroidRaycastExtension::get_singleton());
 			}
+
+			if (_get_bool_project_setting("xr/openxr/extensions/androidxr/anchor_persistence")) {
+				_register_extension_with_openxr(OpenXRAndroidDeviceAnchorPersistenceExtension::get_singleton());
+			}
 		} break;
 
 		case MODULE_INITIALIZATION_LEVEL_SERVERS:
@@ -422,6 +428,7 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			_register_extension_as_singleton(OpenXRAndroidEnvironmentDepthExtension::get_singleton());
 			_register_extension_as_singleton(OpenXRAndroidTrackablesExtension::get_singleton());
 			_register_extension_as_singleton(OpenXRAndroidRaycastExtension::get_singleton());
+			_register_extension_as_singleton(OpenXRAndroidDeviceAnchorPersistenceExtension::get_singleton());
 
 // @todo GH Issue 304: Remove check for meta headers when feature becomes part of OpenXR spec.
 #ifdef META_HEADERS_ENABLED
@@ -607,6 +614,7 @@ void add_plugin_project_settings() {
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/androidxr/environment_depth", false);
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/androidxr/trackables", false);
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/androidxr/raycast", false);
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/androidxr/anchor_persistence", false);
 
 // @todo GH Issue 304: Remove check for meta headers when feature becomes part of OpenXR spec.
 #ifdef META_HEADERS_ENABLED

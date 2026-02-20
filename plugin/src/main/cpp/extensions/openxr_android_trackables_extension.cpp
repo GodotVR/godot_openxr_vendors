@@ -31,6 +31,7 @@
 #include "extensions/openxr_android_trackables_extension.h"
 #include "classes/openxr_android_trackable_object_tracker.h"
 #include "classes/openxr_android_trackable_plane_tracker.h"
+#include "extensions/openxr_android_device_anchor_persistence_extension.h"
 #include "extensions/openxr_android_raycast_extension.h"
 #include "godot_cpp/classes/xr_server.hpp"
 
@@ -388,10 +389,10 @@ Ref<OpenXRAndroidAnchorTracker> OpenXRAndroidTrackablesExtension::create_anchor_
 		return ret;
 	}
 
-	return xrcreate_anchor_tracker(output, p_tracker);
+	return xrcreate_anchor_tracker(output, StringName{}, p_tracker);
 }
 
-Ref<OpenXRAndroidAnchorTracker> OpenXRAndroidTrackablesExtension::xrcreate_anchor_tracker(XrSpace p_xrspace, Ref<OpenXRAndroidTrackableTracker> p_tracker) {
+Ref<OpenXRAndroidAnchorTracker> OpenXRAndroidTrackablesExtension::xrcreate_anchor_tracker(XrSpace p_xrspace, const StringName &p_persist_uuid, Ref<OpenXRAndroidTrackableTracker> p_tracker) {
 	Ref<OpenXRAndroidAnchorTracker> ret;
 	ERR_FAIL_COND_V(!can_create_more_anchors(), ret);
 
@@ -403,7 +404,7 @@ Ref<OpenXRAndroidAnchorTracker> OpenXRAndroidTrackablesExtension::xrcreate_ancho
 		return ret;
 	}
 
-	ret = OpenXRAndroidAnchorTracker::create(p_xrspace, p_tracker);
+	ret = OpenXRAndroidAnchorTracker::create(p_xrspace, p_persist_uuid, p_tracker);
 	current_anchor_trackers[p_xrspace] = ret;
 	xr_server->add_tracker(ret);
 
@@ -427,6 +428,14 @@ void OpenXRAndroidTrackablesExtension::destroy_anchor_tracker(Ref<OpenXRAndroidA
 	if (result != XR_SUCCESS) {
 		UtilityFunctions::printerr("OpenXR: Failed to destroy anchor space; ", get_openxr_api()->get_error_string(result));
 	}
+
+	// The anchor tracker was destroyed
+	// If it was persisted, it'll remain persisted, however we have to remove it from our bookkeeping
+	// to avoid using the now-destroyed xrspace if the caller decides to call
+	// OpenXRAndroidDeviceAnchorPersistenceExtension::create_persisted_anchor_tracker()
+	// (which would return this broken tracker)
+	OpenXRAndroidDeviceAnchorPersistenceExtension *wrapper = OpenXRAndroidDeviceAnchorPersistenceExtension::get_singleton();
+	wrapper->on_xranchor_tracker_destroyed(p_anchor_tracker->get_persist_uuid());
 
 	current_anchor_trackers.erase(p_anchor_tracker->get_xrspace());
 	xr_server->remove_tracker(p_anchor_tracker);

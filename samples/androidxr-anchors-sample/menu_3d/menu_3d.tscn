@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://b102s1dc4bqsg"]
+
+[ext_resource type="PackedScene" uid="uid://dcwibwtseri8h" path="res://addons/common/viewport_2d_in_3d/viewport_2d_in_3d.tscn" id="1_u8bdc"]
+[ext_resource type="Script" uid="uid://cxks5bk4l685" path="res://menu_3d/menu_3d.gd" id="1_yw26b"]
+[ext_resource type="PackedScene" uid="uid://dfklo782eku3l" path="res://menu_3d/2D/menu.tscn" id="2_vi6a8"]
+
+[node name="Menu3D" type="Node3D" unique_id=1196306179]
+script = ExtResource("1_yw26b")
+
+[node name="Viewport2Din3D" parent="." unique_id=174955362 instance=ExtResource("1_u8bdc")]
+scene = ExtResource("2_vi6a8")
+viewport_size = Vector2i(1, 95)
+render_priority = 1
+
+[node name="Timer" type="Timer" parent="." unique_id=1770786906]
+autostart = true
+
+[connection signal="timeout" from="Timer" to="." method="_refresh"]

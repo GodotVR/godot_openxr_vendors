@@ -31,6 +31,7 @@
 #include "classes/openxr_android_anchor_tracker.h"
 #include <godot_cpp/classes/open_xrapi_extension.hpp>
 
+#include "extensions/openxr_android_device_anchor_persistence_extension.h"
 #include "extensions/openxr_android_trackables_extension.h"
 #include "godot_cpp/core/class_db.hpp"
 #include "godot_cpp/core/error_macros.hpp"
@@ -42,17 +43,21 @@ using namespace godot;
 OpenXRAndroidAnchorTracker::OpenXRAndroidAnchorTracker() {}
 OpenXRAndroidAnchorTracker::~OpenXRAndroidAnchorTracker() {}
 
-Ref<OpenXRAndroidAnchorTracker> OpenXRAndroidAnchorTracker::create(XrSpace p_xrspace, Ref<OpenXRAndroidTrackableTracker> p_tracker) {
+Ref<OpenXRAndroidAnchorTracker> OpenXRAndroidAnchorTracker::create(XrSpace p_xrspace, const StringName &p_persist_uuid, Ref<OpenXRAndroidTrackableTracker> p_tracker) {
 	Ref<OpenXRAndroidAnchorTracker> ret;
 	ret.instantiate();
 	ret->space = p_xrspace;
+	ret->persist_uuid = p_persist_uuid;
 	ret->tracker = p_tracker;
 	ret->location = create_empty_location();
 	ret->set_tracker_type(XRServer::TRACKER_ANCHOR);
 	ret->set_tracker_name(String("openxr/androidxr/anchor_tracker/") + String::num_uint64(OpenXRAndroidTrackablesExtension::get_next_tracker_id()));
 
+	XrUuidEXT persist_xruuid = OpenXRUtilities::string_name_to_uuid(p_persist_uuid);
+	memcpy(ret->persist_xruuid.data, persist_xruuid.data, XR_UUID_SIZE * sizeof(decltype(XrUuid::data[0])));
+
 	// Ensure its cached state is sync'd with the xr runtime, just so the caller doesn't have to
-	// explicitly remember to call "get_location/etc" with
+	// explicitly remember to call "get_persist_state/get_location/etc" with
 	// "p_update" true.
 	ret->update();
 
@@ -60,6 +65,7 @@ Ref<OpenXRAndroidAnchorTracker> OpenXRAndroidAnchorTracker::create(XrSpace p_xrs
 }
 
 void OpenXRAndroidAnchorTracker::update() {
+	_update_persist_state();
 	_update_location(true);
 }
 
@@ -81,6 +87,45 @@ Transform3D OpenXRAndroidAnchorTracker::get_location_pose(bool p_update) {
 	return location_pose;
 }
 
+bool OpenXRAndroidAnchorTracker::persist() {
+	OpenXRAndroidDeviceAnchorPersistenceExtension *wrapper = OpenXRAndroidDeviceAnchorPersistenceExtension::get_singleton();
+	ERR_FAIL_NULL_V(wrapper, false);
+
+	bool ret = wrapper->persist_xranchor(this, persist_uuid, persist_xruuid);
+
+	// NOTE: unlike unpersist(), persist() changes the persist state immediately. However it is
+	// (likely) "persist pending" (rather than "persisted").
+	// When ret == false, ensure the state remains consistent with the xr runtime.
+	_update_persist_state();
+
+	return ret;
+}
+
+StringName OpenXRAndroidAnchorTracker::get_persist_uuid() const {
+	return persist_uuid;
+}
+
+OpenXRAndroidAnchorTracker::PersistState OpenXRAndroidAnchorTracker::get_persist_state(bool p_update) {
+	if (p_update) {
+		_update_persist_state();
+	}
+
+	return persist_state;
+}
+
+bool OpenXRAndroidAnchorTracker::unpersist() {
+	OpenXRAndroidDeviceAnchorPersistenceExtension *wrapper = OpenXRAndroidDeviceAnchorPersistenceExtension::get_singleton();
+	ERR_FAIL_NULL_V(wrapper, false);
+
+	bool ret = wrapper->unpersist_xranchor(persist_uuid, persist_xruuid);
+
+	// NOTE: like persist(), unpersist() does not change the state immediately (it is likely still "persisted").
+	// Regardless, ensure our persist state is accurate.
+	_update_persist_state();
+
+	return ret;
+}
+
 void OpenXRAndroidAnchorTracker::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_tracker"), &OpenXRAndroidAnchorTracker::get_tracker);
 	ADD_SIGNAL(MethodInfo("location_flags_changed"));
@@ -91,6 +136,16 @@ void OpenXRAndroidAnchorTracker::_bind_methods() {
 	BIND_BITFIELD_FLAG(LOCATION_FLAGS_POSITION_VALID);
 	BIND_BITFIELD_FLAG(LOCATION_FLAGS_ORIENTATION_TRACKED);
 	BIND_BITFIELD_FLAG(LOCATION_FLAGS_POSITION_TRACKED);
+
+	ClassDB::bind_method(D_METHOD("persist"), &OpenXRAndroidAnchorTracker::persist);
+	ClassDB::bind_method(D_METHOD("get_persist_uuid"), &OpenXRAndroidAnchorTracker::get_persist_uuid);
+	ClassDB::bind_method(D_METHOD("get_persist_state", "update"), &OpenXRAndroidAnchorTracker::get_persist_state, DEFVAL(false));
+	ClassDB::bind_method(D_METHOD("unpersist"), &OpenXRAndroidAnchorTracker::unpersist);
+	BIND_ENUM_CONSTANT(PERSIST_STATE_NOT_REQUESTED);
+	BIND_ENUM_CONSTANT(PERSIST_STATE_PENDING);
+	BIND_ENUM_CONSTANT(PERSIST_STATE_PERSISTED);
+	BIND_ENUM_CONSTANT(PERSIST_STATE_ERROR);
+	ADD_SIGNAL(MethodInfo("persist_state_changed"));
 }
 
 bool OpenXRAndroidAnchorTracker::get_xranchor_space_location(XrSpace p_xrspace, XrSpaceLocation &o_xrspace_location) {
@@ -177,4 +232,20 @@ void OpenXRAndroidAnchorTracker::_update_location(bool p_update) {
 	}
 
 	set_pose(StringName("default"), location_pose, Vector3(), Vector3(), confidence);
+}
+
+void OpenXRAndroidAnchorTracker::_update_persist_state() {
+	OpenXRAndroidDeviceAnchorPersistenceExtension *wrapper = OpenXRAndroidDeviceAnchorPersistenceExtension::get_singleton();
+	ERR_FAIL_NULL(wrapper);
+
+	OpenXRAndroidAnchorTracker::PersistState new_persist_state = wrapper->get_xranchor_persist_state(persist_uuid, persist_xruuid);
+	if (new_persist_state == PERSIST_STATE_NOT_REQUESTED) {
+		persist_uuid = StringName{};
+		memset(persist_xruuid.data, 0, XR_UUID_SIZE * sizeof(decltype(XrUuid::data[0])));
+	}
+
+	if (new_persist_state != persist_state) {
+		persist_state = new_persist_state;
+		emit_signal("persist_state_changed");
+	}
 }
