@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="OpenXRAndroidTrackableTracker" inherits="XRPositionalTracker" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		Base class for trackable types.
+	</brief_description>
+	<description>
+		Base class for trackable types.
+
+		[b]NOTE:[/b] Calling any getter function here or in deriving classes will always ensure the latest state.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="get_center_pose">
+			<return type="Transform3D" />
+			<description>
+				Return the latest [Transform3D] from the XR runtime.  This may not equal this node's [member Node3D.global_transform] if it's called before [OpenXRAndroidTrackablesExtension]'s process.
+			</description>
+		</method>
+		<method name="get_tracking_state">
+			<return type="int" enum="OpenXRAndroidTrackableTracker.TrackingState" />
+			<description>
+				Returns the current [enum TrackingState] of this tracker.
+			</description>
+		</method>
+	</methods>
+	<signals>
+		<signal name="updated">
+			<description>
+				Signal emitted when the XR runtime determines that this tracker's pose, state, etc, was updated.
+			</description>
+		</signal>
+	</signals>
+	<constants>
+		<constant name="TRACKING_STATE_PAUSED" value="0" enum="TrackingState">
+			Indicates that the tracker is paused but may be resumed in the future.
+		</constant>
+		<constant name="TRACKING_STATE_STOPPED" value="1" enum="TrackingState">
+			Tracking has stopped for this tracker and will never be resumed.
+		</constant>
+		<constant name="TRACKING_STATE_TRACKING" value="2" enum="TrackingState">
+			This tracker's pose is being updated and is current.
+		</constant>
+		<constant name="TRACKING_STATE_UNKNOWN" value="3" enum="TrackingState">
+			The tracker state is none of the other states, usually due to an error.
+		</constant>
+	</constants>
+</class>

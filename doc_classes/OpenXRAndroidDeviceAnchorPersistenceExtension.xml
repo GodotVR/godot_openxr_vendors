@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="OpenXRAndroidDeviceAnchorPersistenceExtension" inherits="OpenXRExtensionWrapper" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		Implementation for creating and handling persisted anchor trackers (from [code]XR_ANDROID_device_anchor_persistence[/code]).
+	</brief_description>
+	<description>
+		Implementation for creating and handling persisted anchor trackers (from [code]XR_ANDROID_device_anchor_persistence[/code]).
+		See also [OpenXRAndroidTrackablesExtension].
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="create_persisted_anchor_tracker">
+			<return type="OpenXRAndroidAnchorTracker" />
+			<param index="0" name="uuid" type="StringName" />
+			<description>
+				Create a [OpenXRAndroidAnchorTracker] from a persisted [param uuid].
+				Repeat calls to [method create_persisted_anchor_tracker] with the same [param uuid], without unpersisting, will return the same [OpenXRAndroidAnchorTracker] instance.
+				[param uuid] could have come from [method get_all_persisted_anchors], [method persist_anchor_tracker], or from a cache that an app may have stored in a previous session.
+			</description>
+		</method>
+		<method name="get_all_persisted_anchors">
+			<return type="StringName[]" />
+			<description>
+				Retrieve an [Array] of persisted anchor uuids, as [StringName]s, that have been previously persisted with [method persist_anchor_tracker] by the app.
+				Persisted anchors are returned even after restarting the app or rebooting the device, as long as the anchor was never unpersisted (see [method unpersist_anchor_tracker]).
+				Persisted anchors from other apps are not returned.
+				See also [method get_persisted_anchor_trackers].
+			</description>
+		</method>
+		<method name="get_anchor_tracker_persist_state" qualifiers="const">
+			<return type="int" enum="OpenXRAndroidAnchorTracker.PersistState" />
+			<param index="0" name="anchor_tracker" type="OpenXRAndroidAnchorTracker" />
+			<param index="1" name="update" type="bool" default="false" />
+			<description>
+				Convenience function to turn this:
+				[codeblock]
+				var persist_state := OpenXRAndroidAnchorTracker.PERSIST_STATE_NOT_REQUESTED
+				if anchor_tracker:
+				    persist_state = OpenXRAndroidDeviceAnchorPersistenceExtension.get_anchor_tracker_persist_state_uuid(anchor_tracker.get_persist_uuid(), update)
+				    # or: persist_state = anchor_tracker.get_persist_state(update)
+				[/codeblock]
+				Into:
+				[codeblock]
+				var persist_state := OpenXRAndroidDeviceAnchorPersistenceExtension.get_anchor_tracker_persist_state(anchor_tracker, update)
+				[/codeblock]
+				See also [method OpenXRAndroidAnchorTracker.get_persist_state].
+			</description>
+		</method>
+		<method name="get_anchor_tracker_persist_state_uuid">
+			<return type="int" enum="OpenXRAndroidAnchorTracker.PersistState" />
+			<param index="0" name="uuid" type="StringName" />
+			<param index="1" name="update" type="bool" default="false" />
+			<description>
+				If a [OpenXRAndroidAnchorTracker] instance was already created for [param uuid] (via [method create_persisted_anchor_tracker]), then [method OpenXRAndroidAnchorTracker.get_persist_state] is called.
+				Otherwise, the persist state is found from the [param uuid] and [param update] is ignored.
+			</description>
+		</method>
+		<method name="get_persisted_anchor_trackers" qualifiers="const">
+			<return type="OpenXRAndroidAnchorTracker[]" />
+			<description>
+				Retrieve all [OpenXRAndroidAnchorTracker]s that have been created from persisted anchor trackers since the last time the app was restarted.
+				The number of anchor trackers returned by this function will always be less than, or equal to, the number of persisted anchor uuids returned by [method get_all_persisted_anchors].
+			</description>
+		</method>
+		<method name="is_device_anchor_persistence_supported" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] if device anchor persistence is supported; otherwise [code]false[/code].
+			</description>
+		</method>
+		<method name="persist_anchor_tracker" qualifiers="const">
+			<return type="bool" />
+			<param index="0" name="anchor_tracker" type="OpenXRAndroidAnchorTracker" />
+			<description>
+				Convenience function to turn this:
+				[codeblock]
+				var persisted := anchor_tracker &amp;&amp; anchor_tracker.persist()
+				[/codeblock]
+				Into:
+				[codeblock]
+				var persisted := OpenXRAndroidDeviceAnchorPersistenceExtension.persist_anchor_tracker(anchor_tracker)
+				[/codeblock]
+				See also [method OpenXRAndroidAnchorTracker.persist].
+			</description>
+		</method>
+		<method name="restore_persisted_anchor_trackers">
+			<return type="bool" />
+			<description>
+				Restore all available persisted anchor trackers.
+				Only persisted anchors with valid poses are restored.  Persisted anchors with invalid poses may be restored in subsequent call(s) to this function.
+				Returns [code]true[/code] when there are more persisted anchors to restore.  Repeat calls in the next, or later, frame may restore more persisted anchors.
+				Returns [code]false[/code] when all persisted anchors (could have been zero) have been restored.  Repeat calls will do nothing until the app is restarted.  Calling [method set_restore_persisted_anchors_cooldown] will also return [code]false[/code].
+				This API is called automatically by default (see [method set_restore_persisted_anchors_cooldown]).
+			</description>
+		</method>
+		<method name="set_restore_persisted_anchors_cooldown">
+			<return type="bool" />
+			<param index="0" name="cooldown" type="int" />
+			<description>
+				Set how many frames to wait before automatically calling [method restore_persisted_anchor_trackers].
+				When [param cooldown] is [code]0[/code], [method restore_persisted_anchor_trackers] is called every frame. Note that the XR runtime may not always have new data to retrieve.
+				When [param cooldown] is less than zero, [method restore_persisted_anchor_trackers] is no longer called automatically.
+				Returns [code]true[/code] when the value was set.
+				Returns [code]false[/code] when the value was not set because [method restore_persisted_anchor_trackers] does not have any more persisted anchors to restore.  Calling [method restore_persisted_anchor_trackers] will also return [code]false[/code].
+				Default is [code]60[/code].
+			</description>
+		</method>
+		<method name="unpersist_anchor_tracker" qualifiers="const">
+			<return type="bool" />
+			<param index="0" name="anchor_tracker" type="OpenXRAndroidAnchorTracker" />
+			<description>
+				Convenience function to turn this:
+				[codeblock]
+				var unpersisted := anchor_tracker &amp;&amp; anchor_tracker.unpersist()
+				[/codeblock]
+				Into:
+				[codeblock]
+				var unpersisted := OpenXRAndroidDeviceAnchorPersistenceExtension.unpersist_anchor_tracker(anchor_tracker)
+				[/codeblock]
+				See also [method OpenXRAndroidAnchorTracker.unpersist] for information about unpersisting.
+			</description>
+		</method>
+		<method name="unpersist_anchor_uuid">
+			<return type="bool" />
+			<param index="0" name="uuid" type="StringName" />
+			<description>
+				Unpersists a persisted [param uuid].
+				The [OpenXRAndroidAnchorTracker] created from [param uuid], if any, will automatically be updated.
+				See also [method OpenXRAndroidAnchorTracker.unpersist] for information about unpersisting.
+			</description>
+		</method>
+	</methods>
+</class>

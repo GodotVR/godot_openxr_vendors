@@ -1,0 +1,29 @@
+[gd_scene format=3 uid="uid://dckgbcv11yfiw"]
+
+[ext_resource type="Script" uid="uid://bixygxn1relnp" path="res://anchor_visual/2D/info.gd" id="1_ipdnd"]
+[ext_resource type="Theme" uid="uid://kkbj1how5x0f" path="res://theme.tres" id="1_kt10b"]
+
+[node name="Info" type="PanelContainer" unique_id=896358521]
+offset_right = 193.0
+offset_bottom = 77.0
+theme = ExtResource("1_kt10b")
+script = ExtResource("1_ipdnd")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1446057161]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="VBoxContainer" unique_id=1946658571]
+layout_mode = 2
+text = "Plane or Spatial Anchor"
+
+[node name="Persisted" type="Label" parent="VBoxContainer" unique_id=645589377]
+layout_mode = 2
+text = "Persisted, or unpersisted"
+
+[node name="LocationFlags" type="Label" parent="VBoxContainer" unique_id=965775230]
+layout_mode = 2
+text = "Location flags:"
+
+[node name="Position" type="Label" parent="VBoxContainer" unique_id=1227166265]
+layout_mode = 2
+text = "Position:"

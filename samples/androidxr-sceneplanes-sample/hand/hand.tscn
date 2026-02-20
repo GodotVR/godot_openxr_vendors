@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://63vun3f2g0vw"]
+
+[ext_resource type="Script" uid="uid://bpuuugqraqlef" path="res://hand/hand.gd" id="1_t1j3k"]
+[ext_resource type="PackedScene" uid="uid://lq524cbr72ox" path="res://addons/common/axis3d/axis3d.tscn" id="2_v40hy"]
+
+[node name="Hand" type="XRController3D" unique_id=2034154361]
+script = ExtResource("1_t1j3k")
+
+[node name="RayCast3D" type="RayCast3D" parent="." unique_id=1226927631]
+target_position = Vector3(0, 0, -10)
+hit_back_faces = false
+
+[node name="CollisionPoint" parent="." unique_id=1914396387 instance=ExtResource("2_v40hy")]
+top_level = true

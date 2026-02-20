@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://bffcfioapm6ho"]
+
+[ext_resource type="Shader" uid="uid://bp0si44551wn6" path="res://plane_outline_3d/plane_outline_3d.gdshader" id="1_8sykx"]
+[ext_resource type="Script" uid="uid://ca32lcix1cbd4" path="res://plane_outline_3d/plane_outline_3d.gd" id="1_751l1"]
+[ext_resource type="PackedScene" uid="uid://lq524cbr72ox" path="res://addons/common/axis3d/axis3d.tscn" id="3_0vrub"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_0memy"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("1_8sykx")
+
+[sub_resource type="ImmediateMesh" id="ImmediateMesh_6fxff"]
+resource_local_to_scene = true
+
+[node name="PlaneOutline3D" type="XRAnchor3D" unique_id=1644512335]
+script = ExtResource("1_751l1")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=874246817]
+material_override = SubResource("ShaderMaterial_0memy")
+mesh = SubResource("ImmediateMesh_6fxff")
+
+[node name="Axis3D" parent="." unique_id=1235910989 instance=ExtResource("3_0vrub")]

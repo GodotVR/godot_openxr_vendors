@@ -94,6 +94,7 @@ CORE_TYPES: List[str] = [
     "Callable",
     "CollisionShape3D",
     "Color",
+    "ConcavePolygonShape3D",
     "Curve",
     "Dictionary",
     "DirectionalLight3D",
@@ -129,6 +130,7 @@ CORE_TYPES: List[str] = [
     "XRInterface",
     "XRNode3D",
     "XROrigin3D",
+    "XRPositionalTracker",
     "XRServer",
 ]
 

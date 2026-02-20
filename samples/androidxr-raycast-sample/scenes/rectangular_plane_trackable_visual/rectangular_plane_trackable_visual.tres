@@ -1,0 +1,10 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://cyjnhgseq2k5a"]
+
+[ext_resource type="Shader" uid="uid://dxuyynkpfem26" path="res://scenes/rectangular_plane_trackable_visual/rectangular_plane_trackable_visual.gdshader" id="1_fjg2o"]
+
+[resource]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("1_fjg2o")
+shader_parameter/uColor = Color(1, 1, 1, 1)
+shader_parameter/uExtents = Vector2(1, 1)

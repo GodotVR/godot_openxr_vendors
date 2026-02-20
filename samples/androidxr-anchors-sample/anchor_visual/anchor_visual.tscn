@@ -1,0 +1,24 @@
+[gd_scene format=3 uid="uid://30kdab8tb3um"]
+
+[ext_resource type="Script" uid="uid://cblie4fc3pguw" path="res://anchor_visual/anchor_visual.gd" id="1_wav6p"]
+[ext_resource type="PackedScene" uid="uid://dcwibwtseri8h" path="res://addons/common/viewport_2d_in_3d/viewport_2d_in_3d.tscn" id="2_u7vvl"]
+[ext_resource type="PackedScene" uid="uid://dckgbcv11yfiw" path="res://anchor_visual/2D/info.tscn" id="3_gseao"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ws5ug"]
+resource_local_to_scene = true
+shading_mode = 0
+
+[sub_resource type="BoxMesh" id="BoxMesh_hbjii"]
+resource_local_to_scene = true
+material = SubResource("StandardMaterial3D_ws5ug")
+size = Vector3(0.1, 0.1, 0.1)
+
+[node name="AnchorVisual" type="XRAnchor3D" unique_id=1083999251]
+script = ExtResource("1_wav6p")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1051535343]
+mesh = SubResource("BoxMesh_hbjii")
+
+[node name="Viewport2Din3D" parent="." unique_id=1698198823 instance=ExtResource("2_u7vvl")]
+scene = ExtResource("3_gseao")
+viewport_size = Vector2i(1080, 376)

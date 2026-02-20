@@ -1,0 +1,29 @@
+[gd_scene format=3 uid="uid://cc23hm0qw0nc7"]
+
+[ext_resource type="Script" uid="uid://b1p8fja3lhe8s" path="res://scenes/base_scene.gd" id="1_rackv"]
+[ext_resource type="PackedScene" uid="uid://dcwibwtseri8h" path="res://addons/common/viewport_2d_in_3d/viewport_2d_in_3d.tscn" id="3_yvsvp"]
+[ext_resource type="PackedScene" uid="uid://bxtjclrpxkao" path="res://addons/common/hand_pinch_detector/hand_pinch_detector.tscn" id="4_osw8o"]
+[ext_resource type="PackedScene" uid="uid://cmw8apks7hcfr" path="res://scenes/2D/instructions.tscn" id="4_s4fbs"]
+
+[node name="XROrigin3D" type="XROrigin3D" unique_id=1833980493]
+script = ExtResource("1_rackv")
+
+[node name="XRCamera3D" type="XRCamera3D" parent="." unique_id=900340848]
+
+[node name="HitPoseNodes" type="Node3D" parent="." unique_id=1791531032]
+
+[node name="Viewport2Din3D" parent="." unique_id=588579858 instance=ExtResource("3_yvsvp")]
+visible = false
+scene = ExtResource("4_s4fbs")
+pixel_size = 0.001
+no_depth_test = true
+
+[node name="XRController3DLeftHand" type="XRController3D" parent="." unique_id=863107745]
+tracker = &"left_hand"
+
+[node name="HandPinchDetector" parent="XRController3DLeftHand" unique_id=1651107635 instance=ExtResource("4_osw8o")]
+
+[node name="XRController3DRightHand" type="XRController3D" parent="." unique_id=731523567]
+tracker = &"right_hand"
+
+[node name="HandPinchDetector" parent="XRController3DRightHand" unique_id=979599414 instance=ExtResource("4_osw8o")]
