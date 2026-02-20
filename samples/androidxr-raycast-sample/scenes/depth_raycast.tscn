@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://81ac7ysre18a"]
+
+[ext_resource type="PackedScene" uid="uid://cc23hm0qw0nc7" path="res://scenes/base_scene.tscn" id="1_jkq6l"]
+
+[node name="XROrigin3D" unique_id=119021020 instance=ExtResource("1_jkq6l")]
+raycast_flags = 2
+hud_instructions = "Depth Raycast
+You should see an axis appearing directly in front of the camera if there is a successful hit. The axis is drawn at the hit location. The axis is oriented such that the Z axis (blue) is towards the ray origin (user)."
+next_scene = "res://scenes/plane_and_depth_raycast.tscn"

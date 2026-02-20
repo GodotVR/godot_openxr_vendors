@@ -107,6 +107,7 @@ private:
 	int trackable_discovery_cooldown = 60;
 	int trackable_discovery_cooldown_cur = 0;
 	XrTrackableTrackerANDROID plane_trackable_tracker = XR_NULL_HANDLE;
+	XrTrackableTrackerANDROID depth_trackable_tracker = XR_NULL_HANDLE;
 	XrTrackableTrackerANDROID object_trackable_tracker = XR_NULL_HANDLE;
 
 	LocalVector<XrTrackableTypeANDROID> supported_anchor_trackable_types;

@@ -31,6 +31,7 @@
 #include "extensions/openxr_android_trackables_extension.h"
 #include "classes/openxr_android_trackable_object_tracker.h"
 #include "classes/openxr_android_trackable_plane_tracker.h"
+#include "extensions/openxr_android_raycast_extension.h"
 #include "godot_cpp/classes/xr_server.hpp"
 
 #include <androidxr/androidxr.h>
@@ -201,6 +202,7 @@ void OpenXRAndroidTrackablesExtension::_on_process() {
 
 void OpenXRAndroidTrackablesExtension::_on_session_destroyed() {
 	_maybe_destroy_trackable_tracker(&plane_trackable_tracker);
+	_maybe_destroy_trackable_tracker(&depth_trackable_tracker);
 	_maybe_destroy_trackable_tracker(&object_trackable_tracker);
 	current_trackables.clear();
 	current_anchor_trackers.clear();
@@ -230,6 +232,17 @@ XrTrackableTrackerANDROID OpenXRAndroidTrackablesExtension::get_or_create_xrtrac
 		case XR_TRACKABLE_TYPE_PLANE_ANDROID:
 			trackable = &plane_trackable_tracker;
 			break;
+
+		// There is no OpenXRAndroidTrackablesExtension::TrackableType::DEPTH, however it is valid to
+		// (attempt to) create a XrTrackableTrackerANDROID for DEPTH
+		case XR_TRACKABLE_TYPE_DEPTH_ANDROID:
+			if (OpenXRAndroidRaycastExtension::get_singleton()->is_raycast_supported()) {
+				trackable = &depth_trackable_tracker;
+				break;
+			}
+
+			UtilityFunctions::printerr(vformat("OpenXR: unable to create Depth trackable tracker; %s is unavailable", XR_ANDROID_RAYCAST_EXTENSION_NAME));
+			return XR_NULL_HANDLE;
 
 		case XR_TRACKABLE_TYPE_OBJECT_ANDROID:
 			if (obj_available) {

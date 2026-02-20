@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://cf72srmlrls7d"]
+
+[ext_resource type="PackedScene" uid="uid://cc23hm0qw0nc7" path="res://scenes/base_scene.tscn" id="1_aqnf2"]
+
+[node name="XROrigin3D" unique_id=944605061 instance=ExtResource("1_aqnf2")]
+hud_instructions = "Plane Raycast
+A ray is cast every frame from the head in the forward direction. If it hits a tracked PLANE, the plane is rendered yellow (white otherwise) & you should see an axis appearing at the hit location. The axis is oriented such that its Y axis (green) represents the plane normal & the Z axis (blue) is towards the ray origin (user)."
+next_scene = "res://scenes/depth_raycast.tscn"
