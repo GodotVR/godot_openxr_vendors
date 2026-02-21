@@ -4,7 +4,7 @@ This directory contains the API JSON for
 [**Godot Engine**](https://github.com/godotengine/godot)'s *GDExtensions* API.
 
 ## Current API version
-- [commit 4c311cbee68c0b66ff8ebb8b0defdd9979dd2a41](https://github.com/godotengine/godot/commit/4c311cbee68c0b66ff8ebb8b0defdd9979dd2a41)
+- [commit 8120fb1242065202775831c04f099d9156c37ba2](https://github.com/godotengine/godot/commit/8120fb1242065202775831c04f099d9156c37ba2)
 
 ## Updating API
 
@@ -17,6 +17,6 @@ update procedure:
 - Use the compiled or downloaded executable to generate the `extension_api.json` file with:
 
 ```
-godot --dump-extension-api
+godot --dump-extension-api --xr-mode on
 ```
 - Copy the generated `extension_api.json` file into this directory

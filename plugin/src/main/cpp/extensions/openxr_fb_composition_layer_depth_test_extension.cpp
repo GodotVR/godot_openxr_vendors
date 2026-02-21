@@ -30,6 +30,7 @@
 #include "extensions/openxr_fb_composition_layer_depth_test_extension.h"
 
 #include <godot_cpp/classes/open_xrapi_extension.hpp>
+#include <godot_cpp/classes/project_settings.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
 
 using namespace godot;
@@ -58,10 +59,60 @@ OpenXRFbCompositionLayerDepthTestExtension::~OpenXRFbCompositionLayerDepthTestEx
 }
 
 void OpenXRFbCompositionLayerDepthTestExtension::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("is_enabled"), &OpenXRFbCompositionLayerDepthTestExtension::is_composition_layer_depth_test_supported);
+	ClassDB::bind_method(D_METHOD("set_projection_layer_depth_test_enabled", "enabled"), &OpenXRFbCompositionLayerDepthTestExtension::set_projection_layer_depth_test_enabled);
+	ClassDB::bind_method(D_METHOD("is_projection_layer_depth_test_enabled"), &OpenXRFbCompositionLayerDepthTestExtension::is_projection_layer_depth_test_enabled);
+
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "projection_layer_depth_test_enabled", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NONE), "set_projection_layer_depth_test_enabled", "is_projection_layer_depth_test_enabled");
 }
 
 void OpenXRFbCompositionLayerDepthTestExtension::cleanup() {
 	fb_composition_layer_depth_test_ext = false;
+	projection_layer_depth_test_enabled = false;
+}
+
+void OpenXRFbCompositionLayerDepthTestExtension::_on_session_created(uint64_t p_session) {
+	if (!fb_composition_layer_depth_test_ext) {
+		return;
+	}
+	get_openxr_api()->register_projection_layer_extension(this);
+}
+
+void OpenXRFbCompositionLayerDepthTestExtension::_on_session_destroyed() {
+	if (!fb_composition_layer_depth_test_ext) {
+		return;
+	}
+	get_openxr_api()->unregister_projection_layer_extension(this);
+}
+
+void OpenXRFbCompositionLayerDepthTestExtension::_on_state_ready() {
+	if (!fb_composition_layer_depth_test_ext) {
+		return;
+	}
+
+	ProjectSettings *project_settings = ProjectSettings::get_singleton();
+	ERR_FAIL_NULL(project_settings);
+
+	bool depth_test_enabled = project_settings->get_setting_with_override("xr/openxr/extensions/meta/composition_layer_settings/main_projection_layer/enable_depth_test");
+	set_projection_layer_depth_test_enabled(depth_test_enabled);
+
+	if (depth_test_enabled) {
+		// Check if depth buffer submission is enabled.
+		bool depth_buffer_submission_enabled = project_settings->get_setting_with_override("xr/openxr/submit_depth_buffer");
+		if (!depth_buffer_submission_enabled) {
+			WARN_PRINT("'xr/openxr/submit_depth_buffer' must be enabled for depth testing to take effect.");
+		}
+	}
+}
+
+void OpenXRFbCompositionLayerDepthTestExtension::set_projection_layer_depth_test_enabled(bool p_projection_layer_depth_test_enabled) {
+	ERR_FAIL_COND_MSG(!fb_composition_layer_depth_test_ext, "XR_FB_composition_layer_depth_test is not enabled");
+	projection_layer_depth_test_enabled = p_projection_layer_depth_test_enabled;
+}
+
+bool OpenXRFbCompositionLayerDepthTestExtension::is_projection_layer_depth_test_enabled() const {
+	ERR_FAIL_COND_V_MSG(!fb_composition_layer_depth_test_ext, false, "XR_FB_composition_layer_depth_test is not enabled");
+	return projection_layer_depth_test_enabled;
 }
 
 Dictionary OpenXRFbCompositionLayerDepthTestExtension::_get_requested_extensions(uint64_t p_xr_version) {
@@ -92,6 +143,15 @@ uint64_t OpenXRFbCompositionLayerDepthTestExtension::_set_viewport_composition_l
 	XrCompositionLayerDepthTestFB *depth_test = layer_structs.getptr(layer);
 	depth_test->next = p_next_pointer;
 	return reinterpret_cast<uint64_t>(depth_test);
+}
+
+uint64_t OpenXRFbCompositionLayerDepthTestExtension::_set_projection_layer_and_get_next_pointer(void *p_next_pointer) {
+	if (!fb_composition_layer_depth_test_ext || !projection_layer_depth_test_enabled) {
+		return reinterpret_cast<uint64_t>(p_next_pointer);
+	}
+
+	projection_layer_depth_test.next = p_next_pointer;
+	return reinterpret_cast<uint64_t>(&projection_layer_depth_test);
 }
 
 void OpenXRFbCompositionLayerDepthTestExtension::_on_viewport_composition_layer_destroyed(const void *p_layer) {

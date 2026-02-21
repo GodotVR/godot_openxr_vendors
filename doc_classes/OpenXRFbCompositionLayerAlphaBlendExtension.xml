@@ -8,12 +8,37 @@
 	</description>
 	<tutorials>
 	</tutorials>
+	<methods>
+		<method name="is_enabled" qualifiers="const">
+			<return type="bool" />
+			<description>
+                Checks if the extension is enabled or not.
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="projection_layer_alpha_blend_enabled" type="bool" setter="set_projection_layer_alpha_blend_enabled" getter="is_projection_layer_alpha_blend_enabled">
+            Enables alpha blending for the projection layer.
+		</member>
+		<member name="projection_layer_destination_alpha_blend_factor" type="int" setter="set_projection_layer_destination_alpha_blend_factor" getter="get_projection_layer_destination_alpha_blend_factor" enum="OpenXRFbCompositionLayerAlphaBlendExtension.BlendFactor" default="0">
+            Determines the destination's contribution to the alpha blending.
+		</member>
+		<member name="projection_layer_destination_color_blend_factor" type="int" setter="set_projection_layer_destination_color_blend_factor" getter="get_projection_layer_destination_color_blend_factor" enum="OpenXRFbCompositionLayerAlphaBlendExtension.BlendFactor" default="0">
+            Determines the destination's contribution to the color blending.
+		</member>
+		<member name="projection_layer_source_alpha_blend_factor" type="int" setter="set_projection_layer_source_alpha_blend_factor" getter="get_projection_layer_source_alpha_blend_factor" enum="OpenXRFbCompositionLayerAlphaBlendExtension.BlendFactor" default="1">
+            Determines the source's contribution to the alpha blending.
+		</member>
+		<member name="projection_layer_source_color_blend_factor" type="int" setter="set_projection_layer_source_color_blend_factor" getter="get_projection_layer_source_color_blend_factor" enum="OpenXRFbCompositionLayerAlphaBlendExtension.BlendFactor" default="1">
+            Determines the source's contribution to the color blending.
+		</member>
+	</members>
 	<constants>
 		<constant name="BLEND_FACTOR_ZERO" value="0" enum="BlendFactor">
-			Blending factor set to zero, resulting in no contribution from the source.
+			Blending factor set to zero, resulting in no contribution.
 		</constant>
 		<constant name="BLEND_FACTOR_ONE" value="1" enum="BlendFactor">
-			Blending factor set to one, resulting in full contribution from the source.
+			Blending factor set to one, resulting in full contribution.
 		</constant>
 		<constant name="BLEND_FACTOR_SRC_ALPHA" value="2" enum="BlendFactor">
 			Blending factor using the source alpha value.

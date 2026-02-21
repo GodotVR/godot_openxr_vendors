@@ -8,4 +8,17 @@
 	</description>
 	<tutorials>
 	</tutorials>
+	<methods>
+		<method name="is_enabled" qualifiers="const">
+			<return type="bool" />
+			<description>
+                Checks if the extension is enabled or not.
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="projection_layer_vertical_flip" type="bool" setter="set_projection_layer_vertical_flip" getter="get_projection_layer_vertical_flip">
+            Vertically flips the projection layer.
+		</member>
+	</members>
 </class>

@@ -61,6 +61,22 @@ public:
 	virtual void _on_viewport_composition_layer_destroyed(const void *p_layer) override;
 	virtual TypedArray<Dictionary> _get_viewport_composition_layer_extension_properties() override;
 	virtual Dictionary _get_viewport_composition_layer_extension_property_defaults() override;
+	virtual uint64_t _set_projection_layer_and_get_next_pointer(void *p_next_pointer) override;
+
+	virtual void _on_session_created(uint64_t p_session) override;
+	virtual void _on_session_destroyed() override;
+	virtual void _on_state_ready() override;
+
+	bool is_enabled() const;
+
+	void set_projection_layer_auto_filter_enabled(bool p_enabled);
+	bool is_projection_layer_auto_filter_enabled() const;
+
+	void set_projection_layer_supersampling_mode(SupersamplingMode p_supersampling_mode);
+	SupersamplingMode get_projection_layer_supersampling_mode() const;
+
+	void set_projection_layer_sharpening_mode(SharpeningMode p_sharpening_mode);
+	SharpeningMode get_projection_layer_sharpening_mode() const;
 
 	OpenXRFbCompositionLayerSettingsExtension();
 	~OpenXRFbCompositionLayerSettingsExtension();
@@ -70,6 +86,8 @@ protected:
 
 private:
 	void cleanup();
+	XrCompositionLayerSettingsFlagsFB _from_sharpening_mode(SharpeningMode p_sharpening_mode) const;
+	XrCompositionLayerSettingsFlagsFB _from_supersampling_mode(SupersamplingMode p_supersampling_mode) const;
 
 	static OpenXRFbCompositionLayerSettingsExtension *singleton;
 
@@ -79,6 +97,16 @@ private:
 	bool meta_automatic_layer_filter = false;
 
 	HashMap<const XrCompositionLayerBaseHeader *, XrCompositionLayerSettingsFB> layer_structs;
+
+	XrCompositionLayerSettingsFB projection_layer_settings = {
+		XR_TYPE_COMPOSITION_LAYER_SETTINGS_FB, // type
+		nullptr, // next
+		0, // layerFlags
+	};
+
+	bool projection_layer_auto_filter_enabled = false;
+	SupersamplingMode projection_layer_supersampling_mode = SUPERSAMPLING_MODE_DISABLED;
+	SharpeningMode projection_layer_sharpening_mode = SHARPENING_MODE_DISABLED;
 };
 
 VARIANT_ENUM_CAST(OpenXRFbCompositionLayerSettingsExtension::SupersamplingMode);
