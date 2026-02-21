@@ -160,6 +160,7 @@ radius = 0.75
 [node name="HPDisabledCompositionLayer" type="OpenXRCompositionLayerQuad" parent="XROrigin3D" unique_id=1415356353 node_paths=PackedStringArray("layer_viewport") groups=["composition_layer"]]
 transform = Transform3D(0.140538, 0, -0.990075, 0, 1, 0, 0.990075, 0, 0.140538, 1.89042, 1.11189, -0.494546)
 layer_viewport = NodePath("../../NonHPViewport")
+XR_FB_composition_layer_depth_test/enable = true
 
 [node name="HPEnabledCompositionLayer" type="OpenXRCompositionLayerQuad" parent="XROrigin3D" unique_id=1815521095 node_paths=PackedStringArray("layer_viewport") groups=["composition_layer"]]
 transform = Transform3D(0.140538, 0, -0.990074, 0, 1, 0, 0.990074, 0, 0.140538, 1.88959, 2.13777, -0.497513)

@@ -46,11 +46,19 @@ public:
 	static OpenXRFbCompositionLayerImageLayoutExtension *get_singleton();
 
 	virtual uint64_t _set_viewport_composition_layer_and_get_next_pointer(const void *p_layer, const Dictionary &p_property_values, void *p_next_pointer) override;
+	virtual uint64_t _set_projection_layer_and_get_next_pointer(void *p_next_pointer) override;
 	virtual void _on_viewport_composition_layer_destroyed(const void *p_layer) override;
 	virtual TypedArray<Dictionary> _get_viewport_composition_layer_extension_properties() override;
 	virtual Dictionary _get_viewport_composition_layer_extension_property_defaults() override;
 
+	virtual void _on_session_created(uint64_t p_session) override;
+	virtual void _on_session_destroyed() override;
+	virtual void _on_state_ready() override;
+
 	bool is_enabled() const;
+
+	void set_projection_layer_vertical_flip(bool p_vertical_flip);
+	bool get_projection_layer_vertical_flip() const;
 
 	OpenXRFbCompositionLayerImageLayoutExtension();
 	~OpenXRFbCompositionLayerImageLayoutExtension();
@@ -68,4 +76,12 @@ private:
 	bool fb_composition_layer_image_layout = false;
 
 	HashMap<const XrCompositionLayerBaseHeader *, XrCompositionLayerImageLayoutFB> layer_structs;
+
+	XrCompositionLayerImageLayoutFB projection_layer_image_layout = {
+		XR_TYPE_COMPOSITION_LAYER_IMAGE_LAYOUT_FB, // type
+		nullptr, // next
+		0 // flags
+	};
+
+	bool projection_layer_vertical_flip = false;
 };

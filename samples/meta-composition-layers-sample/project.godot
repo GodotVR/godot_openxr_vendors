@@ -25,5 +25,7 @@ textures/vram_compression/import_etc2_astc=true
 
 openxr/enabled=true
 openxr/reference_space=2
+openxr/submit_depth_buffer=true
 shaders/enabled=true
 openxr/extensions/meta/render_model=true
+openxr/extensions/meta/composition_layer_settings/main_projection_layer/enable_depth_test=true
