@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://dfklo782eku3l"]
+
+[ext_resource type="Theme" uid="uid://kkbj1how5x0f" path="res://theme.tres" id="1_8l4f7"]
+[ext_resource type="Script" uid="uid://ddo7jsi3bhpfl" path="res://menu_3d/2D/menu.gd" id="1_08uaw"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_56rbd"]
+bg_color = Color(0, 0, 0, 1)
+
+[node name="Menu" type="PanelContainer" unique_id=250116078]
+offset_right = 1.0
+offset_bottom = 27.0
+theme = ExtResource("1_8l4f7")
+theme_override_styles/panel = SubResource("StyleBoxFlat_56rbd")
+script = ExtResource("1_08uaw")
+
+[node name="Labels" type="VBoxContainer" parent="." unique_id=1142319566]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="Labels" unique_id=789605243]
+layout_mode = 2
+
+[node name="Choices" type="VBoxContainer" parent="Labels" unique_id=1260355718]
+layout_mode = 2

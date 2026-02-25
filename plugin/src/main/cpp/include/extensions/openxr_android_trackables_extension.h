@@ -76,7 +76,7 @@ public:
 	// Similar to planes, anchors are also part of the XR_ANDROID_trackables extension (and we don't
 	// have a separate class since XR_ANDROID_trackables_anchor doesn't exist).
 	Ref<OpenXRAndroidAnchorTracker> create_anchor_tracker(const Transform3D &p_pose, Ref<OpenXRAndroidTrackableTracker> p_tracker);
-	Ref<OpenXRAndroidAnchorTracker> xrcreate_anchor_tracker(XrSpace p_xrspace, Ref<OpenXRAndroidTrackableTracker> p_tracker);
+	Ref<OpenXRAndroidAnchorTracker> xrcreate_anchor_tracker(XrSpace p_xrspace, const StringName &p_persist_uuid, Ref<OpenXRAndroidTrackableTracker> p_tracker);
 	void destroy_anchor_tracker(Ref<OpenXRAndroidAnchorTracker> p_anchor_tracker);
 	BitField<OpenXRAndroidAnchorTracker::LocationFlags> get_location_flags(Ref<OpenXRAndroidAnchorTracker> p_anchor_tracker, bool p_update) const;
 	Transform3D get_location_pose(Ref<OpenXRAndroidAnchorTracker> p_anchor_tracker, bool p_update) const;
