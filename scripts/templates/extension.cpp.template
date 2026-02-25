@@ -1,0 +1,98 @@
+/**************************************************************************/
+/*  $file_name  */
+/**************************************************************************/
+/*                       This file is part of:                            */
+/*                              GODOT XR                                  */
+/*                      https://godotengine.org                           */
+/**************************************************************************/
+/* Copyright (c) 2022-present Godot XR contributors (see CONTRIBUTORS.md) */
+/*                                                                        */
+/* Permission is hereby granted, free of charge, to any person obtaining  */
+/* a copy of this software and associated documentation files (the        */
+/* "Software"), to deal in the Software without restriction, including    */
+/* without limitation the rights to use, copy, modify, merge, publish,    */
+/* distribute, sublicense, and/or sell copies of the Software, and to     */
+/* permit persons to whom the Software is furnished to do so, subject to  */
+/* the following conditions:                                              */
+/*                                                                        */
+/* The above copyright notice and this permission notice shall be         */
+/* included in all copies or substantial portions of the Software.        */
+/*                                                                        */
+/* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,        */
+/* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF     */
+/* MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */
+/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */
+/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */
+/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */
+/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
+/**************************************************************************/
+
+#include "extensions/$header_file_name"
+
+#include <godot_cpp/classes/open_xrapi_extension.hpp>
+#include <godot_cpp/variant/utility_functions.hpp>
+
+using namespace godot;
+
+$class_name *$class_name::singleton = nullptr;
+
+$class_name *$class_name::get_singleton() {
+	if (singleton == nullptr) {
+		singleton = memnew($class_name());
+	}
+	return singleton;
+}
+
+${class_name}::$class_name() :
+		OpenXRExtensionWrapper() {
+	ERR_FAIL_COND_MSG(singleton != nullptr, "An $class_name singleton already exists.");
+
+	request_extensions[$ext_name_constant] = &$ext_bool_name;
+	singleton = this;
+}
+
+${class_name}::~$class_name() {
+	cleanup();
+	singleton = nullptr;
+}
+
+void $class_name::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("is_enabled"), &$class_name::is_enabled);
+}
+
+bool $class_name::is_enabled() const {
+	return $ext_bool_name;
+}
+
+void $class_name::_on_instance_created(uint64_t p_instance) {
+	if ($ext_bool_name) {
+		bool result = $init_function_name((XrInstance)p_instance);
+		if (!result) {
+			UtilityFunctions::printerr("Failed to initialize $ext_display_name extension");
+			$ext_bool_name = false;
+		}
+	}
+}
+
+void $class_name::_on_instance_destroyed() {
+	cleanup();
+}
+
+bool $class_name::$init_function_name(const XrInstance &p_instance) {
+	// TODO: Initialize OpenXR function pointers using GDEXTENSION_INIT_XR_FUNC_V().
+
+	return true;
+}
+
+void $class_name::cleanup() {
+	$ext_bool_name = false;
+}
+
+Dictionary $class_name::_get_requested_extensions(uint64_t p_xr_version) {
+	Dictionary result;
+	for (auto ext : request_extensions) {
+		uint64_t value = reinterpret_cast<uint64_t>(ext.value);
+		result[ext.key] = (Variant)value;
+	}
+	return result;
+}
