@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://dhjbru1ndh7x3"]
+
+[ext_resource type="Material" uid="uid://cyjnhgseq2k5a" path="res://scenes/rectangular_plane_trackable_visual/rectangular_plane_trackable_visual.tres" id="1_efw0n"]
+[ext_resource type="Script" uid="uid://b0irs87e8mo06" path="res://scenes/rectangular_plane_trackable_visual/rectangular_plane_trackable_visual.gd" id="1_xc2qs"]
+[ext_resource type="PackedScene" uid="uid://lq524cbr72ox" path="res://addons/common/axis3d/axis3d.tscn" id="4_s3py4"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_jbwgh"]
+resource_local_to_scene = true
+material = ExtResource("1_efw0n")
+
+[node name="RectangularPlaneTrackableVisual" type="XRAnchor3D" unique_id=325186770]
+script = ExtResource("1_xc2qs")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=2097438099]
+mesh = SubResource("PlaneMesh_jbwgh")
+
+[node name="Axis3D" parent="." unique_id=1480857396 instance=ExtResource("4_s3py4")]
