@@ -29,6 +29,7 @@
 /**************************************************************************/
 
 #include "extensions/openxr_android_trackables_extension.h"
+#include "classes/openxr_android_trackable_object_tracker.h"
 #include "classes/openxr_android_trackable_plane_tracker.h"
 #include "godot_cpp/classes/xr_server.hpp"
 
@@ -279,6 +280,9 @@ Ref<OpenXRAndroidTrackableTracker> OpenXRAndroidTrackablesExtension::_get_or_cre
 			case XR_TRACKABLE_TYPE_PLANE_ANDROID:
 				ret = OpenXRAndroidTrackablePlaneTracker::create(p_xrtrackable, p_xrtrackable_tracker);
 				break;
+			case XR_TRACKABLE_TYPE_OBJECT_ANDROID:
+				ret = OpenXRAndroidTrackableObjectTracker::create(p_xrtrackable, p_xrtrackable_tracker);
+				break;
 			default:
 				UtilityFunctions::printerr("OpenXR: Unsupported trackable type; ", p_xrtrackable_type);
 				return ret;
@@ -504,6 +508,7 @@ void OpenXRAndroidTrackablesExtension::find_and_update_all_trackers(XrTrackableT
 	}
 
 	if (trackable_count_output == 0) {
+		// This is okay
 		return;
 	}
 

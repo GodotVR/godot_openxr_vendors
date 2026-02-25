@@ -4,23 +4,23 @@ extends XRAnchor3D
 ## OpenXRAndroidTrackablePlaneTracker
 signal subsumed
 
-var _trackable_plane: OpenXRAndroidTrackablePlaneTracker
+var _plane_tracker: OpenXRAndroidTrackablePlaneTracker
 var _mesh_instance: MeshInstance3D
 var _collision_shape: CollisionShape3D
 
 
-func set_trackable_plane(new_trackable_plane: OpenXRAndroidTrackablePlaneTracker):
-	# currently only handle one trackable plane
-	if _trackable_plane:
-		push_error("Expect exactly one call to each set_trackable_plane; why was this called twice?")
+func set_plane_tracker(new_plane_tracker: OpenXRAndroidTrackablePlaneTracker):
+	# currently only handle one plane tracker
+	if _plane_tracker:
+		push_error("Expect exactly one call to each set_plane_tracker; why was this called twice?")
 		return
 
-	_trackable_plane = new_trackable_plane
-	_trackable_plane.updated.connect(_on_trackable_plane_vertices_updated)
+	_plane_tracker = new_plane_tracker
+	_plane_tracker.updated.connect(_on_trackable_plane_vertices_updated)
 
 	# Set this XRAnchor3D's tracker to the XRTracker's name to receive automatic pose updates
 	# (the XRTracker updates the "default" pose, which happens to be our default pose name too)
-	tracker = _trackable_plane.get_tracker_name()
+	tracker = _plane_tracker.get_tracker_name()
 
 	# the trackable is not updated before we receive it, so we have to call this to see the first mesh
 	_mesh_instance = $StaticBody3D/MeshInstance3D
@@ -29,13 +29,13 @@ func set_trackable_plane(new_trackable_plane: OpenXRAndroidTrackablePlaneTracker
 
 
 func _on_trackable_plane_vertices_updated():
-	if _trackable_plane.get_subsumed_by_plane():
+	if _plane_tracker.get_subsumed_by_plane():
 		subsumed.emit()
 		return
 
-	_mesh_instance.mesh = _trackable_plane.get_mesh()
-	_mesh_instance.material_override.set_shader_parameter("color", _get_color_from_plane_label(_trackable_plane.get_plane_label()))
-	_collision_shape.shape = _trackable_plane.get_shape(0.1)
+	_mesh_instance.mesh = _plane_tracker.get_mesh()
+	_mesh_instance.material_override.set_shader_parameter("color", _get_color_from_plane_label(_plane_tracker.get_plane_label()))
+	_collision_shape.shape = _plane_tracker.get_shape(0.1)
 
 
 func _get_color_from_plane_label(plane_label: OpenXRAndroidTrackablePlaneTracker.PlaneLabel) -> Color:

@@ -115,6 +115,7 @@ CORE_TYPES: List[str] = [
     "PackedVector2Array",
     "PackedVector3Array",
     "Projection",
+    "RID",
     "Rect2",
     "String",
     "StringName",
