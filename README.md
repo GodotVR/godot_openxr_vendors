@@ -8,6 +8,7 @@ devices (e.g: Meta, Pico devices) and access vendor-specific OpenXR extensions
 - Version `2.x` and higher of this plugin requires **Godot 4.2 or newer**
 - Version `3.x` and higher of this plugin requires **Godot 4.3 or newer**
 - Version `4.x` and higher of this plugin requires **Godot 4.4 or newer**
+- Version `5.x` and higher of this plugin requires **Godot 4.6 or newer**
 
 Check the [`1.x` branch](https://github.com/GodotVR/godot_openxr_vendors/tree/1.x) and releases
 for support on prior versions of Godot 4.
@@ -119,6 +120,22 @@ selecting `Android`
 **Note:**
 **Do not** select multiple vendors in the same export template!
 You can instead create multiple export templates, one for each vendor.
+
+## Creating a new OpenXR extension wrapper
+
+If you want to create a new OpenXR extension wrapper for an extension that we don't support yet, you can generate the boilerplate header and source file using this script:
+
+```bash
+# Interactive mode: it'll prompt you for the extension name.
+./scripts/create_new_extension.py
+
+# CLI mode: provide the extension name as an argument.
+# For example:
+./scripts/create_new_extension.py XR_ANDROID_light_estimation
+./scripts/create_new_extension.py XR_FB_color_space
+```
+
+Then follow its instructions for the next steps. You can look at other extension wrappers as a reference.
 
 ## Hooks
 
