@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://bvh13lr6e2i17"]
+
+[ext_resource type="Script" uid="uid://3sutpu4i3rwe" path="res://plane_trackable_visual/plane_trackable_visual.gd" id="1_dhu1p"]
+[ext_resource type="Shader" uid="uid://beoearc2igwgx" path="res://plane_trackable_visual/plane_trackable_visual.gdshader" id="2_c4exj"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_yq7wa"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("2_c4exj")
+shader_parameter/color = Color(0, 0, 0, 1)
+
+[node name="XRAnchor3D" type="XRAnchor3D" unique_id=1948421250]
+script = ExtResource("1_dhu1p")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=1433842767]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D" unique_id=1535486926]
+material_override = SubResource("ShaderMaterial_yq7wa")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" unique_id=2045856677]
