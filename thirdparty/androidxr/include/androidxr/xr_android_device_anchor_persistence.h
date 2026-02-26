@@ -67,9 +67,9 @@ typedef struct XrPersistedAnchorSpaceInfoANDROID {
 } XrPersistedAnchorSpaceInfoANDROID;
 
 typedef struct XrSystemDeviceAnchorPersistencePropertiesANDROID {
-    XrStructureType             type;
-    const void* XR_MAY_ALIAS    next;
-    XrBool32                    supportsAnchorPersistence;
+    XrStructureType       type;
+    void* XR_MAY_ALIAS    next;
+    XrBool32              supportsAnchorPersistence;
 } XrSystemDeviceAnchorPersistencePropertiesANDROID;
 
 typedef XrResult (XRAPI_PTR *PFN_xrEnumerateSupportedPersistenceAnchorTypesANDROID)(XrInstance instance, XrSystemId systemId, uint32_t trackableTypeCapacityInput, uint32_t* trackableTypeCountOutput, XrTrackableTypeANDROID* trackableTypes);
@@ -78,7 +78,7 @@ typedef XrResult (XRAPI_PTR *PFN_xrDestroyDeviceAnchorPersistenceANDROID)(XrDevi
 typedef XrResult (XRAPI_PTR *PFN_xrPersistAnchorANDROID)(XrDeviceAnchorPersistenceANDROID handle, const XrPersistedAnchorSpaceInfoANDROID* persistedInfo, XrUuidEXT* anchorIdOutput);
 typedef XrResult (XRAPI_PTR *PFN_xrGetAnchorPersistStateANDROID)(XrDeviceAnchorPersistenceANDROID handle, const XrUuidEXT* anchorId, XrAnchorPersistStateANDROID* persistState);
 typedef XrResult (XRAPI_PTR *PFN_xrCreatePersistedAnchorSpaceANDROID)(XrDeviceAnchorPersistenceANDROID handle, const XrPersistedAnchorSpaceCreateInfoANDROID* createInfo, XrSpace* anchorOutput);
-typedef XrResult (XRAPI_PTR *PFN_xrEnumeratePersistedAnchorsANDROID)(XrDeviceAnchorPersistenceANDROID handle, uint32_t anchorIdsCapacityInput, uint32_t* anchorIdsCountOutput, XrUuidEXT* anchorIds);
+typedef XrResult (XRAPI_PTR *PFN_xrEnumeratePersistedAnchorsANDROID)(XrDeviceAnchorPersistenceANDROID handle, uint32_t anchorIdCapacityInput, uint32_t* anchorIdCountOutput, XrUuidEXT* anchorIds);
 typedef XrResult (XRAPI_PTR *PFN_xrUnpersistAnchorANDROID)(XrDeviceAnchorPersistenceANDROID handle, const XrUuidEXT* anchorId);
 
 #ifndef XR_NO_PROTOTYPES
@@ -115,8 +115,8 @@ XRAPI_ATTR XrResult XRAPI_CALL xrCreatePersistedAnchorSpaceANDROID(
 
 XRAPI_ATTR XrResult XRAPI_CALL xrEnumeratePersistedAnchorsANDROID(
     XrDeviceAnchorPersistenceANDROID            handle,
-    uint32_t                                    anchorIdsCapacityInput,
-    uint32_t*                                   anchorIdsCountOutput,
+    uint32_t                                    anchorIdCapacityInput,
+    uint32_t*                                   anchorIdCountOutput,
     XrUuidEXT*                                  anchorIds);
 
 XRAPI_ATTR XrResult XRAPI_CALL xrUnpersistAnchorANDROID(

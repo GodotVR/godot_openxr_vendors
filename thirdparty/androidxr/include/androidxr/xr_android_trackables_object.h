@@ -22,7 +22,7 @@ extern "C" {
 
 // XR_ANDROID_trackables_object is a preprocessor guard. Do not pass it to API calls.
 #define XR_ANDROID_trackables_object 1
-#define XR_ANDROID_trackables_object_SPEC_VERSION 1
+#define XR_ANDROID_trackables_object_SPEC_VERSION 2
 #define XR_ANDROID_TRACKABLES_OBJECT_EXTENSION_NAME "XR_ANDROID_trackables_object"
 #define XR_TYPE_TRACKABLE_OBJECT_ANDROID  ((XrStructureType) 1000466000U)
 #define XR_TYPE_TRACKABLE_OBJECT_CONFIGURATION_ANDROID ((XrStructureType) 1000466001U)
