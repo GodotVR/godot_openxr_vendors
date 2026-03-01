@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="OpenXRAndroidAnchorTracker" inherits="XRPositionalTracker" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		An anchor tracker (from [code]XR_ANDROID_trackables[/code]).
+	</brief_description>
+	<description>
+		An anchor tracker (from [code]XR_ANDROID_trackables[/code]).
+
+		[OpenXRAndroidAnchorTracker]s can be created by [method OpenXRAndroidTrackablesExtension.create_anchor_tracker] and [method OpenXRAndroidDeviceAnchorPersistenceExtension.create_persisted_anchor_tracker].
+		All newly created [OpenXRAndroidAnchorTracker]s have up-to-date state, as in, no need to call [method get_persist_state] and/or [method get_location_flags] with [code]update[/code] set to [code]true[/code].
+		When an [OpenXRAndroidAnchorTracker] is created by [method OpenXRAndroidTrackablesExtension.create_anchor_tracker], the [code]trackable[/code] parameter can be set to either [code]null[/code] or a plane [OpenXRAndroidTrackableTracker].
+		The [OpenXRAndroidAnchorTracker] is called a "spatial anchor" when created with a [code]null[/code] [OpenXRAndroidTrackableTracker].
+		The [OpenXRAndroidAnchorTracker] is called a "plane anchor" when created with a plane [OpenXRAndroidTrackableTracker].
+		The [OpenXRAndroidAnchorTracker] cannot be created with other [OpenXRAndroidTrackableTracker] types.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="get_location_flags">
+			<return type="int" enum="OpenXRAndroidAnchorTracker.LocationFlags" is_bitfield="true" />
+			<param index="0" name="update" type="bool" default="false" />
+			<description>
+				Get the [enum OpenXRAndroidAnchorTracker.LocationFlags].
+				If [param update] is [code]false[/code], then get the cached location flags.
+				If [param update] is [code]true[/code], then query the XR runtime for the latest location and location flags, which may be identical to the cached location.
+				If the new location changed from the cached value, then the cached value is updated, [signal location_flags_changed] is emitted if the flags changed, and [signal XRPositionalTracker.pose_changed] is emitted if the location's [Transform3D] changed.
+			</description>
+		</method>
+		<method name="get_location_pose">
+			<return type="Transform3D" />
+			<param index="0" name="update" type="bool" default="false" />
+			<description>
+				Convenience function to turn this:
+				[codeblock]
+				anchor_tracker.get_location_flags(true)
+				var anchor_pose: Transform3D = anchor_tracker.get_pose(&amp;"default").get_transform()
+				[/codeblock]
+				Into:
+				[codeblock]
+				var anchor_pose: Transform3D = anchor_tracker.get_location_pose(true)
+				[/codeblock]
+				See [method get_location_flags] for documentation for [param update].
+			</description>
+		</method>
+		<method name="get_persist_state">
+			<return type="int" enum="OpenXRAndroidAnchorTracker.PersistState" />
+			<param index="0" name="update" type="bool" default="false" />
+			<description>
+				Get the [enum OpenXRAndroidAnchorTracker.PersistState].
+				If [param update] is [code]false[/code], then get the cached persist state.
+				If [param update] is [code]true[/code], then query the XR runtime for the latest persist state, which may be identical to the cached persist state.
+				If the new persist state changed from the cached value, the cached value is updated and [signal persist_state_changed] is emitted.
+			</description>
+		</method>
+		<method name="get_persist_uuid" qualifiers="const">
+			<return type="StringName" />
+			<description>
+				Get the persisted anchor uuid, represented as a [StringName].
+				The returned [StringName] is non-empty if this anchor tracker is persisting or persisted.  See also [method get_persist_state] to get the actual persisted state.
+				The returned [StringName] is empty if this anchor tracker is not persisted.
+			</description>
+		</method>
+		<method name="get_tracker" qualifiers="const">
+			<return type="OpenXRAndroidTrackableTracker" />
+			<description>
+				Return the [OpenXRAndroidTrackableTracker] that this [OpenXRAndroidAnchorTracker] was created with.
+				This method always returns [code]null[/code] for [OpenXRAndroidAnchorTracker]s created with [method OpenXRAndroidDeviceAnchorPersistenceExtension.create_persisted_anchor_tracker], even if the original anchor was created with an [OpenXRAndroidTrackableTracker].
+			</description>
+		</method>
+		<method name="persist">
+			<return type="bool" />
+			<description>
+				Persist this anchor tracker if it isn't already.
+				Returns [code]true[/code] if the anchor tracker was persisted successfully, or it was already persisted.
+				NOTE: it takes some time for the XR runtime to persist an anchor tracker (usually less than a second, but sometimes longer).  Connect to [signal persist_state_changed] to be notified when this tracker is persisted.
+			</description>
+		</method>
+		<method name="unpersist">
+			<return type="bool" />
+			<description>
+				Unpersist this anchor tracker if it isn't already.
+				Returns [code]true[/code] if the anchor tracker was unpersisted successfully, or it was already unpersisted.
+				NOTE: it takes some time for the XR runtime to unpersist an anchor tracker (usually less than a second, but sometimes longer).  Connect to [signal persist_state_changed] to be notified when this tracker is unpersisted.
+			</description>
+		</method>
+	</methods>
+	<signals>
+		<signal name="location_flags_changed">
+			<description>
+				Signal emitted when a location flag has changed, which can be retrieved with [method get_location_flags].
+				This signal is not emitted when a location's pose changes, however this tracker's [code]default[/code] pose is modified (and consequently its signal is also emitted) when the location transform changes.
+			</description>
+		</signal>
+		<signal name="persist_state_changed">
+			<description>
+				Signal emitted when the persist state changes, which can be retrieved with [method get_persist_state].
+			</description>
+		</signal>
+	</signals>
+	<constants>
+		<constant name="LOCATION_FLAGS_ORIENTATION_VALID" value="1" enum="LocationFlags" is_bitfield="true">
+			Indicates that the [member Transform3D.basis] returned by [method get_location_pose] is valid.
+			Applications must not read [member Transform3D.basis] if this flag is unset.
+		</constant>
+		<constant name="LOCATION_FLAGS_POSITION_VALID" value="2" enum="LocationFlags" is_bitfield="true">
+			Indicates that the [member Transform3D.origin] returned by [method get_location_pose] is valid.
+			Applications must not read [member Transform3D.origin] if this flag is unset.
+		</constant>
+		<constant name="LOCATION_FLAGS_ORIENTATION_TRACKED" value="4" enum="LocationFlags" is_bitfield="true">
+			Indicates that the [member Transform3D.basis] returned by [method get_location_pose] represents an actively tracked orientation.
+		</constant>
+		<constant name="LOCATION_FLAGS_POSITION_TRACKED" value="8" enum="LocationFlags" is_bitfield="true">
+			Indicates that the [member Transform3D.origin] returned by [method get_location_pose] represents an actively tracked position.
+		</constant>
+		<constant name="PERSIST_STATE_NOT_REQUESTED" value="0" enum="PersistState">
+			The anchor tracker has not requested to be persisted.
+		</constant>
+		<constant name="PERSIST_STATE_PENDING" value="1" enum="PersistState">
+			The anchor tracker requested to be persisted, but is not persisted yet.
+		</constant>
+		<constant name="PERSIST_STATE_PERSISTED" value="2" enum="PersistState">
+			The anchor tracker is persisted.
+		</constant>
+		<constant name="PERSIST_STATE_ERROR" value="3" enum="PersistState">
+			An error occurred when persisting the anchor tracker.
+		</constant>
+	</constants>
+</class>
