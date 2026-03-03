@@ -30,7 +30,7 @@ extern "C" {
 typedef enum XrPassthroughCameraStateANDROID {
     // The camera has been disabled by an app, the system or the user.
     XR_PASSTHROUGH_CAMERA_STATE_DISABLED_ANDROID = 0,
-    // The camera is still coming online and not yet ready to use.
+    // The camera is still coming online and not yet ready to use. The runtime may: render a black background where the passthrough video is supposed to appear.
     XR_PASSTHROUGH_CAMERA_STATE_INITIALIZING_ANDROID = 1,
     // The camera is ready to use.
     XR_PASSTHROUGH_CAMERA_STATE_READY_ANDROID = 2,

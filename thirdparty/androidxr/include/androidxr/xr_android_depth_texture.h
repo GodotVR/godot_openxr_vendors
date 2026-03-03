@@ -48,13 +48,13 @@ typedef enum XrDepthCameraResolutionANDROID {
 typedef XrFlags64 XrDepthSwapchainCreateFlagsANDROID;
 
 // Flag bits for XrDepthSwapchainCreateFlagsANDROID
-// Indicates the swapchain should provide smooth depth imagess.
+// Indicates the swapchain will provide smooth depth imagess.
 static const XrDepthSwapchainCreateFlagsANDROID XR_DEPTH_SWAPCHAIN_CREATE_SMOOTH_DEPTH_IMAGE_BIT_ANDROID = 0x00000001;
-// Indicates the swapchain should provide smooth depth confidence imagess.
+// Indicates the swapchain will provide smooth depth confidence imagess.
 static const XrDepthSwapchainCreateFlagsANDROID XR_DEPTH_SWAPCHAIN_CREATE_SMOOTH_CONFIDENCE_IMAGE_BIT_ANDROID = 0x00000002;
-// Indicates the swapchain should provide raw depth imagess.
+// Indicates the swapchain will provide raw depth imagess.
 static const XrDepthSwapchainCreateFlagsANDROID XR_DEPTH_SWAPCHAIN_CREATE_RAW_DEPTH_IMAGE_BIT_ANDROID = 0x00000004;
-// Indicates the swapchain should provide raw depth confidence imagess.
+// Indicates the swapchain will provide raw depth confidence imagess.
 static const XrDepthSwapchainCreateFlagsANDROID XR_DEPTH_SWAPCHAIN_CREATE_RAW_CONFIDENCE_IMAGE_BIT_ANDROID = 0x00000008;
 
 typedef struct XrDepthSwapchainCreateInfoANDROID {
@@ -96,9 +96,9 @@ typedef struct XrDepthAcquireResultANDROID {
 } XrDepthAcquireResultANDROID;
 
 typedef struct XrSystemDepthTrackingPropertiesANDROID {
-    XrStructureType             type;
-    const void* XR_MAY_ALIAS    next;
-    XrBool32                    supportsDepthTracking;
+    XrStructureType       type;
+    void* XR_MAY_ALIAS    next;
+    XrBool32              supportsDepthTracking;
 } XrSystemDepthTrackingPropertiesANDROID;
 
 typedef XrResult (XRAPI_PTR *PFN_xrCreateDepthSwapchainANDROID)(XrSession session, const XrDepthSwapchainCreateInfoANDROID* createInfo, XrDepthSwapchainANDROID* swapchain);
