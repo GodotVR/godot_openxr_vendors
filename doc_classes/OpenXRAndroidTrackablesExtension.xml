@@ -118,7 +118,7 @@
 		<method name="update_anchor_trackers">
 			<return type="void" />
 			<description>
-				Update all anchor trackers; updating their pose (see [method OpenXRAndroidAnchorTracker.get_location_pose]).
+				Update all anchor trackers; updating their pose and persist state (see [method OpenXRAndroidAnchorTracker.get_persist_state] and [method OpenXRAndroidAnchorTracker.get_location_pose]).
 				This API is called automatically by default (see [method set_anchor_tracker_update_cooldown]).
 			</description>
 		</method>

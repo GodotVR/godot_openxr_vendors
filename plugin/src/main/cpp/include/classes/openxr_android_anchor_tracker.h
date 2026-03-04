@@ -44,7 +44,7 @@ public:
 	OpenXRAndroidAnchorTracker();
 	virtual ~OpenXRAndroidAnchorTracker() override;
 
-	static Ref<OpenXRAndroidAnchorTracker> create(XrSpace p_xrspace, Ref<OpenXRAndroidTrackableTracker> p_tracker);
+	static Ref<OpenXRAndroidAnchorTracker> create(XrSpace p_xrspace, const StringName &p_persist_uuid, Ref<OpenXRAndroidTrackableTracker> p_tracker);
 
 	void update();
 	XrSpace get_xrspace() const;
@@ -60,6 +60,18 @@ public:
 	BitField<LocationFlags> get_location_flags(bool p_update = false);
 	Transform3D get_location_pose(bool p_update = false);
 
+	enum PersistState {
+		PERSIST_STATE_NOT_REQUESTED,
+		PERSIST_STATE_PENDING,
+		PERSIST_STATE_PERSISTED,
+		PERSIST_STATE_ERROR
+	};
+
+	bool persist();
+	StringName get_persist_uuid() const;
+	PersistState get_persist_state(bool p_update = false);
+	bool unpersist();
+
 	static bool get_xranchor_space_location(XrSpace p_xrspace, XrSpaceLocation &o_xrspace_location);
 	static XrSpaceLocation create_empty_location();
 
@@ -68,12 +80,17 @@ protected:
 
 private:
 	void _update_location(bool p_update);
+	void _update_persist_state();
 
 	XrSpace space = XR_NULL_HANDLE;
 	XrSpaceLocation location = {};
 	Ref<OpenXRAndroidTrackableTracker> tracker;
+	XrUuidEXT persist_xruuid;
+	StringName persist_uuid;
+	PersistState persist_state = PERSIST_STATE_NOT_REQUESTED;
 	BitField<LocationFlags> location_flags = 0;
 	Transform3D location_pose;
 };
 
 VARIANT_BITFIELD_CAST(OpenXRAndroidAnchorTracker::LocationFlags);
+VARIANT_ENUM_CAST(OpenXRAndroidAnchorTracker::PersistState);
