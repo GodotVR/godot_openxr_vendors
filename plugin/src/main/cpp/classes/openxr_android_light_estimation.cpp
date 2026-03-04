@@ -64,6 +64,7 @@ render_mode use_debanding;
 
 uniform vec3 coefficients[9];
 uniform mat3 rotation;
+uniform float ambient_light_energy_multiplier;
 
 // Copied from ARCore's hello_ar_kotlin sample.
 // See: https://github.com/google-ar/arcore-android-sdk/blob/52c722e43cd8ce546eea5dc4587e70e0c7f2c006/samples/hello_ar_kotlin/app/src/main/assets/shaders/environmental_hdr.frag#L132
@@ -89,7 +90,7 @@ void sky() {
 	if (AT_CUBEMAP_PASS) {
 		vec3 dir = rotation * EYEDIR;
 		vec3 color = applySH(-dir, coefficients);
-		color = max(color, vec3(0.0));
+		color = max(color * ambient_light_energy_multiplier, vec3(0.0));
 #if CURRENT_RENDERER == RENDERER_COMPATIBILITY
 		COLOR = linear_to_srgb(color);
 #else
@@ -109,16 +110,24 @@ void OpenXRAndroidLightEstimation::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_directional_light_mode", "mode"), &OpenXRAndroidLightEstimation::set_directional_light_mode);
 	ClassDB::bind_method(D_METHOD("get_directional_light_mode"), &OpenXRAndroidLightEstimation::get_directional_light_mode);
 
+	ClassDB::bind_method(D_METHOD("set_directional_light_energy_multiplier", "value"), &OpenXRAndroidLightEstimation::set_directional_light_energy_multiplier);
+	ClassDB::bind_method(D_METHOD("get_directional_light_energy_multiplier"), &OpenXRAndroidLightEstimation::get_directional_light_energy_multiplier);
+
 	ClassDB::bind_method(D_METHOD("set_world_environment", "world_environment"), &OpenXRAndroidLightEstimation::set_world_environment);
 	ClassDB::bind_method(D_METHOD("get_world_environment"), &OpenXRAndroidLightEstimation::get_world_environment);
 
 	ClassDB::bind_method(D_METHOD("set_ambient_light_mode", "mode"), &OpenXRAndroidLightEstimation::set_ambient_light_mode);
 	ClassDB::bind_method(D_METHOD("get_ambient_light_mode"), &OpenXRAndroidLightEstimation::get_ambient_light_mode);
 
+	ClassDB::bind_method(D_METHOD("set_ambient_light_energy_multiplier", "value"), &OpenXRAndroidLightEstimation::set_ambient_light_energy_multiplier);
+	ClassDB::bind_method(D_METHOD("get_ambient_light_energy_multiplier"), &OpenXRAndroidLightEstimation::get_ambient_light_energy_multiplier);
+
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "directional_light", PROPERTY_HINT_NODE_TYPE, "DirectionalLight3D"), "set_directional_light", "get_directional_light");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "directional_light_mode", PROPERTY_HINT_ENUM, "Disabled,Direction Only,Direction + Intensity,Direction + Color + Intensity"), "set_directional_light_mode", "get_directional_light_mode");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "directional_light_energy_multiplier", PROPERTY_HINT_RANGE, "0,16,0.01"), "set_directional_light_energy_multiplier", "get_directional_light_energy_multiplier");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "world_environment", PROPERTY_HINT_NODE_TYPE, "WorldEnvironment"), "set_world_environment", "get_world_environment");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "ambient_light_mode", PROPERTY_HINT_ENUM, "Disabled,Color,Spherical Harmonics"), "set_ambient_light_mode", "get_ambient_light_mode");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "ambient_light_energy_multiplier", PROPERTY_HINT_RANGE, "0,16,0.01"), "set_ambient_light_energy_multiplier", "get_ambient_light_energy_multiplier");
 
 	BIND_ENUM_CONSTANT(DIRECTIONAL_LIGHT_MODE_DISABLED);
 	BIND_ENUM_CONSTANT(DIRECTIONAL_LIGHT_MODE_DIRECTION_ONLY);
@@ -196,6 +205,14 @@ OpenXRAndroidLightEstimation::DirectionalLightMode OpenXRAndroidLightEstimation:
 	return directional_light_mode;
 }
 
+void OpenXRAndroidLightEstimation::set_directional_light_energy_multiplier(float p_value) {
+	directional_light_energy_multiplier = p_value;
+}
+
+float OpenXRAndroidLightEstimation::get_directional_light_energy_multiplier() {
+	return directional_light_energy_multiplier;
+}
+
 void OpenXRAndroidLightEstimation::set_world_environment(WorldEnvironment *p_world_environment) {
 	reset_sky();
 	if (p_world_environment) {
@@ -221,6 +238,14 @@ void OpenXRAndroidLightEstimation::set_ambient_light_mode(AmbientLightMode p_amb
 
 OpenXRAndroidLightEstimation::AmbientLightMode OpenXRAndroidLightEstimation::get_ambient_light_mode() const {
 	return ambient_light_mode;
+}
+
+void OpenXRAndroidLightEstimation::set_ambient_light_energy_multiplier(float p_value) {
+	ambient_light_energy_multiplier = p_value;
+}
+
+float OpenXRAndroidLightEstimation::get_ambient_light_energy_multiplier() {
+	return ambient_light_energy_multiplier;
 }
 
 void OpenXRAndroidLightEstimation::start_or_stop() {
@@ -298,10 +323,10 @@ void OpenXRAndroidLightEstimation::update_light_estimate() {
 			if (directional_light_mode == DIRECTIONAL_LIGHT_MODE_DIRECTION_COLOR_INTENSITY) {
 				// The color is premultiplied with intensity.
 				direction_light->set_color(intensity.linear_to_srgb());
-				direction_light->set_param(Light3D::PARAM_ENERGY, 1.0);
+				direction_light->set_param(Light3D::PARAM_ENERGY, directional_light_energy_multiplier);
 			} else {
 				float luminance = (0.2126 * intensity.r) + (0.7152 * intensity.g) + (0.0722 * intensity.b);
-				direction_light->set_param(Light3D::PARAM_ENERGY, luminance);
+				direction_light->set_param(Light3D::PARAM_ENERGY, luminance * directional_light_energy_multiplier);
 			}
 		}
 	}
@@ -317,7 +342,7 @@ void OpenXRAndroidLightEstimation::update_light_estimate() {
 			// The color is premultiplied with intensity.
 			Color intensity = light_estimation_extension->get_ambient_light_intensity();
 			env->set_ambient_light_color(intensity.linear_to_srgb());
-			env->set_ambient_light_energy(1.0);
+			env->set_ambient_light_energy(ambient_light_energy_multiplier);
 			env->set_ambient_source(Environment::AMBIENT_SOURCE_COLOR);
 		} else if (ambient_light_mode == AMBIENT_LIGHT_MODE_SPHERICAL_HARMONICS && light_estimation_extension->is_spherical_harmonics_total_valid()) {
 			PackedVector3Array coefficients = light_estimation_extension->get_spherical_harmonics_total_coefficients();
@@ -338,6 +363,7 @@ void OpenXRAndroidLightEstimation::update_light_estimate() {
 
 			sky_material->set_shader_parameter("coefficients", coefficients);
 			sky_material->set_shader_parameter("rotation", xr_server->get_world_origin().basis);
+			sky_material->set_shader_parameter("ambient_light_energy_multiplier", ambient_light_energy_multiplier);
 			if (env->get_sky() != sky) {
 				if (old_sky.is_null()) {
 					old_sky = env->get_sky();
