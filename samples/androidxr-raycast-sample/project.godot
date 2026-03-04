@@ -1,0 +1,35 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[animation]
+
+compatibility/default_parent_skeleton_in_mesh_instance_3d=true
+
+[application]
+
+config/name="OpenXRAndroidRaycastSample"
+run/main_scene="uid://cf72srmlrls7d"
+config/features=PackedStringArray("4.6", "Mobile")
+
+[rendering]
+
+renderer/rendering_method="mobile"
+textures/vram_compression/import_etc2_astc=true
+environment/defaults/default_clear_color=Color(0, 0, 0, 0)
+
+[xr]
+
+openxr/enabled=true
+openxr/environment_blend_mode=2
+openxr/extensions/hand_interaction_profile=true
+shaders/enabled=true
+openxr/extensions/androidxr/environment_depth=true
+openxr/extensions/androidxr/raycast=true
+openxr/extensions/androidxr/trackables=true
