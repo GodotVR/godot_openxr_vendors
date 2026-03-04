@@ -70,11 +70,17 @@ public:
 	void set_directional_light_mode(DirectionalLightMode p_directional_light_mode);
 	DirectionalLightMode get_directional_light_mode() const;
 
+	void set_directional_light_energy_multiplier(float p_value);
+	float get_directional_light_energy_multiplier();
+
 	void set_world_environment(WorldEnvironment *p_world_environment);
 	WorldEnvironment *get_world_environment() const;
 
 	void set_ambient_light_mode(AmbientLightMode p_ambient_light_mode);
 	AmbientLightMode get_ambient_light_mode() const;
+
+	void set_ambient_light_energy_multiplier(float p_value);
+	float get_ambient_light_energy_multiplier();
 
 private:
 	ObjectID directional_light_id;
@@ -83,6 +89,9 @@ private:
 
 	DirectionalLightMode directional_light_mode = DIRECTIONAL_LIGHT_MODE_DIRECTION_ONLY;
 	AmbientLightMode ambient_light_mode = AMBIENT_LIGHT_MODE_COLOR;
+
+	float directional_light_energy_multiplier = 1.0f;
+	float ambient_light_energy_multiplier = 1.0f;
 
 	Ref<Shader> sky_shader;
 	Ref<ShaderMaterial> sky_material;

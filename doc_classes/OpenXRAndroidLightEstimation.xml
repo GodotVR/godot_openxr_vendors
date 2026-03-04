@@ -9,11 +9,18 @@
 	<tutorials>
 	</tutorials>
 	<members>
+		<member name="ambient_light_energy_multiplier" type="float" setter="set_ambient_light_energy_multiplier" getter="get_ambient_light_energy_multiplier" default="1.0">
+      The value ambient light energy is multiplied by.
+		</member>
 		<member name="ambient_light_mode" type="int" setter="set_ambient_light_mode" getter="get_ambient_light_mode" enum="OpenXRAndroidLightEstimation.AmbientLightMode" default="1">
 			Controls how ambient light data is applied to the [WorldEnvironment].
 		</member>
 		<member name="directional_light" type="DirectionalLight3D" setter="set_directional_light" getter="get_directional_light">
 			The [DirectionalLight3D] that the light estimation data is applied to.
+		</member>
+		<member name="directional_light_energy_multiplier" type="float" setter="set_ambient_light_energy_multiplier" getter="get_ambient_light_energy_multiplier" default="1.0">
+      The value directional light energy is multiplied by.
+      Only applied when [member directional_light_mode] is set to [constant DIRECTIONAL_LIGHT_MODE_DIRECTION_INTENSITY] or [constant DIRECTIONAL_LIGHT_MODE_DIRECTION_COLOR_INTENSITY].
 		</member>
 		<member name="directional_light_mode" type="int" setter="set_directional_light_mode" getter="get_directional_light_mode" enum="OpenXRAndroidLightEstimation.DirectionalLightMode" default="1">
 			Controls how directional light data is applied to the [DirectionalLight3D].
