@@ -140,66 +140,6 @@ resource_name = "godot"
 localized_name = "Godot action set"
 actions = [SubResource("OpenXRAction_v1tfl"), SubResource("OpenXRAction_4p24q"), SubResource("OpenXRAction_whe2n"), SubResource("OpenXRAction_13s22"), SubResource("OpenXRAction_cj3we"), SubResource("OpenXRAction_v7xp5"), SubResource("OpenXRAction_dl6w2"), SubResource("OpenXRAction_i1g0i"), SubResource("OpenXRAction_4la1n"), SubResource("OpenXRAction_f3fqy"), SubResource("OpenXRAction_337ox"), SubResource("OpenXRAction_lv8y2"), SubResource("OpenXRAction_spm4n"), SubResource("OpenXRAction_ok0wc"), SubResource("OpenXRAction_0gbo1"), SubResource("OpenXRAction_dlclo"), SubResource("OpenXRAction_hdvv8"), SubResource("OpenXRAction_ti7q2"), SubResource("OpenXRAction_2mhc1"), SubResource("OpenXRAction_qkbr7"), SubResource("OpenXRAction_u5uoa"), SubResource("OpenXRAction_c0sht"), SubResource("OpenXRAction_8dhib")]
 
-[sub_resource type="OpenXRIPBinding" id="OpenXRIPBinding_6ivru"]
-action = SubResource("OpenXRAction_2mhc1")
-binding_path = "/user/hand/left/input/aim/pose"
-
-[sub_resource type="OpenXRIPBinding" id="OpenXRIPBinding_vfhwq"]
-action = SubResource("OpenXRAction_2mhc1")
-binding_path = "/user/hand/right/input/aim/pose"
-
-[sub_resource type="OpenXRIPBinding" id="OpenXRIPBinding_5w03k"]
-action = SubResource("OpenXRAction_qkbr7")
-binding_path = "/user/hand/left/input/aim/pose"
-
-[sub_resource type="OpenXRIPBinding" id="OpenXRIPBinding_typ1r"]
-action = SubResource("OpenXRAction_qkbr7")
-binding_path = "/user/hand/right/input/aim/pose"
-
-[sub_resource type="OpenXRIPBinding" id="OpenXRIPBinding_clvbf"]
-action = SubResource("OpenXRAction_u5uoa")
-binding_path = "/user/hand/left/input/grip/pose"
-
-[sub_resource type="OpenXRIPBinding" id="OpenXRIPBinding_5bppb"]
-action = SubResource("OpenXRAction_u5uoa")
-binding_path = "/user/hand/right/input/grip/pose"
-
-[sub_resource type="OpenXRIPBinding" id="OpenXRIPBinding_3k6la"]
-action = SubResource("OpenXRAction_c0sht")
-binding_path = "/user/hand/left/input/grip_surface/pose"
-
-[sub_resource type="OpenXRIPBinding" id="OpenXRIPBinding_i8esw"]
-action = SubResource("OpenXRAction_c0sht")
-binding_path = "/user/hand/right/input/grip_surface/pose"
-
-[sub_resource type="OpenXRIPBinding" id="OpenXRIPBinding_um1hv"]
-action = SubResource("OpenXRAction_spm4n")
-binding_path = "/user/hand/left/input/menu/click"
-
-[sub_resource type="OpenXRIPBinding" id="OpenXRIPBinding_oqnsu"]
-action = SubResource("OpenXRAction_spm4n")
-binding_path = "/user/hand/right/input/menu/click"
-
-[sub_resource type="OpenXRIPBinding" id="OpenXRIPBinding_r5bl7"]
-action = SubResource("OpenXRAction_ok0wc")
-binding_path = "/user/hand/left/input/select/click"
-
-[sub_resource type="OpenXRIPBinding" id="OpenXRIPBinding_ytptc"]
-action = SubResource("OpenXRAction_ok0wc")
-binding_path = "/user/hand/right/input/select/click"
-
-[sub_resource type="OpenXRIPBinding" id="OpenXRIPBinding_iphn4"]
-action = SubResource("OpenXRAction_8dhib")
-binding_path = "/user/hand/left/output/haptic"
-
-[sub_resource type="OpenXRIPBinding" id="OpenXRIPBinding_3p2as"]
-action = SubResource("OpenXRAction_8dhib")
-binding_path = "/user/hand/right/output/haptic"
-
-[sub_resource type="OpenXRInteractionProfile" id="OpenXRInteractionProfile_mm0ua"]
-interaction_profile_path = "/interaction_profiles/khr/simple_controller"
-bindings = [SubResource("OpenXRIPBinding_6ivru"), SubResource("OpenXRIPBinding_vfhwq"), SubResource("OpenXRIPBinding_5w03k"), SubResource("OpenXRIPBinding_typ1r"), SubResource("OpenXRIPBinding_clvbf"), SubResource("OpenXRIPBinding_5bppb"), SubResource("OpenXRIPBinding_3k6la"), SubResource("OpenXRIPBinding_i8esw"), SubResource("OpenXRIPBinding_um1hv"), SubResource("OpenXRIPBinding_oqnsu"), SubResource("OpenXRIPBinding_r5bl7"), SubResource("OpenXRIPBinding_ytptc"), SubResource("OpenXRIPBinding_iphn4"), SubResource("OpenXRIPBinding_3p2as")]
-
 [sub_resource type="OpenXRIPBinding" id="OpenXRIPBinding_wdehm"]
 action = SubResource("OpenXRAction_2mhc1")
 binding_path = "/user/hand/left/input/aim/pose"
@@ -1626,4 +1566,4 @@ bindings = [SubResource("OpenXRIPBinding_hbx0j")]
 
 [resource]
 action_sets = [SubResource("OpenXRActionSet_5j4cb")]
-interaction_profiles = [SubResource("OpenXRInteractionProfile_mm0ua"), SubResource("OpenXRInteractionProfile_wtmes"), SubResource("OpenXRInteractionProfile_iryl2"), SubResource("OpenXRInteractionProfile_mbp1w"), SubResource("OpenXRInteractionProfile_dre2y"), SubResource("OpenXRInteractionProfile_jyev0"), SubResource("OpenXRInteractionProfile_70gww"), SubResource("OpenXRInteractionProfile_4c3j7"), SubResource("OpenXRInteractionProfile_assdq"), SubResource("OpenXRInteractionProfile_1m75p"), SubResource("OpenXRInteractionProfile_o6luy"), SubResource("OpenXRInteractionProfile_bm6ak"), SubResource("OpenXRInteractionProfile_aofyq")]
+interaction_profiles = [SubResource("OpenXRInteractionProfile_wtmes"), SubResource("OpenXRInteractionProfile_iryl2"), SubResource("OpenXRInteractionProfile_mbp1w"), SubResource("OpenXRInteractionProfile_dre2y"), SubResource("OpenXRInteractionProfile_jyev0"), SubResource("OpenXRInteractionProfile_70gww"), SubResource("OpenXRInteractionProfile_4c3j7"), SubResource("OpenXRInteractionProfile_assdq"), SubResource("OpenXRInteractionProfile_1m75p"), SubResource("OpenXRInteractionProfile_o6luy"), SubResource("OpenXRInteractionProfile_bm6ak"), SubResource("OpenXRInteractionProfile_aofyq")]
