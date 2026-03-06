@@ -46,12 +46,22 @@ func _process(delta: float) -> void:
 				right_controller_label.text = right_controller_label.text.replace("ENABLED", "DISABLED")
 
 
+# Android XR has issues with "delta pose" so we skip space warp when moving the XROrigin3D.
+func skip_space_warp_on_androidxr() -> void:
+	if OS.has_feature("androidxr"):
+		var fb_space_warp = Engine.get_singleton("OpenXRFbSpaceWarpExtension")
+		if fb_space_warp and fb_space_warp.is_enabled():
+			fb_space_warp.skip_space_warp_frame()
+
+
 func _physics_process(delta: float) -> void:
 	if movement_input != Vector2.ZERO:
 		xr_origin.global_position += movement_input.y * (-xr_camera.global_transform.basis.z * Vector3(1.0, 0.0, 1.0)).normalized() * delta * MOVE_SPEED
 		xr_origin.global_position += movement_input.x * (xr_camera.global_transform.basis.x * Vector3(1.0, 0.0, 1.0)).normalized() * delta * MOVE_SPEED
+		skip_space_warp_on_androidxr()
 	if smooth_turn_input != 0.0:
 		rotate_player(smooth_turn_input * SMOOTH_TURN_SPEED)
+		skip_space_warp_on_androidxr()
 
 
 func _on_right_hand_button_pressed(name: String) -> void:
