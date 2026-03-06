@@ -1,5 +1,28 @@
 # Change history for the Godot OpenXR loaders asset
 
+## 5.0.0
+
+- Change space warp sample to use OpenGL renderer (#472)
+- Remove the "Simple Controller" interaction profile in all samples (#471)
+- Add support for `XR_ANDROID_unbounded_reference_space` extension (#458)
+- Update Android XR headers (#469)
+- Add a `create_new_extension.py` script to create scaffolding for new extensions (#467)
+- Fix environment depth extensions (#447)
+- Fix property type in `ADD_PROPERTY()` call to match the underlying data type (#462)
+- Update `extension_api.json` to hold OpenXR singletons (#461)
+- Wizard: Call the default XR main scene `xr_main.tscn` to avoid confusion (#453)
+- Android XR: Add export option to add experimental flag (#454)
+- Allow embedding OpenXR validation layers on Android (#353)
+- Add manual page for Android XR Dynamic Resolution (#450)
+- Allow switching hybrid mode on desktop for testing (#312)
+- Add support for `XR_ANDROID_recommended_resolution` (#393)
+- Don't include the OpenXR loader because it's added by Godot now (#449)
+- Add support for `XR_EXTX2_stationary_reference_space` extension (#418)
+- Make REC709 default for `XR_FB_color_space` (#307)
+- Add `XR_META_hand_tracking_microgestures` to hand tracking sample (#340)
+- Stop using deprecated `OpenXRExtensionWrapperExtension` and rename `*ExtensionWrapper` to `*Extension` (#414)
+- Update to support Godot 4.6+ (#407)
+
 ## 4.3.0
 
 - Fix issue with instant splash screen
