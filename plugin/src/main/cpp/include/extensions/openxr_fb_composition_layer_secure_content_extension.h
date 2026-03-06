@@ -52,11 +52,19 @@ public:
 	};
 
 	virtual uint64_t _set_viewport_composition_layer_and_get_next_pointer(const void *p_layer, const Dictionary &p_property_values, void *p_next_pointer) override;
+	virtual uint64_t _set_projection_layer_and_get_next_pointer(void *p_next_pointer) override;
 	virtual void _on_viewport_composition_layer_destroyed(const void *p_layer) override;
 	virtual TypedArray<Dictionary> _get_viewport_composition_layer_extension_properties() override;
 	virtual Dictionary _get_viewport_composition_layer_extension_property_defaults() override;
 
+	virtual void _on_session_created(uint64_t p_session) override;
+	virtual void _on_session_destroyed() override;
+	virtual void _on_state_ready() override;
+
 	bool is_enabled() const;
+
+	void set_projection_layer_external_output(ExternalOutput p_external_output);
+	ExternalOutput get_projection_layer_external_output() const;
 
 	OpenXRFbCompositionLayerSecureContentExtension();
 	~OpenXRFbCompositionLayerSecureContentExtension();
@@ -74,4 +82,14 @@ private:
 	bool fb_composition_layer_secure_content = false;
 
 	HashMap<const XrCompositionLayerBaseHeader *, XrCompositionLayerSecureContentFB> layer_structs;
+
+	XrCompositionLayerSecureContentFB projection_layer_secure_content = {
+		XR_TYPE_COMPOSITION_LAYER_SECURE_CONTENT_FB, // type
+		nullptr, // next
+		0 // flags
+	};
+
+	ExternalOutput projection_layer_external_output = EXTERNAL_OUTPUT_DISPLAY;
 };
+
+VARIANT_ENUM_CAST(OpenXRFbCompositionLayerSecureContentExtension::ExternalOutput);

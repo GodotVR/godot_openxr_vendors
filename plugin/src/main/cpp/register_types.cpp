@@ -145,7 +145,7 @@ static inline void _register_extension_as_singleton(OpenXRExtensionWrapper *p_ex
 	extensions_singletons.push_back({ class_name, p_extension });
 }
 
-static void _add_bool_project_setting(ProjectSettings *p_project_settings, const String &p_name, bool p_default_value) {
+static void _add_bool_project_setting(ProjectSettings *p_project_settings, const String &p_name, bool p_default_value = false) {
 	if (!p_project_settings->has_setting(p_name)) {
 		p_project_settings->set_setting(p_name, p_default_value);
 	}
@@ -409,6 +409,11 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			_register_extension_as_singleton(OpenXRMetaEnvironmentDepthExtension::get_singleton());
 			_register_extension_as_singleton(OpenXRAndroidEnvironmentDepthExtension::get_singleton());
 			_register_extension_as_singleton(OpenXRAndroidUnboundedReferenceSpaceExtension::get_singleton());
+			_register_extension_as_singleton(OpenXRFbCompositionLayerDepthTestExtension::get_singleton());
+			_register_extension_as_singleton(OpenXRFbCompositionLayerImageLayoutExtension::get_singleton());
+			_register_extension_as_singleton(OpenXRFbCompositionLayerSecureContentExtension::get_singleton());
+			_register_extension_as_singleton(OpenXRFbCompositionLayerAlphaBlendExtension::get_singleton());
+			_register_extension_as_singleton(OpenXRFbCompositionLayerSettingsExtension::get_singleton());
 
 // @todo GH Issue 304: Remove check for meta headers when feature becomes part of OpenXR spec.
 #ifdef META_HEADERS_ENABLED
@@ -630,6 +635,124 @@ void add_plugin_project_settings() {
 	}
 
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/automatically_request_runtime_permissions", true);
+
+	// Composition layer settings for the main projection layer.
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/composition_layer_settings/main_projection_layer/enable_depth_test");
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/composition_layer_settings/main_projection_layer/image_layout_vertical_flip");
+
+	{
+		String main_projection_layer_external_output = "xr/openxr/extensions/meta/composition_layer_settings/main_projection_layer/secure_content_external_output";
+		if (!project_settings->has_setting(main_projection_layer_external_output)) {
+			project_settings->set_setting(main_projection_layer_external_output, 0);
+		}
+
+		project_settings->set_initial_value(main_projection_layer_external_output, 0);
+		project_settings->set_as_basic(main_projection_layer_external_output, false);
+		Dictionary property_info;
+		property_info["name"] = main_projection_layer_external_output;
+		property_info["type"] = Variant::Type::INT;
+		property_info["hint"] = PROPERTY_HINT_ENUM;
+		property_info["hint_string"] = "Display:0,Exclude:1,Replace:2";
+		project_settings->add_property_info(property_info);
+	}
+
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/composition_layer_settings/main_projection_layer/alpha_blend/enable");
+	String alpha_blend_property_hint_string = "Zero:0,One:1,Source Alpha:2,One Minus Source Alpha:3,Destination Alpha:4,One Minus Destination Alpha:5";
+	{
+		String main_projection_layer_source_color_blend_factor = "xr/openxr/extensions/meta/composition_layer_settings/main_projection_layer/alpha_blend/source_color_blend_factor";
+		if (!project_settings->has_setting(main_projection_layer_source_color_blend_factor)) {
+			project_settings->set_setting(main_projection_layer_source_color_blend_factor, 1);
+		}
+
+		project_settings->set_initial_value(main_projection_layer_source_color_blend_factor, 1);
+		project_settings->set_as_basic(main_projection_layer_source_color_blend_factor, false);
+		Dictionary property_info;
+		property_info["name"] = main_projection_layer_source_color_blend_factor;
+		property_info["type"] = Variant::Type::INT;
+		property_info["hint"] = PROPERTY_HINT_ENUM;
+		property_info["hint_string"] = alpha_blend_property_hint_string;
+		project_settings->add_property_info(property_info);
+	}
+
+	{
+		String main_projection_layer_destination_color_blend_factor = "xr/openxr/extensions/meta/composition_layer_settings/main_projection_layer/alpha_blend/destination_color_blend_factor";
+		if (!project_settings->has_setting(main_projection_layer_destination_color_blend_factor)) {
+			project_settings->set_setting(main_projection_layer_destination_color_blend_factor, 0);
+		}
+
+		project_settings->set_initial_value(main_projection_layer_destination_color_blend_factor, 0);
+		project_settings->set_as_basic(main_projection_layer_destination_color_blend_factor, false);
+		Dictionary property_info;
+		property_info["name"] = main_projection_layer_destination_color_blend_factor;
+		property_info["type"] = Variant::Type::INT;
+		property_info["hint"] = PROPERTY_HINT_ENUM;
+		property_info["hint_string"] = alpha_blend_property_hint_string;
+		project_settings->add_property_info(property_info);
+	}
+
+	{
+		String main_projection_layer_source_alpha_blend_factor = "xr/openxr/extensions/meta/composition_layer_settings/main_projection_layer/alpha_blend/source_alpha_blend_factor";
+		if (!project_settings->has_setting(main_projection_layer_source_alpha_blend_factor)) {
+			project_settings->set_setting(main_projection_layer_source_alpha_blend_factor, 1);
+		}
+
+		project_settings->set_initial_value(main_projection_layer_source_alpha_blend_factor, 1);
+		project_settings->set_as_basic(main_projection_layer_source_alpha_blend_factor, false);
+		Dictionary property_info;
+		property_info["name"] = main_projection_layer_source_alpha_blend_factor;
+		property_info["type"] = Variant::Type::INT;
+		property_info["hint"] = PROPERTY_HINT_ENUM;
+		property_info["hint_string"] = alpha_blend_property_hint_string;
+		project_settings->add_property_info(property_info);
+	}
+
+	{
+		String main_projection_layer_destination_alpha_blend_factor = "xr/openxr/extensions/meta/composition_layer_settings/main_projection_layer/alpha_blend/destination_alpha_blend_factor";
+		if (!project_settings->has_setting(main_projection_layer_destination_alpha_blend_factor)) {
+			project_settings->set_setting(main_projection_layer_destination_alpha_blend_factor, 0);
+		}
+
+		project_settings->set_initial_value(main_projection_layer_destination_alpha_blend_factor, 0);
+		project_settings->set_as_basic(main_projection_layer_destination_alpha_blend_factor, false);
+		Dictionary property_info;
+		property_info["name"] = main_projection_layer_destination_alpha_blend_factor;
+		property_info["type"] = Variant::Type::INT;
+		property_info["hint"] = PROPERTY_HINT_ENUM;
+		property_info["hint_string"] = alpha_blend_property_hint_string;
+		project_settings->add_property_info(property_info);
+	}
+
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/composition_layer_settings/main_projection_layer/filtering/enable_auto_filtering");
+	{
+		String main_projection_layer_supersampling_mode = "xr/openxr/extensions/meta/composition_layer_settings/main_projection_layer/filtering/supersampling_mode";
+		if (!project_settings->has_setting(main_projection_layer_supersampling_mode)) {
+			project_settings->set_setting(main_projection_layer_supersampling_mode, 0);
+		}
+
+		project_settings->set_initial_value(main_projection_layer_supersampling_mode, 0);
+		project_settings->set_as_basic(main_projection_layer_supersampling_mode, false);
+		Dictionary property_info;
+		property_info["name"] = main_projection_layer_supersampling_mode;
+		property_info["type"] = Variant::Type::INT;
+		property_info["hint"] = PROPERTY_HINT_ENUM;
+		property_info["hint_string"] = "Disabled:0,Normal:1,Quality:2";
+		project_settings->add_property_info(property_info);
+	}
+	{
+		String main_projection_layer_sharpening_mode = "xr/openxr/extensions/meta/composition_layer_settings/main_projection_layer/filtering/sharpening_mode";
+		if (!project_settings->has_setting(main_projection_layer_sharpening_mode)) {
+			project_settings->set_setting(main_projection_layer_sharpening_mode, 0);
+		}
+
+		project_settings->set_initial_value(main_projection_layer_sharpening_mode, 0);
+		project_settings->set_as_basic(main_projection_layer_sharpening_mode, false);
+		Dictionary property_info;
+		property_info["name"] = main_projection_layer_sharpening_mode;
+		property_info["type"] = Variant::Type::INT;
+		property_info["hint"] = PROPERTY_HINT_ENUM;
+		property_info["hint_string"] = "Disabled:0,Normal:1,Quality:2";
+		project_settings->add_property_info(property_info);
+	}
 }
 
 extern "C" {

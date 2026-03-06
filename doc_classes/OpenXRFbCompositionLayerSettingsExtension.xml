@@ -8,6 +8,25 @@
 	</description>
 	<tutorials>
 	</tutorials>
+	<methods>
+		<method name="is_enabled" qualifiers="const">
+			<return type="bool" />
+			<description>
+                Checks if the extension is enabled or not.
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="projection_layer_auto_filter_enabled" type="bool" setter="set_projection_layer_auto_filter_enabled" getter="is_projection_layer_auto_filter_enabled" default="false">
+            Enables the runtime's automatic layer filtering. The runtime will switch between disabled sharpening / supersampling and the modes indicated by [member projection_layer_sharpening_mode] and [member projection_layer_supersampling_mode].
+		</member>
+		<member name="projection_layer_sharpening_mode" type="int" setter="set_projection_layer_sharpening_mode" getter="get_projection_layer_sharpening_mode" enum="OpenXRFbCompositionLayerSettingsExtension.SharpeningMode" default="0">
+            Selects the sharpening mode for the projection layer.
+		</member>
+		<member name="projection_layer_supersampling_mode" type="int" setter="set_projection_layer_supersampling_mode" getter="get_projection_layer_supersampling_mode" enum="OpenXRFbCompositionLayerSettingsExtension.SupersamplingMode" default="0">
+            Selects the supersampling mode for the projection layer.
+		</member>
+	</members>
 	<constants>
 		<constant name="SUPERSAMPLING_MODE_DISABLED" value="0" enum="SupersamplingMode">
 			Disable supersampling.

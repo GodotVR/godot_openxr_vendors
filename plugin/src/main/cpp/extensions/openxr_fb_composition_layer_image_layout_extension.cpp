@@ -30,6 +30,7 @@
 #include "extensions/openxr_fb_composition_layer_image_layout_extension.h"
 
 #include <godot_cpp/classes/open_xrapi_extension.hpp>
+#include <godot_cpp/classes/project_settings.hpp>
 
 using namespace godot;
 
@@ -57,10 +58,56 @@ OpenXRFbCompositionLayerImageLayoutExtension::~OpenXRFbCompositionLayerImageLayo
 }
 
 void OpenXRFbCompositionLayerImageLayoutExtension::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("is_enabled"), &OpenXRFbCompositionLayerImageLayoutExtension::is_enabled);
+
+	ClassDB::bind_method(D_METHOD("set_projection_layer_vertical_flip", "vertical_flip"), &OpenXRFbCompositionLayerImageLayoutExtension::set_projection_layer_vertical_flip);
+	ClassDB::bind_method(D_METHOD("get_projection_layer_vertical_flip"), &OpenXRFbCompositionLayerImageLayoutExtension::get_projection_layer_vertical_flip);
+
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "projection_layer_vertical_flip", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NONE), "set_projection_layer_vertical_flip", "get_projection_layer_vertical_flip");
 }
 
 void OpenXRFbCompositionLayerImageLayoutExtension::cleanup() {
 	fb_composition_layer_image_layout = false;
+	projection_layer_vertical_flip = false;
+}
+
+bool OpenXRFbCompositionLayerImageLayoutExtension::is_enabled() const {
+	return fb_composition_layer_image_layout;
+}
+
+void OpenXRFbCompositionLayerImageLayoutExtension::set_projection_layer_vertical_flip(bool p_vertical_flip) {
+	ERR_FAIL_COND_MSG(!fb_composition_layer_image_layout, "XR_FB_composition_layer_image_layout is not enabled");
+	projection_layer_vertical_flip = p_vertical_flip;
+}
+
+bool OpenXRFbCompositionLayerImageLayoutExtension::get_projection_layer_vertical_flip() const {
+	ERR_FAIL_COND_V_MSG(!fb_composition_layer_image_layout, false, "XR_FB_composition_layer_image_layout is not enabled");
+	return projection_layer_vertical_flip;
+}
+
+void OpenXRFbCompositionLayerImageLayoutExtension::_on_session_created(uint64_t p_session) {
+	if (!fb_composition_layer_image_layout) {
+		return;
+	}
+	get_openxr_api()->register_projection_layer_extension(this);
+}
+
+void OpenXRFbCompositionLayerImageLayoutExtension::_on_session_destroyed() {
+	if (!fb_composition_layer_image_layout) {
+		return;
+	}
+	get_openxr_api()->unregister_projection_layer_extension(this);
+}
+
+void OpenXRFbCompositionLayerImageLayoutExtension::_on_state_ready() {
+	if (!fb_composition_layer_image_layout) {
+		return;
+	}
+
+	ProjectSettings *project_settings = ProjectSettings::get_singleton();
+	ERR_FAIL_NULL(project_settings);
+
+	set_projection_layer_vertical_flip(project_settings->get_setting_with_override("xr/openxr/extensions/meta/composition_layer_settings/main_projection_layer/image_layout_vertical_flip"));
 }
 
 Dictionary OpenXRFbCompositionLayerImageLayoutExtension::_get_requested_extensions(uint64_t p_xr_version) {
@@ -70,6 +117,17 @@ Dictionary OpenXRFbCompositionLayerImageLayoutExtension::_get_requested_extensio
 		result[ext.key] = (Variant)value;
 	}
 	return result;
+}
+
+uint64_t OpenXRFbCompositionLayerImageLayoutExtension::_set_projection_layer_and_get_next_pointer(void *p_next_pointer) {
+	if (!fb_composition_layer_image_layout) {
+		return reinterpret_cast<uint64_t>(p_next_pointer);
+	}
+
+	projection_layer_image_layout.next = p_next_pointer;
+	projection_layer_image_layout.flags = projection_layer_vertical_flip ? XR_COMPOSITION_LAYER_IMAGE_LAYOUT_VERTICAL_FLIP_BIT_FB : 0;
+
+	return reinterpret_cast<uint64_t>(&projection_layer_image_layout);
 }
 
 uint64_t OpenXRFbCompositionLayerImageLayoutExtension::_set_viewport_composition_layer_and_get_next_pointer(const void *p_layer, const Dictionary &p_property_values, void *p_next_pointer) {

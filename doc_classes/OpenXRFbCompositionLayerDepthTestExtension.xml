@@ -8,4 +8,18 @@
 	</description>
 	<tutorials>
 	</tutorials>
+	<methods>
+		<method name="is_enabled">
+			<return type="bool" />
+			<description>
+				Checks if the extension is enabled or not.
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="projection_layer_depth_test_enabled" type="bool" setter="set_projection_layer_depth_test_enabled" getter="is_projection_layer_depth_test_enabled">
+			Enables depth testing for the projection layer.
+			[b]Note:[/b] The [code]xr/openxr/submit_depth_buffer[/code] project setting must be enabled for this to take effect.
+		</member>
+	</members>
 </class>
