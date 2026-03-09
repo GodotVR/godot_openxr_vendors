@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="OpenXRAndroidTrackablesObjectExtension" inherits="OpenXRExtensionWrapper" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		Implementation for object trackables (from [code]XR_ANDROID_trackables_object[/code]).
+	</brief_description>
+	<description>
+		Implementation for object trackables (from [code]XR_ANDROID_trackables_object[/code]).
+		Depends on [OpenXRAndroidTrackablesExtension].
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="create_object_context">
+			<return type="RID" />
+			<param index="0" name="object_labels" type="Array" />
+			<description>
+				Create a new context to be used in other methods in this class.
+				This is optional, unless if [method set_default_object_context_enabled] was called earlier with [code]false[/code].
+			</description>
+		</method>
+		<method name="discover_object_trackers">
+			<return type="void" />
+			<param index="0" name="update_trackers" type="bool" />
+			<param index="1" name="object_context" type="RID" default="RID()" />
+			<description>
+				Discover object trackers detected by the OpenXR runtime.
+				New object trackers since the last call to [method discover_object_trackers] are added to [XRServer].
+				Missing object trackers since the last call to [method discover_object_trackers] are removed from [XRServer].
+				If [param update_trackers] is [code]true[/code], all found trackers are updated.
+				If [param update_trackers] is [code]false[/code], all found trackers are not updated.  This is useful if you need to find new trackers/discard old trackers without updating all of them too.
+				If [param object_context] is valid, then only discover object trackers for that object context.
+				If [param object_context] is invalid, then discover all object trackers, including for all object contexts created by [method create_object_context].
+				This method does nothing if [method set_default_object_context_enabled] was called earlier with [code]false[/code], [param object_context] is [code]null[/code], and [method create_object_context] was not called or all contexts have been free'd by [method free_object_context].
+				This API is called automatically by default (see [method set_object_tracker_discovery_cooldown]).
+			</description>
+		</method>
+		<method name="free_object_context">
+			<return type="void" />
+			<param index="0" name="object_context" type="RID" />
+			<description>
+				Removes all object trackers that it found from [XRServer] and frees the object context created by [method create_object_context].
+			</description>
+		</method>
+		<method name="get_default_object_context">
+			<return type="RID" />
+			<description>
+				Get the default object context that is used to automatically discover objects with no additional setup.
+				Always returns an invalid [RID] if [method set_default_object_context_enabled] was previously called with [code]false[/code].
+			</description>
+		</method>
+		<method name="is_trackables_object_supported" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] if object trackables is supported; otherwise [code]false[/code].
+			</description>
+		</method>
+		<method name="set_default_object_context_enabled">
+			<return type="void" />
+			<param index="0" name="enabled" type="bool" />
+			<description>
+				Set whether this extension should automatically use the default object context returned by [method get_default_object_context].
+				When [param enabled] is [code]true[/code], the default object context is created (if it's invalid) and used in the next call to [method discover_object_trackers].
+				When [param enabled] is [code]false[/code], the default object context is destroyed (if it's valid) by calling [method free_object_context] immediately.
+			</description>
+		</method>
+		<method name="set_object_tracker_discovery_cooldown">
+			<return type="void" />
+			<param index="0" name="cooldown" type="int" />
+			<description>
+				Set how many frames to wait before automatically calling [method discover_object_trackers].
+				When [param cooldown] is [code]0[/code], [method discover_object_trackers] is called every frame. Note that the XR runtime may not always have new data to retrieve.
+				When [param cooldown] is less than zero, [method discover_object_trackers] is no longer called automatically.  Your app can explicitly discover object trackers by calling [method discover_object_trackers].
+				Default is [code]60[/code].
+			</description>
+		</method>
+	</methods>
+</class>
