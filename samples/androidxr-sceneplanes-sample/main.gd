@@ -1,6 +1,7 @@
 extends StartXR
 
 const PLANE_TRACKABLE_VISUAL = preload("res://plane_trackable_visual/plane_trackable_visual.tscn")
+const OBJECT_TRACKABLE_VISUAL = preload("res://object_trackable_visual/object_trackable_visual.tscn")
 
 var _plane_visuals_dict: Dictionary
 
@@ -20,20 +21,27 @@ func _on_tracker_added(tracker_name: StringName, _type: int):
 		push_error("Couldn't retrieve tracker!")
 		return
 
-	if !(tracker is OpenXRAndroidTrackablePlaneTracker):
-		# this is okay
+	var trackable_visual: XRAnchor3D
+	if tracker is OpenXRAndroidTrackableObjectTracker:
+		trackable_visual = OBJECT_TRACKABLE_VISUAL.instantiate()
+		trackable_visual.set_object_tracker(tracker)
+	elif tracker is OpenXRAndroidTrackablePlaneTracker:
+		# don't visualize planes that are subsumed by another plane, since the subsuming plane
+		# "overrides" the original.  Visualizing every plane is too noisy.
+		if tracker.get_subsumed_by_plane():
+			return
+
+		trackable_visual = PLANE_TRACKABLE_VISUAL.instantiate()
+		trackable_visual.set_plane_tracker(tracker)
+
+		# similar to the comment above; we only want to visualize the subsuming plane, so we remove the
+		# original plane when it is subsumed.
+		trackable_visual.subsumed.connect(_on_tracker_removed_impl.bind(tracker_name))
+	else:
 		return
 
-	# don't visualize planes that are subsumed by another plane, since the subsuming plane "overrides"
-	# the original.  Visualizing every plane is too noisy.
-	if tracker.get_subsumed_by_plane():
-		return
-
-	var plane_trackable_visual: XRAnchor3D = PLANE_TRACKABLE_VISUAL.instantiate()
-	plane_trackable_visual.set_trackable_plane(tracker)
-	plane_trackable_visual.subsumed.connect(_on_tracker_removed_impl.bind(tracker_name))
-	$XROrigin3D.add_child(plane_trackable_visual)
-	_plane_visuals_dict[tracker_name] = plane_trackable_visual
+	$XROrigin3D.add_child(trackable_visual)
+	_plane_visuals_dict[tracker_name] = trackable_visual
 
 
 func _on_tracker_removed(tracker_name: StringName, _type: int):
