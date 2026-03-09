@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://dx8vvv16ipky1"]
+
+[ext_resource type="PackedScene" uid="uid://cc23hm0qw0nc7" path="res://scenes/base_scene.tscn" id="1_3lgu1"]
+
+[node name="XROrigin3D" unique_id=1312047927 instance=ExtResource("1_3lgu1")]
+raycast_flags = 3
+hud_instructions = "Plane and Depth Raycast
+A ray is cast every frame from the head in the forward direction. If it hits a tracked PLANE, the plane is rendered yellow (white otherwise) & you should see an axis appearing at the hit location. If it hits depth texture, you should see an axis appearing directly in front of the camera."
+next_scene = "res://scenes/plane_raycast.tscn"

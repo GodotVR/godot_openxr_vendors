@@ -49,14 +49,18 @@
 #include "export/pico_export_plugin.h"
 #include "export/validation_layers_export_plugin.h"
 
+#include "extensions/openxr_android_device_anchor_persistence_extension.h"
 #include "extensions/openxr_android_environment_depth_extension.h"
 #include "extensions/openxr_android_eye_tracking_extension.h"
 #include "extensions/openxr_android_face_tracking_extension.h"
 #include "extensions/openxr_android_light_estimation_extension.h"
 #include "extensions/openxr_android_passthrough_camera_state_extension.h"
 #include "extensions/openxr_android_performance_metrics_extension.h"
+#include "extensions/openxr_android_raycast_extension.h"
 #include "extensions/openxr_android_recommended_resolution_extension.h"
 #include "extensions/openxr_android_scene_meshing_extension.h"
+#include "extensions/openxr_android_trackables_extension.h"
+#include "extensions/openxr_android_trackables_object_extension.h"
 #include "extensions/openxr_android_unbounded_reference_space_extension.h"
 #include "extensions/openxr_fb_android_surface_swapchain_create_extension.h"
 #include "extensions/openxr_fb_body_tracking_extension.h"
@@ -95,9 +99,13 @@
 #include "extensions/openxr_ml_marker_understanding_extension.h"
 #include "extensions/openxr_stationary_reference_space_extension.h"
 
+#include "classes/openxr_android_anchor_tracker.h"
 #include "classes/openxr_android_environment_depth.h"
+#include "classes/openxr_android_hit_result.h"
 #include "classes/openxr_android_light_estimation.h"
 #include "classes/openxr_android_scene_submesh_data.h"
+#include "classes/openxr_android_trackable_object_tracker.h"
+#include "classes/openxr_android_trackable_plane_tracker.h"
 #include "classes/openxr_fb_hand_tracking_mesh.h"
 #include "classes/openxr_fb_passthrough_geometry.h"
 #include "classes/openxr_fb_render_model.h"
@@ -180,6 +188,12 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			GDREGISTER_CLASS(OpenXRAndroidSceneMeshingExtension);
 			GDREGISTER_CLASS(OpenXRAndroidSceneSubmeshData);
 			GDREGISTER_CLASS(OpenXRAndroidUnboundedReferenceSpaceExtension);
+
+			GDREGISTER_CLASS(OpenXRAndroidDeviceAnchorPersistenceExtension);
+			GDREGISTER_CLASS(OpenXRAndroidHitResult);
+			GDREGISTER_CLASS(OpenXRAndroidRaycastExtension);
+			GDREGISTER_CLASS(OpenXRAndroidTrackablesExtension);
+			GDREGISTER_CLASS(OpenXRAndroidTrackablesObjectExtension);
 
 			GDREGISTER_CLASS(OpenXRAndroidPassthroughCameraStateExtension);
 			GDREGISTER_CLASS(OpenXRAndroidPerformanceMetricsExtension);
@@ -375,6 +389,22 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			if (_get_bool_project_setting("xr/openxr/extensions/androidxr/unbounded_reference_space")) {
 				_register_extension_with_openxr(OpenXRAndroidUnboundedReferenceSpaceExtension::get_singleton());
 			}
+
+			if (_get_bool_project_setting("xr/openxr/extensions/androidxr/trackables")) {
+				_register_extension_with_openxr(OpenXRAndroidTrackablesExtension::get_singleton());
+			}
+
+			if (_get_bool_project_setting("xr/openxr/extensions/androidxr/trackables_object")) {
+				_register_extension_with_openxr(OpenXRAndroidTrackablesObjectExtension::get_singleton());
+			}
+
+			if (_get_bool_project_setting("xr/openxr/extensions/androidxr/raycast")) {
+				_register_extension_with_openxr(OpenXRAndroidRaycastExtension::get_singleton());
+			}
+
+			if (_get_bool_project_setting("xr/openxr/extensions/androidxr/anchor_persistence")) {
+				_register_extension_with_openxr(OpenXRAndroidDeviceAnchorPersistenceExtension::get_singleton());
+			}
 		} break;
 
 		case MODULE_INITIALIZATION_LEVEL_SERVERS:
@@ -409,6 +439,9 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			_register_extension_as_singleton(OpenXRMetaEnvironmentDepthExtension::get_singleton());
 			_register_extension_as_singleton(OpenXRAndroidEnvironmentDepthExtension::get_singleton());
 			_register_extension_as_singleton(OpenXRAndroidUnboundedReferenceSpaceExtension::get_singleton());
+			_register_extension_as_singleton(OpenXRAndroidTrackablesExtension::get_singleton());
+			_register_extension_as_singleton(OpenXRAndroidRaycastExtension::get_singleton());
+			_register_extension_as_singleton(OpenXRAndroidDeviceAnchorPersistenceExtension::get_singleton());
 
 // @todo GH Issue 304: Remove check for meta headers when feature becomes part of OpenXR spec.
 #ifdef META_HEADERS_ENABLED
@@ -417,6 +450,11 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 #endif // META_HEADERS_ENABLED
 
 			GDREGISTER_CLASS(OpenXRAndroidLightEstimation);
+
+			GDREGISTER_ABSTRACT_CLASS(OpenXRAndroidTrackableTracker);
+			GDREGISTER_CLASS(OpenXRAndroidTrackableObjectTracker);
+			GDREGISTER_CLASS(OpenXRAndroidTrackablePlaneTracker);
+			GDREGISTER_CLASS(OpenXRAndroidAnchorTracker);
 
 			GDREGISTER_CLASS(OpenXRFbRenderModel);
 			GDREGISTER_CLASS(OpenXRFbHandTrackingMesh);
@@ -589,6 +627,10 @@ void add_plugin_project_settings() {
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/androidxr/environment_depth", false);
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/androidxr/unbounded_reference_space", false);
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/androidxr/unbounded_reference_space/enable_on_startup", false);
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/androidxr/trackables", false);
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/androidxr/trackables_object", false);
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/androidxr/raycast", false);
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/androidxr/anchor_persistence", false);
 
 // @todo GH Issue 304: Remove check for meta headers when feature becomes part of OpenXR spec.
 #ifdef META_HEADERS_ENABLED
