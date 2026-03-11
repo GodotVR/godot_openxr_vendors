@@ -53,6 +53,7 @@
 #include "extensions/openxr_android_eye_tracking_extension.h"
 #include "extensions/openxr_android_face_tracking_extension.h"
 #include "extensions/openxr_android_light_estimation_extension.h"
+#include "extensions/openxr_android_mouse_interaction_extension.h"
 #include "extensions/openxr_android_passthrough_camera_state_extension.h"
 #include "extensions/openxr_android_performance_metrics_extension.h"
 #include "extensions/openxr_android_recommended_resolution_extension.h"
@@ -145,13 +146,14 @@ static inline void _register_extension_as_singleton(OpenXRExtensionWrapper *p_ex
 	extensions_singletons.push_back({ class_name, p_extension });
 }
 
-static void _add_bool_project_setting(ProjectSettings *p_project_settings, const String &p_name, bool p_default_value) {
+static void _add_bool_project_setting(ProjectSettings *p_project_settings, const String &p_name, bool p_default_value, bool p_restart = false) {
 	if (!p_project_settings->has_setting(p_name)) {
 		p_project_settings->set_setting(p_name, p_default_value);
 	}
 
 	p_project_settings->set_initial_value(p_name, p_default_value);
 	p_project_settings->set_as_basic(p_name, false);
+	p_project_settings->set_restart_if_changed(p_name, p_restart);
 	Dictionary property_info;
 	property_info["name"] = p_name;
 	property_info["type"] = Variant::Type::BOOL;
@@ -176,6 +178,7 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			GDREGISTER_CLASS(OpenXRAndroidEyeTrackingExtension);
 			GDREGISTER_CLASS(OpenXRAndroidFaceTrackingExtension);
 			GDREGISTER_CLASS(OpenXRAndroidLightEstimationExtension);
+			GDREGISTER_CLASS(OpenXRAndroidMouseInteractionExtension);
 			GDREGISTER_CLASS(OpenXRAndroidSceneMeshing);
 			GDREGISTER_CLASS(OpenXRAndroidSceneMeshingExtension);
 			GDREGISTER_CLASS(OpenXRAndroidSceneSubmeshData);
@@ -344,6 +347,10 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 				_register_extension_with_openxr(OpenXRMlMarkerUnderstandingExtension::get_singleton());
 			}
 
+			if (_get_bool_project_setting("xr/openxr/extensions/androidxr/mouse_interaction")) {
+				_register_extension_with_openxr(OpenXRAndroidMouseInteractionExtension::get_singleton());
+			}
+
 			if (_get_bool_project_setting("xr/openxr/extensions/androidxr/passthrough_camera_state")) {
 				_register_extension_with_openxr(OpenXRAndroidPassthroughCameraStateExtension::get_singleton());
 			}
@@ -402,6 +409,7 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			_register_extension_as_singleton(OpenXRAndroidEyeTrackingExtension::get_singleton());
 			_register_extension_as_singleton(OpenXRAndroidFaceTrackingExtension::get_singleton());
 			_register_extension_as_singleton(OpenXRAndroidLightEstimationExtension::get_singleton());
+			_register_extension_as_singleton(OpenXRAndroidMouseInteractionExtension::get_singleton());
 			_register_extension_as_singleton(OpenXRAndroidPassthroughCameraStateExtension::get_singleton());
 			_register_extension_as_singleton(OpenXRAndroidRecommendedResolutionExtension::get_singleton());
 			_register_extension_as_singleton(OpenXRAndroidSceneMeshingExtension::get_singleton());
@@ -583,6 +591,7 @@ void add_plugin_project_settings() {
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/androidxr/eye_tracking", false);
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/androidxr/face_tracking", false);
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/androidxr/light_estimation", false);
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/androidxr/mouse_interaction", false, true);
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/androidxr/passthrough_camera_state", false);
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/androidxr/dynamic_resolution", true);
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/androidxr/scene_meshing", false);
