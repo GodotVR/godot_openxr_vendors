@@ -6,6 +6,10 @@ This directory contains the API JSON for
 ## Current API version
 - [commit 4c311cbee68c0b66ff8ebb8b0defdd9979dd2a41](https://github.com/godotengine/godot/commit/4c311cbee68c0b66ff8ebb8b0defdd9979dd2a41)
 
+## Current API modifications
+
+- Updated `_on_register_metadata` method for `OpenXRExtensionWrapper` [PR 474](https://github.com/GodotVR/godot_openxr_vendors/pull/474)
+
 ## Updating API
 
 The API JSON is synced with the latest version of Godot used when developing the plugin. Here is the
