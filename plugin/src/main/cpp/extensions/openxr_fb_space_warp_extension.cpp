@@ -187,6 +187,7 @@ void OpenXRFbSpaceWarpExtension::_on_main_swapchains_created() {
 		info.minDepth = 0.0;
 		info.maxDepth = 1.0;
 
+		// Near and far Z are swapped because we use reverse Z.
 		info.farZ = get_openxr_api()->get_render_state_z_near();
 		info.nearZ = get_openxr_api()->get_render_state_z_far();
 	}

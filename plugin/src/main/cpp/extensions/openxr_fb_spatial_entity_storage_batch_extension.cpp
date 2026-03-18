@@ -55,6 +55,7 @@ OpenXRFbSpatialEntityStorageBatchExtension::OpenXRFbSpatialEntityStorageBatchExt
 
 OpenXRFbSpatialEntityStorageBatchExtension::~OpenXRFbSpatialEntityStorageBatchExtension() {
 	cleanup();
+	singleton = nullptr;
 }
 
 void OpenXRFbSpatialEntityStorageBatchExtension::_bind_methods() {

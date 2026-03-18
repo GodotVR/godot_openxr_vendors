@@ -28,8 +28,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef OPENXR_ANDROID_SCENE_MESHING_H
-#define OPENXR_ANDROID_SCENE_MESHING_H
+#pragma once
 
 #include <androidxr/androidxr.h>
 #include <godot_cpp/classes/ref_counted.hpp>
@@ -69,5 +68,3 @@ private:
 };
 
 VARIANT_ENUM_CAST(OpenXRAndroidSceneMeshing::SemanticLabelSet);
-
-#endif // OPENXR_ANDROID_SCENE_MESHING_H

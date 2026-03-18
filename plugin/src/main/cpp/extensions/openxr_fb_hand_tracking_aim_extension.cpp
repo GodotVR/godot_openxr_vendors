@@ -53,6 +53,7 @@ OpenXRFbHandTrackingAimExtension::OpenXRFbHandTrackingAimExtension() :
 
 OpenXRFbHandTrackingAimExtension::~OpenXRFbHandTrackingAimExtension() {
 	cleanup();
+	singleton = nullptr;
 }
 
 void OpenXRFbHandTrackingAimExtension::_bind_methods() {

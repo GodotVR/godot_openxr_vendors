@@ -90,6 +90,7 @@ void OpenXRFbSpatialEntityBatch::share_with_users(const TypedArray<OpenXRFbSpati
 	users.resize(p_users.size());
 	for (int i = 0; i < p_users.size(); i++) {
 		Ref<OpenXRFbSpatialEntityUser> user = p_users[i];
+		ERR_FAIL_COND(user.is_null());
 		users[i] = user->get_user_handle();
 	}
 

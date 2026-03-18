@@ -28,8 +28,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef OPENXR_ANDROID_SCENE_MESHING_EXTENSION_H
-#define OPENXR_ANDROID_SCENE_MESHING_EXTENSION_H
+#pragma once
 
 #include <androidxr/androidxr.h>
 #include <godot_cpp/classes/open_xr_extension_wrapper.hpp>
@@ -89,5 +88,3 @@ private:
 
 	EXT_PROTO_XRRESULT_FUNC5(xrEnumerateSupportedSemanticLabelSetsANDROID, (XrInstance), instance, (XrSystemId), systemId, (uint32_t), supportedSemanticLabelSetsInputCapacity, (uint32_t *), supportedSemanticLabelSetsOutputCount, (XrSceneMeshSemanticLabelSetANDROID *), supportedSemanticLabelSets);
 };
-
-#endif // OPENXR_ANDROID_SCENE_MESHING_EXTENSION_H

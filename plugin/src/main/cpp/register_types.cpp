@@ -437,7 +437,7 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			GDREGISTER_CLASS(OpenXRMlMarkerDetectorProfileSettings);
 			GDREGISTER_CLASS(OpenXRMlMarkerDetectorAprilTagSettings);
 			GDREGISTER_CLASS(OpenXRMlMarkerDetectorArucoSettings);
-			GDREGISTER_CLASS(OpenXRMlMarkerDetectorCode128Settings)
+			GDREGISTER_CLASS(OpenXRMlMarkerDetectorCode128Settings);
 			GDREGISTER_CLASS(OpenXRMlMarkerDetectorEan13Settings);
 			GDREGISTER_CLASS(OpenXRMlMarkerDetectorQrSettings);
 			GDREGISTER_CLASS(OpenXRMlMarkerDetectorUpcASettings);

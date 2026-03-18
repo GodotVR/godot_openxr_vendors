@@ -52,6 +52,7 @@ OpenXRFbHandTrackingCapsulesExtension::OpenXRFbHandTrackingCapsulesExtension() :
 
 OpenXRFbHandTrackingCapsulesExtension::~OpenXRFbHandTrackingCapsulesExtension() {
 	cleanup();
+	singleton = nullptr;
 }
 
 void OpenXRFbHandTrackingCapsulesExtension::_bind_methods() {

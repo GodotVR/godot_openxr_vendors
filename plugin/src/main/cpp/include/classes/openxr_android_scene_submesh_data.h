@@ -28,8 +28,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef OPENXR_ANDROID_SCENE_SUBMESH_DATA_H
-#define OPENXR_ANDROID_SCENE_SUBMESH_DATA_H
+#pragma once
 
 #include "classes/openxr_android_scene_meshing.h"
 #include <androidxr/androidxr.h>
@@ -85,19 +84,17 @@ private:
 	Array _get_arrays() const;
 
 	UpdateState update_state = UPDATE_STATE_CREATED;
-	uint32_t update_idx = 0;
+	uint64_t update_idx = 0;
 
 	LocalVector<XrVector3f> vertices_buffer;
 	LocalVector<XrVector3f> normals_buffer;
 	LocalVector<uint32_t> indices_buffer;
 	LocalVector<uint8_t> vertex_semantics_buffer;
 	StringName submesh_uuid;
-	XrTime last_update_time;
+	XrTime last_update_time = 0;
 	Transform3D submesh_pose_in_base_space;
 	Vector3 bounds;
 };
 
 VARIANT_ENUM_CAST(OpenXRAndroidSceneSubmeshData::UpdateState);
 VARIANT_ENUM_CAST(OpenXRAndroidSceneSubmeshData::SemanticLabel);
-
-#endif // OPENXR_ANDROID_SCENE_SUBMESH_DATA_H

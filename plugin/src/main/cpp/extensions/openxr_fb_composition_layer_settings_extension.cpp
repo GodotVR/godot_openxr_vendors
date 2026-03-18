@@ -60,6 +60,7 @@ OpenXRFbCompositionLayerSettingsExtension::OpenXRFbCompositionLayerSettingsExten
 
 OpenXRFbCompositionLayerSettingsExtension::~OpenXRFbCompositionLayerSettingsExtension() {
 	cleanup();
+	singleton = nullptr;
 }
 
 void OpenXRFbCompositionLayerSettingsExtension::_bind_methods() {

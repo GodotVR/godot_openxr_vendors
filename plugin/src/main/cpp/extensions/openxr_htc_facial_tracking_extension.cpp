@@ -61,6 +61,7 @@ OpenXRHtcFacialTrackingExtension::OpenXRHtcFacialTrackingExtension() :
 
 OpenXRHtcFacialTrackingExtension::~OpenXRHtcFacialTrackingExtension() {
 	cleanup();
+	singleton = nullptr;
 }
 
 void OpenXRHtcFacialTrackingExtension::_bind_methods() {

@@ -55,6 +55,7 @@ OpenXRFbCompositionLayerSecureContentExtension::OpenXRFbCompositionLayerSecureCo
 
 OpenXRFbCompositionLayerSecureContentExtension::~OpenXRFbCompositionLayerSecureContentExtension() {
 	cleanup();
+	singleton = nullptr;
 }
 
 void OpenXRFbCompositionLayerSecureContentExtension::_bind_methods() {

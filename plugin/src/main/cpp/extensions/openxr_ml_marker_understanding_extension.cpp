@@ -54,6 +54,7 @@ OpenXRMlMarkerUnderstandingExtension::OpenXRMlMarkerUnderstandingExtension() :
 
 OpenXRMlMarkerUnderstandingExtension::~OpenXRMlMarkerUnderstandingExtension() {
 	cleanup();
+	singleton = nullptr;
 }
 
 void OpenXRMlMarkerUnderstandingExtension::_bind_methods() {
