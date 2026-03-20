@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="OpenXRSpatialEntitiesUnified" inherits="OpenXRExtensionWrapper" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		An API to simplify code that requires spatial context(s) to be created with multiple spatial capabilities.
+	</brief_description>
+	<description>
+		The original motivation for this class was to create a single spatial context with multiple capabilities since otherwise some extensions would not work.
+		In addition to unifying multiple spatial capabilities, it also provides more granular control over spatial capabilities.
+		For example, maybe an app wants to discover anchors and planes, but for planes they just want to be able to toggle meshing and automatic updates.
+		[codeblock]
+		func _ready():
+		    var flags := OpenXRSpatialEntitiesUnified.CAPABILITY_FLAGS_PLANE_TRACKING | OpenXRSpatialEntitiesUnified.CAPABILITY_FLAGS_ANCHOR_TRACKING
+		    var options := {
+		        OpenXRSpatialEntitiesUnified.CAPABILITY_OPTIONS_ENABLE_PLANE_MESH_2D : false,
+		        OpenXRSpatialEntitiesUnified.CAPABILITY_OPTIONS_ENABLE_PLANE_POLYGON_2D : false,
+		    }
+		    OpenXRSpatialEntitiesUnified.create_unified_spatial_context(flags, _on_created, OpenXRSpatialEntitiesUnified.CAPABILITY_FLAGS_ANCHOR_TRACKING, options)
+
+
+		func _on_created(unified_spatial_context: RID):
+		    _unified_spatial_context = unified_spatial_context
+
+		# maybe this app eventually wants to turn meshing back on
+		func _turn_meshing_on():
+		    var flags = OpenXRSpatialEntitiesUnified.CAPABILITY_FLAGS_PLANE
+		    var options = OpenXRSpatialEntitiesUnified.CAPABILITY_OPTIONS_ENABLE_PLANE_MESH_2D
+		    OpenXRSpatialEntitiesUnified.enable_discovery_capability_option(_unified_spatial_context, flags, options, true)
+
+
+		# maybe this app wants to toggle automatic update for planes sometime after initialization
+		func _enable_automatic_discovery_for_planes(enable: bool):
+		    var discovery_query := true
+		    OpenXRSpatialEntitiesUnified.set_automatic_update(_unified_spatial_context, OpenXRSpatialEntitiesUnified.CAPABILITY_FLAGS_PLANE_TRACKING, enable, discovery_query)
+		[/codeblock]
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="create_unified_spatial_context">
+			<return type="void" />
+			<param index="0" name="capability_flags" type="int" enum="OpenXRSpatialEntitiesUnified.CapabilityFlags" is_bitfield="true" />
+			<param index="1" name="callback" type="Callable" />
+			<param index="2" name="capability_options" type="Dictionary" default="{}" />
+			<param index="3" name="enable_automatic_discovery_query" type="int" enum="OpenXRSpatialEntitiesUnified.CapabilityFlags" is_bitfield="true" default="127" />
+			<param index="4" name="enable_automatic_update_query" type="int" enum="OpenXRSpatialEntitiesUnified.CapabilityFlags" is_bitfield="true" default="127" />
+			<description>
+				Creates a spatial context with the capabilities specified in [param capability_flags].
+				[param callback] is called when the context is created, with the first parameter being the spatial context [RID].
+				[param capability_options] is a [Dictionary], where each key is [enum CapabilityOptions] and the value depends on the option.  See [enum CapabilityOptions].
+				Any capabilities set in [param enable_automatic_discovery_query] and [param enable_automatic_update_query] will automatically be updated after the context is created, assuming those capabilities are available by the XR runtime.
+				[b]NOTE:[/b] this does not return [OpenXRFutureResult] because sometimes it has async operations that must complete before the context is created.  A valid [param callback] must be provide for this function to be useful.
+			</description>
+		</method>
+		<method name="destroy_unified_spatial_context">
+			<return type="void" />
+			<param index="0" name="unified_spatial_context" type="RID" />
+			<description>
+				Destroy the spatial context created by [method create_unified_spatial_context].
+				[b]NOTE:[/b] Even though the spatial context can also be destroyed by [method OpenXRSpatialEntityExtension.free_spatial_context], be sure to call this method to ensure proper cleanup.
+			</description>
+		</method>
+		<method name="enable_discovery_capability_option">
+			<return type="void" />
+			<param index="0" name="unified_spatial_context" type="RID" />
+			<param index="1" name="capability_flags" type="int" enum="OpenXRSpatialEntitiesUnified.CapabilityFlags" is_bitfield="true" />
+			<param index="2" name="capability_option" type="int" enum="OpenXRSpatialEntitiesUnified.CapabilityOptions" />
+			<param index="3" name="enable" type="bool" />
+			<description>
+				Enable or disable a [param capability_option] for the chosen [param capability_flags], for discovery queries.
+			</description>
+		</method>
+		<method name="enable_update_capability_option">
+			<return type="void" />
+			<param index="0" name="unified_spatial_context" type="RID" />
+			<param index="1" name="capability_flags" type="int" enum="OpenXRSpatialEntitiesUnified.CapabilityFlags" is_bitfield="true" />
+			<param index="2" name="capability_option" type="int" enum="OpenXRSpatialEntitiesUnified.CapabilityOptions" />
+			<param index="3" name="enable" type="bool" />
+			<description>
+				Enable or disable a [param capability_option] for the chosen [param capability_flags], for update queries.
+			</description>
+		</method>
+		<method name="get_automatic_update" qualifiers="const">
+			<return type="int" enum="OpenXRSpatialEntitiesUnified.CapabilityFlags" is_bitfield="true" />
+			<param index="0" name="unified_spatial_context" type="RID" />
+			<param index="1" name="discovery" type="bool" />
+			<description>
+				Get which capabilities, indicated with [enum CapabilityFlags], are automatically updated.
+				Set [param discovery] to [code]true[/code] to get the capabilities that are automatically queried for discovery.
+				Set [param discovery] to [code]false[/code] to get the capabilities that are automatically queried for update.
+			</description>
+		</method>
+		<method name="get_capability_flags" qualifiers="const">
+			<return type="int" enum="OpenXRSpatialEntitiesUnified.CapabilityFlags" is_bitfield="true" />
+			<param index="0" name="unified_spatial_context" type="RID" />
+			<description>
+				Get the [enum OpenXRSpatialEntitiesUnified.CapabilityFlags] flags that the [param unified_spatial_context] uses.  Note that these flags are either equal, or a subset, of the flags passed in [method create_unified_spatial_context] due to availability of extensions at runtime.
+			</description>
+		</method>
+		<method name="get_capability_options" qualifiers="const">
+			<return type="Array" />
+			<param index="0" name="unified_spatial_context" type="RID" />
+			<description>
+				Returns an [Array] with two [Dictionary]s.
+				Index 0 is a [Dictionary] containing capability options for discovery, where the [Dictionary] maps [enum CapabilityFlags] to a [Dictionary], which maps [enum CapabilityOptions] to a [code]boolean[/code] indicating if it's enabled or not.
+				Index 1 is a [Dictionary] containing capability options for update, where the [Dictionary] maps [enum CapabilityFlags] to a [Dictionary], which maps [enum CapabilityOptions] to a [code]boolean[/code] indicating if it's enabled or not.
+				This method can help understand the relationship between each [enum CapabilityFlags] and their available [enum CapabilityOptions] used in discovery and update queries.
+			</description>
+		</method>
+		<method name="get_persistence_context" qualifiers="const">
+			<return type="RID" />
+			<param index="0" name="unified_spatial_context" type="RID" />
+			<description>
+				Retrieve the persistence context used when creating [param unified_spatial_context], or [code]null[/code] if a persistence context was not created.
+			</description>
+		</method>
+		<method name="is_automatic_update" qualifiers="const">
+			<return type="bool" />
+			<param index="0" name="unified_spatial_context" type="RID" />
+			<param index="1" name="capability_flags" type="int" enum="OpenXRSpatialEntitiesUnified.CapabilityFlags" is_bitfield="true" />
+			<param index="2" name="discovery" type="bool" />
+			<description>
+				Determine if all of the [param capability_flags] are automatically updated for the given [param unified_spatial_context].
+				[code]false[/code] is returned if at least 1 capability is not automatically updated or for an invalid [param unified_spatial_context].
+				Set [param discovery] to [code]true[/code] to check discovery capabilities.
+				Set [param discovery] to [code]false[/code] to check update capabilities.
+			</description>
+		</method>
+		<method name="is_capability_supported" qualifiers="const">
+			<return type="bool" />
+			<param index="0" name="unified_spatial_context" type="RID" />
+			<param index="1" name="capability_flags" type="int" enum="OpenXRSpatialEntitiesUnified.CapabilityFlags" is_bitfield="true" />
+			<description>
+				Check if the given [param capability_flags] are enabled for [param unified_spatial_context].
+				All of the flags must be present to return [code]true[/code].
+				This method is provided for convenience; it turns this
+				[codeblock]
+				var flags := OpenXRSpatialEntitiesUnified.CAPABILITY_FLAGS_ANCHOR | OpenXRSpatialEntitiesUnified.CAPABILITY_FLAGS_PLANE
+				if flags == (OpenXRSpatialEntitiesUnified.get_capability_flags(context) &amp; flags):
+				    # do something
+
+				[/codeblock]
+				Into
+				[codeblock]
+				if OpenXRSpatialEntitiesUnified.is_capability_supported(context, OpenXRSpatialEntitiesUnified.CAPABILITY_FLAGS_ANCHOR | OpenXRSpatialEntitiesUnified.CAPABILITY_FLAGS_PLANE):
+				    # do something
+				[/codeblock]
+			</description>
+		</method>
+		<method name="set_automatic_update">
+			<return type="int" enum="OpenXRSpatialEntitiesUnified.CapabilityFlags" is_bitfield="true" />
+			<param index="0" name="unified_spatial_context" type="RID" />
+			<param index="1" name="capability_flags" type="int" enum="OpenXRSpatialEntitiesUnified.CapabilityFlags" is_bitfield="true" />
+			<param index="2" name="enable" type="bool" />
+			<param index="3" name="discovery" type="bool" />
+			<description>
+				Enables or disables automatic updates for the [param unified_spatial_context] for the given [param capability_flags].
+				Unsupported [enum CapabilityFlags] are ignored, which means setting [param capability_flags] to [constant CAPABILITY_FLAGS_ALL] is standard way to turn on updates for all capabilities, and [constant CAPABILITY_FLAGS_NONE] to turn off all updates.
+				The returned [enum CapabilityFlags] are identical to [method get_capability_flags].
+				Set [param discovery] to [code]true[/code] to set automatic updates for discovery query.
+				Set [param discovery] to [code]false[/code] to set automatic updates for update query.
+			</description>
+		</method>
+	</methods>
+	<constants>
+		<constant name="CAPABILITY_FLAGS_NONE" value="0" enum="CapabilityFlags" is_bitfield="true">
+			This is a value to check for the absence of flags, for example:
+			[codeblock]
+			if my_capability_flags == CAPABILITY_FLAGS_NONE:
+			    # there are no flags set
+			[/codeblock]
+		</constant>
+		<constant name="CAPABILITY_FLAGS_ANCHOR" value="1" enum="CapabilityFlags" is_bitfield="true">
+			Enable [OpenXRSpatialAnchorCapability].
+		</constant>
+		<constant name="CAPABILITY_FLAGS_ANCHOR_PERSISTENCE" value="2" enum="CapabilityFlags" is_bitfield="true">
+			Include [OpenXRSpatialContextPersistenceConfig] with [OpenXRSpatialAnchorCapability].
+			Ignored if [constant CAPABILITY_FLAGS_ANCHOR] is missing.
+		</constant>
+		<constant name="CAPABILITY_FLAGS_ANCHOR_TRACKING" value="3" enum="CapabilityFlags" is_bitfield="true">
+			The combination of all [code]CAPABILITY_FLAGS_ANCHOR_*[/code] flags.
+		</constant>
+		<constant name="CAPABILITY_FLAGS_PLANE" value="4" enum="CapabilityFlags" is_bitfield="true">
+			Enable [OpenXRSpatialPlaneTrackingCapability].
+		</constant>
+		<constant name="CAPABILITY_FLAGS_PLANE_TRACKING" value="4" enum="CapabilityFlags" is_bitfield="true">
+			The combination of all [code]CAPABILITY_FLAGS_PLANE_*[/code] flags.
+		</constant>
+		<constant name="CAPABILITY_FLAGS_MARKER_QRCODE" value="8" enum="CapabilityFlags" is_bitfield="true">
+			Include [OpenXRSpatialCapabilityConfigurationQrCode] with [OpenXRSpatialMarkerTrackingCapability].
+		</constant>
+		<constant name="CAPABILITY_FLAGS_MARKER_MICRO_QRCODE" value="16" enum="CapabilityFlags" is_bitfield="true">
+			Include [OpenXRSpatialCapabilityConfigurationMicroQrCode] with [OpenXRSpatialMarkerTrackingCapability].
+		</constant>
+		<constant name="CAPABILITY_FLAGS_MARKER_ARUCO" value="32" enum="CapabilityFlags" is_bitfield="true">
+			Include [OpenXRSpatialCapabilityConfigurationAruco] with [OpenXRSpatialMarkerTrackingCapability].
+		</constant>
+		<constant name="CAPABILITY_FLAGS_MARKER_APRIL" value="64" enum="CapabilityFlags" is_bitfield="true">
+			Include [OpenXRSpatialCapabilityConfigurationAprilTag] with [OpenXRSpatialMarkerTrackingCapability].
+		</constant>
+		<constant name="CAPABILITY_FLAGS_MARKER_TRACKING" value="120" enum="CapabilityFlags" is_bitfield="true">
+			The combination of all [code]CAPABILITY_FLAGS_MARKER_*[/code] flags.
+		</constant>
+		<constant name="CAPABILITY_FLAGS_ALL" value="127" enum="CapabilityFlags" is_bitfield="true">
+			All of the [enum CapabilityFlags].
+		</constant>
+		<constant name="CAPABILITY_OPTIONS_ANCHOR_PERSISTENCE_SCOPE" value="0" enum="CapabilityOptions">
+			An optional [enum OpenXRSpatialAnchorCapability.PersistenceScope] to use when creating the persistence context.
+			If unspecified, the persistence context is created with [method OpenXRSpatialAnchorCapability.create_default_persistence_context] which uses a default [enum OpenXRSpatialAnchorCapability.PersistenceScope].
+		</constant>
+		<constant name="CAPABILITY_OPTIONS_MARKER_ARUCO_DICT" value="1" enum="CapabilityOptions">
+			When creating the spatial context with [OpenXRSpatialCapabilityConfigurationAruco], set the aruco dict with this [enum OpenXRSpatialCapabilityConfigurationAruco.ArucoDict]
+			If unspecified, [method OpenXRSpatialCapabilityConfigurationAruco.set_default_aruco_dict] is used.
+		</constant>
+		<constant name="CAPABILITY_OPTIONS_MARKER_APRIL_DICT" value="2" enum="CapabilityOptions">
+			When creating the spatial context with [OpenXRSpatialCapabilityConfigurationAprilTag], set the april dict with this [enum OpenXRSpatialCapabilityConfigurationAprilTag.AprilTagDict].
+			If unspecified, [method OpenXRSpatialCapabilityConfigurationAprilTag.set_default_april_dict] is used.
+		</constant>
+		<constant name="CAPABILITY_OPTIONS_ENABLE_ANCHOR" value="3" enum="CapabilityOptions">
+			Used in discovery query in addition to [constant CAPABILITY_OPTIONS_ENABLE_ANCHOR_PERSISTENCE].
+			Used in update query for updating anchors.
+			See also [OpenXRSpatialAnchorCapability] and [OpenXRSpatialComponentAnchorList].
+		</constant>
+		<constant name="CAPABILITY_OPTIONS_ENABLE_ANCHOR_PERSISTENCE" value="4" enum="CapabilityOptions">
+			Used in discovery query for finding previously persisted anchors.
+			See also [OpenXRSpatialAnchorCapability] and [OpenXRSpatialComponentPersistenceList].
+		</constant>
+		<constant name="CAPABILITY_OPTIONS_ENABLE_PLANE_BOUNDED_2D" value="5" enum="CapabilityOptions">
+			Used in discovery query for finding planes transform and extents.
+			See also [OpenXRSpatialPlaneTrackingCapability] and [OpenXRSpatialComponentBounded2DList].
+		</constant>
+		<constant name="CAPABILITY_OPTIONS_ENABLE_PLANE_ALIGNMENT" value="6" enum="CapabilityOptions">
+			Used in discovery query for finding planes alignment.
+			See also [OpenXRSpatialPlaneTrackingCapability] and [OpenXRSpatialComponentPlaneAlignmentList].
+		</constant>
+		<constant name="CAPABILITY_OPTIONS_ENABLE_PLANE_MESH_2D" value="7" enum="CapabilityOptions">
+			Used in discovery query for finding planes 2D mesh.
+			See also [OpenXRSpatialPlaneTrackingCapability] and [OpenXRSpatialComponentMesh2DList].
+		</constant>
+		<constant name="CAPABILITY_OPTIONS_ENABLE_PLANE_POLYGON_2D" value="8" enum="CapabilityOptions">
+			Used in discovery query for finding planes 2D polygon.
+			See also [OpenXRSpatialPlaneTrackingCapability] and [OpenXRSpatialComponentPolygon2DList].
+		</constant>
+		<constant name="CAPABILITY_OPTIONS_ENABLE_PLANE_SEMANTIC_LABEL" value="9" enum="CapabilityOptions">
+			Used in discovery query for finding planes semantic label.
+			See also [OpenXRSpatialPlaneTrackingCapability] and [OpenXRSpatialComponentPlaneSemanticLabelList].
+		</constant>
+		<constant name="CAPABILITY_OPTIONS_ENABLE_MARKER_QRCODE" value="10" enum="CapabilityOptions">
+			Used in discovery query for finding QRCode markers.
+			Used in update query for updating QRCode markers.
+			See also [OpenXRSpatialMarkerTrackingCapability] and [OpenXRSpatialCapabilityConfigurationQrCode].
+		</constant>
+		<constant name="CAPABILITY_OPTIONS_ENABLE_MARKER_MICRO_QRCODE" value="11" enum="CapabilityOptions">
+			Used in discovery query for finding Micro QRCode markers.
+			Used in update query for updating Micro QRCode markers.
+			See also [OpenXRSpatialMarkerTrackingCapability] and [OpenXRSpatialCapabilityConfigurationMicroQrCode].
+		</constant>
+		<constant name="CAPABILITY_OPTIONS_ENABLE_MARKER_ARUCO" value="12" enum="CapabilityOptions">
+			Used in discovery query for finding Aruco markers.
+			Used in update query for updating Aruco markers.
+			See also [OpenXRSpatialMarkerTrackingCapability] and [OpenXRSpatialCapabilityConfigurationAruco].
+		</constant>
+		<constant name="CAPABILITY_OPTIONS_ENABLE_MARKER_APRIL" value="13" enum="CapabilityOptions">
+			Used in discovery query for finding April markers.
+			Used in update query for updating April markers.
+			See also [OpenXRSpatialMarkerTrackingCapability] and [OpenXRSpatialCapabilityConfigurationAprilTag].
+		</constant>
+	</constants>
+</class>
