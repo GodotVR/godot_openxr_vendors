@@ -54,6 +54,7 @@ OpenXRFbRenderModelExtension::OpenXRFbRenderModelExtension() :
 
 OpenXRFbRenderModelExtension::~OpenXRFbRenderModelExtension() {
 	cleanup();
+	singleton = nullptr;
 }
 
 void OpenXRFbRenderModelExtension::_bind_methods() {
@@ -127,6 +128,7 @@ void OpenXRFbRenderModelExtension::fetch_paths() {
 	result = xrEnumerateRenderModelPathsFB(SESSION, path_count, &path_count, paths);
 	if (XR_FAILED(result)) {
 		UtilityFunctions::print("Failed to get paths using FB_render_model extension, error code: ", result);
+		memfree(paths);
 		return;
 	}
 
@@ -185,7 +187,7 @@ PackedByteArray OpenXRFbRenderModelExtension::get_buffer(const String &p_path) {
 }
 
 XrPath OpenXRFbRenderModelExtension::_string_to_xr_path(const String &p_path) {
-	XrPath xr_path;
+	XrPath xr_path = XR_NULL_PATH;
 	XrResult result = xrStringToPath((XrInstance)get_openxr_api()->get_instance(), p_path.utf8().get_data(), &xr_path);
 	if (XR_FAILED(result)) {
 		UtilityFunctions::print("Failed to convert string path to XrPath, error code: ", result);

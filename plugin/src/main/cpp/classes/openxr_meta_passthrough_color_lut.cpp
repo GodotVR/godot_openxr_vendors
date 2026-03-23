@@ -107,10 +107,11 @@ void OpenXRMetaPassthroughColorLut::populate_buffer(const Ref<Image> &p_image, C
 	PackedByteArray image_data = p_image->get_data();
 	const uint8_t *image_ptr = image_data.ptr();
 
-	int res_sq = pow(image_cell_resolution, 2);
-	int res_sqrt = sqrt(image_cell_resolution);
+	int res_sq = image_cell_resolution * image_cell_resolution;
+	int res_sqrt = (int)sqrt((double)image_cell_resolution);
+	int res_cubed = res_sq * image_cell_resolution;
 
-	int buffer_size = pow(image_cell_resolution, 3) * p_channels;
+	int buffer_size = res_cubed * p_channels;
 	buffer.resize(buffer_size);
 	uint8_t *color_lut_buffer_ptr = buffer.ptrw();
 

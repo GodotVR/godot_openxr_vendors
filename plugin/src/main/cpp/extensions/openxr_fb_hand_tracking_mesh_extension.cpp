@@ -55,6 +55,7 @@ OpenXRFbHandTrackingMeshExtension::OpenXRFbHandTrackingMeshExtension() :
 
 OpenXRFbHandTrackingMeshExtension::~OpenXRFbHandTrackingMeshExtension() {
 	cleanup();
+	singleton = nullptr;
 }
 
 void OpenXRFbHandTrackingMeshExtension::_bind_methods() {

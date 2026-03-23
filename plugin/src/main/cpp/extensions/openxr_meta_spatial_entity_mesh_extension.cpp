@@ -55,6 +55,7 @@ OpenXRMetaSpatialEntityMeshExtension::OpenXRMetaSpatialEntityMeshExtension() :
 
 OpenXRMetaSpatialEntityMeshExtension::~OpenXRMetaSpatialEntityMeshExtension() {
 	cleanup();
+	singleton = nullptr;
 }
 
 void OpenXRMetaSpatialEntityMeshExtension::_bind_methods() {

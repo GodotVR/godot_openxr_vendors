@@ -54,6 +54,7 @@ OpenXRFbCompositionLayerImageLayoutExtension::OpenXRFbCompositionLayerImageLayou
 
 OpenXRFbCompositionLayerImageLayoutExtension::~OpenXRFbCompositionLayerImageLayoutExtension() {
 	cleanup();
+	singleton = nullptr;
 }
 
 void OpenXRFbCompositionLayerImageLayoutExtension::_bind_methods() {

@@ -55,6 +55,7 @@ OpenXRFbSpatialEntityUserExtension::OpenXRFbSpatialEntityUserExtension() :
 
 OpenXRFbSpatialEntityUserExtension::~OpenXRFbSpatialEntityUserExtension() {
 	cleanup();
+	singleton = nullptr;
 }
 
 void OpenXRFbSpatialEntityUserExtension::_bind_methods() {

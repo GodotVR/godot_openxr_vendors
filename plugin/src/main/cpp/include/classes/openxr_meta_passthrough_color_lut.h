@@ -45,7 +45,7 @@ public:
 private:
 	RID color_lut_handle;
 	int image_cell_resolution = 0;
-	ColorLutChannels channels;
+	ColorLutChannels channels = COLOR_LUT_CHANNELS_RGB;
 	PackedByteArray buffer;
 
 protected:

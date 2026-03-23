@@ -53,14 +53,15 @@ OpenXRAndroidLightEstimationExtension::OpenXRAndroidLightEstimationExtension() :
 
 OpenXRAndroidLightEstimationExtension::~OpenXRAndroidLightEstimationExtension() {
 	cleanup();
+	singleton = nullptr;
 }
 
 void OpenXRAndroidLightEstimationExtension::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("is_light_estimation_supported"), &OpenXRAndroidLightEstimationExtension::is_light_estimation_started);
+	ClassDB::bind_method(D_METHOD("is_light_estimation_supported"), &OpenXRAndroidLightEstimationExtension::is_light_estimation_supported);
 
 	ClassDB::bind_method(D_METHOD("start_light_estimation"), &OpenXRAndroidLightEstimationExtension::start_light_estimation);
 	ClassDB::bind_method(D_METHOD("stop_light_estimation"), &OpenXRAndroidLightEstimationExtension::stop_light_estimation);
-	ClassDB::bind_method(D_METHOD("is_light_estimation_started"), &OpenXRAndroidLightEstimationExtension::is_light_estimation_supported);
+	ClassDB::bind_method(D_METHOD("is_light_estimation_started"), &OpenXRAndroidLightEstimationExtension::is_light_estimation_started);
 
 	ClassDB::bind_method(D_METHOD("set_light_estimate_types", "estimate_types"), &OpenXRAndroidLightEstimationExtension::set_light_estimate_types);
 	ClassDB::bind_method(D_METHOD("get_light_estimate_types"), &OpenXRAndroidLightEstimationExtension::get_light_estimate_types);

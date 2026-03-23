@@ -287,7 +287,7 @@ void OpenXRFbBodyTrackingExtension::_on_session_created(uint64_t instance) {
 		body_joint_set, // bodyJointSet
 	};
 	XrResult result = xrCreateBodyTrackerFB(SESSION, &createInfo, &body_tracker);
-	ERR_FAIL_COND_MSG(XR_FAILED(result), vformat("Failed to create body-tracker handle: ", get_openxr_api()->get_error_string(result)));
+	ERR_FAIL_COND_MSG(XR_FAILED(result), vformat("Failed to create body-tracker handle: %s", get_openxr_api()->get_error_string(result)));
 
 	// Construct the XRBodyTracker if necessary
 	if (xr_body_tracker.is_null()) {
@@ -311,7 +311,7 @@ void OpenXRFbBodyTrackingExtension::_on_session_destroyed() {
 	// Destroy the body-tracker handle
 	XrResult result = xrDestroyBodyTrackerFB(body_tracker);
 	if (XR_FAILED(result)) {
-		ERR_PRINT(vformat("Failed to destroy body-tracker handle: ", get_openxr_api()->get_error_string(result)));
+		ERR_PRINT(vformat("Failed to destroy body-tracker handle: %s", get_openxr_api()->get_error_string(result)));
 	}
 	body_tracker = XR_NULL_HANDLE;
 
@@ -379,7 +379,7 @@ void OpenXRFbBodyTrackingExtension::_on_process() {
 
 	// Read the weights
 	XrResult result = xrLocateBodyJointsFB(body_tracker, &locate_info, &locations);
-	ERR_FAIL_COND_MSG(XR_FAILED(result), vformat("Failed to get body joint locations: ", get_openxr_api()->get_error_string(result)));
+	ERR_FAIL_COND_MSG(XR_FAILED(result), vformat("Failed to get body joint locations: %s", get_openxr_api()->get_error_string(result)));
 
 	// Set the tracking active flag
 	xr_body_tracker->set_has_tracking_data(locations.isActive);
@@ -507,7 +507,7 @@ void OpenXRFbBodyTrackingExtension::request_body_tracking_fidelity(BodyTrackingF
 
 	const XrBodyTrackingFidelityMETA fidelity = XrBodyTrackingFidelityMETA(p_fidelity);
 	XrResult result = xrRequestBodyTrackingFidelityMETA(body_tracker, fidelity);
-	ERR_FAIL_COND_MSG(XR_FAILED(result), vformat("Failed to request body tracking fidelity update: ", get_openxr_api()->get_error_string(result)));
+	ERR_FAIL_COND_MSG(XR_FAILED(result), vformat("Failed to request body tracking fidelity update: %s", get_openxr_api()->get_error_string(result)));
 }
 
 OpenXRFbBodyTrackingExtension::BodyTrackingFidelity OpenXRFbBodyTrackingExtension::get_body_tracking_fidelity_status() {
@@ -562,7 +562,7 @@ void OpenXRFbBodyTrackingExtension::suggest_body_tracking_height_override(float 
 	};
 
 	XrResult result = xrSuggestBodyTrackingCalibrationOverrideMETA(body_tracker, &body_tracking_calibration_info);
-	ERR_FAIL_COND_MSG(XR_FAILED(result), vformat("Failed to suggest body tracking calibration override: ", get_openxr_api()->get_error_string(result)));
+	ERR_FAIL_COND_MSG(XR_FAILED(result), vformat("Failed to suggest body tracking calibration override: %s", get_openxr_api()->get_error_string(result)));
 }
 
 void OpenXRFbBodyTrackingExtension::reset_body_tracking_calibration() {
@@ -570,7 +570,7 @@ void OpenXRFbBodyTrackingExtension::reset_body_tracking_calibration() {
 	ERR_FAIL_COND_MSG(body_tracker == XR_NULL_HANDLE, "Cannot reset body tracking calibration: body tracker handle is null");
 
 	XrResult result = xrResetBodyTrackingCalibrationMETA(body_tracker);
-	ERR_FAIL_COND_MSG(XR_FAILED(result), vformat("Failed to reset body tracking calibration: ", get_openxr_api()->get_error_string(result)));
+	ERR_FAIL_COND_MSG(XR_FAILED(result), vformat("Failed to reset body tracking calibration: %s", get_openxr_api()->get_error_string(result)));
 }
 
 bool OpenXRFbBodyTrackingExtension::initialize_meta_body_tracking_calibration_extension(XrInstance p_instance) {

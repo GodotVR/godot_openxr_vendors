@@ -59,6 +59,7 @@ OpenXRFbCompositionLayerAlphaBlendExtension::OpenXRFbCompositionLayerAlphaBlendE
 
 OpenXRFbCompositionLayerAlphaBlendExtension::~OpenXRFbCompositionLayerAlphaBlendExtension() {
 	cleanup();
+	singleton = nullptr;
 }
 
 void OpenXRFbCompositionLayerAlphaBlendExtension::_bind_methods() {

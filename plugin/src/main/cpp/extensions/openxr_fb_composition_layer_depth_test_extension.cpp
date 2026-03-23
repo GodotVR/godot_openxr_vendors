@@ -55,6 +55,7 @@ OpenXRFbCompositionLayerDepthTestExtension::OpenXRFbCompositionLayerDepthTestExt
 
 OpenXRFbCompositionLayerDepthTestExtension::~OpenXRFbCompositionLayerDepthTestExtension() {
 	cleanup();
+	singleton = nullptr;
 }
 
 void OpenXRFbCompositionLayerDepthTestExtension::_bind_methods() {

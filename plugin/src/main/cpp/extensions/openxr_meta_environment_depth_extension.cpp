@@ -174,6 +174,7 @@ OpenXRMetaEnvironmentDepthExtension::OpenXRMetaEnvironmentDepthExtension() :
 
 OpenXRMetaEnvironmentDepthExtension::~OpenXRMetaEnvironmentDepthExtension() {
 	cleanup();
+	singleton = nullptr;
 }
 
 void OpenXRMetaEnvironmentDepthExtension::_bind_methods() {

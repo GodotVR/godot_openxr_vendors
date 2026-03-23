@@ -54,6 +54,7 @@ OpenXRFbSpatialEntityQueryExtension::OpenXRFbSpatialEntityQueryExtension() :
 
 OpenXRFbSpatialEntityQueryExtension::~OpenXRFbSpatialEntityQueryExtension() {
 	cleanup();
+	singleton = nullptr;
 }
 
 void OpenXRFbSpatialEntityQueryExtension::_bind_methods() {

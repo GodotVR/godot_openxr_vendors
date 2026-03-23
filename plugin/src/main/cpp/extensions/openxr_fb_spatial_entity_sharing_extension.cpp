@@ -55,6 +55,7 @@ OpenXRFbSpatialEntitySharingExtension::OpenXRFbSpatialEntitySharingExtension() :
 
 OpenXRFbSpatialEntitySharingExtension::~OpenXRFbSpatialEntitySharingExtension() {
 	cleanup();
+	singleton = nullptr;
 }
 
 void OpenXRFbSpatialEntitySharingExtension::_bind_methods() {

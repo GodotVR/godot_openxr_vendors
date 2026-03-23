@@ -238,6 +238,8 @@ Array OpenXRFbSpatialEntity::get_triangle_mesh() const {
 		return Array();
 	}
 
+	ERR_FAIL_COND_V(mesh_data.indices.size() % 3 != 0, Array());
+
 	PackedVector3Array vertices;
 	vertices.resize(mesh_data.vertices.size());
 	for (int i = 0; i < mesh_data.vertices.size(); i++) {
@@ -318,6 +320,8 @@ Node3D *OpenXRFbSpatialEntity::create_collision_shape() const {
 		if (!OpenXRMetaSpatialEntityMeshExtension::get_singleton()->get_triangle_mesh(space, mesh_data)) {
 			return nullptr;
 		}
+
+		ERR_FAIL_COND_V(mesh_data.indices.size() % 3 != 0, nullptr);
 
 		PackedVector3Array faces;
 		faces.resize(mesh_data.indices.size());
@@ -448,6 +452,7 @@ void OpenXRFbSpatialEntity::share_with_users(const TypedArray<OpenXRFbSpatialEnt
 	users.resize(p_users.size());
 	for (int i = 0; i < p_users.size(); i++) {
 		Ref<OpenXRFbSpatialEntityUser> user = p_users[i];
+		ERR_FAIL_COND(user.is_null());
 		users[i] = user->get_user_handle();
 	}
 

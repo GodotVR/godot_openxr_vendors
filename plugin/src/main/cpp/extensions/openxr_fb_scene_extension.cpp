@@ -60,6 +60,7 @@ OpenXRFbSceneExtension::OpenXRFbSceneExtension() :
 
 OpenXRFbSceneExtension::~OpenXRFbSceneExtension() {
 	cleanup();
+	singleton = nullptr;
 }
 
 void OpenXRFbSceneExtension::_bind_methods() {

@@ -65,6 +65,7 @@ OpenXRFbPassthroughExtension::OpenXRFbPassthroughExtension() :
 
 OpenXRFbPassthroughExtension::~OpenXRFbPassthroughExtension() {
 	cleanup();
+	singleton = nullptr;
 }
 
 void OpenXRFbPassthroughExtension::_bind_methods() {
@@ -755,7 +756,7 @@ void OpenXRFbPassthroughExtension::_set_mono_map_rt(const Ref<Curve> &p_curve) {
 void OpenXRFbPassthroughExtension::set_brightness_contrast_saturation(float p_brightness, float p_contrast, float p_saturation) {
 	const float BRIGHT_MIN = -100.0;
 	const float BRIGHT_MAX = 100.0;
-	ERR_FAIL_COND_MSG(p_brightness < BRIGHT_MIN || p_brightness > BRIGHT_MAX, vformat("Brighness value %d is not within bounds of %d and %d", p_brightness, BRIGHT_MIN, BRIGHT_MAX));
+	ERR_FAIL_COND_MSG(p_brightness < BRIGHT_MIN || p_brightness > BRIGHT_MAX, vformat("Brightness value %d is not within bounds of %d and %d", p_brightness, BRIGHT_MIN, BRIGHT_MAX));
 	ERR_FAIL_COND_MSG(p_contrast < 0.0, vformat("Contrast value %d is not greater than or equal to zero", p_contrast));
 	ERR_FAIL_COND_MSG(p_saturation < 0.0, vformat("Saturation value %d is not greater than or equal to zero", p_saturation));
 

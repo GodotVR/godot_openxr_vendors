@@ -58,6 +58,7 @@ OpenXRFbSceneCaptureExtension::OpenXRFbSceneCaptureExtension() :
 
 OpenXRFbSceneCaptureExtension::~OpenXRFbSceneCaptureExtension() {
 	cleanup();
+	singleton = nullptr;
 }
 
 void OpenXRFbSceneCaptureExtension::_bind_methods() {

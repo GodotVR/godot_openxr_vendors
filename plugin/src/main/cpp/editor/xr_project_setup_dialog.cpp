@@ -300,14 +300,16 @@ public:
 		}
 
 		if (FileAccess::file_exists(XR_MAIN_SCENE_PATH)) {
-			ERR_FAIL_EDMSG(vformat("XR main scene xr_main.tscn already exists", XR_MAIN_SCENE_PATH));
+			ERR_FAIL_EDMSG(vformat("XR main scene %s already exists", XR_MAIN_SCENE_PATH));
 		}
 
 		Ref<FileAccess> start_xr = FileAccess::open(START_XR_SCRIPT_PATH, FileAccess::WRITE);
+		ERR_FAIL_COND(start_xr.is_null());
 		start_xr->store_string(start_xr_script_content);
 		start_xr->close();
 
 		Ref<FileAccess> startup_scene = FileAccess::open(XR_MAIN_SCENE_PATH, FileAccess::WRITE);
+		ERR_FAIL_COND(startup_scene.is_null());
 		startup_scene->store_string(xr_startup_scene_content);
 		startup_scene->close();
 
@@ -580,7 +582,7 @@ void XrProjectSetupDialog::_notification(uint32_t p_what) {
 			vendor_type_selector->add_item("Magic Leap", VENDOR_TYPE_MAGIC_LEAP);
 			vendor_type_selector->add_item("Android XR", VENDOR_TYPE_ANDROID_XR);
 			vendor_type_selector->add_item("Valve", VENDOR_TYPE_VALVE);
-			vendor_type_selector->select(project_type_selector->get_item_index(VENDOR_TYPE_META));
+			vendor_type_selector->select(vendor_type_selector->get_item_index(VENDOR_TYPE_META));
 			vendor_type_hbox->add_child(vendor_type_selector);
 			vendor_type_selector->connect("item_selected", callable_mp(this, &XrProjectSetupDialog::_on_filter_selected));
 
@@ -745,4 +747,7 @@ XrProjectSetupDialog::XrProjectSetupDialog() {
 }
 
 XrProjectSetupDialog::~XrProjectSetupDialog() {
+	for (Recommendation *recommendation : recommendations) {
+		memdelete(recommendation);
+	}
 }

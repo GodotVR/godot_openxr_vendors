@@ -53,6 +53,7 @@ OpenXRFbSpatialEntityContainerExtension::OpenXRFbSpatialEntityContainerExtension
 
 OpenXRFbSpatialEntityContainerExtension::~OpenXRFbSpatialEntityContainerExtension() {
 	cleanup();
+	singleton = nullptr;
 }
 
 void OpenXRFbSpatialEntityContainerExtension::_bind_methods() {

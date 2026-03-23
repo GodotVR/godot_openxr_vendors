@@ -53,6 +53,7 @@ OpenXRFbColorSpaceExtension::OpenXRFbColorSpaceExtension() :
 
 OpenXRFbColorSpaceExtension::~OpenXRFbColorSpaceExtension() {
 	cleanup();
+	singleton = nullptr;
 }
 
 Array OpenXRFbColorSpaceExtension::get_supported_color_spaces() {
