@@ -161,7 +161,6 @@ private:
 
 	void update_reprojection_material(bool p_creation = false);
 
-	void destroy_depth_provider();
 	void _update_mesh();
 };
 

@@ -17,6 +17,7 @@ var depth_mode: DepthMode = DepthMode.SMOOTH
 func _ready():
 	super._ready()
 
+	get_tree().on_request_permissions_result.connect(_on_request_permissions_result)
 	OS.request_permissions()
 
 	xr_interface.session_begun.connect(_update)
@@ -26,6 +27,11 @@ func _process(_delta: float) -> void:
 	# Can't use "Show When Tracked" because we only want to show the hands in SMOOTH mode.
 	left_hand.visible = (left_hand.get_has_tracking_data() and depth_mode == DepthMode.SMOOTH)
 	right_hand.visible = (right_hand.get_has_tracking_data() and depth_mode == DepthMode.SMOOTH)
+
+
+func _on_request_permissions_result(p_permission: String, p_granted: bool) -> void:
+	if p_permission == "android.permission.SCENE_UNDERSTANDING_FINE" and p_granted:
+		_update()
 
 
 func _update() -> void:
