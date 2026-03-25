@@ -137,6 +137,8 @@ Dictionary OpenXRAndroidLightEstimationExtension::_get_requested_extensions(uint
 }
 
 bool OpenXRAndroidLightEstimationExtension::start_light_estimation() {
+	ERR_FAIL_COND_V(!is_light_estimation_supported(), false);
+
 	if (light_estimator != XR_NULL_HANDLE) {
 		return true;
 	}
