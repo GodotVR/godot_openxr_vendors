@@ -1322,6 +1322,8 @@ def make_enum(t: str, state: State) -> str:
 
     if '.' in t:
         (c, e) = t.rsplit('.', 1)
+        if c in CORE_TYPES:
+            return t
     else:
         c = state.current_class
         e = t
