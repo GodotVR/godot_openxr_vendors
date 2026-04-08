@@ -2,6 +2,8 @@
 
 ## 5.0.0
 
+- Do not initialize light estimation extension if unsupported (#478)
+- Fix some minor issues identified by AI (#476)
 - Change space warp sample to use OpenGL renderer (#472)
 - Remove the "Simple Controller" interaction profile in all samples (#471)
 - Add support for `XR_ANDROID_unbounded_reference_space` extension (#458)

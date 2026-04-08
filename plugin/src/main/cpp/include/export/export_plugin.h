@@ -40,7 +40,7 @@
 
 using namespace godot;
 
-static const char *PLUGIN_VERSION = "5.0.0-rc1"; // Also update 'config.gradle#defaultVersion'
+static const char *PLUGIN_VERSION = "5.0.0-stable"; // Also update 'config.gradle#defaultVersion'
 
 // Set of supported vendors
 static const char *META_VENDOR_NAME = "meta";
