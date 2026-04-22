@@ -38,6 +38,10 @@ class OpenXRVendorsEditorDebuggerPlugin : public EditorDebuggerPlugin {
 
 	PackedStringArray override_arguments;
 
+	bool _stop_xrs_on_session_end_active = false;
+
+	void _on_session_stop();
+
 protected:
 	static void _bind_methods();
 

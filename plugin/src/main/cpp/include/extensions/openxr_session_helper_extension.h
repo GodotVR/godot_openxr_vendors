@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  editor_plugin.h                                                       */
+/*  openxr_session_helper_extension.h                                     */
 /**************************************************************************/
 /*                       This file is part of:                            */
 /*                              GODOT XR                                  */
@@ -27,53 +27,41 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#pragma once
+#ifndef OPENXR_SESSION_HELPER_EXTENSION_H
+#define OPENXR_SESSION_HELPER_EXTENSION_H
 
-#include <godot_cpp/classes/editor_export_plugin.hpp>
-#include <godot_cpp/classes/editor_plugin.hpp>
+#include <openxr/openxr.h>
+#include <godot_cpp/classes/open_xr_extension_wrapper.hpp>
+#include <godot_cpp/variant/packed_string_array.hpp>
 
-#include "editor_debugger_plugin.h"
+#include "util.h"
 
 using namespace godot;
-class XrProjectSetupDialog;
 
-namespace godot {
-class LineEdit;
-}
+class OpenXRSessionHelperExtension : public OpenXRExtensionWrapper {
+	GDCLASS(OpenXRSessionHelperExtension, OpenXRExtensionWrapper);
 
-class OpenXRVendorsEditorPlugin : public EditorPlugin {
-	GDCLASS(OpenXRVendorsEditorPlugin, EditorPlugin)
+public:
+	static OpenXRSessionHelperExtension *get_singleton();
 
-	static OpenXRVendorsEditorPlugin *singleton;
+	OpenXRSessionHelperExtension();
+	virtual ~OpenXRSessionHelperExtension() override;
 
-	Vector<Ref<EditorExportPlugin>> export_plugins;
-	Ref<OpenXRVendorsEditorDebuggerPlugin> debugger_plugin;
-
-	XrProjectSetupDialog *_xr_project_setup_dialog = nullptr;
-
-	void _add_export_plugin(const Ref<EditorExportPlugin> &p_plugin);
-
-	void _open_project_setup();
-
-	void _add_plugin_editor_settings();
+	virtual void _on_instance_created(uint64_t instance) override;
+	virtual void _on_state_ready() override;
 
 protected:
 	static void _bind_methods();
 
-	void _notification(uint32_t p_what);
+private:
+	// Vars for initializing extension
+	static OpenXRSessionHelperExtension *singleton;
 
-public:
-	static OpenXRVendorsEditorPlugin *get_singleton();
+	bool _should_request_stop_xrs_client = false;
 
-	void open_asset_library(const String &p_filter_string);
-	void _on_asset_library_request_completed(int p_result, int p_response_code, const PackedStringArray &p_headers, const PackedByteArray &p_body, LineEdit *p_asset_library_filter, String p_search_string);
+	String _get_openxr_runtime_name(XrInstance instance);
 
-	void open_project_settings(const String &p_filter_string);
-
-	void open_export_dialog();
-
-	PackedStringArray _run_scene(const String &p_scene, const PackedStringArray &p_args) const override;
-
-	OpenXRVendorsEditorPlugin();
-	~OpenXRVendorsEditorPlugin();
+	EXT_PROTO_XRRESULT_FUNC2(xrGetInstanceProperties, (XrInstance), instance, (XrInstanceProperties *), instanceProperties);
 };
+
+#endif // OPENXR_SESSION_HELPER_EXTENSION_H
