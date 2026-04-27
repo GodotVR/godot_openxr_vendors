@@ -141,6 +141,7 @@ public:
 
 	Recommendation(String p_title, String p_description, String p_button_text, AlertType p_alert_type, ProjectType p_project_type, VendorType p_vendor_type, bool p_requires_restart) :
 			title(p_title), description(p_description), button_text(p_button_text), alert_type(p_alert_type), project_type(p_project_type), vendor_type(p_vendor_type), requires_restart(p_requires_restart) {}
+	virtual ~Recommendation() {}
 };
 
 class SimpleProjectSettingRecommendation : public Recommendation {
