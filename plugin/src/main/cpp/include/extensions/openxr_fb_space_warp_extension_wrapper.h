@@ -56,7 +56,7 @@ public:
 	void _on_session_destroyed() override;
 	void _on_state_ready() override;
 	void _on_main_swapchains_created() override;
-	void _on_pre_render() override;
+	void _on_pre_draw_viewport(const RID &p_render_target) override;
 	void _on_post_draw_viewport(const RID &p_render_target) override;
 
 	bool is_enabled();
