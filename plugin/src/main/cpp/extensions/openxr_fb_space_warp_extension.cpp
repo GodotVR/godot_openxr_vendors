@@ -193,27 +193,39 @@ void OpenXRFbSpaceWarpExtension::_on_main_swapchains_created() {
 	}
 }
 
-void OpenXRFbSpaceWarpExtension::_on_pre_render() {
+void OpenXRFbSpaceWarpExtension::_on_pre_draw_viewport(const RID &p_render_target) {
+	Ref<OpenXRAPIExtension> openxr_api = get_openxr_api();
+	ERR_FAIL_COND(openxr_api.is_null());
+
+	XRServer *xr_server = XRServer::get_singleton();
+	ERR_FAIL_NULL(xr_server);
+
+	Ref<OpenXRInterface> openxr_interface = xr_server->find_interface("OpenXR");
+	ERR_FAIL_COND(openxr_interface.is_null());
+
+	int view_count = openxr_interface->get_view_count();
+	ERR_FAIL_COND(view_count != space_warp_info.size());
+
 	if (!is_enabled()) {
-		get_openxr_api()->set_velocity_texture(RID());
-		get_openxr_api()->set_velocity_depth_texture(RID());
+		openxr_api->set_velocity_texture(RID());
+		openxr_api->set_velocity_depth_texture(RID());
 		return;
 	}
 
-	get_openxr_api()->openxr_swapchain_acquire(motion_vector_swapchain_info);
-	get_openxr_api()->openxr_swapchain_acquire(motion_vector_depth_swapchain_info);
+	openxr_api->openxr_swapchain_acquire(motion_vector_swapchain_info);
+	openxr_api->openxr_swapchain_acquire(motion_vector_depth_swapchain_info);
 
-	RID motion_vector_swapchain_image = get_openxr_api()->openxr_swapchain_get_image(motion_vector_swapchain_info);
-	get_openxr_api()->set_velocity_texture(motion_vector_swapchain_image);
-	RID motion_vector_depth_swapchain_image = get_openxr_api()->openxr_swapchain_get_image(motion_vector_depth_swapchain_info);
-	get_openxr_api()->set_velocity_depth_texture(motion_vector_depth_swapchain_image);
+	RID motion_vector_swapchain_image = openxr_api->openxr_swapchain_get_image(motion_vector_swapchain_info);
+	openxr_api->set_velocity_texture(motion_vector_swapchain_image);
+	RID motion_vector_depth_swapchain_image = openxr_api->openxr_swapchain_get_image(motion_vector_depth_swapchain_info);
+	openxr_api->set_velocity_depth_texture(motion_vector_depth_swapchain_image);
 
 	int target_width = system_space_warp_properties.recommendedMotionVectorImageRectWidth;
 	int target_height = system_space_warp_properties.recommendedMotionVectorImageRectHeight;
 	Size2i render_target_size = { target_width, target_height };
-	get_openxr_api()->set_velocity_target_size(render_target_size);
+	openxr_api->set_velocity_target_size(render_target_size);
 
-	Transform3D world_transform = XRServer::get_singleton()->get_world_origin();
+	Transform3D world_transform = xr_server->get_world_origin();
 	Vector3 world_origin = world_transform.origin;
 	Quaternion world_quat = world_transform.basis.get_quaternion();
 
@@ -227,13 +239,11 @@ void OpenXRFbSpaceWarpExtension::_on_pre_render() {
 		delta_quat = render_state.previous_quat.inverse() * world_quat;
 	}
 
-	Ref<OpenXRInterface> openxr_interface = XRServer::get_singleton()->find_interface("OpenXR");
-	int view_count = openxr_interface->get_view_count();
 	for (int i = 0; i < view_count; i++) {
 		space_warp_info[i].layerFlags = render_state.skip_space_warp_frame ? XR_COMPOSITION_LAYER_SPACE_WARP_INFO_FRAME_SKIP_BIT_FB : 0;
 		space_warp_info[i].appSpaceDeltaPose = { { delta_quat.x, delta_quat.y, delta_quat.z, delta_quat.w }, { delta_origin.x, delta_origin.y, delta_origin.z } };
-		space_warp_info[i].farZ = get_openxr_api()->get_render_state_z_near();
-		space_warp_info[i].nearZ = get_openxr_api()->get_render_state_z_far();
+		space_warp_info[i].farZ = openxr_api->get_render_state_z_near();
+		space_warp_info[i].nearZ = openxr_api->get_render_state_z_far();
 	}
 
 	render_state.skip_space_warp_frame = false;
