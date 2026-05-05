@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="OpenXRSpatialEntitiesUnifiedConfigurationPlane" inherits="OpenXRSpatialCapabilityConfigurationBaseHeader" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		The configuration used when creating the unified spatial context with planes.
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="get_enabled_components" qualifiers="const">
+			<return type="PackedInt64Array" />
+			<description>
+				Returns the components enabled by this configuration.
+				[b]Note:[/b] Only valid after [method init].
+			</description>
+		</method>
+		<method name="init">
+			<return type="void" />
+			<param index="0" name="supports_mesh_2d" type="bool" />
+			<param index="1" name="supports_polygons" type="bool" />
+			<param index="2" name="supports_labels" type="bool" />
+			<description>
+				Initializes this [OpenXRSpatialEntitiesUnifiedConfigurationPlane].
+				Detects mesh2d when [param supports_mesh_2d] is [code]true[/code].
+				Detects polygons when [param supports_polygons] is [code]true[/code].
+				Detects labels when [param supports_labels] is [code]true[/code].
+			</description>
+		</method>
+	</methods>
+</class>

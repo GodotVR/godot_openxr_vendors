@@ -58,6 +58,7 @@
 #include "extensions/openxr_android_recommended_resolution_extension.h"
 #include "extensions/openxr_android_scene_meshing_extension.h"
 #include "extensions/openxr_android_unbounded_reference_space_extension.h"
+#include "extensions/openxr_ext_spatial_entities_unified.h"
 #include "extensions/openxr_fb_android_surface_swapchain_create_extension.h"
 #include "extensions/openxr_fb_body_tracking_extension.h"
 #include "extensions/openxr_fb_color_space_extension.h"
@@ -183,6 +184,7 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 
 			GDREGISTER_CLASS(OpenXRAndroidPassthroughCameraStateExtension);
 			GDREGISTER_CLASS(OpenXRAndroidPerformanceMetricsExtension);
+			GDREGISTER_CLASS(OpenXRSpatialEntitiesUnified);
 			GDREGISTER_CLASS(OpenXRFbPassthroughExtension);
 			GDREGISTER_CLASS(OpenXRFbRenderModelExtension);
 			GDREGISTER_CLASS(OpenXRFbColorSpaceExtension);
@@ -223,6 +225,10 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			GDREGISTER_CLASS(OpenXRMetaBoundaryVisibilityExtension);
 			GDREGISTER_CLASS(OpenXRStationaryReferenceSpaceExtension);
 #endif // META_HEADERS_ENABLED
+
+			if (_get_bool_project_setting("xr/openxr/extensions/spatial_entity/unified")) {
+				_register_extension_with_openxr(OpenXRSpatialEntitiesUnified::get_singleton());
+			}
 
 			if (_get_bool_project_setting("xr/openxr/extensions/meta/passthrough")) {
 				_register_extension_with_openxr(OpenXRFbPassthroughExtension::get_singleton());
@@ -409,6 +415,7 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			_register_extension_as_singleton(OpenXRMetaEnvironmentDepthExtension::get_singleton());
 			_register_extension_as_singleton(OpenXRAndroidEnvironmentDepthExtension::get_singleton());
 			_register_extension_as_singleton(OpenXRAndroidUnboundedReferenceSpaceExtension::get_singleton());
+			_register_extension_as_singleton(OpenXRSpatialEntitiesUnified::get_singleton());
 
 // @todo GH Issue 304: Remove check for meta headers when feature becomes part of OpenXR spec.
 #ifdef META_HEADERS_ENABLED
@@ -417,6 +424,9 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 #endif // META_HEADERS_ENABLED
 
 			GDREGISTER_CLASS(OpenXRAndroidLightEstimation);
+
+			GDREGISTER_CLASS(OpenXRSpatialEntitiesUnifiedConfigurationAnchor);
+			GDREGISTER_CLASS(OpenXRSpatialEntitiesUnifiedConfigurationPlane);
 
 			GDREGISTER_CLASS(OpenXRFbRenderModel);
 			GDREGISTER_CLASS(OpenXRFbHandTrackingMesh);
@@ -553,6 +563,7 @@ void add_plugin_project_settings() {
 		project_settings->add_property_info(hybrid_app_launch_mode_property_info);
 	}
 
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/spatial_entity/unified", false);
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/vendor_performance_metrics", false);
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/vendor_performance_metrics/capture_on_startup", true);
 
