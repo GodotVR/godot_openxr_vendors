@@ -1,5 +1,10 @@
 # Change history for the Godot OpenXR loaders asset
 
+## 5.0.1
+
+- Fix crash when using space warp on Godot 4.7 (#487)
+- Make `godot_openxr_vendors::Recommendation` destructor virtual (#488)
+
 ## 5.0.0
 
 - Do not initialize light estimation extension if unsupported (#478)
