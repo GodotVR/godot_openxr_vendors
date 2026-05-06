@@ -32,6 +32,7 @@
 #include <openxr/openxr.h>
 
 #include <godot_cpp/classes/node.hpp>
+#include <godot_cpp/classes/ref.hpp>
 #include <godot_cpp/templates/hash_map.hpp>
 
 #include "classes/openxr_fb_spatial_entity.h"

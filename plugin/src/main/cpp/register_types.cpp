@@ -53,6 +53,7 @@
 #include "extensions/openxr_android_eye_tracking_extension.h"
 #include "extensions/openxr_android_face_tracking_extension.h"
 #include "extensions/openxr_android_light_estimation_extension.h"
+#include "extensions/openxr_android_mouse_interaction_extension.h"
 #include "extensions/openxr_android_passthrough_camera_state_extension.h"
 #include "extensions/openxr_android_performance_metrics_extension.h"
 #include "extensions/openxr_android_recommended_resolution_extension.h"
@@ -145,13 +146,14 @@ static inline void _register_extension_as_singleton(OpenXRExtensionWrapper *p_ex
 	extensions_singletons.push_back({ class_name, p_extension });
 }
 
-static void _add_bool_project_setting(ProjectSettings *p_project_settings, const String &p_name, bool p_default_value) {
+static void _add_bool_project_setting(ProjectSettings *p_project_settings, const String &p_name, bool p_default_value, bool p_restart = false) {
 	if (!p_project_settings->has_setting(p_name)) {
 		p_project_settings->set_setting(p_name, p_default_value);
 	}
 
 	p_project_settings->set_initial_value(p_name, p_default_value);
 	p_project_settings->set_as_basic(p_name, false);
+	p_project_settings->set_restart_if_changed(p_name, p_restart);
 	Dictionary property_info;
 	property_info["name"] = p_name;
 	property_info["type"] = Variant::Type::BOOL;
@@ -375,6 +377,15 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			if (_get_bool_project_setting("xr/openxr/extensions/androidxr/unbounded_reference_space")) {
 				_register_extension_with_openxr(OpenXRAndroidUnboundedReferenceSpaceExtension::get_singleton());
 			}
+
+			// Only works with Godot 4.7 or later.
+			if (godot::gdextension_interface::godot_version.minor >= 7) {
+				GDREGISTER_CLASS(OpenXRAndroidMouseInteractionExtension);
+
+				if (_get_bool_project_setting("xr/openxr/extensions/androidxr/mouse_interaction")) {
+					_register_extension_with_openxr(OpenXRAndroidMouseInteractionExtension::get_singleton());
+				}
+			}
 		} break;
 
 		case MODULE_INITIALIZATION_LEVEL_SERVERS:
@@ -409,6 +420,11 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			_register_extension_as_singleton(OpenXRMetaEnvironmentDepthExtension::get_singleton());
 			_register_extension_as_singleton(OpenXRAndroidEnvironmentDepthExtension::get_singleton());
 			_register_extension_as_singleton(OpenXRAndroidUnboundedReferenceSpaceExtension::get_singleton());
+
+			// Only works with Godot 4.7 or later.
+			if (godot::gdextension_interface::godot_version.minor >= 7) {
+				_register_extension_as_singleton(OpenXRAndroidMouseInteractionExtension::get_singleton());
+			}
 
 // @todo GH Issue 304: Remove check for meta headers when feature becomes part of OpenXR spec.
 #ifdef META_HEADERS_ENABLED
@@ -589,6 +605,11 @@ void add_plugin_project_settings() {
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/androidxr/environment_depth", false);
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/androidxr/unbounded_reference_space", false);
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/androidxr/unbounded_reference_space/enable_on_startup", false);
+
+	// Only works with Godot 4.7 or later.
+	if (godot::gdextension_interface::godot_version.minor >= 7) {
+		_add_bool_project_setting(project_settings, "xr/openxr/extensions/androidxr/mouse_interaction", false, true);
+	}
 
 // @todo GH Issue 304: Remove check for meta headers when feature becomes part of OpenXR spec.
 #ifdef META_HEADERS_ENABLED
