@@ -118,6 +118,16 @@ private:
 	LocalVector<XrTrackableTypeANDROID> supported_trackable_types;
 
 	// Plane trackables
+	// NOTE: unlike OpenXRAndroidTrackablesObjectExtension, we do not have an API for a user to create
+	// separate plane-contexts (XrTrackableTrackerANDROID), because there is less use for
+	// it.  OpenXRAndroidTrackablesObjectExtension is capable of creating different
+	// XrTrackableTrackerANDROIDs that filter object types (like, only find "keyboard", instead of
+	// everything), unlike planes where each context is essentially identical.  Additionally,
+	// XrRaycastHitResultANDROID doesn't specify which XrTrackableTrackerANDROID the hit result is
+	// for, which would force us to search every plane-context to find a matching XrTrackableANDROID.
+	// If we do decide to add it, use OpenXRAndroidTrackablesObjectExtension as an example of which
+	// APIs and members to add, and for raycasts we'll have to search all plane-contexts to find the
+	// matching XrTrackableANDROID
 	HashMap<XrTrackableANDROID, Ref<OpenXRAndroidTrackableTracker>> current_plane_trackables;
 	XrTrackableTrackerANDROID plane_trackable_tracker = XR_NULL_HANDLE;
 	int next_plane_tracker_id = 1;
@@ -125,7 +135,8 @@ private:
 	int plane_trackable_discovery_cooldown_cur = 0;
 
 	// Anchors
-	// Unlike Plane trackables, there is no XrTrackableTrackerANDROID, meaning no separate contexts
+	// Unlike trackables (Plane and Object), there is no XrTrackableTrackerANDROID, meaning no
+	// separate contexts
 	LocalVector<XrTrackableTypeANDROID> supported_anchor_trackable_types;
 	HashMap<XrSpace, Ref<OpenXRAndroidAnchorTracker>> current_anchor_trackers;
 	int next_anchor_tracker_id = 1;

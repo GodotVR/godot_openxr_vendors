@@ -35,3 +35,4 @@ openxr/environment_blend_mode=2
 openxr/extensions/hand_interaction_profile=true
 shaders/enabled=true
 openxr/extensions/androidxr/trackables=true
+openxr/extensions/androidxr/trackables_object=true
