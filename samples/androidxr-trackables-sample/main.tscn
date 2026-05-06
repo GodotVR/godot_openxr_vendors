@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://hlh0gnwobk0v"]
+
+[ext_resource type="Script" uid="uid://bxtaynhowwmw3" path="res://main.gd" id="1_h2yge"]
+[ext_resource type="PackedScene" uid="uid://cj2x0p2apw5yn" path="res://objects/objects.tscn" id="5_5vw27"]
+[ext_resource type="PackedScene" uid="uid://38dsaj45w8yt" path="res://planes/planes.tscn" id="5_272bh"]
+
+[node name="Main" type="Node3D" unique_id=328323955]
+script = ExtResource("1_h2yge")
+
+[node name="XROrigin3D" type="XROrigin3D" parent="." unique_id=1547172593]
+
+[node name="XRCamera3D" type="XRCamera3D" parent="XROrigin3D" unique_id=1005972866]
+
+[node name="Planes" parent="XROrigin3D" unique_id=213923288 instance=ExtResource("5_272bh")]
+
+[node name="Objects" parent="XROrigin3D" unique_id=329444580 instance=ExtResource("5_5vw27")]
