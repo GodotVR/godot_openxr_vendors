@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://c0pwovnesia7n"]
+
+[ext_resource type="Script" uid="uid://cya4n40e85ijh" path="res://anchors/anchors.gd" id="1_akeoy"]
+[ext_resource type="Script" uid="uid://3lfirt0hgxgt" path="res://anchors/menu_3d_updater.gd" id="2_7ve0l"]
+
+[node name="Anchors" type="Node3D" unique_id=2058991049]
+script = ExtResource("1_akeoy")
+
+[node name="Menu3DUpdater" type="Node" parent="." unique_id=1304325570 groups=["menu3d_group"]]
+script = ExtResource("2_7ve0l")
