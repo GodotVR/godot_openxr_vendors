@@ -42,6 +42,9 @@ const DOUBLE_CLICK_DIST = 5.0
 @export var modulate_color := Color.WHITE:
 	set = set_modulate_color
 
+## Whether this ui layer is interactable
+@export var enable_interactions := true
+
 var _scene_root: Control
 
 var _pointer: Node3D
@@ -113,6 +116,7 @@ func set_render_priority(new_render_priority: int):
 		return
 
 	_quad.mesh.material.render_priority = render_priority
+	_cursor.get_surface_override_material(0).render_priority = render_priority
 
 
 func set_no_depth_test(new_no_depth_test: bool):
@@ -121,6 +125,7 @@ func set_no_depth_test(new_no_depth_test: bool):
 		return
 
 	_quad.mesh.material.no_depth_test = no_depth_test
+	_cursor.get_surface_override_material(0).no_depth_test = no_depth_test
 
 
 func set_modulate_color(new_modulate_color: Color):
@@ -170,7 +175,7 @@ func _intersect_to_viewport_pos(p_intersection: Vector2) -> Vector2:
 
 ## Returns a normalized point (UV) in 2D space.
 func intersects_ray(p_origin: Vector3, p_direction: Vector3) -> Vector2:
-	if not visible:
+	if not visible || not enable_interactions:
 		return NO_INTERSECTION
 
 	var quad_transform: Transform3D = get_global_transform()
