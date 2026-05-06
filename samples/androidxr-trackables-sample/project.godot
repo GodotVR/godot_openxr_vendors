@@ -22,6 +22,10 @@ config/features=PackedStringArray("4.6", "Mobile")
 
 enabled=PackedStringArray("res://addons/common/xr_camera_3d_debug/plugin.cfg")
 
+[global_group]
+
+menu3d_group="Group of objects that can add options to the menu3d"
+
 [rendering]
 
 renderer/rendering_method="mobile"
@@ -34,5 +38,7 @@ openxr/enabled=true
 openxr/environment_blend_mode=2
 openxr/extensions/hand_interaction_profile=true
 shaders/enabled=true
+openxr/extensions/androidxr/environment_depth=true
+openxr/extensions/androidxr/raycast=true
 openxr/extensions/androidxr/trackables=true
 openxr/extensions/androidxr/trackables_object=true

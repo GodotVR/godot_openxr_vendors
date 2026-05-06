@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://3xpkt08hw57k"]
+
+[ext_resource type="Script" uid="uid://b1p8fja3lhe8s" path="res://raycast/scenes/scene.gd" id="1_vdc6k"]
+
+[node name="PlaneAndDepthRaycast" type="Node3D" unique_id=333785551]
+script = ExtResource("1_vdc6k")
+raycast_flags = 3
+hud_instructions = "Plane and Depth Raycast
+A ray is cast every frame from the head in the forward direction. If it hits a tracked PLANE, the plane is rendered yellow (white otherwise) & you should see an axis appearing at the hit location. If it hits depth texture, you should see an axis appearing directly in front of the camera."
