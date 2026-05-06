@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://ceomjiqo2tvbb"]
+
+[ext_resource type="Script" uid="uid://b1p8fja3lhe8s" path="res://raycast/scenes/scene.gd" id="1_o2msl"]
+
+[node name="DepthRaycast" type="Node3D" unique_id=333785551]
+script = ExtResource("1_o2msl")
+raycast_flags = 2
+hud_instructions = "Depth Raycast
+You should see an axis appearing directly in front of the camera if there is a successful hit. The axis is drawn at the hit location. The axis is oriented such that the Z axis (blue) is towards the ray origin (user)."

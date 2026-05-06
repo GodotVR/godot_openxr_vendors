@@ -1,0 +1,33 @@
+[gd_scene format=3 uid="uid://hlh0gnwobk0v"]
+
+[ext_resource type="Script" uid="uid://bxtaynhowwmw3" path="res://main.gd" id="1_h2yge"]
+[ext_resource type="PackedScene" uid="uid://b102s1dc4bqsg" path="res://menu_3d/menu_3d.tscn" id="2_h2yge"]
+[ext_resource type="PackedScene" uid="uid://cqs8c3rq6cxvk" path="res://addons/common/viewport_2d_in_3d/function_pointer.tscn" id="4_272bh"]
+[ext_resource type="PackedScene" uid="uid://cj2x0p2apw5yn" path="res://objects/objects.tscn" id="5_5vw27"]
+[ext_resource type="PackedScene" uid="uid://38dsaj45w8yt" path="res://planes/planes.tscn" id="5_272bh"]
+[ext_resource type="PackedScene" uid="uid://b2rk0ktvo8y66" path="res://raycast/raycast.tscn" id="6_5vw27"]
+
+[node name="Main" type="Node3D" unique_id=328323955]
+script = ExtResource("1_h2yge")
+
+[node name="XROrigin3D" type="XROrigin3D" parent="." unique_id=1547172593]
+
+[node name="XRCamera3D" type="XRCamera3D" parent="XROrigin3D" unique_id=1005972866]
+
+[node name="Menu3D" parent="XROrigin3D" unique_id=871719975 instance=ExtResource("2_h2yge")]
+
+[node name="XRController3DLeftHand" type="XRController3D" parent="XROrigin3D" unique_id=1219506884]
+tracker = &"left_hand"
+
+[node name="FunctionPointer" parent="XROrigin3D/XRController3DLeftHand" unique_id=1973749046 instance=ExtResource("4_272bh")]
+
+[node name="XRController3DRightHand" type="XRController3D" parent="XROrigin3D" unique_id=1521837603]
+tracker = &"right_hand"
+
+[node name="FunctionPointer" parent="XROrigin3D/XRController3DRightHand" unique_id=583019880 instance=ExtResource("4_272bh")]
+
+[node name="Planes" parent="XROrigin3D" unique_id=213923288 instance=ExtResource("5_272bh")]
+
+[node name="Objects" parent="XROrigin3D" unique_id=329444580 instance=ExtResource("5_5vw27")]
+
+[node name="Raycast" parent="XROrigin3D" unique_id=2049001248 instance=ExtResource("6_5vw27")]
