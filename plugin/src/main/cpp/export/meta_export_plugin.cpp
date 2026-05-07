@@ -405,8 +405,9 @@ String MetaEditorExportPlugin::_get_android_manifest_element_contents(const Ref<
 		}
 	}
 
-	// Check for anchor api
+	// Check for EXT spatial entities, or the Meta anchor or scene APIs.
 	if ((bool)project_settings->get_setting_with_override("xr/openxr/extensions/spatial_entity/enabled") ||
+			(bool)project_settings->get_setting_with_override("xr/openxr/extensions/meta/scene_api") ||
 			(bool)project_settings->get_setting_with_override("xr/openxr/extensions/meta/anchor_api")) {
 		contents += "    <uses-permission android:name=\"com.oculus.permission.USE_ANCHOR_API\" />\n";
 	}
