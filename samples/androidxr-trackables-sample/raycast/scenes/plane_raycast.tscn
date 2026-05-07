@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://bl3wem68i4h4u"]
+
+[ext_resource type="Script" uid="uid://b1p8fja3lhe8s" path="res://raycast/scenes/scene.gd" id="1_igdof"]
+
+[node name="PlaneRaycast" type="Node3D" unique_id=333785551]
+script = ExtResource("1_igdof")
+hud_instructions = "Plane Raycast
+A ray is cast every frame from the head in the forward direction. If it hits a tracked PLANE, the plane is rendered yellow (white otherwise) & you should see an axis appearing at the hit location. The axis is oriented such that its Y axis (green) represents the plane normal & the Z axis (blue) is towards the ray origin (user)."
