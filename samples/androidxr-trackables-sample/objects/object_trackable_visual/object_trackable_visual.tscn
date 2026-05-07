@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://bnv1lg4ymtjmp"]
+
+[ext_resource type="Script" uid="uid://cdbuwikjrwpqt" path="res://objects/object_trackable_visual/object_trackable_visual.gd" id="1_qffip"]
+[ext_resource type="PackedScene" uid="uid://lq524cbr72ox" path="res://addons/common/axis3d/axis3d.tscn" id="2_hdvsy"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6xxru"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(1, 1, 1, 0.33333334)
+
+[sub_resource type="BoxMesh" id="BoxMesh_yvhtj"]
+resource_local_to_scene = true
+material = SubResource("StandardMaterial3D_6xxru")
+
+[node name="ObjectTrackableVisual" type="XRAnchor3D" unique_id=1402453999]
+script = ExtResource("1_qffip")
+
+[node name="Axis3D" parent="." unique_id=1052878927 instance=ExtResource("2_hdvsy")]
+
+[node name="Label3D" type="Label3D" parent="." unique_id=237342640]
+pixel_size = 0.0003
+double_sided = false
+no_depth_test = true
+
+[node name="Extents" type="MeshInstance3D" parent="." unique_id=281849758]
+mesh = SubResource("BoxMesh_yvhtj")
