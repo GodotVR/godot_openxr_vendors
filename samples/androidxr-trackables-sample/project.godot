@@ -40,5 +40,6 @@ openxr/extensions/hand_interaction_profile=true
 shaders/enabled=true
 openxr/extensions/androidxr/environment_depth=true
 openxr/extensions/androidxr/raycast=true
+openxr/extensions/androidxr/anchor_persistence=true
 openxr/extensions/androidxr/trackables=true
 openxr/extensions/androidxr/trackables_object=true
