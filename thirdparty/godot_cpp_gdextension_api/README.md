@@ -9,6 +9,9 @@ This directory contains the API JSON for
 ## Current API modifications
 
 - Updated `_on_register_metadata` method for `OpenXRExtensionWrapper` [PR 474](https://github.com/GodotVR/godot_openxr_vendors/pull/474)
+- Added `_set_projection_layer_and_get_next_pointer` method for `OpenXRExtensionWrapper` [PR 464]
+- Added `register_projection_layer_extension` method for `OpenXRAPIExtension` [PR 464]
+- Added `unregister_projection_layer_extension` method for `OpenXRAPIExtension` [PR 464]
 
 ## Updating API
 

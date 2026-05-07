@@ -44,13 +44,21 @@ class OpenXRFbCompositionLayerDepthTestExtension : public OpenXRExtensionWrapper
 public:
 	Dictionary _get_requested_extensions(uint64_t p_xr_version) override;
 	virtual uint64_t _set_viewport_composition_layer_and_get_next_pointer(const void *p_layer, const Dictionary &p_property_values, void *p_next_pointer) override;
+	virtual uint64_t _set_projection_layer_and_get_next_pointer(void *p_next_pointer) override;
 	virtual TypedArray<Dictionary> _get_viewport_composition_layer_extension_properties() override;
 	virtual Dictionary _get_viewport_composition_layer_extension_property_defaults() override;
 	virtual void _on_viewport_composition_layer_destroyed(const void *p_layer) override;
 
+	virtual void _on_session_created(uint64_t p_session) override;
+	virtual void _on_session_destroyed() override;
+	virtual void _on_state_ready() override;
+
 	bool is_composition_layer_depth_test_supported() {
 		return fb_composition_layer_depth_test_ext;
 	}
+
+	void set_projection_layer_depth_test_enabled(bool p_projection_layer_depth_test_enabled);
+	bool is_projection_layer_depth_test_enabled() const;
 
 	static OpenXRFbCompositionLayerDepthTestExtension *get_singleton();
 
@@ -67,6 +75,15 @@ private:
 	void cleanup();
 
 	static OpenXRFbCompositionLayerDepthTestExtension *singleton;
+
+	XrCompositionLayerDepthTestFB projection_layer_depth_test = {
+		XR_TYPE_COMPOSITION_LAYER_DEPTH_TEST_FB, // type
+		nullptr, // next
+		true, // depthMask
+		XR_COMPARE_OP_LESS_FB // compareOp - less = closer to the screen = keep this fragment
+	};
+
+	bool projection_layer_depth_test_enabled = false;
 
 	bool fb_composition_layer_depth_test_ext = false;
 };

@@ -30,6 +30,7 @@
 #include "extensions/openxr_fb_composition_layer_secure_content_extension.h"
 
 #include <godot_cpp/classes/open_xrapi_extension.hpp>
+#include <godot_cpp/classes/project_settings.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
 
 using namespace godot;
@@ -59,10 +60,73 @@ OpenXRFbCompositionLayerSecureContentExtension::~OpenXRFbCompositionLayerSecureC
 }
 
 void OpenXRFbCompositionLayerSecureContentExtension::_bind_methods() {
+	// Only works with Godot 4.7 or later.
+	if (godot::gdextension_interface::godot_version.minor >= 7) {
+		ClassDB::bind_method(D_METHOD("is_enabled"), &OpenXRFbCompositionLayerSecureContentExtension::is_enabled);
+
+		ClassDB::bind_method(D_METHOD("set_projection_layer_external_output", "external_output"), &OpenXRFbCompositionLayerSecureContentExtension::set_projection_layer_external_output);
+		ClassDB::bind_method(D_METHOD("get_projection_layer_external_output"), &OpenXRFbCompositionLayerSecureContentExtension::get_projection_layer_external_output);
+
+		ADD_PROPERTY(PropertyInfo(Variant::INT, "projection_layer_external_output", PROPERTY_HINT_ENUM, "Display,Exclude,Replace", PROPERTY_USAGE_NONE), "set_projection_layer_external_output", "get_projection_layer_external_output");
+
+		BIND_ENUM_CONSTANT(EXTERNAL_OUTPUT_DISPLAY);
+		BIND_ENUM_CONSTANT(EXTERNAL_OUTPUT_EXCLUDE);
+		BIND_ENUM_CONSTANT(EXTERNAL_OUTPUT_REPLACE);
+	}
 }
 
 void OpenXRFbCompositionLayerSecureContentExtension::cleanup() {
 	fb_composition_layer_secure_content = false;
+	projection_layer_external_output = EXTERNAL_OUTPUT_DISPLAY;
+}
+
+void OpenXRFbCompositionLayerSecureContentExtension::_on_session_created(uint64_t p_session) {
+	if (!fb_composition_layer_secure_content) {
+		return;
+	}
+	// Only works with Godot 4.7 or later.
+	if (godot::gdextension_interface::godot_version.minor >= 7) {
+		get_openxr_api()->register_projection_layer_extension(this);
+	}
+}
+
+void OpenXRFbCompositionLayerSecureContentExtension::_on_session_destroyed() {
+	if (!fb_composition_layer_secure_content) {
+		return;
+	}
+	// Only works with Godot 4.7 or later.
+	if (godot::gdextension_interface::godot_version.minor >= 7) {
+		get_openxr_api()->unregister_projection_layer_extension(this);
+	}
+}
+
+void OpenXRFbCompositionLayerSecureContentExtension::_on_state_ready() {
+	// Only works with Godot 4.7 or later.
+	if (godot::gdextension_interface::godot_version.minor < 7) {
+		return;
+	}
+
+	if (!fb_composition_layer_secure_content) {
+		return;
+	}
+
+	ProjectSettings *project_settings = ProjectSettings::get_singleton();
+	ERR_FAIL_NULL(project_settings);
+
+	set_projection_layer_external_output(ExternalOutput((int)project_settings->get_setting_with_override("xr/openxr/extensions/meta/composition_layer_settings/main_projection_layer/secure_content_external_output")));
+}
+
+bool OpenXRFbCompositionLayerSecureContentExtension::is_enabled() const {
+	return fb_composition_layer_secure_content;
+}
+
+void OpenXRFbCompositionLayerSecureContentExtension::set_projection_layer_external_output(ExternalOutput p_external_output) {
+	ERR_FAIL_COND_MSG(!fb_composition_layer_secure_content, "XR_FB_composition_layer_secure_content is not enabled");
+	projection_layer_external_output = p_external_output;
+}
+
+OpenXRFbCompositionLayerSecureContentExtension::ExternalOutput OpenXRFbCompositionLayerSecureContentExtension::get_projection_layer_external_output() const {
+	return projection_layer_external_output;
 }
 
 Dictionary OpenXRFbCompositionLayerSecureContentExtension::_get_requested_extensions(uint64_t p_xr_version) {
@@ -72,6 +136,27 @@ Dictionary OpenXRFbCompositionLayerSecureContentExtension::_get_requested_extens
 		result[ext.key] = (Variant)value;
 	}
 	return result;
+}
+
+uint64_t OpenXRFbCompositionLayerSecureContentExtension::_set_projection_layer_and_get_next_pointer(void *p_next_pointer) {
+	if (!fb_composition_layer_secure_content) {
+		return reinterpret_cast<uint64_t>(p_next_pointer);
+	}
+
+	switch (projection_layer_external_output) {
+		case EXTERNAL_OUTPUT_DISPLAY: {
+			return reinterpret_cast<uint64_t>(p_next_pointer);
+		}
+		case EXTERNAL_OUTPUT_EXCLUDE: {
+			projection_layer_secure_content.flags = XR_COMPOSITION_LAYER_SECURE_CONTENT_EXCLUDE_LAYER_BIT_FB;
+		} break;
+		case EXTERNAL_OUTPUT_REPLACE: {
+			projection_layer_secure_content.flags = XR_COMPOSITION_LAYER_SECURE_CONTENT_REPLACE_LAYER_BIT_FB;
+		} break;
+	}
+
+	projection_layer_secure_content.next = p_next_pointer;
+	return reinterpret_cast<uint64_t>(&projection_layer_secure_content);
 }
 
 uint64_t OpenXRFbCompositionLayerSecureContentExtension::_set_viewport_composition_layer_and_get_next_pointer(const void *p_layer, const Dictionary &p_property_values, void *p_next_pointer) {

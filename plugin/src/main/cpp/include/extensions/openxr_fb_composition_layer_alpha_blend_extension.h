@@ -55,11 +55,31 @@ public:
 	};
 
 	virtual uint64_t _set_viewport_composition_layer_and_get_next_pointer(const void *p_layer, const Dictionary &p_property_values, void *p_next_pointer) override;
+	virtual uint64_t _set_projection_layer_and_get_next_pointer(void *p_next_pointer) override;
 	virtual void _on_viewport_composition_layer_destroyed(const void *p_layer) override;
 	virtual TypedArray<Dictionary> _get_viewport_composition_layer_extension_properties() override;
 	virtual Dictionary _get_viewport_composition_layer_extension_property_defaults() override;
 
+	virtual void _on_session_created(uint64_t p_session) override;
+	virtual void _on_session_destroyed() override;
+	virtual void _on_state_ready() override;
+
 	bool is_enabled() const;
+
+	void set_projection_layer_alpha_blend_enabled(bool p_enabled);
+	bool is_projection_layer_alpha_blend_enabled() const;
+
+	void set_projection_layer_source_color_blend_factor(BlendFactor p_source_color_blend_factor);
+	BlendFactor get_projection_layer_source_color_blend_factor() const;
+
+	void set_projection_layer_destination_color_blend_factor(BlendFactor p_destination_color_blend_factor);
+	BlendFactor get_projection_layer_destination_color_blend_factor() const;
+
+	void set_projection_layer_source_alpha_blend_factor(BlendFactor p_source_alpha_blend_factor);
+	BlendFactor get_projection_layer_source_alpha_blend_factor() const;
+
+	void set_projection_layer_destination_alpha_blend_factor(BlendFactor p_destination_alpha_blend_factor);
+	BlendFactor get_projection_layer_destination_alpha_blend_factor() const;
 
 	OpenXRFbCompositionLayerAlphaBlendExtension();
 	~OpenXRFbCompositionLayerAlphaBlendExtension();
@@ -69,6 +89,7 @@ protected:
 
 private:
 	void cleanup();
+	XrBlendFactorFB _from_blend_factor(BlendFactor p_blend_factor) const;
 
 	static OpenXRFbCompositionLayerAlphaBlendExtension *singleton;
 
@@ -77,6 +98,17 @@ private:
 	bool fb_composition_layer_alpha_blend = false;
 
 	HashMap<const XrCompositionLayerBaseHeader *, XrCompositionLayerAlphaBlendFB> layer_structs;
+
+	XrCompositionLayerAlphaBlendFB projection_layer_alpha_blend = {
+		XR_TYPE_COMPOSITION_LAYER_ALPHA_BLEND_FB, // type
+		nullptr // next
+	};
+
+	bool projection_layer_alpha_blend_enabled = false;
+	BlendFactor projection_layer_source_color_blend_factor = BLEND_FACTOR_ONE;
+	BlendFactor projection_layer_destination_color_blend_factor = BLEND_FACTOR_ZERO;
+	BlendFactor projection_layer_source_alpha_blend_factor = BLEND_FACTOR_ONE;
+	BlendFactor projection_layer_destination_alpha_blend_factor = BLEND_FACTOR_ZERO;
 };
 
 VARIANT_ENUM_CAST(OpenXRFbCompositionLayerAlphaBlendExtension::BlendFactor);

@@ -8,4 +8,28 @@
 	</description>
 	<tutorials>
 	</tutorials>
+	<methods>
+		<method name="is_enabled" qualifiers="const">
+			<return type="bool" />
+			<description>
+                Checks if the extension is enabled or not.
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="projection_layer_external_output" type="int" setter="set_projection_layer_external_output" getter="get_projection_layer_external_output" enum="OpenXRFbCompositionLayerSecureContentExtension.ExternalOutput" default="0">
+            Specifies how the projection layer should be rendered to external outputs. This setting will have [b]no effect[/b] on the projection layer when viewed from inside the device, but will take effect when casting to another device.
+		</member>
+	</members>
+	<constants>
+		<constant name="EXTERNAL_OUTPUT_DISPLAY" value="0" enum="ExternalOutput">
+            Display the content without any changes to external outputs.
+		</constant>
+		<constant name="EXTERNAL_OUTPUT_EXCLUDE" value="1" enum="ExternalOutput">
+            Hide this composition layer from external outputs, revealing content behind it.
+		</constant>
+		<constant name="EXTERNAL_OUTPUT_REPLACE" value="2" enum="ExternalOutput">
+            Replace the content on this composition layer with a black screen.
+		</constant>
+	</constants>
 </class>
