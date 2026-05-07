@@ -336,7 +336,8 @@ String AndroidXREditorExportPlugin::_get_android_manifest_element_contents(const
 	if ((bool)project_settings->get_setting_with_override("xr/openxr/extensions/androidxr/environment_depth") || (bool)project_settings->get_setting_with_override("xr/openxr/extensions/androidxr/scene_meshing")) {
 		contents += "    <uses-permission android:name=\"android.permission.SCENE_UNDERSTANDING_FINE\" />\n";
 	} else if ((bool)project_settings->get_setting_with_override("xr/openxr/extensions/spatial_entity/enabled") ||
-			(bool)project_settings->get_setting_with_override("xr/openxr/extensions/androidxr/light_estimation")) {
+			(bool)project_settings->get_setting_with_override("xr/openxr/extensions/androidxr/light_estimation") ||
+			(bool)project_settings->get_setting_with_override("xr/openxr/extensions/androidxr/trackables")) {
 		contents += "    <uses-permission android:name=\"android.permission.SCENE_UNDERSTANDING_COARSE\" />\n";
 	}
 
