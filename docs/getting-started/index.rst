@@ -9,4 +9,5 @@ Getting Started
 
     downloading
     installation
+    building
 

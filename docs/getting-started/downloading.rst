@@ -1,14 +1,23 @@
 Obtaining the plugin
 ====================
 
-There are three methods of obtaining a copy of this plugin.
+There are four methods of obtaining a copy of this plugin.
 
-Installing from the asset library
----------------------------------
+Installing from the asset store (Godot 4.7 & newer)
+---------------------------------------------------
 
-This is the easiest and prefered way of deploying the plugin.
-After creating your project in Godot, open the asset library and search for ``vendors``.
-You can now find the latest releasess of this plugin and Godot will install the plugin for you.
+For users on Godot 4.7 & newer, this is the easiest and preferred way of deploying the plugin from
+the Godot editor.
+After creating your project in the Godot editor, open the ``Asset Store`` and search for ``OpenXR vendors``.
+You can now find the latest releases of the plugin and the Godot editor will install it.
+
+Installing from the asset library (Godot 4.6 & older)
+-----------------------------------------------------
+
+For users on Godot 4.6 & older, this is the easiest and preferred way of deploying the plugin from
+the Godot editor.
+After creating your project in the Godot editor, open the asset library and search for ``OpenXR vendors``.
+You can now find the latest releases of this plugin and Godot will install the plugin for you.
 
 Downloading from the releases page
 ----------------------------------
@@ -38,7 +47,7 @@ You can clone the repository by running the following command:
 
     git clone --recursive https://github.com/godotvr/godot_openxr_vendors
 
-Follow the instructions in the ``README.md`` file to build the plugin.
+Follow the instructions in :doc:`building` to build the plugin.
 
 You can now copy the folder ``demo\addons\godotopenxrvendors`` into your project.
 
