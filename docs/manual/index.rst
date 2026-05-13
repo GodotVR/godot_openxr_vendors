@@ -12,3 +12,4 @@ Features
     performance_metrics
     meta/index
     androidxr/index
+    openxr_validation_layers
