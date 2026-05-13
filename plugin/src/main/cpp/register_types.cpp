@@ -50,6 +50,7 @@
 #include "export/validation_layers_export_plugin.h"
 
 #include "extensions/openxr_android_device_anchor_persistence_extension.h"
+#include "extensions/openxr_android_enumerate_system_extension_properties_extension.h"
 #include "extensions/openxr_android_environment_depth_extension.h"
 #include "extensions/openxr_android_eye_tracking_extension.h"
 #include "extensions/openxr_android_face_tracking_extension.h"
@@ -186,6 +187,7 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			GDREGISTER_CLASS(OpenXRAndroidRecommendedResolutionExtension);
 			GDREGISTER_CLASS(OpenXRMetaPerformanceMetricsExtension);
 
+			GDREGISTER_CLASS(OpenXRAndroidEnumerateSystemExtensionPropertiesExtension);
 			GDREGISTER_CLASS(OpenXRAndroidEyeTrackingExtension);
 			GDREGISTER_CLASS(OpenXRAndroidFaceTrackingExtension);
 			GDREGISTER_CLASS(OpenXRAndroidLightEstimationExtension);
@@ -244,6 +246,7 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 #endif // META_HEADERS_ENABLED
 
 			_register_extension_with_openxr(OpenXRSessionHelperExtension::get_singleton());
+			_register_extension_with_openxr(OpenXRAndroidEnumerateSystemExtensionPropertiesExtension::get_singleton());
 
 			if (_get_bool_project_setting("xr/openxr/extensions/meta/passthrough")) {
 				_register_extension_with_openxr(OpenXRFbPassthroughExtension::get_singleton());
@@ -447,6 +450,7 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			_register_extension_as_singleton(OpenXRHtcFacialTrackingExtension::get_singleton());
 			_register_extension_as_singleton(OpenXRHtcPassthroughExtension::get_singleton());
 			_register_extension_as_singleton(OpenXRMlMarkerUnderstandingExtension::get_singleton());
+			_register_extension_as_singleton(OpenXRAndroidEnumerateSystemExtensionPropertiesExtension::get_singleton());
 			_register_extension_as_singleton(OpenXRAndroidEyeTrackingExtension::get_singleton());
 			_register_extension_as_singleton(OpenXRAndroidFaceTrackingExtension::get_singleton());
 			_register_extension_as_singleton(OpenXRAndroidLightEstimationExtension::get_singleton());

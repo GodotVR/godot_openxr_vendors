@@ -5,6 +5,7 @@
 
 #include <androidxr/xr_android_composition_layer_passthrough_mesh.h>
 #include <androidxr/xr_android_depth_texture.h>
+#include <androidxr/xr_android_enumerate_system_extension_properties.h>
 #include <androidxr/xr_android_eye_tracking.h>
 #include <androidxr/xr_android_face_tracking.h>
 #include <androidxr/xr_android_hand_mesh.h>
