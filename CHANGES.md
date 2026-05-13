@@ -1,5 +1,10 @@
 # Change history for the Godot OpenXR loaders asset
 
+## 4.3.1
+
+- Fix crash when using space warp on Godot 4.7 (#489)
+- Fix environment depth extensions (#448)
+
 ## 4.3.0
 
 - Fix issue with instant splash screen
