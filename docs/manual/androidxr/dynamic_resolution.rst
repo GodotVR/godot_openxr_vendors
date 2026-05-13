@@ -10,4 +10,4 @@ Project Settings
 Dynamic Resolution is enabled by default. The extension setting can be found in **Project Settings** under the **OpenXR** section.
 The **Dynamic Resolution** setting should be listed under **Extensions** in the **Android XR** subcategory.
 
-.. image:: img/dynamic_resolution/dynamic_resolution_project_setting.png
+.. image:: img/dynamic_resolution/dynamic_resolution_project_settings.png
