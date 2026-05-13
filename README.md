@@ -16,7 +16,10 @@ It is also possible to download compiled assets that have been released from [re
 
 ## Documentation
 
-Installation instructions, as well as features and class references can be found in the [documentation](https://godotvr.github.io/godot_openxr_vendors/).
+[Installation instructions](https://godotvr.github.io/godot_openxr_vendors/getting-started/installation.html),
+as well as [features](https://godotvr.github.io/godot_openxr_vendors/manual/index.html) and
+[class references](https://godotvr.github.io/godot_openxr_vendors/api/index.html) can be found in
+the [documentation](https://godotvr.github.io/godot_openxr_vendors/).
 
 ## License
 

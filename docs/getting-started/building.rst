@@ -1,5 +1,5 @@
-Building this asset
-===================
+Building
+========
 
 .. note::
 
@@ -91,7 +91,7 @@ Run the following command from the root directory to build the vendors ``AAR`` A
    gradlew.bat build
 
 Creating a new OpenXR extension wrapper
-=======================================
+---------------------------------------
 
 If you want to create a new OpenXR extension wrapper for an extension that we don't support yet, you can generate the boilerplate header and source file using this script:
 
@@ -108,7 +108,7 @@ If you want to create a new OpenXR extension wrapper for an extension that we do
 Then follow its instructions for the next steps. You can look at other extension wrappers as a reference.
 
 Hooks
-=====
+-----
 
 When contributing to the source code for the plugin, we highly recommend you install clang-format and copy the contents of the ``hooks`` folder into the folder ``.git/hooks/``.
 This will ensure clang-format is run on any changed files before committing the changes to github and prevent disappointment when formatting issues prevent changes from being merged.

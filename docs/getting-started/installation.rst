@@ -33,6 +33,7 @@ Back in Godot, open the `Project` menu, and select `Export...`:
 - Enable the XR vendor you need to use
 - Scroll down to the bottom to see additional features for specific platforms.
 
-**Note:**
-**Do not** select multiple vendors in the same export template!
-You can instead create multiple export templates, one for each vendor.
+.. note::
+
+    **Do not** select multiple vendors in the same export template!
+    You can instead create multiple export templates, one for each vendor.

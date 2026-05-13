@@ -1,11 +1,11 @@
 :github_url: hide
 
-Manual
-======
+Features
+========
 
 .. toctree::
     :maxdepth: 1
-    :name: toc-manual
+    :name: toc-features
 
     hybrid_apps
     body_tracking

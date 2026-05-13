@@ -25,8 +25,8 @@ the Khronos loader, a number of vendors need to use a proprietary OpenXR loader 
 .. toctree::
    :hidden:
    :maxdepth: 1
-   :caption: Manual
-   :name: manual
+   :caption: Features
+   :name: features
 
    manual/index
 
