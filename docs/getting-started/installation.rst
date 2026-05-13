@@ -27,8 +27,7 @@ Configuring your export
 
 Back in Godot, open the `Project` menu, and select `Export...`:
 
-- If it doesn't already exist, create an Android export configuration by pressing `Add...` and
-selecting `Android`
+- If it doesn't already exist, create an Android export configuration by pressing `Add...` and selecting `Android`
 - Tick the `Use Gradle Build` tickbox
 - Select `OpenXR` as the **XR Mode** under the **XR Features** section
 - Enable the XR vendor you need to use
