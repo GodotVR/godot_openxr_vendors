@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://b2rk0ktvo8y66"]
+
+[ext_resource type="Script" uid="uid://c4xm41mlpaa1u" path="res://raycast/raycast.gd" id="1_g4t27"]
+[ext_resource type="PackedScene" uid="uid://dcwibwtseri8h" path="res://addons/common/viewport_2d_in_3d/viewport_2d_in_3d.tscn" id="2_1s662"]
+[ext_resource type="PackedScene" uid="uid://bl3wem68i4h4u" path="res://raycast/scenes/plane_raycast.tscn" id="2_64tvy"]
+[ext_resource type="PackedScene" uid="uid://cmw8apks7hcfr" path="res://raycast/2D/instructions.tscn" id="3_6cbts"]
+[ext_resource type="PackedScene" uid="uid://ceomjiqo2tvbb" path="res://raycast/scenes/depth_raycast.tscn" id="3_ha2go"]
+[ext_resource type="PackedScene" uid="uid://3xpkt08hw57k" path="res://raycast/scenes/plane_and_depth_raycast.tscn" id="4_p6lij"]
+
+[node name="Raycast" type="Node3D" unique_id=2049001248 groups=["menu3d_group"]]
+script = ExtResource("1_g4t27")
+scenes = Array[PackedScene]([ExtResource("2_64tvy"), ExtResource("3_ha2go"), ExtResource("4_p6lij")])
+
+[node name="Viewport2Din3D" parent="." unique_id=476852985 instance=ExtResource("2_1s662")]
+scene = ExtResource("3_6cbts")
+pixel_size = 0.001
+enable_interactions = false
+
+[node name="Scene" type="Node3D" parent="." unique_id=1394422997]
