@@ -245,7 +245,8 @@ void OpenXRAndroidEnvironmentDepthExtension::_on_session_created(uint64_t instan
 }
 
 void OpenXRAndroidEnvironmentDepthExtension::_on_session_destroyed() {
-	destroy_depth_provider();
+	stop_environment_depth();
+	supported_resolutions.clear();
 }
 
 void OpenXRAndroidEnvironmentDepthExtension::_on_pre_render() {
@@ -418,7 +419,7 @@ bool OpenXRAndroidEnvironmentDepthExtension::start_environment_depth() {
 			// android.permission.SCENE_UNDERSTANDING_FINE), since we have non-zero supported resolutions
 			// but we cannot create a swapchain from any of them
 			UtilityFunctions::printerr("OpenXR: Unable to create a swapchain from one of the supported resolutions; try granting this app android.permission.SCENE_UNDERSTANDING_FINE");
-			destroy_depth_provider();
+			stop_environment_depth();
 			return false;
 		}
 	}
@@ -779,11 +780,6 @@ void OpenXRAndroidEnvironmentDepthExtension::_free_swapchain(XrDepthSwapchainAND
 		OpenXRAndroidEnvironmentDepthExtension::get_singleton()->xrDestroyDepthSwapchainANDROID(p_swapchain);
 	}
 };
-
-void OpenXRAndroidEnvironmentDepthExtension::destroy_depth_provider() {
-	stop_environment_depth();
-	supported_resolutions.clear();
-}
 
 void OpenXRAndroidEnvironmentDepthExtension::DepthCameraData::reset() {
 	OpenXRAndroidEnvironmentDepthExtension::_free_swapchain(swapchain);
