@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://cj2x0p2apw5yn" path="res://objects/objects.tscn" id="5_5vw27"]
 [ext_resource type="PackedScene" uid="uid://38dsaj45w8yt" path="res://planes/planes.tscn" id="5_272bh"]
 [ext_resource type="PackedScene" uid="uid://b2rk0ktvo8y66" path="res://raycast/raycast.tscn" id="6_5vw27"]
+[ext_resource type="PackedScene" uid="uid://c0pwovnesia7n" path="res://anchors/anchors.tscn" id="7_kek77"]
 
 [node name="Main" type="Node3D" unique_id=328323955]
 script = ExtResource("1_h2yge")
@@ -29,5 +30,7 @@ tracker = &"right_hand"
 [node name="Planes" parent="XROrigin3D" unique_id=213923288 instance=ExtResource("5_272bh")]
 
 [node name="Objects" parent="XROrigin3D" unique_id=329444580 instance=ExtResource("5_5vw27")]
+
+[node name="Anchors" parent="XROrigin3D" unique_id=2058991049 instance=ExtResource("7_kek77")]
 
 [node name="Raycast" parent="XROrigin3D" unique_id=2049001248 instance=ExtResource("6_5vw27")]

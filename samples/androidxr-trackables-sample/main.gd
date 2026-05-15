@@ -23,6 +23,7 @@ func _wait_for_camera(pose: XRPose):
 	XRServer.get_tracker("head").pose_changed.disconnect(_wait_for_camera)
 
 	$XROrigin3D/Raycast.initialize()
+	$XROrigin3D/Anchors.initialize()
 
 
 func _process(_delta: float) -> void:
