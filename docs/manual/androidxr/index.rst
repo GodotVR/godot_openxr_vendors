@@ -12,3 +12,4 @@ Android XR
     light_estimation
     passthrough_camera_state
     scene_meshing
+    trackables
