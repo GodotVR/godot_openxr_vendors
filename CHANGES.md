@@ -1,5 +1,20 @@
 # Change history for the Godot OpenXR loaders asset
 
+## 5.1.0
+
+- Add manual page for Android XR Trackables (#499)
+- Automatically start Android XR Streaming client (#498)
+- Fix permission handling in Android XR Depth Texture Extension (#497)
+- Implement `XR_ANDROID_device_anchor_persistence_extension` (#457)
+- Implement `XR_ANDROID_raycast` (#456)
+- Implement `XR_ANDROID_trackables_object` (#466)
+- Implement `XR_ANDROID_trackables` (#455)
+- Add documentation for the OpenXR validation layers (#496)
+- Improvements to the documentation / README (#492 / #493 / #494)
+- Add the Meta anchor API permission when the scene API is enabled (#491)
+- Add support for the composition layer extensions to the main projection layer (#464)
+- Implement `XR_ANDROID_mouse_interaction` (#474)
+
 ## 5.0.1
 
 - Fix crash when using space warp on Godot 4.7 (#487)
@@ -29,6 +44,11 @@
 - Add `XR_META_hand_tracking_microgestures` to hand tracking sample (#340)
 - Stop using deprecated `OpenXRExtensionWrapperExtension` and rename `*ExtensionWrapper` to `*Extension` (#414)
 - Update to support Godot 4.6+ (#407)
+
+## 4.3.1
+
+- Fix crash when using space warp on Godot 4.7 (#489)
+- Fix environment depth extensions (#448)
 
 ## 4.3.0
 
