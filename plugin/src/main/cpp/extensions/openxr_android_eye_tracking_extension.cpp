@@ -34,6 +34,7 @@
 #include <godot_cpp/classes/open_xrapi_extension.hpp>
 #include <godot_cpp/classes/os.hpp>
 #include <godot_cpp/classes/project_settings.hpp>
+#include <godot_cpp/core/error_macros.hpp>
 
 #include "util.h"
 
@@ -53,8 +54,6 @@ OpenXRAndroidEyeTrackingExtension::OpenXRAndroidEyeTrackingExtension() {
 
 	singleton = this;
 	request_extensions[XR_ANDROID_EYE_TRACKING_EXTENSION_NAME] = &available;
-
-	on_request_permissions_result_callable = callable_mp(this, &OpenXRAndroidEyeTrackingExtension::_on_request_permissions_result);
 }
 
 OpenXRAndroidEyeTrackingExtension::~OpenXRAndroidEyeTrackingExtension() {
@@ -90,24 +89,25 @@ void OpenXRAndroidEyeTrackingExtension::_on_instance_created(uint64_t p_instance
 	}
 }
 
-void OpenXRAndroidEyeTrackingExtension::_on_session_created(uint64_t instance) {
+void OpenXRAndroidEyeTrackingExtension::_on_state_focused() {
+	// Creating tracker in _on_state_focused allows handling the following scenarios
+	// 1. During first app launch when permissions are granted from the prompt interactively.
+	// 2. If the permissions are initially denied, but granted from app settings while app is running.
+
 	if (!available || !eye_tracking_properties.supportsEyeTracking) {
 		return;
 	}
 
-	_try_create_eye_tracker();
-}
-
-void OpenXRAndroidEyeTrackingExtension::_on_request_permissions_result(const String &p_permission, bool p_granted) {
-	if (!available || p_permission != "android.permission.EYE_TRACKING_COARSE" || !p_granted) {
+	if (eye_tracker != XR_NULL_HANDLE) {
 		return;
 	}
 
-	_try_create_eye_tracker();
-}
+	OS *os = OS::get_singleton();
+	ERR_FAIL_NULL(os);
 
-void OpenXRAndroidEyeTrackingExtension::_try_create_eye_tracker() {
-	if (eye_tracker != XR_NULL_HANDLE) {
+	PackedStringArray granted_permissions = os->get_granted_permissions();
+	if (!granted_permissions.has("android.permission.EYE_TRACKING_COARSE") && !granted_permissions.has("android.permission.EYE_TRACKING_FINE")) {
+		WARN_PRINT("OpenXR: XR_ANDROID_eye_tracking requires android.permission.EYE_TRACKING_COARSE or android.permission.EYE_TRACKING_FINE; waiting for it to be granted before enabling");
 		return;
 	}
 
@@ -142,15 +142,6 @@ bool OpenXRAndroidEyeTrackingExtension::_initialize_openxr_android_eye_tracking_
 }
 
 void OpenXRAndroidEyeTrackingExtension::_bind_methods() {
-}
-
-void OpenXRAndroidEyeTrackingExtension::_on_state_ready() {
-	if (available && eye_tracking_properties.supportsEyeTracking) {
-		MainLoop *main_loop = Engine::get_singleton()->get_main_loop();
-		if (main_loop && !main_loop->is_connected("on_request_permissions_result", on_request_permissions_result_callable)) {
-			main_loop->connect("on_request_permissions_result", on_request_permissions_result_callable);
-		}
-	}
 }
 
 void OpenXRAndroidEyeTrackingExtension::_on_process() {

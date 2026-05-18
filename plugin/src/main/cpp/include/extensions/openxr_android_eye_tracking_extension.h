@@ -54,14 +54,11 @@ public:
 
 	virtual void _on_instance_created(uint64_t p_instance) override;
 
-	void _on_session_created(uint64_t instance) override;
+	void _on_state_focused() override;
+
 	virtual void _on_session_destroyed() override;
 
-	void _on_state_ready() override;
-
 	void _on_process() override;
-
-	void _on_request_permissions_result(const String &p_permission, bool p_granted);
 
 protected:
 	static void _bind_methods();
@@ -81,13 +78,10 @@ private:
 			(XrEyesANDROID *), eyesOutput);
 
 	bool _initialize_openxr_android_eye_tracking_extension();
-	void _try_create_eye_tracker();
 
 	void _populate_eye_tracker(XRControllerTracker *tracker, bool tracking_status, const XrEyeANDROID &xr_eye);
 
 	static OpenXRAndroidEyeTrackingExtension *singleton;
-
-	Callable on_request_permissions_result_callable;
 
 	HashMap<String, bool *> request_extensions;
 	bool available = false;
