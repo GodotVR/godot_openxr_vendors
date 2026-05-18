@@ -39,8 +39,11 @@
 #include "export/validation_layers_export_plugin.h"
 
 #include <godot_cpp/classes/button.hpp>
+#include <godot_cpp/classes/editor_interface.hpp>
+#include <godot_cpp/classes/editor_settings.hpp>
 #include <godot_cpp/classes/http_request.hpp>
 #include <godot_cpp/classes/line_edit.hpp>
+#include <godot_cpp/classes/os.hpp>
 #include <godot_cpp/classes/popup_menu.hpp>
 #include <godot_cpp/classes/project_settings.hpp>
 #include <godot_cpp/classes/scene_tree.hpp>
@@ -102,6 +105,8 @@ void OpenXRVendorsEditorPlugin::_notification(uint32_t p_what) {
 
 			debugger_plugin.instantiate();
 			add_debugger_plugin(debugger_plugin);
+
+			_add_plugin_editor_settings();
 		} break;
 
 		case NOTIFICATION_EXIT_TREE: {
@@ -116,6 +121,26 @@ void OpenXRVendorsEditorPlugin::_notification(uint32_t p_what) {
 			debugger_plugin.unref();
 		} break;
 	}
+}
+
+void OpenXRVendorsEditorPlugin::_add_plugin_editor_settings() {
+	EditorInterface *editor_interface = EditorInterface::get_singleton();
+	ERR_FAIL_COND(editor_interface == nullptr);
+
+	Ref<EditorSettings> editor_settings = editor_interface->get_editor_settings();
+	ERR_FAIL_COND(editor_settings.is_null());
+
+	String auto_start_client_setting = "xr/openxr/androidxr/auto_start_androidxr_streaming_client";
+	if (!editor_settings->has_setting(auto_start_client_setting)) {
+		editor_settings->set_setting(auto_start_client_setting, true);
+	}
+
+	editor_settings->set_initial_value(auto_start_client_setting, true, false);
+	Dictionary property_info;
+	property_info["name"] = auto_start_client_setting;
+	property_info["type"] = Variant::Type::BOOL;
+	property_info["hint"] = PROPERTY_HINT_NONE;
+	editor_settings->add_property_info(property_info);
 }
 
 void OpenXRVendorsEditorPlugin::_open_project_setup() {
@@ -299,32 +324,38 @@ void OpenXRVendorsEditorPlugin::open_export_dialog() {
 }
 
 PackedStringArray OpenXRVendorsEditorPlugin::_run_scene(const String &p_scene, const PackedStringArray &p_args) const {
-	if (!ProjectSettings::get_singleton()->get_setting_with_override("xr/hybrid_app/enabled")) {
-		return p_args;
-	}
-
-	// If the XR mode is set explicitly, then let it be.
-	if (p_args.find("--xr-mode") != -1) {
-		return p_args;
-	}
-
-	const PackedStringArray &override_arguments = debugger_plugin->get_override_arguments();
-
 	PackedStringArray new_args = p_args;
-	if (override_arguments.size() > 0) {
-		new_args.append_array(override_arguments);
-		debugger_plugin->clear_override_arguments();
-	} else {
-		OpenXRHybridApp::HybridMode hybrid_mode = (OpenXRHybridApp::HybridMode)(int)ProjectSettings::get_singleton()->get_setting_with_override("xr/hybrid_app/launch_mode");
 
-		if (hybrid_mode == OpenXRHybridApp::HYBRID_MODE_IMMERSIVE) {
-			new_args.push_back("--xr-mode");
-			new_args.push_back("on");
-			new_args.push_back("--xr_mode_openxr");
-		} else if (hybrid_mode == OpenXRHybridApp::HYBRID_MODE_PANEL) {
-			new_args.push_back("--xr-mode");
-			new_args.push_back("off");
-			new_args.push_back("--xr_mode_regular");
+	// Only make changes if hybrid app setting is enabled and if xr mode is not set explicitly
+	if (ProjectSettings::get_singleton()->get_setting_with_override("xr/hybrid_app/enabled") && p_args.find("--xr-mode") == -1) {
+		const PackedStringArray &override_arguments = debugger_plugin->get_override_arguments();
+
+		if (override_arguments.size() > 0) {
+			new_args.append_array(override_arguments);
+			debugger_plugin->clear_override_arguments();
+		} else {
+			OpenXRHybridApp::HybridMode hybrid_mode = (OpenXRHybridApp::HybridMode)(int)ProjectSettings::get_singleton()->get_setting_with_override("xr/hybrid_app/launch_mode");
+
+			if (hybrid_mode == OpenXRHybridApp::HYBRID_MODE_IMMERSIVE) {
+				new_args.push_back("--xr-mode");
+				new_args.push_back("on");
+				new_args.push_back("--xr_mode_openxr");
+			} else if (hybrid_mode == OpenXRHybridApp::HYBRID_MODE_PANEL) {
+				new_args.push_back("--xr-mode");
+				new_args.push_back("off");
+				new_args.push_back("--xr_mode_regular");
+			}
+		}
+	}
+
+	// Add a commandline arg to enable the child process to autostart (and autostop) androidxr streaming client on compatible Android XR devices.
+	EditorInterface *editor_interface = EditorInterface::get_singleton();
+	if (editor_interface != nullptr) {
+		Ref<EditorSettings> editor_settings = editor_interface->get_editor_settings();
+		if (editor_settings.is_valid() && editor_settings->get_setting("xr/openxr/androidxr/auto_start_androidxr_streaming_client") && ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/enabled")) {
+			// ANDROID_HOME path can be overrided in the godot editor. The debugged process has to respect this override.
+			OS::get_singleton()->set_environment("ANDROID_HOME", editor_settings->get_setting("export/android/android_sdk_path"));
+			new_args.push_back("--xr_auto_start_androidxr_streaming_client");
 		}
 	}
 

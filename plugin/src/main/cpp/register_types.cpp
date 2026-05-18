@@ -98,6 +98,7 @@
 #include "extensions/openxr_meta_simultaneous_hands_and_controllers_extension.h"
 #include "extensions/openxr_meta_spatial_entity_mesh_extension.h"
 #include "extensions/openxr_ml_marker_understanding_extension.h"
+#include "extensions/openxr_session_helper_extension.h"
 #include "extensions/openxr_stationary_reference_space_extension.h"
 
 #include "classes/openxr_android_anchor_tracker.h"
@@ -178,6 +179,8 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 		case MODULE_INITIALIZATION_LEVEL_CORE: {
 			add_plugin_project_settings();
 
+			GDREGISTER_CLASS(OpenXRSessionHelperExtension);
+
 			GDREGISTER_ABSTRACT_CLASS(OpenXRVendorPerformanceMetricsProvider);
 			GDREGISTER_CLASS(OpenXRVendorPerformanceMetrics);
 			GDREGISTER_CLASS(OpenXRAndroidRecommendedResolutionExtension);
@@ -239,6 +242,8 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			GDREGISTER_CLASS(OpenXRMetaBoundaryVisibilityExtension);
 			GDREGISTER_CLASS(OpenXRStationaryReferenceSpaceExtension);
 #endif // META_HEADERS_ENABLED
+
+			_register_extension_with_openxr(OpenXRSessionHelperExtension::get_singleton());
 
 			if (_get_bool_project_setting("xr/openxr/extensions/meta/passthrough")) {
 				_register_extension_with_openxr(OpenXRFbPassthroughExtension::get_singleton());
@@ -422,6 +427,8 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			break;
 
 		case MODULE_INITIALIZATION_LEVEL_SCENE: {
+			_register_extension_as_singleton(OpenXRSessionHelperExtension::get_singleton());
+
 			_register_extension_as_singleton(OpenXRFbPassthroughExtension::get_singleton());
 			_register_extension_as_singleton(OpenXRFbRenderModelExtension::get_singleton());
 			_register_extension_as_singleton(OpenXRFbColorSpaceExtension::get_singleton());

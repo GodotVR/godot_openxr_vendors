@@ -29,7 +29,10 @@
 
 #include "editor_debugger_plugin.h"
 
+#include <godot_cpp/classes/editor_debugger_session.hpp>
 #include <godot_cpp/classes/editor_interface.hpp>
+
+#include "openxr_android_xrs_utils.h"
 
 void OpenXRVendorsEditorDebuggerPlugin::_bind_methods() {
 }
@@ -46,8 +49,26 @@ bool OpenXRVendorsEditorDebuggerPlugin::_capture(const String &p_message, const 
 		return true;
 	}
 
+	if (p_message == "godot_openxr_vendors:request_stop_xrs_client_on_session_end") {
+		// We do not currently support multiple debug sessions that require streaming client.
+		ERR_FAIL_COND_V(_stop_xrs_on_session_end_active, false);
+		_stop_xrs_on_session_end_active = true;
+
+		if (!get_session(p_session_id)->is_connected("stopped", callable_mp(this, &OpenXRVendorsEditorDebuggerPlugin::_on_session_stop))) {
+			get_session(p_session_id)->connect("stopped", callable_mp(this, &OpenXRVendorsEditorDebuggerPlugin::_on_session_stop));
+		}
+		return true;
+	}
+
 	return false;
 }
 
 OpenXRVendorsEditorDebuggerPlugin::OpenXRVendorsEditorDebuggerPlugin() {
+}
+
+void OpenXRVendorsEditorDebuggerPlugin::_on_session_stop() {
+	if (_stop_xrs_on_session_end_active) {
+		OpenXRAndroidXRSUtils::cleanup_xrs_client();
+		_stop_xrs_on_session_end_active = false;
+	}
 }
