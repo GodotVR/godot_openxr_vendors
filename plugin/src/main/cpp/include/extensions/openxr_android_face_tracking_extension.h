@@ -54,14 +54,11 @@ public:
 
 	virtual void _on_instance_created(uint64_t p_instance) override;
 
-	void _on_session_created(uint64_t instance) override;
+	void _on_state_focused() override;
+
 	virtual void _on_session_destroyed() override;
 
-	void _on_state_ready() override;
-
 	void _on_process() override;
-
-	void _on_request_permissions_result(const String &p_permission, bool p_granted);
 
 	enum CalibrationState {
 		CALIBRATION_STATE_UNAVAILABLE = 0,
@@ -93,11 +90,8 @@ private:
 			(XrBool32 *), faceIsCalibratedOutput);
 
 	bool _initialize_openxr_android_face_tracking_extension();
-	void _try_create_face_tracker();
 
 	static OpenXRAndroidFaceTrackingExtension *singleton;
-
-	Callable on_request_permissions_result_callable;
 
 	HashMap<String, bool *> request_extensions;
 	bool available = false;

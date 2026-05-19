@@ -32,6 +32,8 @@
 #include <godot_cpp/classes/engine.hpp>
 #include <godot_cpp/classes/main_loop.hpp>
 #include <godot_cpp/classes/open_xrapi_extension.hpp>
+#include <godot_cpp/classes/os.hpp>
+#include <godot_cpp/core/error_macros.hpp>
 
 using namespace godot;
 
@@ -54,8 +56,6 @@ OpenXRAndroidFaceTrackingExtension::OpenXRAndroidFaceTrackingExtension() {
 
 	singleton = this;
 	request_extensions[XR_ANDROID_FACE_TRACKING_EXTENSION_NAME] = &available;
-
-	on_request_permissions_result_callable = callable_mp(this, &OpenXRAndroidFaceTrackingExtension::_on_request_permissions_result);
 }
 
 OpenXRAndroidFaceTrackingExtension::~OpenXRAndroidFaceTrackingExtension() {
@@ -85,24 +85,28 @@ void OpenXRAndroidFaceTrackingExtension::_on_instance_created(uint64_t p_instanc
 	}
 }
 
-void OpenXRAndroidFaceTrackingExtension::_on_session_created(uint64_t instance) {
+void OpenXRAndroidFaceTrackingExtension::_on_state_focused() {
+	// Creating tracker in _on_state_focused allows handling the following scenarios
+	// 1. During first app launch when permissions are granted from the prompt interactively.
+	// 2. If the permissions are initially denied, but granted from app settings while app is running.
+
 	if (!available || !face_tracking_properties.supportsFaceTracking) {
 		return;
 	}
 
-	_try_create_face_tracker();
-}
-
-void OpenXRAndroidFaceTrackingExtension::_on_request_permissions_result(const String &p_permission, bool p_granted) {
-	// On Android XR, if permission was granted during execution, we might want to re-attempt tracker creation.
-	if (p_permission != "android.permission.FACE_TRACKING" || !p_granted) {
+	if (face_tracker != XR_NULL_HANDLE) {
 		return;
 	}
 
-	_try_create_face_tracker();
-}
+	OS *os = OS::get_singleton();
+	ERR_FAIL_NULL(os);
 
-void OpenXRAndroidFaceTrackingExtension::_try_create_face_tracker() {
+	PackedStringArray granted_permissions = os->get_granted_permissions();
+	if (!granted_permissions.has("android.permission.FACE_TRACKING")) {
+		WARN_PRINT("OpenXR: XR_ANDROID_face_tracking requires android.permission.FACE_TRACKING; waiting for it to be granted before enabling");
+		return;
+	}
+
 	XrFaceTrackerCreateInfoANDROID create_info{
 		XR_TYPE_FACE_TRACKER_CREATE_INFO_ANDROID, // type
 		nullptr, // next
@@ -112,15 +116,6 @@ void OpenXRAndroidFaceTrackingExtension::_try_create_face_tracker() {
 	if (result != XR_SUCCESS) {
 		UtilityFunctions::printerr("OpenXR: Failed to create face tracker; ", get_openxr_api()->get_error_string(result));
 		face_tracker = XR_NULL_HANDLE;
-	}
-}
-
-void OpenXRAndroidFaceTrackingExtension::_on_state_ready() {
-	if (available && face_tracking_properties.supportsFaceTracking && face_tracker == XR_NULL_HANDLE) {
-		MainLoop *main_loop = Engine::get_singleton()->get_main_loop();
-		if (main_loop && !main_loop->is_connected("on_request_permissions_result", on_request_permissions_result_callable)) {
-			main_loop->connect("on_request_permissions_result", on_request_permissions_result_callable);
-		}
 	}
 }
 
