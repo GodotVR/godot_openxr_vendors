@@ -15,6 +15,12 @@
 				Returns the current [enum PassthroughCameraState].
 			</description>
 		</method>
+		<method name="is_enabled" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] if the extension is enabled; otherwise [code]false[/code].
+			</description>
+		</method>
 	</methods>
 	<constants>
 		<constant name="PASSTHROUGH_CAMERA_STATE_DISABLED" value="0" enum="PassthroughCameraState">

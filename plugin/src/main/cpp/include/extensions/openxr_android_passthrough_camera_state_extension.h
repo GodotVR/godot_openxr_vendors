@@ -58,6 +58,8 @@ public:
 	};
 	PassthroughCameraState get_passthrough_camera_state();
 
+	bool is_enabled() const { return available; }
+
 protected:
 	static void _bind_methods();
 
