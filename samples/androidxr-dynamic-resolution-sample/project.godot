@@ -23,4 +23,7 @@ textures/vram_compression/import_etc2_astc=true
 
 openxr/enabled=true
 openxr/environment_blend_mode=2
+openxr/extensions/hand_tracking=true
+openxr/extensions/hand_interaction_profile=true
 shaders/enabled=true
+openxr/extensions/vendor_performance_metrics=true

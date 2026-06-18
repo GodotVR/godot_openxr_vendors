@@ -1,7 +1,9 @@
 [gd_scene format=3 uid="uid://debi32dnmrjov"]
 
-[ext_resource type="Script" uid="uid://g6sb6fs28ltg" path="res://main.gd" id="1_0xm2m"]
-[ext_resource type="Script" uid="uid://dx7x4o6fxqf5i" path="res://addons/common/hud/hud.gd" id="1_ig7tw"]
+[ext_resource type="Script" uid="uid://bnjcoo6qce8d6" path="res://addons/common/start_xr.gd" id="1_h2yge"]
+[ext_resource type="PackedScene" uid="uid://dcwibwtseri8h" path="res://addons/common/viewport_2d_in_3d/viewport_2d_in_3d.tscn" id="2_h2yge"]
+[ext_resource type="PackedScene" uid="uid://bgcseqsdtxmwb" path="res://controls.tscn" id="3_1bvp3"]
+[ext_resource type="PackedScene" uid="uid://cqs8c3rq6cxvk" path="res://addons/common/viewport_2d_in_3d/function_pointer.tscn" id="4_1bvp3"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_r04s2"]
 
@@ -15,20 +17,25 @@ sky = SubResource("Sky_t47wx")
 ambient_light_source = 3
 
 [node name="Main" type="Node3D" unique_id=866108005]
-script = ExtResource("1_0xm2m")
+script = ExtResource("1_h2yge")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=613517308]
 environment = SubResource("Environment_v2m65")
 
 [node name="XROrigin3D" type="XROrigin3D" parent="." unique_id=430165336]
 
+[node name="XRController3D" type="XRController3D" parent="XROrigin3D" unique_id=1594486346]
+tracker = &"right_hand"
+
+[node name="FunctionPointer" parent="XROrigin3D/XRController3D" unique_id=1169027838 instance=ExtResource("4_1bvp3")]
+
 [node name="XRCamera3D" type="XRCamera3D" parent="XROrigin3D" unique_id=2007483853]
 
-[node name="Hud" type="Label3D" parent="XROrigin3D" unique_id=1367373858]
-script = ExtResource("1_ig7tw")
-distance_to_camera = 3.0
-
-[node name="Spheres" type="Node3D" parent="XROrigin3D" unique_id=300470653]
+[node name="Viewport2Din3D" parent="XROrigin3D/XRCamera3D" unique_id=167215468 instance=ExtResource("2_h2yge")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.532)
+scene = ExtResource("3_1bvp3")
+viewport_size = Vector2i(2048, 2048)
+pixel_size = 0.002
 
 [node name="Timer" type="Timer" parent="XROrigin3D" unique_id=1954535132]
 wait_time = 10.0
