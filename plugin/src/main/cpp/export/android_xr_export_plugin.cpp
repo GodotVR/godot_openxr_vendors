@@ -235,18 +235,34 @@ String AndroidXREditorExportPlugin::_get_android_manifest_activity_element_conte
 					<action android:name="android.intent.action.MAIN" />
 					<category android:name="android.intent.category.DEFAULT" />
 
+)";
+
+	bool spatial_container_enabled = _is_spatial_container_enabled();
+	if (!spatial_container_enabled) {
+		contents += R"(
 					<!-- OpenXR category tag to indicate the activity starts in an immersive OpenXR mode.
 					See https://registry.khronos.org/OpenXR/specs/1.0/html/xrspec.html#android-runtime-category. -->
 					<category android:name="org.khronos.openxr.intent.category.IMMERSIVE_HMD" />
 )";
+	}
 
 	contents += _get_common_activity_intent_filter_contents();
 	contents += R"(
 				</intent-filter>
-				<property
-					android:name="android.window.PROPERTY_XR_ACTIVITY_START_MODE"
-					android:value="XR_ACTIVITY_START_MODE_FULL_SPACE_UNMANAGED" />
 )";
+	if (spatial_container_enabled) {
+		contents += R"(
+					<property
+						android:name="android.window.PROPERTY_XR_ACTIVITY_START_MODE"
+						android:value="XR_ACTIVITY_START_MODE_FULL_SPACE_MANAGED" />
+	)";
+	} else {
+		contents += R"(
+					<property
+						android:name="android.window.PROPERTY_XR_ACTIVITY_START_MODE"
+						android:value="XR_ACTIVITY_START_MODE_FULL_SPACE_UNMANAGED" />
+	)";
+	}
 
 	return contents;
 }
@@ -400,6 +416,11 @@ String AndroidXREditorExportPlugin::_get_android_manifest_element_contents(const
 			(bool)export_preset->get_project_setting("xr/openxr/extensions/androidxr/light_estimation") ||
 			(bool)export_preset->get_project_setting("xr/openxr/extensions/androidxr/trackables")) {
 		contents += "    <uses-permission android:name=\"android.permission.SCENE_UNDERSTANDING_COARSE\" />\n";
+	}
+
+	// Check for spatial container.
+	if (_is_spatial_container_enabled()) {
+		contents += "    <uses-permission android:name=\"android.permission.HEAD_TRACKING\" />\n";
 	}
 
 	return contents;

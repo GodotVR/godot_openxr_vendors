@@ -69,6 +69,8 @@ static const int OPENXR_MODE_VALUE = 1;
 static const int MANIFEST_FALSE_VALUE = 0;
 static const int MANIFEST_TRUE_VALUE = 1;
 
+static constexpr const char *SPATIAL_CONTAINER_ENABLED_SETTING_NAME = "xr/openxr/extensions/spatial_container/enabled";
+
 /// Base class for the vendor editor export plugin
 class OpenXRVendorsEditorExportPlugin : public EditorExportPlugin {
 	GDCLASS(OpenXRVendorsEditorExportPlugin, EditorExportPlugin)
@@ -140,6 +142,8 @@ protected:
 	bool _is_android_aar_file_available(bool debug) const {
 		return FileAccess::file_exists(_get_android_aar_file_path(debug));
 	}
+
+	bool _is_spatial_container_enabled() const;
 
 private:
 	/// Path to the Android library aar file. If the return file path is not available, we
