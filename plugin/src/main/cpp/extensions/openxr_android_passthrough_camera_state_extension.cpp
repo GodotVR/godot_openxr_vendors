@@ -79,6 +79,7 @@ void OpenXRAndroidPassthroughCameraStateExtension::_on_instance_created(uint64_t
 
 void OpenXRAndroidPassthroughCameraStateExtension::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_passthrough_camera_state"), &OpenXRAndroidPassthroughCameraStateExtension::get_passthrough_camera_state);
+	ClassDB::bind_method(D_METHOD("is_enabled"), &OpenXRAndroidPassthroughCameraStateExtension::is_enabled);
 	BIND_ENUM_CONSTANT(PASSTHROUGH_CAMERA_STATE_DISABLED);
 	BIND_ENUM_CONSTANT(PASSTHROUGH_CAMERA_STATE_INITIALIZING);
 	BIND_ENUM_CONSTANT(PASSTHROUGH_CAMERA_STATE_READY);
