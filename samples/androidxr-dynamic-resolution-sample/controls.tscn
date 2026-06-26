@@ -1,0 +1,87 @@
+[gd_scene format=3 uid="uid://bgcseqsdtxmwb"]
+
+[ext_resource type="Script" uid="uid://dlf5pg80syp8f" path="res://controls.gd" id="1_gpdjo"]
+[ext_resource type="Shader" uid="uid://ceow30cnu2nhr" path="res://gpu_load.gdshader" id="1_qo8cm"]
+[ext_resource type="Script" uid="uid://dd50o5efl6xij" path="res://cpu_load.gd" id="3_xwvqn"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_gpdjo"]
+resource_local_to_scene = true
+shader = ExtResource("1_qo8cm")
+shader_parameter/ITERATIONS = 1
+
+[node name="Background" type="PanelContainer" unique_id=1309878046]
+material = SubResource("ShaderMaterial_gpdjo")
+custom_minimum_size = Vector2(2048, 2048)
+script = ExtResource("1_gpdjo")
+
+[node name="Panel" type="PanelContainer" parent="." unique_id=997264408]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel" unique_id=955821548]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel/MarginContainer" unique_id=1057285636]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/MarginContainer/VBoxContainer" unique_id=80658122]
+layout_mode = 2
+
+[node name="CPUContainer" type="VBoxContainer" parent="Panel/MarginContainer/VBoxContainer/HBoxContainer" unique_id=575800729]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/MarginContainer/VBoxContainer/HBoxContainer/CPUContainer" unique_id=79911434]
+layout_mode = 2
+text = "CPU"
+
+[node name="Usage" type="Label" parent="Panel/MarginContainer/VBoxContainer/HBoxContainer/CPUContainer" unique_id=2029474575]
+layout_mode = 2
+text = "CPU Usage: 34.00%"
+
+[node name="Label2" type="Label" parent="Panel/MarginContainer/VBoxContainer/HBoxContainer/CPUContainer" unique_id=1103325513]
+layout_mode = 2
+text = "Load:"
+
+[node name="Slider" type="HSlider" parent="Panel/MarginContainer/VBoxContainer/HBoxContainer/CPUContainer" unique_id=699122934]
+layout_mode = 2
+
+[node name="Spacer" type="Control" parent="Panel/MarginContainer/VBoxContainer/HBoxContainer" unique_id=1460099419]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="GPUContainer" type="VBoxContainer" parent="Panel/MarginContainer/VBoxContainer/HBoxContainer" unique_id=1104631683]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/MarginContainer/VBoxContainer/HBoxContainer/GPUContainer" unique_id=554375883]
+layout_mode = 2
+text = "GPU"
+
+[node name="Usage" type="Label" parent="Panel/MarginContainer/VBoxContainer/HBoxContainer/GPUContainer" unique_id=1808973192]
+layout_mode = 2
+text = "GPU Usage: 50.00%"
+
+[node name="Label2" type="Label" parent="Panel/MarginContainer/VBoxContainer/HBoxContainer/GPUContainer" unique_id=2136157043]
+layout_mode = 2
+text = "Load:"
+
+[node name="Slider" type="HSlider" parent="Panel/MarginContainer/VBoxContainer/HBoxContainer/GPUContainer" unique_id=1298976207]
+layout_mode = 2
+
+[node name="RecommendedResolution" type="Label" parent="Panel/MarginContainer/VBoxContainer" unique_id=317141266]
+layout_mode = 2
+text = "Recommended resolution:
+  width 1920.0
+  height 1080.0"
+
+[node name="Timer" type="Timer" parent="." unique_id=642667822]
+autostart = true
+
+[node name="CPULoad" type="Node" parent="." unique_id=322366917]
+script = ExtResource("3_xwvqn")
+
+[connection signal="timeout" from="Timer" to="." method="_update_data"]
