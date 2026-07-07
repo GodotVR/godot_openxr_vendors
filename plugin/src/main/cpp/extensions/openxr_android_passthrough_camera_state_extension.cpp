@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  openxr_android_passthrough_camera_state_extension_wrapper.cpp         */
+/*  openxr_android_passthrough_camera_state_extension.cpp                 */
 /**************************************************************************/
 /*                       This file is part of:                            */
 /*                              GODOT XR                                  */
@@ -66,6 +66,15 @@ Dictionary OpenXRAndroidPassthroughCameraStateExtension::_get_requested_extensio
 	return result;
 }
 
+uint64_t OpenXRAndroidPassthroughCameraStateExtension::_set_system_properties_and_get_next_pointer(void *p_next_pointer) {
+	if (available) {
+		passthrough_camera_state_properties.next = p_next_pointer;
+		return reinterpret_cast<uint64_t>(&passthrough_camera_state_properties);
+	}
+
+	return reinterpret_cast<uint64_t>(p_next_pointer);
+}
+
 void OpenXRAndroidPassthroughCameraStateExtension::_on_instance_created(uint64_t p_instance) {
 	if (!available) {
 		return;
@@ -87,7 +96,7 @@ void OpenXRAndroidPassthroughCameraStateExtension::_bind_methods() {
 }
 
 OpenXRAndroidPassthroughCameraStateExtension::PassthroughCameraState OpenXRAndroidPassthroughCameraStateExtension::get_passthrough_camera_state() {
-	if (!available) {
+	if (!is_enabled()) {
 		return PASSTHROUGH_CAMERA_STATE_ERROR;
 	}
 
