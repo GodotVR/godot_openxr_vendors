@@ -103,6 +103,14 @@ void OpenXRAndroidTrackablesObjectExtension::_on_state_focused() {
 		return;
 	}
 
+	OS *os = OS::get_singleton();
+	ERR_FAIL_NULL(os);
+
+	if (os->get_name() != "Android") {
+		available = true;
+		return;
+	}
+
 	// always check for permissions for every focused event, since this is possible:
 	// 1: the app launched, but required permissions are not available
 	// 2: the user opens Android settings app and enables the permission (pauses this app)
@@ -116,9 +124,6 @@ void OpenXRAndroidTrackablesObjectExtension::_on_state_focused() {
 
 	// assume unavailable until the permission is granted
 	available = false;
-
-	OS *os = OS::get_singleton();
-	ERR_FAIL_NULL(os);
 
 	PackedStringArray granted_permissions = os->get_granted_permissions();
 	available = granted_permissions.has("android.permission.SCENE_UNDERSTANDING_COARSE") || granted_permissions.has("android.permission.SCENE_UNDERSTANDING_FINE");

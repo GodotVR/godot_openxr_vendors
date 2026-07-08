@@ -72,10 +72,14 @@ Dictionary OpenXRAndroidDeviceAnchorPersistenceExtension::_get_requested_extensi
 }
 
 uint64_t OpenXRAndroidDeviceAnchorPersistenceExtension::_set_system_properties_and_get_next_pointer(void *p_next_pointer) {
-	anchor_persistence_properties.type = XR_TYPE_SYSTEM_DEVICE_ANCHOR_PERSISTENCE_PROPERTIES_ANDROID;
-	anchor_persistence_properties.next = p_next_pointer;
-	anchor_persistence_properties.supportsAnchorPersistence = XR_FALSE;
-	return reinterpret_cast<uint64_t>(&anchor_persistence_properties);
+	if (available) {
+		anchor_persistence_properties.type = XR_TYPE_SYSTEM_DEVICE_ANCHOR_PERSISTENCE_PROPERTIES_ANDROID;
+		anchor_persistence_properties.next = p_next_pointer;
+		anchor_persistence_properties.supportsAnchorPersistence = XR_FALSE;
+		return reinterpret_cast<uint64_t>(&anchor_persistence_properties);
+	}
+
+	return reinterpret_cast<uint64_t>(p_next_pointer);
 }
 
 void OpenXRAndroidDeviceAnchorPersistenceExtension::_on_instance_created(uint64_t p_instance) {
@@ -158,6 +162,14 @@ void OpenXRAndroidDeviceAnchorPersistenceExtension::_on_state_focused() {
 		return;
 	}
 
+	OS *os = OS::get_singleton();
+	ERR_FAIL_NULL(os);
+
+	if (os->get_name() != "Android") {
+		available = true;
+		return;
+	}
+
 	// always check for permissions for every focused event, since this is possible:
 	// 1: the app launched, but required permissions are not available
 	// 2: the user opens Android settings app and enables the permission (pauses this app)
@@ -170,9 +182,6 @@ void OpenXRAndroidDeviceAnchorPersistenceExtension::_on_state_focused() {
 
 	// assume unavailable until the permission is granted
 	available = false;
-
-	OS *os = OS::get_singleton();
-	ERR_FAIL_NULL(os);
 
 	PackedStringArray granted_permissions = os->get_granted_permissions();
 	available = granted_permissions.has("android.permission.SCENE_UNDERSTANDING_COARSE") || granted_permissions.has("android.permission.SCENE_UNDERSTANDING_FINE");

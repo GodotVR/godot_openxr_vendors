@@ -115,6 +115,10 @@ void OpenXRAndroidTrackablesExtension::_on_instance_created(uint64_t p_instance)
 }
 
 void OpenXRAndroidTrackablesExtension::_on_session_created(uint64_t p_session_instance) {
+	if (!available) {
+		return;
+	}
+
 	{
 		uint32_t trackable_type_count_output = 0;
 		XrInstance xr_instance = (XrInstance)get_openxr_api()->get_instance();
@@ -211,6 +215,14 @@ void OpenXRAndroidTrackablesExtension::_on_state_focused() {
 		return;
 	}
 
+	OS *os = OS::get_singleton();
+	ERR_FAIL_NULL(os);
+
+	if (os->get_name() != "Android") {
+		available = true;
+		return;
+	}
+
 	// always check for permissions for every focused event, since this is possible:
 	// 1: the app launched, but required permissions are not available
 	// 2: the user opens Android settings app and enables the permission (pauses this app)
@@ -224,9 +236,6 @@ void OpenXRAndroidTrackablesExtension::_on_state_focused() {
 
 	// assume unavailable until the permission is granted
 	available = false;
-
-	OS *os = OS::get_singleton();
-	ERR_FAIL_NULL(os);
 
 	PackedStringArray granted_permissions = os->get_granted_permissions();
 	available = granted_permissions.has("android.permission.SCENE_UNDERSTANDING_COARSE") || granted_permissions.has("android.permission.SCENE_UNDERSTANDING_FINE");
@@ -344,6 +353,10 @@ void OpenXRAndroidTrackablesExtension::find_and_update_all_trackers(XrTrackableT
 
 		if (trackable_count_output != xrtrackables.size()) {
 			WARN_PRINT("OpenXR: trackable query count differs from actual query");
+			if (xrtrackables.size() > trackable_count_output) {
+				// The whole vector is not populated. Resize down to populated size.
+				xrtrackables.resize(trackable_count_output);
+			}
 		}
 
 		for (XrTrackableANDROID xrtrackable : xrtrackables) {
