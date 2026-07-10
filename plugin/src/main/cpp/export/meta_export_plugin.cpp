@@ -29,6 +29,7 @@
 
 #include "export/meta_export_plugin.h"
 
+#include <godot_cpp/classes/editor_export_preset.hpp>
 #include <godot_cpp/classes/project_settings.hpp>
 #include <godot_cpp/classes/xr_interface.hpp>
 
@@ -246,31 +247,31 @@ String MetaEditorExportPlugin::_get_export_option_warning(const Ref<EditorExport
 		return "";
 	}
 
-	ProjectSettings *project_settings = ProjectSettings::get_singleton();
+	Ref<EditorExportPreset> export_preset = get_export_preset();
 
 	bool openxr_enabled = _is_openxr_enabled();
 	if (option == "meta_xr_features/eye_tracking") {
-		if (!openxr_enabled && (bool)project_settings->get_setting_with_override("xr/openxr/extensions/eye_gaze_interaction")) {
+		if (!openxr_enabled && (bool)export_preset->get_project_setting("xr/openxr/extensions/eye_gaze_interaction")) {
 			return "\"Eye Tracking\" requires \"XR Mode\" to be \"OpenXR\".\n";
 		}
 	} else if (option == "meta_xr_features/face_tracking") {
-		if (!openxr_enabled && (bool)project_settings->get_setting_with_override("xr/openxr/extensions/meta/face_tracking")) {
+		if (!openxr_enabled && (bool)export_preset->get_project_setting("xr/openxr/extensions/meta/face_tracking")) {
 			return "\"Face Tracking\" requires \"XR Mode\" to be \"OpenXR\".\n";
 		}
 	} else if (option == "meta_xr_features/body_tracking") {
-		if (!openxr_enabled && (bool)project_settings->get_setting_with_override("xr/openxr/extensions/meta/body_tracking")) {
+		if (!openxr_enabled && (bool)export_preset->get_project_setting("xr/openxr/extensions/meta/body_tracking")) {
 			return "\"Body Tracking\" requires \"XR Mode\" to be \"OpenXR\".\n";
 		}
 	} else if (option == "meta_xr_features/hand_tracking") {
-		if (!openxr_enabled && (bool)project_settings->get_setting_with_override("xr/openxr/extensions/hand_tracking")) {
+		if (!openxr_enabled && (bool)export_preset->get_project_setting("xr/openxr/extensions/hand_tracking")) {
 			return "\"Hand Tracking\" requires \"XR Mode\" to be \"OpenXR\".\n";
 		}
 	} else if (option == "meta_xr_features/passthrough") {
-		if (!openxr_enabled && (bool)project_settings->get_setting_with_override("xr/openxr/extensions/meta/passthrough")) {
+		if (!openxr_enabled && (bool)export_preset->get_project_setting("xr/openxr/extensions/meta/passthrough")) {
 			return "\"Passthrough\" requires \"XR Mode\" to be \"OpenXR\".\n";
 		}
 	} else if (option == "meta_xr_features/render_model") {
-		if (!openxr_enabled && (bool)project_settings->get_setting_with_override("xr/openxr/extensions/meta/render_model")) {
+		if (!openxr_enabled && (bool)export_preset->get_project_setting("xr/openxr/extensions/meta/render_model")) {
 			return "\"Render Model\" requires \"XR Mode\" to be \"OpenXR\".\n";
 		}
 	} else if (option == "meta_xr_features/use_experimental_features") {
@@ -286,8 +287,8 @@ String MetaEditorExportPlugin::_get_export_option_warning(const Ref<EditorExport
 			return "\"Instant splash screen\" is only valid when \"XR Mode\" is \"OpenXR\".\n";
 		}
 	} else if (option == "xr_features/enable_meta_plugin") {
-		if ((bool)project_settings->get_setting_with_override("xr/openxr/extensions/meta/color_space")) {
-			if ((int)project_settings->get_setting_with_override("xr/openxr/extensions/meta/color_space/starting_color_space") == 0) {
+		if ((bool)export_preset->get_project_setting("xr/openxr/extensions/meta/color_space")) {
+			if ((int)export_preset->get_project_setting("xr/openxr/extensions/meta/color_space/starting_color_space") == 0) {
 				return "\"Recommended color space is REC709, this can be updated in OpenXR project settings.\"";
 			}
 		}
@@ -297,18 +298,20 @@ String MetaEditorExportPlugin::_get_export_option_warning(const Ref<EditorExport
 }
 
 bool MetaEditorExportPlugin::_get_export_option_visibility(const Ref<EditorExportPlatform> &p_platform, const String &p_option) const {
+	Ref<EditorExportPreset> export_preset = get_export_preset();
+
 	if (p_option == "meta_xr_features/eye_tracking") {
-		return (bool)ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/extensions/eye_gaze_interaction");
+		return (bool)export_preset->get_project_setting("xr/openxr/extensions/eye_gaze_interaction");
 	} else if (p_option == "meta_xr_features/face_tracking") {
-		return (bool)ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/extensions/meta/face_tracking");
+		return (bool)export_preset->get_project_setting("xr/openxr/extensions/meta/face_tracking");
 	} else if (p_option == "meta_xr_features/body_tracking") {
-		return (bool)ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/extensions/meta/body_tracking");
+		return (bool)export_preset->get_project_setting("xr/openxr/extensions/meta/body_tracking");
 	} else if (p_option == "meta_xr_features/hand_tracking" || p_option == "meta_xr_features/hand_tracking_frequency") {
-		return (bool)ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/extensions/hand_tracking");
+		return (bool)export_preset->get_project_setting("xr/openxr/extensions/hand_tracking");
 	} else if (p_option == "meta_xr_features/passthrough") {
-		return (bool)ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/extensions/meta/passthrough");
+		return (bool)export_preset->get_project_setting("xr/openxr/extensions/meta/passthrough");
 	} else if (p_option == "meta_xr_features/render_model") {
-		return (bool)ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/extensions/meta/render_model");
+		return (bool)export_preset->get_project_setting("xr/openxr/extensions/meta/render_model");
 	}
 
 	return true;
@@ -333,10 +336,10 @@ String MetaEditorExportPlugin::_get_android_manifest_element_contents(const Ref<
 		return contents;
 	}
 
-	ProjectSettings *project_settings = ProjectSettings::get_singleton();
+	Ref<EditorExportPreset> export_preset = get_export_preset();
 
 	// Check for eye tracking
-	if ((bool)project_settings->get_setting_with_override("xr/openxr/extensions/eye_gaze_interaction")) {
+	if ((bool)export_preset->get_project_setting("xr/openxr/extensions/eye_gaze_interaction")) {
 		contents += "    <uses-permission android:name=\"com.oculus.permission.EYE_TRACKING\" />\n";
 
 		int eye_tracking_value = _get_int_option("meta_xr_features/eye_tracking", EYE_TRACKING_OPTIONAL_VALUE);
@@ -348,7 +351,7 @@ String MetaEditorExportPlugin::_get_android_manifest_element_contents(const Ref<
 	}
 
 	// Check for face tracking
-	if ((bool)project_settings->get_setting_with_override("xr/openxr/extensions/meta/face_tracking")) {
+	if ((bool)export_preset->get_project_setting("xr/openxr/extensions/meta/face_tracking")) {
 		contents += "    <uses-permission android:name=\"com.oculus.permission.FACE_TRACKING\" />\n";
 
 		int face_tracking_value = _get_int_option("meta_xr_features/face_tracking", FACE_TRACKING_OPTIONAL_VALUE);
@@ -360,7 +363,7 @@ String MetaEditorExportPlugin::_get_android_manifest_element_contents(const Ref<
 	}
 
 	// Check for body tracking
-	if ((bool)project_settings->get_setting_with_override("xr/openxr/extensions/meta/body_tracking")) {
+	if ((bool)export_preset->get_project_setting("xr/openxr/extensions/meta/body_tracking")) {
 		contents += "    <uses-permission android:name=\"com.oculus.permission.BODY_TRACKING\" />\n";
 
 		int body_tracking_value = _get_int_option("meta_xr_features/body_tracking", BODY_TRACKING_OPTIONAL_VALUE);
@@ -372,7 +375,7 @@ String MetaEditorExportPlugin::_get_android_manifest_element_contents(const Ref<
 	}
 
 	// Check for hand tracking
-	if ((bool)project_settings->get_setting_with_override("xr/openxr/extensions/hand_tracking")) {
+	if ((bool)export_preset->get_project_setting("xr/openxr/extensions/hand_tracking")) {
 		contents += "    <uses-permission android:name=\"com.oculus.permission.HAND_TRACKING\" />\n";
 
 		int hand_tracking_value = _get_int_option("meta_xr_features/hand_tracking", HAND_TRACKING_OPTIONAL_VALUE);
@@ -384,7 +387,7 @@ String MetaEditorExportPlugin::_get_android_manifest_element_contents(const Ref<
 	}
 
 	// Check for passthrough
-	if ((bool)project_settings->get_setting_with_override("xr/openxr/extensions/meta/passthrough")) {
+	if ((bool)export_preset->get_project_setting("xr/openxr/extensions/meta/passthrough")) {
 		int passthrough_mode = _get_int_option("meta_xr_features/passthrough", PASSTHROUGH_OPTIONAL_VALUE);
 		if (passthrough_mode == PASSTHROUGH_REQUIRED_VALUE) {
 			contents += "    <uses-feature tools:node=\"replace\" android:name=\"com.oculus.feature.PASSTHROUGH\" android:required=\"true\" />\n";
@@ -394,7 +397,7 @@ String MetaEditorExportPlugin::_get_android_manifest_element_contents(const Ref<
 	}
 
 	// Check for render model
-	if ((bool)project_settings->get_setting_with_override("xr/openxr/extensions/meta/render_model")) {
+	if ((bool)export_preset->get_project_setting("xr/openxr/extensions/meta/render_model")) {
 		contents += "    <uses-permission android:name=\"com.oculus.permission.RENDER_MODEL\" />\n";
 
 		int render_model_value = _get_int_option("meta_xr_features/render_model", RENDER_MODEL_OPTIONAL_VALUE);
@@ -406,38 +409,38 @@ String MetaEditorExportPlugin::_get_android_manifest_element_contents(const Ref<
 	}
 
 	// Check for EXT spatial entities, or the Meta anchor or scene APIs.
-	if ((bool)project_settings->get_setting_with_override("xr/openxr/extensions/spatial_entity/enabled") ||
-			(bool)project_settings->get_setting_with_override("xr/openxr/extensions/meta/scene_api") ||
-			(bool)project_settings->get_setting_with_override("xr/openxr/extensions/meta/anchor_api")) {
+	if ((bool)export_preset->get_project_setting("xr/openxr/extensions/spatial_entity/enabled") ||
+			(bool)export_preset->get_project_setting("xr/openxr/extensions/meta/scene_api") ||
+			(bool)export_preset->get_project_setting("xr/openxr/extensions/meta/anchor_api")) {
 		contents += "    <uses-permission android:name=\"com.oculus.permission.USE_ANCHOR_API\" />\n";
 	}
 
 	// Check for anchor sharing
-	if ((bool)project_settings->get_setting_with_override("xr/openxr/extensions/meta/anchor_sharing")) {
+	if ((bool)export_preset->get_project_setting("xr/openxr/extensions/meta/anchor_sharing")) {
 		contents += "    <uses-permission android:name=\"com.oculus.permission.IMPORT_EXPORT_IOT_MAP_DATA\" />\n";
 	}
 
 	// Check for scene api or environment depth
-	if ((bool)project_settings->get_setting_with_override("xr/openxr/extensions/spatial_entity/enabled") ||
-			(bool)project_settings->get_setting_with_override("xr/openxr/extensions/meta/scene_api") ||
-			(bool)project_settings->get_setting_with_override("xr/openxr/extensions/meta/environment_depth")) {
+	if ((bool)export_preset->get_project_setting("xr/openxr/extensions/spatial_entity/enabled") ||
+			(bool)export_preset->get_project_setting("xr/openxr/extensions/meta/scene_api") ||
+			(bool)export_preset->get_project_setting("xr/openxr/extensions/meta/environment_depth")) {
 		contents += "    <uses-permission android:name=\"com.oculus.permission.USE_SCENE\" />\n";
 	}
 
 	// Check for colocation discovery
-	if ((bool)project_settings->get_setting_with_override("xr/openxr/extensions/meta/colocation_discovery")) {
+	if ((bool)export_preset->get_project_setting("xr/openxr/extensions/meta/colocation_discovery")) {
 		contents += "    <uses-permission android:name=\"com.oculus.permission.USE_COLOCATION_DISCOVERY_API\" />\n";
 	}
 
 // @todo GH Issue 304: Remove check for meta headers when feature becomes part of OpenXR spec.
 #ifdef META_HEADERS_ENABLED
 	// Check for boundary visibility
-	if ((bool)project_settings->get_setting_with_override("xr/openxr/extensions/meta/boundary_visibility")) {
+	if ((bool)export_preset->get_project_setting("xr/openxr/extensions/meta/boundary_visibility")) {
 		contents += "    <uses-permission android:name=\"com.oculus.permission.BOUNDARY_VISIBILITY\" />\n";
 	}
 
 	// Check for stationary reference space
-	if ((bool)project_settings->get_setting_with_override("xr/openxr/extensions/stationary_reference_space")) {
+	if ((bool)export_preset->get_project_setting("xr/openxr/extensions/stationary_reference_space")) {
 		contents += "    <uses-feature android:name=\"com.oculus.experimental.enabled\" />\n";
 	}
 #endif // META_HEADERS_ENABLED
@@ -477,7 +480,7 @@ void MetaEditorExportPlugin::_export_begin(const PackedStringArray &p_features, 
 		return;
 	}
 
-	String boot_splash_path = ProjectSettings::get_singleton()->get_setting_with_override("application/boot_splash/image");
+	String boot_splash_path = get_export_preset()->get_project_setting("application/boot_splash/image");
 	if (!FileAccess::file_exists(boot_splash_path)) {
 		return;
 	}
@@ -492,12 +495,12 @@ String MetaEditorExportPlugin::_get_android_manifest_application_element_content
 		return contents;
 	}
 
-	ProjectSettings *project_settings = ProjectSettings::get_singleton();
+	Ref<EditorExportPreset> export_preset = get_export_preset();
 
 	const String supported_devices = String("|").join(_get_supported_devices());
 	contents += "        <meta-data tools:node=\"replace\" android:name=\"com.oculus.supportedDevices\" android:value=\"" + supported_devices + "\" />\n";
 
-	if ((bool)project_settings->get_setting_with_override("xr/openxr/extensions/hand_tracking")) {
+	if ((bool)export_preset->get_project_setting("xr/openxr/extensions/hand_tracking")) {
 		int hand_tracking_frequency = _get_int_option("meta_xr_features/hand_tracking_frequency", HAND_TRACKING_FREQUENCY_LOW_VALUE);
 		const String hand_tracking_frequency_label = (hand_tracking_frequency == HAND_TRACKING_FREQUENCY_LOW_VALUE) ? "LOW" : "HIGH";
 		contents += "        <meta-data tools:node=\"replace\" android:name=\"com.oculus.handtracking.frequency\" android:value=\"" + hand_tracking_frequency_label + "\" />\n";
@@ -514,7 +517,7 @@ String MetaEditorExportPlugin::_get_android_manifest_application_element_content
 		contents += "        <meta-data android:name=\"com.oculus.ossplash.colorspace\" android:value=\"Rec.709\"/>\n";
 	}
 
-	if ((int)project_settings->get_setting_with_override("xr/openxr/environment_blend_mode") != XRInterface::XR_ENV_BLEND_MODE_OPAQUE) {
+	if ((int)export_preset->get_project_setting("xr/openxr/environment_blend_mode") != XRInterface::XR_ENV_BLEND_MODE_OPAQUE) {
 		// Show the splash screen in passthrough, if the user launches it from passthrough.
 		contents += "        <meta-data android:name=\"com.oculus.ossplash.background\" android:value=\"passthrough-contextual\" />\n";
 	}
@@ -543,8 +546,8 @@ String MetaEditorExportPlugin::_get_android_manifest_application_element_content
 		</activity>
 )",
 				_bool_to_string(_get_bool_option("package/exclude_from_recents")),
-				_get_android_orientation_label((DisplayServer::ScreenOrientation)(int)project_settings->get_setting_with_override("display/window/handheld/orientation")),
-				_bool_to_string(project_settings->get_setting_with_override("display/window/size/resizable")));
+				_get_android_orientation_label((DisplayServer::ScreenOrientation)(int)export_preset->get_project_setting("display/window/handheld/orientation")),
+				_bool_to_string(export_preset->get_project_setting("display/window/size/resizable")));
 
 		if (hybrid_launch_mode == OpenXRHybridApp::HYBRID_MODE_PANEL) {
 			contents += R"(

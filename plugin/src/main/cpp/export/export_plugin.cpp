@@ -30,7 +30,7 @@
 #include "export/export_plugin.h"
 
 #include <godot_cpp/classes/editor_export_platform_android.hpp>
-#include <godot_cpp/classes/project_settings.hpp>
+#include <godot_cpp/classes/editor_export_preset.hpp>
 
 using namespace godot;
 
@@ -96,14 +96,14 @@ Dictionary OpenXRVendorsEditorExportPlugin::_get_vendor_toggle_option(const Stri
 }
 
 bool OpenXRVendorsEditorExportPlugin::_is_hybrid_app_enabled() const {
-	return ProjectSettings::get_singleton()->get_setting_with_override("xr/hybrid_app/enabled");
+	return get_export_preset()->get_project_setting("xr/hybrid_app/enabled");
 }
 
 OpenXRHybridApp::HybridMode OpenXRVendorsEditorExportPlugin::_get_hybrid_app_launch_mode() const {
 	if (!_is_hybrid_app_enabled()) {
 		return OpenXRHybridApp::HYBRID_MODE_NONE;
 	}
-	return (OpenXRHybridApp::HybridMode)(int)ProjectSettings::get_singleton()->get_setting_with_override("xr/hybrid_app/launch_mode");
+	return (OpenXRHybridApp::HybridMode)(int)get_export_preset()->get_project_setting("xr/hybrid_app/launch_mode");
 }
 
 String OpenXRVendorsEditorExportPlugin::_get_common_activity_intent_filter_contents() const {
@@ -173,7 +173,7 @@ PackedStringArray OpenXRVendorsEditorExportPlugin::_get_export_features(const Re
 	}
 
 	// Add the eye tracking feature if necessary
-	if ((bool)ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/extensions/eye_gaze_interaction")) {
+	if ((bool)get_export_preset()->get_project_setting("xr/openxr/extensions/eye_gaze_interaction")) {
 		features.append(EYE_GAZE_INTERACTION_FEATURE);
 	}
 

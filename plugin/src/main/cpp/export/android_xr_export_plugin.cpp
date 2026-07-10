@@ -29,6 +29,7 @@
 
 #include "export/android_xr_export_plugin.h"
 
+#include <godot_cpp/classes/editor_export_preset.hpp>
 #include <godot_cpp/classes/project_settings.hpp>
 
 using namespace godot;
@@ -122,15 +123,15 @@ String AndroidXREditorExportPlugin::_get_export_option_warning(const Ref<EditorE
 		return "";
 	}
 
-	ProjectSettings *project_settings = ProjectSettings::get_singleton();
+	Ref<EditorExportPreset> export_preset = get_export_preset();
 
 	bool openxr_enabled = _is_openxr_enabled();
 	if (option == "android_xr_features/eye_tracking") {
-		if (!openxr_enabled && ((bool)project_settings->get_setting_with_override("xr/openxr/extensions/eye_gaze_interaction") || (bool)project_settings->get_setting_with_override("xr/openxr/extensions/androidxr/eye_tracking"))) {
+		if (!openxr_enabled && ((bool)export_preset->get_project_setting("xr/openxr/extensions/eye_gaze_interaction") || (bool)export_preset->get_project_setting("xr/openxr/extensions/androidxr/eye_tracking"))) {
 			return "\"Eye Tracking\" requires \"XR Mode\" to be \"OpenXR\".\n";
 		}
 	} else if (option == "android_xr_features/hand_tracking") {
-		if (!openxr_enabled && (bool)project_settings->get_setting_with_override("xr/openxr/extensions/hand_tracking")) {
+		if (!openxr_enabled && (bool)export_preset->get_project_setting("xr/openxr/extensions/hand_tracking")) {
 			return "\"Hand Tracking\" requires \"XR Mode\" to be \"OpenXR\".\n";
 		}
 	} else if (option == "android_xr_features/tracked_controllers") {
@@ -147,10 +148,12 @@ String AndroidXREditorExportPlugin::_get_export_option_warning(const Ref<EditorE
 }
 
 bool AndroidXREditorExportPlugin::_get_export_option_visibility(const Ref<godot::EditorExportPlatform> &p_platform, const godot::String &p_option) const {
+	Ref<EditorExportPreset> export_preset = get_export_preset();
+
 	if (p_option == "android_xr_features/eye_tracking") {
-		return (bool)ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/extensions/eye_gaze_interaction") || (bool)ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/extensions/androidxr/eye_tracking");
+		return (bool)export_preset->get_project_setting("xr/openxr/extensions/eye_gaze_interaction") || (bool)export_preset->get_project_setting("xr/openxr/extensions/androidxr/eye_tracking");
 	} else if (p_option == "android_xr_features/hand_tracking") {
-		return (bool)ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/extensions/hand_tracking");
+		return (bool)export_preset->get_project_setting("xr/openxr/extensions/hand_tracking");
 	}
 
 	return true;
@@ -224,7 +227,7 @@ String AndroidXREditorExportPlugin::_get_android_manifest_application_element_co
 
 	OpenXRHybridApp::HybridMode hybrid_launch_mode = _get_hybrid_app_launch_mode();
 	if (hybrid_launch_mode != OpenXRHybridApp::HYBRID_MODE_NONE) {
-		ProjectSettings *project_settings = ProjectSettings::get_singleton();
+		Ref<EditorExportPreset> export_preset = get_export_preset();
 
 		contents += vformat(
 				R"(
@@ -247,8 +250,8 @@ String AndroidXREditorExportPlugin::_get_android_manifest_application_element_co
 		</activity>
 )",
 				_bool_to_string(_get_bool_option("package/exclude_from_recents")),
-				_get_android_orientation_label((DisplayServer::ScreenOrientation)(int)project_settings->get_setting_with_override("display/window/handheld/orientation")),
-				_bool_to_string(project_settings->get_setting_with_override("display/window/size/resizable")));
+				_get_android_orientation_label((DisplayServer::ScreenOrientation)(int)export_preset->get_project_setting("display/window/handheld/orientation")),
+				_bool_to_string(export_preset->get_project_setting("display/window/size/resizable")));
 
 		if (hybrid_launch_mode == OpenXRHybridApp::HYBRID_MODE_PANEL) {
 			contents += R"(
@@ -287,11 +290,11 @@ String AndroidXREditorExportPlugin::_get_android_manifest_element_contents(const
 		contents += vformat("    <uses-feature android:name=\"android.hardware.xr.input.controller\" android:required=\"%s\" />\n", _bool_to_string(required));
 	}
 
-	ProjectSettings *project_settings = ProjectSettings::get_singleton();
+	Ref<EditorExportPreset> export_preset = get_export_preset();
 
 	// Check for eye tracking
-	bool eye_gaze_interaction_enabled = project_settings->get_setting_with_override("xr/openxr/extensions/eye_gaze_interaction");
-	bool eye_tracking_enabled = project_settings->get_setting_with_override("xr/openxr/extensions/androidxr/eye_tracking");
+	bool eye_gaze_interaction_enabled = export_preset->get_project_setting("xr/openxr/extensions/eye_gaze_interaction");
+	bool eye_tracking_enabled = export_preset->get_project_setting("xr/openxr/extensions/androidxr/eye_tracking");
 
 	if (eye_gaze_interaction_enabled) {
 		// XR_EXT_eye_gaze_interaction always requires EYE_TRACKING_FINE.
@@ -313,12 +316,12 @@ String AndroidXREditorExportPlugin::_get_android_manifest_element_contents(const
 	}
 
 	// Check for face tracking
-	if ((bool)project_settings->get_setting_with_override("xr/openxr/extensions/androidxr/face_tracking")) {
+	if ((bool)export_preset->get_project_setting("xr/openxr/extensions/androidxr/face_tracking")) {
 		contents += "    <uses-permission android:name=\"android.permission.FACE_TRACKING\" />\n";
 	}
 
 	// Check for hand tracking
-	if ((bool)project_settings->get_setting_with_override("xr/openxr/extensions/hand_tracking")) {
+	if ((bool)export_preset->get_project_setting("xr/openxr/extensions/hand_tracking")) {
 		contents += "    <uses-permission android:name=\"android.permission.HAND_TRACKING\" />\n";
 
 		int hand_tracking_value = _get_int_option("android_xr_features/hand_tracking", HAND_TRACKING_OPTIONAL_VALUE);
@@ -333,11 +336,11 @@ String AndroidXREditorExportPlugin::_get_android_manifest_element_contents(const
 	// When SCENE_UNDERSTANDING_FINE is requested, SCENE_UNDERSTANDING_COARSE is not needed.
 	// Spatial entity and most of scene understanding features only require
 	// SCENE_UNDERSTANDING_COARSE.
-	if ((bool)project_settings->get_setting_with_override("xr/openxr/extensions/androidxr/environment_depth") || (bool)project_settings->get_setting_with_override("xr/openxr/extensions/androidxr/scene_meshing")) {
+	if ((bool)export_preset->get_project_setting("xr/openxr/extensions/androidxr/environment_depth") || (bool)export_preset->get_project_setting("xr/openxr/extensions/androidxr/scene_meshing")) {
 		contents += "    <uses-permission android:name=\"android.permission.SCENE_UNDERSTANDING_FINE\" />\n";
-	} else if ((bool)project_settings->get_setting_with_override("xr/openxr/extensions/spatial_entity/enabled") ||
-			(bool)project_settings->get_setting_with_override("xr/openxr/extensions/androidxr/light_estimation") ||
-			(bool)project_settings->get_setting_with_override("xr/openxr/extensions/androidxr/trackables")) {
+	} else if ((bool)export_preset->get_project_setting("xr/openxr/extensions/spatial_entity/enabled") ||
+			(bool)export_preset->get_project_setting("xr/openxr/extensions/androidxr/light_estimation") ||
+			(bool)export_preset->get_project_setting("xr/openxr/extensions/androidxr/trackables")) {
 		contents += "    <uses-permission android:name=\"android.permission.SCENE_UNDERSTANDING_COARSE\" />\n";
 	}
 

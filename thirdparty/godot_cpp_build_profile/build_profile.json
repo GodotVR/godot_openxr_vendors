@@ -18,6 +18,7 @@
         "EditorExportPlatform",
         "EditorExportPlatformAndroid",
         "EditorExportPlugin",
+        "EditorExportPreset",
         "EditorFileSystem",
         "EditorInterface",
         "EditorPlugin",
