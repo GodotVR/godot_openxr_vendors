@@ -142,6 +142,12 @@ String AndroidXREditorExportPlugin::_get_export_option_warning(const Ref<EditorE
 		if (!openxr_enabled && _get_bool_option(option)) {
 			return "\"Use experimental features\" is only valid when \"XR Mode\" is \"OpenXR\".\n";
 		}
+	} else if (option == "xr_features/enable_androidxr_plugin") {
+		if (godot::gdextension_interface::godot_version.minor >= 8) {
+			if ((bool)export_preset->get_project_setting("xr/openxr/extensions/frame_synthesis") && (String)export_preset->get_project_setting("rendering/renderer/rendering_method") != "gl_compatibility" && !(bool)export_preset->get_project_setting("xr/openxr/extensions/frame_synthesis/flip_y")) {
+				return "\"Frame Synthesis\" requires enabling \"Flip Y\" on Android XR when using Vulkan.\n";
+			}
+		}
 	}
 
 	return OpenXRVendorsEditorExportPlugin::_get_export_option_warning(platform, option);
