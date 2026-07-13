@@ -32,7 +32,7 @@
 
 #include <openxr/openxr.h>
 #include <godot_cpp/classes/editor_export_platform_android.hpp>
-#include <godot_cpp/classes/project_settings.hpp>
+#include <godot_cpp/classes/editor_export_preset.hpp>
 
 OpenXRValidationLayersEditorExportPlugin::OpenXRValidationLayersEditorExportPlugin() {
 	{
@@ -62,11 +62,11 @@ String OpenXRValidationLayersEditorExportPlugin::_get_export_option_warning(cons
 		return "";
 	}
 
-	ProjectSettings *project_settings = ProjectSettings::get_singleton();
-	ERR_FAIL_NULL_V(project_settings, "");
+	Ref<EditorExportPreset> export_preset = get_export_preset();
+	ERR_FAIL_COND_V(export_preset.is_null(), "");
 
 	if (option == "xr_features/enable_openxr_validation_layers") {
-		int debug_utils_level = project_settings->get_setting("xr/openxr/extensions/debug_utils");
+		int debug_utils_level = export_preset->get_project_setting("xr/openxr/extensions/debug_utils");
 		if ((bool)get_option(option) && debug_utils_level < 2) {
 			return "Set XR -> OpenXR -> Extensions -> Debug Utils to \"Warning\" or higher in Project Settings for OpenXR validation messages to appear in Godot.";
 		}

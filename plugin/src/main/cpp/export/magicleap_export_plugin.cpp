@@ -29,7 +29,7 @@
 
 #include "export/magicleap_export_plugin.h"
 
-#include <godot_cpp/classes/project_settings.hpp>
+#include <godot_cpp/classes/editor_export_preset.hpp>
 
 using namespace godot;
 
@@ -56,11 +56,13 @@ String MagicleapEditorExportPlugin::_get_android_manifest_element_contents(const
 		return contents;
 	}
 
-	if (ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/extensions/hand_tracking")) {
+	Ref<EditorExportPreset> export_preset = get_export_preset();
+
+	if (export_preset->get_project_setting("xr/openxr/extensions/hand_tracking")) {
 		contents += "    <uses-permission android:name=\"com.magicleap.permission.HAND_TRACKING\" />\n";
 	}
 
-	if (ProjectSettings::get_singleton()->get_setting_with_override("xr/openxr/extensions/magic_leap/marker_understanding")) {
+	if (export_preset->get_project_setting("xr/openxr/extensions/magic_leap/marker_understanding")) {
 		contents += "    <uses-permission android:name=\"com.magicleap.permission.MARKER_TRACKING\" />\n";
 	}
 

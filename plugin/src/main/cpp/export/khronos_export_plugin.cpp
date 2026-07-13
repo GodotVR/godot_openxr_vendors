@@ -29,7 +29,7 @@
 
 #include "export/khronos_export_plugin.h"
 
-#include <godot_cpp/classes/project_settings.hpp>
+#include <godot_cpp/classes/editor_export_preset.hpp>
 
 using namespace godot;
 
@@ -162,11 +162,11 @@ String KhronosEditorExportPlugin::_get_android_manifest_element_contents(const R
 		return contents;
 	}
 
-	ProjectSettings *project_settings = ProjectSettings::get_singleton();
+	Ref<EditorExportPreset> export_preset = get_export_preset();
 
 	if (_is_khronos_htc_enabled()) {
 		// Check for hand tracking
-		if ((bool)project_settings->get_setting_with_override("xr/openxr/extensions/hand_tracking")) {
+		if ((bool)export_preset->get_project_setting("xr/openxr/extensions/hand_tracking")) {
 			contents += "    <uses-feature tools:node=\"replace\" android:name=\"wave.feature.handtracking\" android:required=\"true\" />\n";
 		}
 
@@ -176,7 +176,7 @@ String KhronosEditorExportPlugin::_get_android_manifest_element_contents(const R
 		}
 
 		// Check for eye tracking
-		if ((bool)project_settings->get_setting_with_override("xr/openxr/extensions/eye_gaze_interaction")) {
+		if ((bool)export_preset->get_project_setting("xr/openxr/extensions/eye_gaze_interaction")) {
 			contents += "    <uses-feature tools:node=\"replace\" android:name=\"wave.feature.eyetracking\" android:required=\"true\" />\n";
 		}
 
