@@ -97,7 +97,11 @@ private:
 	HashMap<String, bool *> request_extensions;
 	bool available = false;
 	bool check_for_permissions = false;
-	XrSystemDeviceAnchorPersistencePropertiesANDROID anchor_persistence_properties;
+	XrSystemDeviceAnchorPersistencePropertiesANDROID anchor_persistence_properties = {
+		XR_TYPE_SYSTEM_DEVICE_ANCHOR_PERSISTENCE_PROPERTIES_ANDROID, // type
+		nullptr, // next
+		XR_FALSE, // supportsAnchorPersistence
+	};
 	XrDeviceAnchorPersistenceANDROID device_anchor_persistence = XR_NULL_HANDLE;
 	HashSet<XrTrackableTypeANDROID> supported_trackable_types;
 

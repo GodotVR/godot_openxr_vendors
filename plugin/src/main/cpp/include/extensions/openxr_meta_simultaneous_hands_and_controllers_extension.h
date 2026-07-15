@@ -81,7 +81,7 @@ private:
 	XrSystemSimultaneousHandsAndControllersPropertiesMETA simultaneous_hands_and_controllers_properties = {
 		XR_TYPE_SYSTEM_SIMULTANEOUS_HANDS_AND_CONTROLLERS_PROPERTIES_META, // type
 		nullptr, // next
-		false // supportsSimultaneousHandsAndControllers
+		XR_FALSE // supportsSimultaneousHandsAndControllers
 	};
 
 	const XrSimultaneousHandsAndControllersTrackingResumeInfoMETA simultaneous_hands_and_controllers_tracking_resume_info = {

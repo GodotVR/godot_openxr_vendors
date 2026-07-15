@@ -73,9 +73,7 @@ Dictionary OpenXRAndroidDeviceAnchorPersistenceExtension::_get_requested_extensi
 
 uint64_t OpenXRAndroidDeviceAnchorPersistenceExtension::_set_system_properties_and_get_next_pointer(void *p_next_pointer) {
 	if (available) {
-		anchor_persistence_properties.type = XR_TYPE_SYSTEM_DEVICE_ANCHOR_PERSISTENCE_PROPERTIES_ANDROID;
 		anchor_persistence_properties.next = p_next_pointer;
-		anchor_persistence_properties.supportsAnchorPersistence = XR_FALSE;
 		return reinterpret_cast<uint64_t>(&anchor_persistence_properties);
 	}
 

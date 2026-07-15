@@ -73,10 +73,7 @@ void OpenXRHtcFacialTrackingExtension::cleanup() {
 }
 
 uint64_t OpenXRHtcFacialTrackingExtension::_set_system_properties_and_get_next_pointer(void *next_pointer) {
-	system_facial_tracking_properties.type = XR_TYPE_SYSTEM_FACIAL_TRACKING_PROPERTIES_HTC;
 	system_facial_tracking_properties.next = next_pointer;
-	system_facial_tracking_properties.supportEyeFacialTracking = false;
-	system_facial_tracking_properties.supportLipFacialTracking = false;
 	return reinterpret_cast<uint64_t>(&system_facial_tracking_properties);
 }
 

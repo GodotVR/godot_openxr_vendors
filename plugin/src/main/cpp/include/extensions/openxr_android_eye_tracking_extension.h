@@ -86,7 +86,11 @@ private:
 	HashMap<String, bool *> request_extensions;
 	bool available = false;
 
-	XrSystemEyeTrackingPropertiesANDROID eye_tracking_properties;
+	XrSystemEyeTrackingPropertiesANDROID eye_tracking_properties = {
+		XR_TYPE_SYSTEM_EYE_TRACKING_PROPERTIES_ANDROID, // type
+		nullptr, // next
+		XR_FALSE, // supportsEyeTracking
+	};
 	XrEyeTrackerANDROID eye_tracker = XR_NULL_HANDLE;
 
 	Ref<XRControllerTracker> xr_eye_tracker[2];
