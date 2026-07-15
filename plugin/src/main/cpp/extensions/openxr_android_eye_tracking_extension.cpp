@@ -105,10 +105,12 @@ void OpenXRAndroidEyeTrackingExtension::_on_state_focused() {
 	OS *os = OS::get_singleton();
 	ERR_FAIL_NULL(os);
 
-	PackedStringArray granted_permissions = os->get_granted_permissions();
-	if (!granted_permissions.has("android.permission.EYE_TRACKING_COARSE") && !granted_permissions.has("android.permission.EYE_TRACKING_FINE")) {
-		WARN_PRINT("OpenXR: XR_ANDROID_eye_tracking requires android.permission.EYE_TRACKING_COARSE or android.permission.EYE_TRACKING_FINE; waiting for it to be granted before enabling");
-		return;
+	if (os->get_name() == "Android") {
+		PackedStringArray granted_permissions = os->get_granted_permissions();
+		if (!granted_permissions.has("android.permission.EYE_TRACKING_COARSE") && !granted_permissions.has("android.permission.EYE_TRACKING_FINE")) {
+			WARN_PRINT("OpenXR: XR_ANDROID_eye_tracking requires android.permission.EYE_TRACKING_COARSE or android.permission.EYE_TRACKING_FINE; waiting for it to be granted before enabling");
+			return;
+		}
 	}
 
 	XrEyeTrackerCreateInfoANDROID create_info{

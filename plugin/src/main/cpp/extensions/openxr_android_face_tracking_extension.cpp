@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  openxr_android_face_tracking_extension_wrapper.cpp                    */
+/*  openxr_android_face_tracking_extension.cpp                            */
 /**************************************************************************/
 /*                       This file is part of:                            */
 /*                              GODOT XR                                  */
@@ -72,16 +72,22 @@ Dictionary OpenXRAndroidFaceTrackingExtension::_get_requested_extensions(uint64_
 }
 
 uint64_t OpenXRAndroidFaceTrackingExtension::_set_system_properties_and_get_next_pointer(void *p_next_pointer) {
-	face_tracking_properties.type = XR_TYPE_SYSTEM_FACE_TRACKING_PROPERTIES_ANDROID;
-	face_tracking_properties.next = p_next_pointer;
-	face_tracking_properties.supportsFaceTracking = XR_FALSE;
-	return reinterpret_cast<uint64_t>(&face_tracking_properties);
+	if (available) {
+		face_tracking_properties.type = XR_TYPE_SYSTEM_FACE_TRACKING_PROPERTIES_ANDROID;
+		face_tracking_properties.next = p_next_pointer;
+		face_tracking_properties.supportsFaceTracking = XR_FALSE;
+		return reinterpret_cast<uint64_t>(&face_tracking_properties);
+	}
+
+	return reinterpret_cast<uint64_t>(p_next_pointer);
 }
 
 void OpenXRAndroidFaceTrackingExtension::_on_instance_created(uint64_t p_instance) {
-	if (!_initialize_openxr_android_face_tracking_extension()) {
-		UtilityFunctions::print("Failed to initialize face tracking extension");
-		available = false;
+	if (available) {
+		if (!_initialize_openxr_android_face_tracking_extension()) {
+			UtilityFunctions::print("Failed to initialize face tracking extension");
+			available = false;
+		}
 	}
 }
 
@@ -101,10 +107,12 @@ void OpenXRAndroidFaceTrackingExtension::_on_state_focused() {
 	OS *os = OS::get_singleton();
 	ERR_FAIL_NULL(os);
 
-	PackedStringArray granted_permissions = os->get_granted_permissions();
-	if (!granted_permissions.has("android.permission.FACE_TRACKING")) {
-		WARN_PRINT("OpenXR: XR_ANDROID_face_tracking requires android.permission.FACE_TRACKING; waiting for it to be granted before enabling");
-		return;
+	if (os->get_name() == "Android") {
+		PackedStringArray granted_permissions = os->get_granted_permissions();
+		if (!granted_permissions.has("android.permission.FACE_TRACKING")) {
+			WARN_PRINT("OpenXR: XR_ANDROID_face_tracking requires android.permission.FACE_TRACKING; waiting for it to be granted before enabling");
+			return;
+		}
 	}
 
 	XrFaceTrackerCreateInfoANDROID create_info{
