@@ -46,6 +46,7 @@ public:
 	godot::Dictionary _get_requested_extensions(uint64_t p_xr_version) override;
 
 	void _on_instance_created(uint64_t instance) override;
+	void _on_state_focused() override;
 	void _on_instance_destroyed() override;
 
 	uint64_t _set_system_properties_and_get_next_pointer(void *p_next_pointer) override;
@@ -120,6 +121,7 @@ private:
 
 	HashMap<String, bool *> request_extensions;
 	bool android_light_estimation_ext = false;
+	bool permissions_granted = false;
 
 	BitField<LightEstimateType> estimate_types = 0;
 	XrLightEstimatorANDROID light_estimator = XR_NULL_HANDLE;

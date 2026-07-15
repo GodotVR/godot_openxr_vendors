@@ -149,7 +149,7 @@ void OpenXRAndroidLightEstimation::_notification(int p_what) {
 			if (xr_server) {
 				Ref<OpenXRInterface> openxr_interface = xr_server->find_interface("OpenXR");
 				if (openxr_interface.is_valid()) {
-					openxr_interface->connect("session_begun", callable_mp(this, &OpenXRAndroidLightEstimation::start_or_stop));
+					openxr_interface->connect("session_focussed", callable_mp(this, &OpenXRAndroidLightEstimation::start_or_stop));
 				}
 			}
 		} break;
@@ -159,7 +159,7 @@ void OpenXRAndroidLightEstimation::_notification(int p_what) {
 			if (xr_server) {
 				Ref<OpenXRInterface> openxr_interface = xr_server->find_interface("OpenXR");
 				if (openxr_interface.is_valid()) {
-					openxr_interface->disconnect("session_begun", callable_mp(this, &OpenXRAndroidLightEstimation::start_or_stop));
+					openxr_interface->disconnect("session_focussed", callable_mp(this, &OpenXRAndroidLightEstimation::start_or_stop));
 				}
 			}
 		} break;
