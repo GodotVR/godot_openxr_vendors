@@ -48,6 +48,7 @@ public:
 	virtual ~OpenXRAndroidPassthroughCameraStateExtension() override;
 
 	virtual Dictionary _get_requested_extensions(uint64_t p_xr_version) override;
+	uint64_t _set_system_properties_and_get_next_pointer(void *p_next_pointer) override;
 	virtual void _on_instance_created(uint64_t p_instance) override;
 
 	enum PassthroughCameraState {
@@ -58,7 +59,7 @@ public:
 	};
 	PassthroughCameraState get_passthrough_camera_state();
 
-	bool is_enabled() const { return available; }
+	bool is_enabled() const { return available && passthrough_camera_state_properties.supportsPassthroughCameraState; }
 
 protected:
 	static void _bind_methods();
@@ -70,6 +71,12 @@ private:
 
 	HashMap<String, bool *> request_extensions;
 	bool available = false;
+
+	XrSystemPassthroughCameraStatePropertiesANDROID passthrough_camera_state_properties = {
+		XR_TYPE_SYSTEM_PASSTHROUGH_CAMERA_STATE_PROPERTIES_ANDROID, // type
+		nullptr, // next
+		XR_FALSE, // supportsPassthroughCameraState
+	};
 
 	EXT_PROTO_XRRESULT_FUNC3(xrGetPassthroughCameraStateANDROID, (XrSession), session, (const XrPassthroughCameraStateGetInfoANDROID *), getInfo, (XrPassthroughCameraStateANDROID *), cameraStateOutput);
 };
