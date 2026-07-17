@@ -99,9 +99,7 @@ void OpenXRAndroidDeviceAnchorPersistenceExtension::_on_instance_created(uint64_
 }
 
 void OpenXRAndroidDeviceAnchorPersistenceExtension::_on_session_created(uint64_t p_session_instance) {
-	available = available && XR_TRUE == anchor_persistence_properties.supportsAnchorPersistence;
-
-	if (!available) {
+	if (!is_device_anchor_persistence_supported()) {
 		return;
 	}
 
@@ -150,21 +148,17 @@ void OpenXRAndroidDeviceAnchorPersistenceExtension::_on_session_created(uint64_t
 		supported_trackable_types.insert(trackable_type);
 	}
 
-	// assume unavailable until the permission is granted (see _on_state_focused())
-	available = false;
-	check_for_permissions = true;
+	// wait for _on_state_focused() to correctly set permissions_granted
+	permissions_granted = false;
 }
 
 void OpenXRAndroidDeviceAnchorPersistenceExtension::_on_state_focused() {
-	if (!available && !check_for_permissions) {
+	if (!is_device_anchor_persistence_supported()) {
 		return;
 	}
 
-	OS *os = OS::get_singleton();
-	ERR_FAIL_NULL(os);
-
-	if (os->get_name() != "Android") {
-		available = true;
+	if (!OpenXRUtilities::supports_runtime_permissions()) {
+		permissions_granted = true;
 		return;
 	}
 
@@ -178,19 +172,19 @@ void OpenXRAndroidDeviceAnchorPersistenceExtension::_on_state_focused() {
 	// NOTE: depending on the app's manifest, it may be restarted if permissions are removed or
 	//       enabled
 
-	// assume unavailable until the permission is granted
-	available = false;
+	OS *os = OS::get_singleton();
+	ERR_FAIL_NULL(os);
 
 	PackedStringArray granted_permissions = os->get_granted_permissions();
-	available = granted_permissions.has("android.permission.SCENE_UNDERSTANDING_COARSE") || granted_permissions.has("android.permission.SCENE_UNDERSTANDING_FINE");
+	permissions_granted = granted_permissions.has("android.permission.SCENE_UNDERSTANDING_COARSE") || granted_permissions.has("android.permission.SCENE_UNDERSTANDING_FINE");
 
-	if (!available) {
-		WARN_PRINT("OpenXR: XR_ANDROID_device_anchor_persistence requires android.permission.SCENE_UNDERSTANDING_COARSE or android.permission.SCENE_UNDERSTANDING_FINE; waiting for the permission to be set before enabling");
+	if (!permissions_granted) {
+		WARN_PRINT("OpenXR: XR_ANDROID_device_anchor_persistence requires android.permission.SCENE_UNDERSTANDING_COARSE or android.permission.SCENE_UNDERSTANDING_FINE; waiting for one of them to be granted");
 	}
 }
 
 void OpenXRAndroidDeviceAnchorPersistenceExtension::_on_process() {
-	if (persisted_anchor_discovery_cooldown < 0 || !OpenXRAndroidTrackablesExtension::get_singleton()->can_create_more_anchors()) {
+	if (!permissions_granted || !is_device_anchor_persistence_supported() || persisted_anchor_discovery_cooldown < 0 || !OpenXRAndroidTrackablesExtension::get_singleton()->can_create_more_anchors()) {
 		return;
 	}
 
@@ -249,9 +243,7 @@ bool OpenXRAndroidDeviceAnchorPersistenceExtension::set_restore_persisted_anchor
 }
 
 bool OpenXRAndroidDeviceAnchorPersistenceExtension::restore_persisted_anchor_trackers() {
-	if (!available) {
-		return false;
-	}
+	ERR_FAIL_COND_V(!is_device_anchor_persistence_supported() || !permissions_granted, false);
 
 	OpenXRAndroidTrackablesExtension *trackables_extension = OpenXRAndroidTrackablesExtension::get_singleton();
 	ERR_FAIL_NULL_V(trackables_extension, false);
@@ -318,9 +310,7 @@ TypedArray<StringName> OpenXRAndroidDeviceAnchorPersistenceExtension::get_all_pe
 
 Ref<OpenXRAndroidAnchorTracker> OpenXRAndroidDeviceAnchorPersistenceExtension::create_persisted_anchor_tracker(StringName p_uuid) {
 	Ref<OpenXRAndroidAnchorTracker> ret;
-	if (!available) {
-		return ret;
-	}
+	ERR_FAIL_COND_V(!is_device_anchor_persistence_supported() || !permissions_granted, ret);
 
 	if (!OpenXRAndroidTrackablesExtension::get_singleton()->can_create_more_anchors()) {
 		WARN_PRINT("OpenXR: unable to create persisted anchor tracker");
@@ -371,7 +361,9 @@ bool OpenXRAndroidDeviceAnchorPersistenceExtension::persist_anchor_tracker(Ref<O
 }
 
 bool OpenXRAndroidDeviceAnchorPersistenceExtension::persist_xranchor(Ref<OpenXRAndroidAnchorTracker> p_anchor_tracker, StringName &r_uuid, XrUuidEXT &r_xruuid) {
-	if (!available || p_anchor_tracker.is_null()) {
+	ERR_FAIL_COND_V(!is_device_anchor_persistence_supported(), false);
+
+	if (!permissions_granted || p_anchor_tracker.is_null()) {
 		return false;
 	}
 
@@ -442,9 +434,7 @@ OpenXRAndroidAnchorTracker::PersistState OpenXRAndroidDeviceAnchorPersistenceExt
 
 OpenXRAndroidAnchorTracker::PersistState OpenXRAndroidDeviceAnchorPersistenceExtension::get_xranchor_persist_state(const StringName &p_uuid, const XrUuidEXT &p_xruuid) {
 	OpenXRAndroidAnchorTracker::PersistState ret{ OpenXRAndroidAnchorTracker::PERSIST_STATE_ERROR };
-	if (!available) {
-		return ret;
-	}
+	ERR_FAIL_COND_V(!is_device_anchor_persistence_supported() || !permissions_granted, ret);
 
 	if (p_uuid.is_empty()) {
 		// don't log so callers don't have to check for empty uuid at every call site
@@ -516,7 +506,9 @@ bool OpenXRAndroidDeviceAnchorPersistenceExtension::unpersist_anchor_tracker(Ref
 }
 
 bool OpenXRAndroidDeviceAnchorPersistenceExtension::unpersist_xranchor(const StringName &p_uuid, const XrUuidEXT &p_xruuid) {
-	if (!available || p_uuid.is_empty()) {
+	ERR_FAIL_COND_V(!is_device_anchor_persistence_supported(), false);
+
+	if (!permissions_granted || p_uuid.is_empty()) {
 		// don't log so callers don't have to check for empty uuid at every call site
 		return true;
 	}
@@ -550,7 +542,11 @@ void OpenXRAndroidDeviceAnchorPersistenceExtension::on_xranchor_tracker_destroye
 }
 
 bool OpenXRAndroidDeviceAnchorPersistenceExtension::is_device_anchor_persistence_supported() const {
-	return available;
+	return available && XR_TRUE == anchor_persistence_properties.supportsAnchorPersistence;
+}
+
+bool OpenXRAndroidDeviceAnchorPersistenceExtension::are_permissions_granted() const {
+	return permissions_granted;
 }
 
 void OpenXRAndroidDeviceAnchorPersistenceExtension::_bind_methods() {
@@ -565,6 +561,7 @@ void OpenXRAndroidDeviceAnchorPersistenceExtension::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("unpersist_anchor_tracker", "anchor_tracker"), &OpenXRAndroidDeviceAnchorPersistenceExtension::unpersist_anchor_tracker);
 	ClassDB::bind_method(D_METHOD("unpersist_anchor_uuid", "uuid"), &OpenXRAndroidDeviceAnchorPersistenceExtension::unpersist_anchor_uuid);
 	ClassDB::bind_method(D_METHOD("is_device_anchor_persistence_supported"), &OpenXRAndroidDeviceAnchorPersistenceExtension::is_device_anchor_persistence_supported);
+	ClassDB::bind_method(D_METHOD("are_permissions_granted"), &OpenXRAndroidDeviceAnchorPersistenceExtension::are_permissions_granted);
 }
 
 bool OpenXRAndroidDeviceAnchorPersistenceExtension::_initialize_androidxr_device_persistence_extension() {
@@ -605,9 +602,7 @@ XrSpace OpenXRAndroidDeviceAnchorPersistenceExtension::_create_xrspace_from_pers
 TypedArray<StringName> OpenXRAndroidDeviceAnchorPersistenceExtension::_get_all_persisted_anchors(bool &r_success) {
 	r_success = false;
 	TypedArray<StringName> ret{};
-	if (!available) {
-		return ret;
-	}
+	ERR_FAIL_COND_V(!is_device_anchor_persistence_supported() || !permissions_granted, ret);
 
 	XrDeviceAnchorPersistenceANDROID anchor_persistence = _get_or_create_device_anchor_persistence();
 	if (XR_NULL_HANDLE == anchor_persistence) {
@@ -671,7 +666,6 @@ XrDeviceAnchorPersistenceANDROID OpenXRAndroidDeviceAnchorPersistenceExtension::
 	if (result != XR_SUCCESS || XR_NULL_HANDLE == device_anchor_persistence) {
 		UtilityFunctions::printerr("OpenXR: Failed to create device anchor persistence; ", get_openxr_api()->get_error_string(result));
 		available = false;
-		check_for_permissions = false;
 		device_anchor_persistence = XR_NULL_HANDLE;
 		return XR_NULL_HANDLE;
 	}

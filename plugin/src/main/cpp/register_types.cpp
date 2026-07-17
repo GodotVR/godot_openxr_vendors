@@ -462,6 +462,7 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			_register_extension_as_singleton(OpenXRAndroidEnvironmentDepthExtension::get_singleton());
 			_register_extension_as_singleton(OpenXRAndroidUnboundedReferenceSpaceExtension::get_singleton());
 			_register_extension_as_singleton(OpenXRAndroidTrackablesExtension::get_singleton());
+			_register_extension_as_singleton(OpenXRAndroidTrackablesObjectExtension::get_singleton());
 			_register_extension_as_singleton(OpenXRAndroidRaycastExtension::get_singleton());
 			_register_extension_as_singleton(OpenXRAndroidDeviceAnchorPersistenceExtension::get_singleton());
 

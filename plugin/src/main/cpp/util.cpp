@@ -32,6 +32,8 @@
 #include <openxr/internal/xr_linear.h>
 #include <openxr/openxr.h>
 #include <stdio.h>
+#include <godot_cpp/classes/os.hpp>
+#include <godot_cpp/core/error_macros.hpp>
 #include <godot_cpp/variant/packed_string_array.hpp>
 #include <godot_cpp/variant/projection.hpp>
 
@@ -149,4 +151,10 @@ XrUuid OpenXRUtilities::string_name_to_uuid(const StringName &p_uuid_str) {
 	}
 
 	return ret;
+}
+
+bool OpenXRUtilities::supports_runtime_permissions() {
+	OS *os = OS::get_singleton();
+	ERR_FAIL_NULL_V(os, false);
+	return os->has_feature("android");
 }

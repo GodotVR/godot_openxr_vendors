@@ -81,6 +81,7 @@ public:
 	void on_xranchor_tracker_destroyed(const StringName &p_uuid);
 
 	bool is_device_anchor_persistence_supported() const;
+	bool are_permissions_granted() const;
 
 protected:
 	static void _bind_methods();
@@ -96,7 +97,7 @@ private:
 
 	HashMap<String, bool *> request_extensions;
 	bool available = false;
-	bool check_for_permissions = false;
+	bool permissions_granted = false;
 	XrSystemDeviceAnchorPersistencePropertiesANDROID anchor_persistence_properties = {
 		XR_TYPE_SYSTEM_DEVICE_ANCHOR_PERSISTENCE_PROPERTIES_ANDROID, // type
 		nullptr, // next

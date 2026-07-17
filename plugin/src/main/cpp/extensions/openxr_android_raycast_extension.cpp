@@ -163,21 +163,17 @@ void OpenXRAndroidRaycastExtension::_on_session_created(uint64_t p_session_insta
 		return;
 	}
 
-	// assume unavailable until the permission is granted (see _on_state_focused())
-	available = false;
-	check_for_permissions = true;
+	// wait for _on_state_focused() to correctly set permissions_granted
+	permissions_granted = false;
 }
 
 void OpenXRAndroidRaycastExtension::_on_state_focused() {
-	if (!available && !check_for_permissions) {
+	if (!is_raycast_supported()) {
 		return;
 	}
 
-	OS *os = OS::get_singleton();
-	ERR_FAIL_NULL(os);
-
-	if (os->get_name() != "Android") {
-		available = true;
+	if (!OpenXRUtilities::supports_runtime_permissions()) {
+		permissions_granted = true;
 		return;
 	}
 
@@ -192,14 +188,14 @@ void OpenXRAndroidRaycastExtension::_on_state_focused() {
 	// NOTE: depending on the app's manifest, it may be restarted if permissions are removed or
 	//       enabled
 
-	// assume unavailable until the permission is granted
-	available = false;
+	OS *os = OS::get_singleton();
+	ERR_FAIL_NULL(os);
 
 	PackedStringArray granted_permissions = os->get_granted_permissions();
-	available = granted_permissions.has("android.permission.SCENE_UNDERSTANDING_FINE");
+	permissions_granted = granted_permissions.has("android.permission.SCENE_UNDERSTANDING_FINE");
 
-	if (!available) {
-		WARN_PRINT("OpenXR: XR_ANDROID_raycast requires android.permission.SCENE_UNDERSTANDING_FINE; waiting for it to be granted before enabling");
+	if (!permissions_granted) {
+		WARN_PRINT("OpenXR: XR_ANDROID_raycast requires android.permission.SCENE_UNDERSTANDING_FINE; waiting for it to be granted");
 	}
 }
 
@@ -213,9 +209,7 @@ void OpenXRAndroidRaycastExtension::_on_session_destroyed() {
 
 TypedArray<OpenXRAndroidHitResult> OpenXRAndroidRaycastExtension::raycast(Array p_trackable_types, const Vector3 &p_origin, const Vector3 &p_trajectory, int p_max_results) {
 	TypedArray<OpenXRAndroidHitResult> ret;
-	if (!available) {
-		return ret;
-	}
+	ERR_FAIL_COND_V(!is_raycast_supported() || !permissions_granted, ret);
 
 	OpenXRAndroidTrackablesExtension *wrapper = OpenXRAndroidTrackablesExtension::get_singleton();
 	ERR_FAIL_NULL_V(wrapper, ret);
@@ -311,9 +305,14 @@ bool OpenXRAndroidRaycastExtension::is_raycast_supported() const {
 	return available;
 }
 
+bool OpenXRAndroidRaycastExtension::are_permissions_granted() const {
+	return permissions_granted;
+}
+
 void OpenXRAndroidRaycastExtension::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("raycast", "trackable_types", "origin", "trajectory", "max_results"), &OpenXRAndroidRaycastExtension::raycast);
 	ClassDB::bind_method(D_METHOD("is_raycast_supported"), &OpenXRAndroidRaycastExtension::is_raycast_supported);
+	ClassDB::bind_method(D_METHOD("are_permissions_granted"), &OpenXRAndroidRaycastExtension::are_permissions_granted);
 	BIND_ENUM_CONSTANT(TRACKABLE_TYPE_PLANE);
 	BIND_ENUM_CONSTANT(TRACKABLE_TYPE_DEPTH);
 }

@@ -109,10 +109,7 @@ void OpenXRAndroidLightEstimationExtension::_on_state_focused() {
 		return;
 	}
 
-	OS *os = OS::get_singleton();
-	ERR_FAIL_NULL(os);
-
-	if (os->get_name() != "Android") {
+	if (!OpenXRUtilities::supports_runtime_permissions()) {
 		permissions_granted = true;
 		return;
 	}
@@ -126,6 +123,9 @@ void OpenXRAndroidLightEstimationExtension::_on_state_focused() {
 	//       we are always checking here.
 	// NOTE: depending on the app's manifest, it may be restarted if permissions are removed or
 	//       enabled
+
+	OS *os = OS::get_singleton();
+	ERR_FAIL_NULL(os);
 
 	PackedStringArray granted_permissions = os->get_granted_permissions();
 	permissions_granted = granted_permissions.has("android.permission.SCENE_UNDERSTANDING_COARSE");

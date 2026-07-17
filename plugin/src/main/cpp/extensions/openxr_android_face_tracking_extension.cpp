@@ -102,10 +102,10 @@ void OpenXRAndroidFaceTrackingExtension::_on_state_focused() {
 		return;
 	}
 
-	OS *os = OS::get_singleton();
-	ERR_FAIL_NULL(os);
+	if (OpenXRUtilities::supports_runtime_permissions()) {
+		OS *os = OS::get_singleton();
+		ERR_FAIL_NULL(os);
 
-	if (os->get_name() == "Android") {
 		PackedStringArray granted_permissions = os->get_granted_permissions();
 		if (!granted_permissions.has("android.permission.FACE_TRACKING")) {
 			WARN_PRINT("OpenXR: XR_ANDROID_face_tracking requires android.permission.FACE_TRACKING; waiting for it to be granted before enabling");

@@ -10,6 +10,12 @@
 	<tutorials>
 	</tutorials>
 	<methods>
+		<method name="are_permissions_granted" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Whether the required Android permissions for this extension are granted or not.
+			</description>
+		</method>
 		<method name="create_persisted_anchor_tracker">
 			<return type="OpenXRAndroidAnchorTracker" />
 			<param index="0" name="uuid" type="StringName" />

@@ -21,6 +21,11 @@ func initialize():
 
 
 # Callback from "menu3d_group"
+func are_permissions_granted() -> bool:
+	return OpenXRAndroidRaycastExtension.are_permissions_granted()
+
+
+# Callback from "menu3d_group"
 func update_menu(menu3d: Menu3D, menu_stack_item: Menu3D.MenuStackItem):
 	if menu_stack_item.current_menu != Menu3D.MENU3D_MAIN:
 		return

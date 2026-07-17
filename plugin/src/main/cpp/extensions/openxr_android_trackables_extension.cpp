@@ -115,11 +115,7 @@ void OpenXRAndroidTrackablesExtension::_on_instance_created(uint64_t p_instance)
 }
 
 void OpenXRAndroidTrackablesExtension::_on_session_created(uint64_t p_session_instance) {
-	if (!available) {
-		return;
-	}
-
-	{
+	if (is_trackables_supported()) {
 		uint32_t trackable_type_count_output = 0;
 		XrInstance xr_instance = (XrInstance)get_openxr_api()->get_instance();
 		XrSystemId xr_system_id = (XrSystemId)get_openxr_api()->get_system_id();
@@ -162,7 +158,7 @@ void OpenXRAndroidTrackablesExtension::_on_session_created(uint64_t p_session_in
 		}
 	}
 
-	{
+	if (is_anchors_supported()) {
 		uint32_t trackable_type_count_output = 0;
 		XrInstance xr_instance = (XrInstance)get_openxr_api()->get_instance();
 		XrSystemId xr_system_id = (XrSystemId)get_openxr_api()->get_system_id();
@@ -205,21 +201,19 @@ void OpenXRAndroidTrackablesExtension::_on_session_created(uint64_t p_session_in
 		}
 	}
 
-	// assume unavailable until the permission is granted (see _on_state_focused())
-	available = false;
-	check_for_permissions = true;
+	// wait for _on_state_focused() to correctly set permissions_granted
+	permissions_granted = false;
 }
 
 void OpenXRAndroidTrackablesExtension::_on_state_focused() {
-	if (!available && !check_for_permissions) {
+	// The permissions are required for both, so still check permissions if at least one of them is
+	// supported
+	if (!is_trackables_supported() && !is_anchors_supported()) {
 		return;
 	}
 
-	OS *os = OS::get_singleton();
-	ERR_FAIL_NULL(os);
-
-	if (os->get_name() != "Android") {
-		available = true;
+	if (!OpenXRUtilities::supports_runtime_permissions()) {
+		permissions_granted = true;
 		return;
 	}
 
@@ -234,19 +228,19 @@ void OpenXRAndroidTrackablesExtension::_on_state_focused() {
 	// NOTE: depending on the app's manifest, it may be restarted if permissions are removed or
 	//       enabled
 
-	// assume unavailable until the permission is granted
-	available = false;
+	OS *os = OS::get_singleton();
+	ERR_FAIL_NULL(os);
 
 	PackedStringArray granted_permissions = os->get_granted_permissions();
-	available = granted_permissions.has("android.permission.SCENE_UNDERSTANDING_COARSE") || granted_permissions.has("android.permission.SCENE_UNDERSTANDING_FINE");
+	permissions_granted = granted_permissions.has("android.permission.SCENE_UNDERSTANDING_COARSE") || granted_permissions.has("android.permission.SCENE_UNDERSTANDING_FINE");
 
-	if (!available) {
-		WARN_PRINT("OpenXR: XR_ANDROID_trackables requires android.permission.SCENE_UNDERSTANDING_COARSE or android.permission.SCENE_UNDERSTANDING_FINE; waiting for one of them to be granted before enabling");
+	if (!permissions_granted) {
+		WARN_PRINT("OpenXR: XR_ANDROID_trackables requires android.permission.SCENE_UNDERSTANDING_COARSE or android.permission.SCENE_UNDERSTANDING_FINE; waiting for either permission to be granted");
 	}
 }
 
 void OpenXRAndroidTrackablesExtension::_on_process() {
-	if (!available) {
+	if (!permissions_granted) {
 		return;
 	}
 
@@ -284,16 +278,10 @@ void OpenXRAndroidTrackablesExtension::set_plane_tracker_discovery_cooldown(int 
 }
 
 void OpenXRAndroidTrackablesExtension::discover_plane_trackers(bool p_update_trackers) {
-	if (!available) {
-		return;
-	}
+	ERR_FAIL_COND(!is_trackables_supported() || !permissions_granted);
 
 	plane_trackable_tracker = get_or_create_plane_xrtrackable_tracker();
-	if (plane_trackable_tracker == XR_NULL_HANDLE) {
-		check_for_permissions = false;
-		available = false;
-		return;
-	}
+	ERR_FAIL_COND(plane_trackable_tracker == XR_NULL_HANDLE);
 
 	find_and_update_all_trackers(plane_trackable_tracker, XR_TRACKABLE_TYPE_PLANE_ANDROID, p_update_trackers, current_plane_trackables);
 }
@@ -397,6 +385,8 @@ void OpenXRAndroidTrackablesExtension::maybe_destroy_trackable_tracker(XrTrackab
 
 Ref<OpenXRAndroidAnchorTracker> OpenXRAndroidTrackablesExtension::create_anchor_tracker(const Transform3D &p_pose, Ref<OpenXRAndroidTrackableTracker> p_tracker) {
 	Ref<OpenXRAndroidAnchorTracker> ret{};
+	ERR_FAIL_COND_V(!is_anchors_supported() || !permissions_granted, ret);
+
 	if (!can_create_more_anchors()) {
 		UtilityFunctions::printerr("OpenXR: Unable to create more anchor trackers");
 		return ret;
@@ -456,6 +446,8 @@ Ref<OpenXRAndroidAnchorTracker> OpenXRAndroidTrackablesExtension::xrcreate_ancho
 }
 
 void OpenXRAndroidTrackablesExtension::destroy_anchor_tracker(Ref<OpenXRAndroidAnchorTracker> p_anchor_tracker) {
+	ERR_FAIL_COND(!is_anchors_supported());
+
 	if (p_anchor_tracker.is_null()) {
 		return;
 	}
@@ -520,6 +512,8 @@ void OpenXRAndroidTrackablesExtension::set_anchor_tracker_update_cooldown(int p_
 }
 
 void OpenXRAndroidTrackablesExtension::update_anchor_trackers() {
+	ERR_FAIL_COND(!is_anchors_supported() || !permissions_granted);
+
 	for (const auto &[xrspace, anchor_tracker] : current_anchor_trackers) {
 		if (anchor_tracker.is_null()) {
 			continue;
@@ -535,6 +529,10 @@ bool OpenXRAndroidTrackablesExtension::can_create_more_anchors() const {
 
 bool OpenXRAndroidTrackablesExtension::is_anchors_supported() const {
 	return is_trackables_supported() && system_trackables_properties.supportsAnchor == XR_TRUE;
+}
+
+bool OpenXRAndroidTrackablesExtension::are_permissions_granted() const {
+	return permissions_granted;
 }
 
 bool OpenXRAndroidTrackablesExtension::is_trackables_supported() const {
@@ -554,6 +552,7 @@ void OpenXRAndroidTrackablesExtension::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("can_create_more_anchors"), &OpenXRAndroidTrackablesExtension::can_create_more_anchors);
 	ClassDB::bind_method(D_METHOD("is_trackables_supported"), &OpenXRAndroidTrackablesExtension::is_trackables_supported);
 	ClassDB::bind_method(D_METHOD("is_anchors_supported"), &OpenXRAndroidTrackablesExtension::is_anchors_supported);
+	ClassDB::bind_method(D_METHOD("are_permissions_granted"), &OpenXRAndroidTrackablesExtension::are_permissions_granted);
 }
 
 bool OpenXRAndroidTrackablesExtension::_initialize_openxr_android_trackables_extension() {
@@ -611,7 +610,7 @@ Ref<OpenXRAndroidTrackableTracker> OpenXRAndroidTrackablesExtension::_get_or_cre
 }
 
 void OpenXRAndroidTrackablesExtension::_on_process_anchors() {
-	if (anchor_update_cooldown < 0) {
+	if (!is_anchors_supported() || anchor_update_cooldown < 0) {
 		return;
 	}
 
@@ -625,7 +624,7 @@ void OpenXRAndroidTrackablesExtension::_on_process_anchors() {
 }
 
 void OpenXRAndroidTrackablesExtension::_on_process_plane_trackers() {
-	if (plane_trackable_discovery_cooldown < 0) {
+	if (!is_trackables_supported() || plane_trackable_discovery_cooldown < 0) {
 		return;
 	}
 

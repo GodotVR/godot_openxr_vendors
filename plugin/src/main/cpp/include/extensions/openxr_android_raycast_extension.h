@@ -62,6 +62,7 @@ public:
 
 	TypedArray<OpenXRAndroidHitResult> raycast(Array p_trackable_types, const Vector3 &p_origin, const Vector3 &p_trajectory, int p_max_results);
 	bool is_raycast_supported() const;
+	bool are_permissions_granted() const;
 
 protected:
 	static void _bind_methods();
@@ -73,7 +74,7 @@ private:
 
 	HashMap<String, bool *> request_extensions;
 	bool available = false;
-	bool check_for_permissions = false;
+	bool permissions_granted = false;
 	Vector<TrackableType> supported_trackable_types;
 	XrTrackableTrackerANDROID depth_trackable_tracker = XR_NULL_HANDLE;
 

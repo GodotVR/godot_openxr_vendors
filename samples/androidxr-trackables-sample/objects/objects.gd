@@ -10,6 +10,11 @@ func _ready():
 	XRServer.tracker_removed.connect(_on_tracker_removed)
 
 
+# Callback from "menu3d_group"
+func are_permissions_granted() -> bool:
+	return OpenXRAndroidTrackablesObjectExtension.are_permissions_granted()
+
+
 func _on_tracker_added(tracker_name: StringName, _type: int):
 	var tracker: XRTracker = XRServer.get_tracker(tracker_name)
 
