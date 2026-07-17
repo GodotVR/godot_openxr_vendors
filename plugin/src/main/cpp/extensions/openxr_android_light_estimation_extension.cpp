@@ -30,6 +30,7 @@
 #include "extensions/openxr_android_light_estimation_extension.h"
 
 #include <godot_cpp/classes/open_xrapi_extension.hpp>
+#include <godot_cpp/classes/os.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
 
 using namespace godot;
@@ -103,6 +104,37 @@ void OpenXRAndroidLightEstimationExtension::_on_instance_created(uint64_t instan
 	}
 }
 
+void OpenXRAndroidLightEstimationExtension::_on_state_focused() {
+	if (!is_light_estimation_supported()) {
+		return;
+	}
+
+	OS *os = OS::get_singleton();
+	ERR_FAIL_NULL(os);
+
+	if (os->get_name() != "Android") {
+		permissions_granted = true;
+		return;
+	}
+
+	// always check for permissions for every focused event, since this is possible:
+	// 1: the app launched, but required permissions are not available
+	// 2: the user opens Android settings app and enables the permission (pauses this app)
+	// 3: the user switches back to this app (resumes and focuses this app)
+	//
+	// NOTE: the MainLoop's "on_request_permissions_result" signal is not always called, which is why
+	//       we are always checking here.
+	// NOTE: depending on the app's manifest, it may be restarted if permissions are removed or
+	//       enabled
+
+	PackedStringArray granted_permissions = os->get_granted_permissions();
+	permissions_granted = granted_permissions.has("android.permission.SCENE_UNDERSTANDING_COARSE");
+
+	if (!permissions_granted) {
+		WARN_PRINT("OpenXR: XR_ANDROID_light_estimation requires android.permission.SCENE_UNDERSTANDING_COARSE; waiting for it to be granted");
+	}
+}
+
 void OpenXRAndroidLightEstimationExtension::_on_instance_destroyed() {
 	cleanup();
 }
@@ -139,7 +171,11 @@ Dictionary OpenXRAndroidLightEstimationExtension::_get_requested_extensions(uint
 bool OpenXRAndroidLightEstimationExtension::start_light_estimation() {
 	ERR_FAIL_COND_V(!is_light_estimation_supported(), false);
 
-	if (light_estimator != XR_NULL_HANDLE) {
+	if (!permissions_granted) {
+		return false;
+	}
+
+	if (is_light_estimation_started()) {
 		return true;
 	}
 
@@ -159,7 +195,7 @@ bool OpenXRAndroidLightEstimationExtension::start_light_estimation() {
 }
 
 void OpenXRAndroidLightEstimationExtension::stop_light_estimation() {
-	if (light_estimator == XR_NULL_HANDLE) {
+	if (!is_light_estimation_started()) {
 		return;
 	}
 

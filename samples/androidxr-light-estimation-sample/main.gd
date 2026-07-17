@@ -33,12 +33,10 @@ const SH_FACTORS = [
 
 
 func _ready() -> void:
-	get_tree().on_request_permissions_result.connect(_on_request_permissions_result)
-
 	OS.request_permissions()
 
 	openxr_interface = XRServer.find_interface("OpenXR")
-	openxr_interface.session_begun.connect(_on_openxr_session_begun)
+	openxr_interface.session_focussed.connect(_on_openxr_session_focused)
 
 	OpenXRAndroidLightEstimationExtension.light_estimate_types = OpenXRAndroidLightEstimationExtension.LIGHT_ESTIMATE_TYPE_ALL
 
@@ -47,11 +45,7 @@ func _ready() -> void:
 	menu.ambient_light_mode_changed.connect(_on_ambient_light_mode_changed)
 
 
-func _on_openxr_session_begun() -> void:
-	start_light_estimation()
-
-
-func start_light_estimation() -> void:
+func _on_openxr_session_focused() -> void:
 	if not OpenXRAndroidLightEstimationExtension.is_light_estimation_supported():
 		push_error("Light estimation is unsupported")
 		return
@@ -60,11 +54,6 @@ func start_light_estimation() -> void:
 		print("Light estimation started")
 	else:
 		push_error("Unable to start light estimation")
-
-
-func _on_request_permissions_result(p_permission: String, p_granted: bool) -> void:
-	if p_permission == "android.permission.SCENE_UNDERSTANDING_COARSE" and p_granted:
-		start_light_estimation()
 
 
 func _on_directional_light_mode_changed(p_mode: int) -> void:
