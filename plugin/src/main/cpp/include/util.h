@@ -133,4 +133,5 @@ void xrMatrix4x4f_to_godot_projection(XrMatrix4x4f *m, godot::Projection &p);
 godot::Transform3D xrPosef_to_godot_transform3d(const XrPosef &pose);
 godot::Vector3 XrVector3f_to_godot_vector3(const XrVector3f &xr_vector3);
 XrUuid string_name_to_uuid(const godot::StringName &p_uuid_str);
+bool supports_runtime_permissions();
 }; //namespace OpenXRUtilities

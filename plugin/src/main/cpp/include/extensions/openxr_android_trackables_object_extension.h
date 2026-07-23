@@ -58,6 +58,7 @@ public:
 	virtual void _on_session_destroyed() override;
 
 	bool is_trackables_object_supported() const;
+	bool are_permissions_granted() const;
 	void set_default_object_context_enabled(bool p_enabled);
 	void set_object_tracker_discovery_cooldown(int p_cooldown);
 	void discover_object_trackers(bool p_update_trackers, RID p_object_context = RID());
@@ -80,7 +81,7 @@ private:
 
 	HashMap<String, bool *> request_extensions;
 	bool available = false;
-	bool check_for_permissions = false;
+	bool permissions_granted = false;
 
 	int object_trackable_discovery_cooldown = 60;
 	int object_trackable_discovery_cooldown_cur = 0;

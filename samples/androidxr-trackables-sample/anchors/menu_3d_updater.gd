@@ -40,6 +40,11 @@ func _process(_delta: float) -> void:
 
 
 # Callback from "menu3d_group"
+func are_permissions_granted() -> bool:
+	return OpenXRAndroidDeviceAnchorPersistenceExtension.are_permissions_granted()
+
+
+# Callback from "menu3d_group"
 func update_menu(menu3d: Menu3D, menu_stack_item: Menu3D.MenuStackItem):
 	if _menu3d == null || _menu2d == null:
 		_menu3d = menu3d

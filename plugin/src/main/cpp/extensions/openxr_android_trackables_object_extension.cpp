@@ -93,21 +93,17 @@ void OpenXRAndroidTrackablesObjectExtension::_on_instance_created(uint64_t p_ins
 		return;
 	}
 
-	// assume unavailable until the permission is granted (see _on_state_focused())
-	available = false;
-	check_for_permissions = true;
+	// wait for _on_state_focused() to correctly set permissions_granted
+	permissions_granted = false;
 }
 
 void OpenXRAndroidTrackablesObjectExtension::_on_state_focused() {
-	if (!available && !check_for_permissions) {
+	if (!is_trackables_object_supported()) {
 		return;
 	}
 
-	OS *os = OS::get_singleton();
-	ERR_FAIL_NULL(os);
-
-	if (os->get_name() != "Android") {
-		available = true;
+	if (!OpenXRUtilities::supports_runtime_permissions()) {
+		permissions_granted = true;
 		return;
 	}
 
@@ -122,19 +118,19 @@ void OpenXRAndroidTrackablesObjectExtension::_on_state_focused() {
 	// NOTE: depending on the app's manifest, it may be restarted if permissions are removed or
 	//       enabled
 
-	// assume unavailable until the permission is granted
-	available = false;
+	OS *os = OS::get_singleton();
+	ERR_FAIL_NULL(os);
 
 	PackedStringArray granted_permissions = os->get_granted_permissions();
-	available = granted_permissions.has("android.permission.SCENE_UNDERSTANDING_COARSE") || granted_permissions.has("android.permission.SCENE_UNDERSTANDING_FINE");
+	permissions_granted = granted_permissions.has("android.permission.SCENE_UNDERSTANDING_COARSE") || granted_permissions.has("android.permission.SCENE_UNDERSTANDING_FINE");
 
-	if (!available) {
-		WARN_PRINT("OpenXR: XR_ANDROID_trackables_object requires android.permission.SCENE_UNDERSTANDING_COARSE or android.permission.SCENE_UNDERSTANDING_FINE; waiting for one of them to be granted before enabling");
+	if (!permissions_granted) {
+		WARN_PRINT("OpenXR: XR_ANDROID_trackables_object requires android.permission.SCENE_UNDERSTANDING_COARSE or android.permission.SCENE_UNDERSTANDING_FINE; waiting for one of them to be granted");
 	}
 }
 
 void OpenXRAndroidTrackablesObjectExtension::_on_process() {
-	if (!available || object_trackable_discovery_cooldown < 0) {
+	if (!permissions_granted || !is_trackables_object_supported() || object_trackable_discovery_cooldown < 0) {
 		return;
 	}
 
@@ -167,6 +163,10 @@ bool OpenXRAndroidTrackablesObjectExtension::is_trackables_object_supported() co
 	return available;
 }
 
+bool OpenXRAndroidTrackablesObjectExtension::are_permissions_granted() const {
+	return permissions_granted;
+}
+
 void OpenXRAndroidTrackablesObjectExtension::set_default_object_context_enabled(bool p_enabled) {
 	if (default_object_context_enabled == p_enabled) {
 		return;
@@ -185,6 +185,8 @@ void OpenXRAndroidTrackablesObjectExtension::set_object_tracker_discovery_cooldo
 }
 
 void OpenXRAndroidTrackablesObjectExtension::discover_object_trackers(bool p_update_trackers, RID p_object_context) {
+	ERR_FAIL_COND(!is_trackables_object_supported() || !permissions_granted);
+
 	OpenXRAndroidTrackablesExtension *wrapper = OpenXRAndroidTrackablesExtension::get_singleton();
 	ERR_FAIL_NULL(wrapper);
 
@@ -206,6 +208,8 @@ void OpenXRAndroidTrackablesObjectExtension::discover_object_trackers(bool p_upd
 }
 
 RID OpenXRAndroidTrackablesObjectExtension::get_default_object_context() {
+	ERR_FAIL_COND_V(!is_trackables_object_supported() || !permissions_granted, RID());
+
 	OpenXRAndroidTrackablesExtension *wrapper = OpenXRAndroidTrackablesExtension::get_singleton();
 	ERR_FAIL_NULL_V(wrapper, RID());
 
@@ -218,6 +222,8 @@ RID OpenXRAndroidTrackablesObjectExtension::get_default_object_context() {
 }
 
 RID OpenXRAndroidTrackablesObjectExtension::create_object_context(Array p_object_labels) {
+	ERR_FAIL_COND_V(!is_trackables_object_supported() || !permissions_granted, RID());
+
 	LocalVector<XrObjectLabelANDROID> active_labels;
 	for (int i = 0; i < p_object_labels.size(); ++i) {
 		switch ((int)p_object_labels[i]) {
@@ -282,6 +288,7 @@ void OpenXRAndroidTrackablesObjectExtension::free_object_context(RID p_object_co
 
 void OpenXRAndroidTrackablesObjectExtension::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("is_trackables_object_supported"), &OpenXRAndroidTrackablesObjectExtension::is_trackables_object_supported);
+	ClassDB::bind_method(D_METHOD("are_permissions_granted"), &OpenXRAndroidTrackablesObjectExtension::are_permissions_granted);
 	ClassDB::bind_method(D_METHOD("set_default_object_context_enabled", "enabled"), &OpenXRAndroidTrackablesObjectExtension::set_default_object_context_enabled);
 	ClassDB::bind_method(D_METHOD("set_object_tracker_discovery_cooldown", "cooldown"), &OpenXRAndroidTrackablesObjectExtension::set_object_tracker_discovery_cooldown);
 	ClassDB::bind_method(D_METHOD("discover_object_trackers", "update_trackers", "object_context"), &OpenXRAndroidTrackablesObjectExtension::discover_object_trackers, DEFVAL(RID()));

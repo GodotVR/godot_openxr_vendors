@@ -88,6 +88,7 @@ public:
 
 	bool is_anchors_supported() const;
 	bool is_trackables_supported() const;
+	bool are_permissions_granted() const;
 
 	EXT_PROTO_XRRESULT_FUNC3(xrGetTrackablePlaneANDROID, (XrTrackableTrackerANDROID), trackableTracker, (const XrTrackableGetInfoANDROID *), getInfo, (XrTrackablePlaneANDROID *), planeOutput);
 	EXT_PROTO_XRRESULT_FUNC4(xrLocateSpace, (XrSpace), space, (XrSpace), baseSpace, (XrTime), time, (XrSpaceLocation *), location);
@@ -107,7 +108,7 @@ private:
 	// Init
 	HashMap<String, bool *> request_extensions;
 	bool available = false;
-	bool check_for_permissions = false;
+	bool permissions_granted = false;
 	XrSystemTrackablesPropertiesANDROID system_trackables_properties = {
 		XR_TYPE_SYSTEM_TRACKABLES_PROPERTIES_ANDROID, // type
 		nullptr, // next

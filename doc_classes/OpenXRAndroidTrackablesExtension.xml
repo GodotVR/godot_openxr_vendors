@@ -9,6 +9,12 @@
 	<tutorials>
 	</tutorials>
 	<methods>
+		<method name="are_permissions_granted" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Whether the required Android permissions for this extension are granted or not.
+			</description>
+		</method>
 		<method name="can_create_more_anchors" qualifiers="const">
 			<return type="bool" />
 			<description>
