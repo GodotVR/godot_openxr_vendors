@@ -105,5 +105,9 @@ private:
 	bool fb_render_model_ext = false;
 	bool paths_fetched = false;
 	bool openxr_session_active = false;
-	XrSystemRenderModelPropertiesFB system_render_model_properties;
+	XrSystemRenderModelPropertiesFB system_render_model_properties = {
+		XR_TYPE_SYSTEM_RENDER_MODEL_PROPERTIES_FB, // type
+		nullptr, // next
+		XR_FALSE, // supportsRenderModelLoading
+	};
 };

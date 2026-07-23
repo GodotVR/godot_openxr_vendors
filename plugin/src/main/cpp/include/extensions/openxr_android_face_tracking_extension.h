@@ -96,7 +96,11 @@ private:
 	HashMap<String, bool *> request_extensions;
 	bool available = false;
 
-	XrSystemFaceTrackingPropertiesANDROID face_tracking_properties;
+	XrSystemFaceTrackingPropertiesANDROID face_tracking_properties = {
+		XR_TYPE_SYSTEM_FACE_TRACKING_PROPERTIES_ANDROID, // type
+		nullptr, // next
+		XR_FALSE, // supportsFaceTracking
+	};
 	XrFaceTrackerANDROID face_tracker = XR_NULL_HANDLE;
 
 	// Godot XRFaceTracker instance.

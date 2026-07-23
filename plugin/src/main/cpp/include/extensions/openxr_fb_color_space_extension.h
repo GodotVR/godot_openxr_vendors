@@ -110,6 +110,7 @@ private:
 	XrSystemColorSpacePropertiesFB system_color_space_properties = {
 		XR_TYPE_SYSTEM_COLOR_SPACE_PROPERTIES_FB, // type
 		nullptr, // next
+		XR_COLOR_SPACE_UNMANAGED_FB, // colorSpace
 	};
 
 	Vector<XrColorSpaceFB> supported_color_spaces;

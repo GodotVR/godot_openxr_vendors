@@ -73,9 +73,7 @@ Dictionary OpenXRAndroidFaceTrackingExtension::_get_requested_extensions(uint64_
 
 uint64_t OpenXRAndroidFaceTrackingExtension::_set_system_properties_and_get_next_pointer(void *p_next_pointer) {
 	if (available) {
-		face_tracking_properties.type = XR_TYPE_SYSTEM_FACE_TRACKING_PROPERTIES_ANDROID;
 		face_tracking_properties.next = p_next_pointer;
-		face_tracking_properties.supportsFaceTracking = XR_FALSE;
 		return reinterpret_cast<uint64_t>(&face_tracking_properties);
 	}
 

@@ -103,7 +103,7 @@ private:
 	XrSystemBodyTrackingPropertiesFB system_body_tracking_properties = {
 		XR_TYPE_SYSTEM_BODY_TRACKING_PROPERTIES_FB, // type
 		nullptr, // next
-		false, // supportsBodyTracking
+		XR_FALSE, // supportsBodyTracking
 	};
 
 	// XR_FB_body_tracking handle.
@@ -119,10 +119,10 @@ public:
 private:
 	bool meta_body_tracking_full_body_ext = false;
 
-	XrSystemPropertiesBodyTrackingFullBodyMETA system_body_tracking_full_body_properties{
+	XrSystemPropertiesBodyTrackingFullBodyMETA system_body_tracking_full_body_properties = {
 		XR_TYPE_SYSTEM_PROPERTIES_BODY_TRACKING_FULL_BODY_META, // type
 		nullptr, // next
-		false, // supportsFullBodyTracking
+		XR_FALSE, // supportsFullBodyTracking
 	};
 
 // @todo GH Issue 304: Remove check for meta headers when feature becomes part of OpenXR spec.
@@ -153,7 +153,7 @@ private:
 	XrSystemPropertiesBodyTrackingFidelityMETA system_body_tracking_fidelity_properties = {
 		XR_TYPE_SYSTEM_PROPERTIES_BODY_TRACKING_FIDELITY_META, // type
 		nullptr, // next
-		false, // supportsBodyTrackingFidelity
+		XR_FALSE, // supportsBodyTrackingFidelity
 	};
 
 	XrBodyTrackingFidelityStatusMETA body_tracking_fidelity_status = {
@@ -193,7 +193,7 @@ private:
 	XrSystemPropertiesBodyTrackingCalibrationMETA system_body_tracking_calibration_properties = {
 		XR_TYPE_SYSTEM_PROPERTIES_BODY_TRACKING_CALIBRATION_META, // type
 		nullptr, // next
-		false, // supportsHeightOverride
+		XR_FALSE, // supportsHeightOverride
 	};
 
 	XrBodyTrackingCalibrationStatusMETA body_tracking_calibration_status = {

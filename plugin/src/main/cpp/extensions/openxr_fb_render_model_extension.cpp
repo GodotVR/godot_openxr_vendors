@@ -66,9 +66,7 @@ void OpenXRFbRenderModelExtension::cleanup() {
 }
 
 uint64_t OpenXRFbRenderModelExtension::_set_system_properties_and_get_next_pointer(void *next_pointer) {
-	system_render_model_properties.type = XR_TYPE_SYSTEM_RENDER_MODEL_PROPERTIES_FB;
 	system_render_model_properties.next = next_pointer;
-	system_render_model_properties.supportsRenderModelLoading = false;
 	return reinterpret_cast<uint64_t>(&system_render_model_properties);
 }
 

@@ -82,7 +82,7 @@ private:
 	XrSystemBoundaryVisibilityPropertiesMETA boundary_visibility_properties = {
 		XR_TYPE_SYSTEM_BOUNDARY_VISIBILITY_PROPERTIES_META, // type
 		nullptr, // next
-		false // supportsBoundaryVisibility
+		XR_FALSE // supportsBoundaryVisibility
 	};
 
 	XrBoundaryVisibilityMETA current_boundary_visibility = XR_BOUNDARY_VISIBILITY_NOT_SUPPRESSED_META;

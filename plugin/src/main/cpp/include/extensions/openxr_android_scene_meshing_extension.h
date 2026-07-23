@@ -82,7 +82,7 @@ private:
 	XrSystemSceneMeshingPropertiesANDROID scene_meshing_properties = {
 		XR_TYPE_SYSTEM_SCENE_MESHING_PROPERTIES_ANDROID, // type
 		nullptr, // next
-		false, // supportsSceneMeshing
+		XR_FALSE, // supportsSceneMeshing
 	};
 
 	EXT_PROTO_XRRESULT_FUNC5(xrEnumerateSupportedSemanticLabelSetsANDROID, (XrInstance), instance, (XrSystemId), systemId, (uint32_t), supportedSemanticLabelSetsInputCapacity, (uint32_t *), supportedSemanticLabelSetsOutputCount, (XrSceneMeshSemanticLabelSetANDROID *), supportedSemanticLabelSets);

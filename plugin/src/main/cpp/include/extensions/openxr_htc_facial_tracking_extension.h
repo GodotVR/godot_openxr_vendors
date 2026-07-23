@@ -93,7 +93,12 @@ private:
 	bool xr_face_tracker_registered = false;
 
 	// OpenXR system properties struct for XR_HTC_facial_tracking.
-	XrSystemFacialTrackingPropertiesHTC system_facial_tracking_properties;
+	XrSystemFacialTrackingPropertiesHTC system_facial_tracking_properties = {
+		XR_TYPE_SYSTEM_FACIAL_TRACKING_PROPERTIES_HTC, // type
+		nullptr, // next
+		XR_FALSE, // supportEyeFacialTracking
+		XR_FALSE, // supportLipFacialTracking
+	};
 
 	// XR_HTC_facial_tracking handle for eye-tracking
 	XrFacialTrackerHTC facial_tracking_eye = XR_NULL_HANDLE;

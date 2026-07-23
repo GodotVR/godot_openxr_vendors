@@ -71,9 +71,7 @@ Dictionary OpenXRAndroidEyeTrackingExtension::_get_requested_extensions(uint64_t
 
 uint64_t OpenXRAndroidEyeTrackingExtension::_set_system_properties_and_get_next_pointer(void *p_next_pointer) {
 	if (available) {
-		eye_tracking_properties.type = XR_TYPE_SYSTEM_EYE_TRACKING_PROPERTIES_ANDROID;
 		eye_tracking_properties.next = p_next_pointer;
-		eye_tracking_properties.supportsEyeTracking = XR_FALSE;
 		return reinterpret_cast<uint64_t>(&eye_tracking_properties);
 	}
 
