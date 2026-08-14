@@ -180,6 +180,23 @@ public:
 			Recommendation(p_title, p_description, p_button_text, p_alert_type, p_project_type, p_vendor_type, p_requires_restart), setting_path(p_setting_path), recommended_value(p_recommended_value) {}
 };
 
+class MobileRendererProjectSettingRecommendation : public SimpleProjectSettingRecommendation {
+public:
+	bool is_recommendation_applied() override {
+		ProjectSettings *project_settings = ProjectSettings::get_singleton();
+		ERR_FAIL_NULL_V(project_settings, false);
+
+		// Only show this setting when the mobile renderer is selected.
+		if (project_settings->get("rendering/renderer/rendering_method.mobile") != "mobile") {
+			return true;
+		}
+
+		return project_settings->get(setting_path) == recommended_value;
+	}
+
+	using SimpleProjectSettingRecommendation::SimpleProjectSettingRecommendation;
+};
+
 class ExportSettingRecommendation : public Recommendation {
 public:
 	bool is_recommendation_applied() override {
@@ -507,6 +524,12 @@ void XrProjectSetupDialog::_notification(uint32_t p_what) {
 					"\n       - ARM64 architecture";
 
 			recommendations.push_back(memnew(ExportSettingRecommendation("Vavle Export", valve_export_preset_description, "Open", ALERT_TYPE_ERROR, PROJECT_TYPE_ANY, VENDOR_TYPE_VALVE, false, { valve_android_export_preset_values, valve_linux_export_preset_values })));
+
+			// Recommend use of Mobile renderer if using Godot 4.7 or later.
+			if (godot::gdextension_interface::godot_version.major >= 4 && godot::gdextension_interface::godot_version.minor >= 7) {
+				recommendations.push_back(memnew(SimpleProjectSettingRecommendation("Mobile Renderer", "Recommended to use the Vulkan mobile renderer on mobile devices", "Apply", ALERT_TYPE_WARNING, PROJECT_TYPE_ANY, VENDOR_TYPE_ANY, true, "rendering/renderer/rendering_method.mobile", "mobile")));
+				recommendations.push_back(memnew(MobileRendererProjectSettingRecommendation("Thread Model", "Recommended to use separate thread model with the mobile renderer", "Apply", ALERT_TYPE_WARNING, PROJECT_TYPE_ANY, VENDOR_TYPE_ANY, false, "rendering/driver/threads/thread_model", 2)));
+			}
 
 			// Vendor neutral general warnings.
 			recommendations.push_back(memnew(BootSplashRecommendation("Boot Splash", "No valid boot splash image was found", "Open", ALERT_TYPE_WARNING, PROJECT_TYPE_ANY, VENDOR_TYPE_ANY, false)));
