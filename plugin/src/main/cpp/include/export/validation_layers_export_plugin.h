@@ -54,21 +54,9 @@ public:
 	TypedArray<Dictionary> _get_export_options(const Ref<EditorExportPlatform> &platform) const override;
 
 	PackedStringArray _get_android_dependencies(const Ref<EditorExportPlatform> &platform, bool debug) const override;
-	PackedStringArray _get_android_dependencies_maven_repos(const Ref<EditorExportPlatform> &platform, bool debug) const override;
-	PackedStringArray _get_android_libraries(const Ref<EditorExportPlatform> &platform, bool debug) const override;
 
 private:
-	/// Path to the Android library aar file. If the return file path is not available, we
-	/// fall back to the maven central dependency.
-	String _get_android_aar_file_path(bool debug) const;
-
-	bool _is_android_aar_file_available(bool debug) const {
-		return FileAccess::file_exists(_get_android_aar_file_path(debug));
-	}
-
 	bool _is_enabled() const {
 		return (bool)get_option("xr_features/enable_openxr_validation_layers");
 	}
-
-	String _get_version() const;
 };

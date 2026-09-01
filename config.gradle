@@ -37,10 +37,6 @@ ext {
         return releaseVersion
     }
 
-    getValidationLayersVersion = { ->
-        return "${versions.openxrVersion}-${getReleaseVersion()}"
-    }
-
     shouldNotStrip = { ->
         return project.hasProperty("doNotStrip")
     }

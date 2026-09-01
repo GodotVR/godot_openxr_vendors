@@ -23,4 +23,3 @@ dependencyResolutionManagement {
 }
 rootProject.name = "GodotOpenXRVendors"
 include ':plugin'
-include ':validation_layers'

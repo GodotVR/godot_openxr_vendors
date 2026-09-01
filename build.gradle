@@ -34,7 +34,6 @@ task clean(type: Delete) {
     dependsOn 'cleanScons'
 
     dependsOn ':plugin:clean'
-    dependsOn ':validation_layers:clean'
 }
 
 /**

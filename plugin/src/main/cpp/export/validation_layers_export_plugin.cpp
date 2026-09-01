@@ -85,56 +85,19 @@ TypedArray<Dictionary> OpenXRValidationLayersEditorExportPlugin::_get_export_opt
 	return export_options;
 }
 
-PackedStringArray OpenXRValidationLayersEditorExportPlugin::_get_android_libraries(const Ref<EditorExportPlatform> &platform, bool debug) const {
-	PackedStringArray dependencies;
-	if (!_supports_platform(platform)) {
-		return dependencies;
-	}
-
-	if (_is_enabled() && _is_android_aar_file_available(debug)) {
-		dependencies.append(_get_android_aar_file_path(debug));
-	}
-
-	return dependencies;
-}
-
 PackedStringArray OpenXRValidationLayersEditorExportPlugin::_get_android_dependencies(const Ref<godot::EditorExportPlatform> &platform, bool debug) const {
 	PackedStringArray dependencies;
 	if (!_supports_platform(platform)) {
 		return dependencies;
 	}
 
-	if (_is_enabled() && !_is_android_aar_file_available(debug)) {
-		dependencies.append("org.godotengine:openxr-validation-layers:" + _get_version());
+	if (_is_enabled()) {
+		String version = vformat("%d.%d.%d",
+				XR_VERSION_MAJOR(XR_CURRENT_API_VERSION),
+				XR_VERSION_MINOR(XR_CURRENT_API_VERSION),
+				XR_VERSION_PATCH(XR_CURRENT_API_VERSION));
+		dependencies.append("org.khronos.openxr:apilayer_core_validation:" + version);
+		dependencies.append("org.khronos.openxr:apilayer_best_practices_validation:" + version);
 	}
 	return dependencies;
-}
-
-PackedStringArray OpenXRValidationLayersEditorExportPlugin::_get_android_dependencies_maven_repos(const Ref<godot::EditorExportPlatform> &platform, bool debug) const {
-	PackedStringArray maven_repos;
-	if (!_supports_platform(platform)) {
-		return maven_repos;
-	}
-
-	if (_is_enabled() && !_is_android_aar_file_available(debug) && !_get_version().to_lower().ends_with("-stable")) {
-		maven_repos.append("https://central.sonatype.com/repository/maven-snapshots/");
-	}
-	return maven_repos;
-}
-
-String OpenXRValidationLayersEditorExportPlugin::_get_android_aar_file_path(bool debug) const {
-	const String debug_label = debug ? "debug" : "release";
-	return "res://addons/godotopenxrvendors/.bin/android/" + debug_label + "/openxr-validation-layers-" + debug_label + ".aar";
-}
-
-String OpenXRValidationLayersEditorExportPlugin::_get_version() const {
-	String version = vformat("%d.%d.%d-%s",
-			XR_VERSION_MAJOR(XR_CURRENT_API_VERSION),
-			XR_VERSION_MINOR(XR_CURRENT_API_VERSION),
-			XR_VERSION_PATCH(XR_CURRENT_API_VERSION),
-			PLUGIN_VERSION);
-	if (!version.to_lower().ends_with("-stable") && !version.to_lower().ends_with("-snapshot")) {
-		version = version + "-SNAPSHOT";
-	}
-	return version;
 }
