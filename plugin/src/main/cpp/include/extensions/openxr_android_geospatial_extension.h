@@ -31,7 +31,6 @@
 
 #include <openxr/openxr.h>
 
-#include <androidxr/xr_android_geospatial.h>
 #include <godot_cpp/classes/open_xr_extension_wrapper.hpp>
 #include <godot_cpp/classes/open_xr_future_result.hpp>
 #include <godot_cpp/templates/hash_map.hpp>
