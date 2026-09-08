@@ -251,7 +251,7 @@ void OpenXRAndroidTrackablesExtension::_on_process() {
 void OpenXRAndroidTrackablesExtension::_on_session_destroyed() {
 	maybe_destroy_trackable_tracker(plane_trackable_tracker, current_plane_trackables);
 
-	HashMap<XrSpace, Ref<OpenXRAndroidAnchorTracker>> current_anchor_trackers_copy = current_anchor_trackers;
+	HashMap<XrSpace, Ref<OpenXRAndroidAnchorTracker>> current_anchor_trackers_copy(current_anchor_trackers);
 	for (const auto &[_, tracker] : current_anchor_trackers_copy) {
 		destroy_anchor_tracker(tracker);
 	}
@@ -328,7 +328,7 @@ void OpenXRAndroidTrackablesExtension::find_and_update_all_trackers(XrTrackableT
 	// Absent xrtrackables will remain in trackables_to_delete (and will be deleted later)
 	// New xrtrackables will be updated and added to the XRServer in _get_or_create_tracker_and_update()
 	// All found xrtrackables will be updated (when p_update_trackers is true)
-	HashMap<XrTrackableANDROID, Ref<OpenXRAndroidTrackableTracker>> trackables_to_delete = p_current_trackables;
+	HashMap<XrTrackableANDROID, Ref<OpenXRAndroidTrackableTracker>> trackables_to_delete(p_current_trackables);
 
 	if (0 < trackable_count_output) {
 		LocalVector<XrTrackableANDROID> xrtrackables{};

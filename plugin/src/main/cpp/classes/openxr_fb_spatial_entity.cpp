@@ -305,7 +305,7 @@ MeshInstance3D *OpenXRFbSpatialEntity::create_mesh_instance() const {
 		mesh_instance->set_mesh(plane_mesh);
 
 		Vector2 plane_center = bounding_box.get_center();
-		mesh_instance->rotate_x(Math_PI / 2.0);
+		mesh_instance->rotate_x(Math::PI / 2.0);
 		mesh_instance->set_position(Vector3(plane_center.x, plane_center.y, 0));
 	}
 
@@ -373,7 +373,7 @@ Node3D *OpenXRFbSpatialEntity::create_collision_shape() const {
 		collision_shape->set_shape(box_shape);
 
 		Vector2 plane_center = bounding_box.get_center();
-		collision_shape->rotate_x(Math_PI / 2.0);
+		collision_shape->rotate_x(Math::PI / 2.0);
 		collision_shape->set_position(Vector3(plane_center.x, plane_center.y, -(collision_shape_2d_thickness / 2.0)));
 
 		return collision_shape;
