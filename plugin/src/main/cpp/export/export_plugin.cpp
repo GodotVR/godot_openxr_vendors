@@ -136,6 +136,14 @@ String OpenXRVendorsEditorExportPlugin::_bool_to_string(bool p_value) const {
 	return p_value ? "true" : "false";
 }
 
+bool OpenXRVendorsEditorExportPlugin::_is_spatial_container_enabled() const {
+	Ref<EditorExportPreset> export_preset = get_export_preset();
+	if (export_preset.is_valid()) {
+		return (bool)export_preset->get_project_setting(SPATIAL_CONTAINER_ENABLED_SETTING_NAME);
+	}
+	return false;
+}
+
 String OpenXRVendorsEditorExportPlugin::_get_android_orientation_label(DisplayServer::ScreenOrientation screen_orientation) const {
 	switch (screen_orientation) {
 		case DisplayServer::SCREEN_PORTRAIT:
@@ -286,11 +294,14 @@ String OpenXRVendorsEditorExportPlugin::_get_android_manifest_activity_element_c
 	String contents = R"(
 				<intent-filter>
 					<action android:name="android.intent.action.MAIN" />
-
+)";
+	if (!_is_spatial_container_enabled()) {
+		contents += R"(
 					<!-- OpenXR category tag to indicate the activity starts in an immersive OpenXR mode.
 					See https://registry.khronos.org/OpenXR/specs/1.0/html/xrspec.html#android-runtime-category. -->
 					<category android:name="org.khronos.openxr.intent.category.IMMERSIVE_HMD" />
 )";
+	}
 
 	contents += _get_common_activity_intent_filter_contents();
 	contents += R"(

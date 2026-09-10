@@ -1,0 +1,41 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="Spatial Container Sample"
+run/main_scene="res://main.tscn"
+config/features=PackedStringArray("4.8", "Mobile")
+
+[debug]
+
+settings/stdout/verbose_stdout=true
+
+[editor_plugins]
+
+enabled=PackedStringArray()
+
+[rendering]
+
+renderer/rendering_method="mobile"
+textures/vram_compression/import_etc2_astc=true
+environment/defaults/default_clear_color=Color(0, 0, 0, 0)
+
+[xr]
+
+openxr/enabled=true
+openxr/reference_space=2
+openxr/environment_blend_mode=2
+openxr/foveation_level=3
+openxr/foveation_dynamic=true
+openxr/extensions/hand_interaction_profile=true
+openxr/extensions/spatial_container/enabled=true
+shaders/enabled=true
+openxr/extensions/vendor_performance_metrics=true

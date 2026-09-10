@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://debi32dnmrjov"]
+
+[ext_resource type="Script" uid="uid://c1pqa1ner1g86" path="res://main.gd" id="1_h2yge"]
+[ext_resource type="PackedScene" uid="uid://cie2u1jpm51e7" path="res://godot_robot.tscn" id="2_0xm2m"]
+
+[sub_resource type="Environment" id="Environment_1bvp3"]
+
+[node name="Main" type="Node3D" unique_id=31044420]
+script = ExtResource("1_h2yge")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=453394284]
+environment = SubResource("Environment_1bvp3")
+
+[node name="XROrigin3D" type="XROrigin3D" parent="." unique_id=571579068]
+
+[node name="XRCamera3D" type="XRCamera3D" parent="XROrigin3D" unique_id=1367256792]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1363605453]
+transform = Transform3D(1, 0, 0, 0, 0.70710677, 0.70710677, 0, -0.70710677, 0.70710677, 0, 1, 1)
+
+[node name="GodotRobot" parent="." unique_id=1356831889 instance=ExtResource("2_0xm2m")]
+transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0, -0.25, 0)

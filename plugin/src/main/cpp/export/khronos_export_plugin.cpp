@@ -133,12 +133,14 @@ String KhronosEditorExportPlugin::_get_android_manifest_activity_element_content
 	contents += R"(
 				<intent-filter>
 					<action android:name="android.intent.action.MAIN" />
-
+)";
+	if (!_is_spatial_container_enabled()) {
+		contents += R"(
 					<!-- OpenXR category tag to indicate the activity starts in an immersive OpenXR mode.
 					See https://registry.khronos.org/OpenXR/specs/1.0/html/xrspec.html#android-runtime-category. -->
 					<category android:name="org.khronos.openxr.intent.category.IMMERSIVE_HMD" />
-
 )";
+	}
 
 	contents += _get_common_activity_intent_filter_contents();
 
