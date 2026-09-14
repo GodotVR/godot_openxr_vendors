@@ -1,0 +1,51 @@
+[gd_scene load_steps=6 format=3 uid="uid://bvqhpc4kukjvi"]
+
+[ext_resource type="Script" uid="uid://cl8ww0f4yebrc" path="res://meta_raycast_demo.gd" id="1_k3n7q"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_reticle"]
+shading_mode = 0
+albedo_color = Color(0.1, 0.8, 1, 1)
+emission_enabled = true
+emission = Color(0.1, 0.8, 1, 1)
+
+[sub_resource type="TorusMesh" id="TorusMesh_reticle"]
+material = SubResource("StandardMaterial3D_reticle")
+inner_radius = 0.03
+outer_radius = 0.04
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_box"]
+albedo_color = Color(1, 0.5, 0, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_box"]
+material = SubResource("StandardMaterial3D_box")
+size = Vector3(0.1, 0.1, 0.1)
+
+[node name="Main" type="Node3D" unique_id=377981486]
+script = ExtResource("1_k3n7q")
+
+[node name="XROrigin3D" type="XROrigin3D" parent="." unique_id=1636444893]
+
+[node name="XRCamera3D" type="XRCamera3D" parent="XROrigin3D" unique_id=1395319075]
+
+[node name="RightController" type="XRController3D" parent="XROrigin3D" unique_id=269631274]
+tracker = &"right_hand"
+pose = &"aim"
+
+[node name="RightHandAim" type="XRController3D" parent="XROrigin3D" unique_id=1462093857]
+tracker = &"/user/fbhandaim/right"
+
+[node name="Reticle" type="Node3D" parent="." unique_id=1204587361]
+visible = false
+
+[node name="Ring" type="MeshInstance3D" parent="Reticle" unique_id=1893450272]
+transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0, 0)
+mesh = SubResource("TorusMesh_reticle")
+
+[node name="PlacedBox" type="Node3D" parent="." unique_id=742018563]
+visible = false
+
+[node name="Mesh" type="MeshInstance3D" parent="PlacedBox" unique_id=1587320944]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.05)
+mesh = SubResource("BoxMesh_box")
+
+[node name="PlacedBoxes" type="Node3D" parent="." unique_id=305674129]

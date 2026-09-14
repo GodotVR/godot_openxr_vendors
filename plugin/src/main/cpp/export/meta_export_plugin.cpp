@@ -420,10 +420,11 @@ String MetaEditorExportPlugin::_get_android_manifest_element_contents(const Ref<
 		contents += "    <uses-permission android:name=\"com.oculus.permission.IMPORT_EXPORT_IOT_MAP_DATA\" />\n";
 	}
 
-	// Check for scene api or environment depth
+	// Check for scene api or environment depth or environment raycast
 	if ((bool)export_preset->get_project_setting("xr/openxr/extensions/spatial_entity/enabled") ||
 			(bool)export_preset->get_project_setting("xr/openxr/extensions/meta/scene_api") ||
-			(bool)export_preset->get_project_setting("xr/openxr/extensions/meta/environment_depth")) {
+			(bool)export_preset->get_project_setting("xr/openxr/extensions/meta/environment_depth") ||
+			(bool)export_preset->get_project_setting("xr/openxr/extensions/meta/environment_raycast")) {
 		contents += "    <uses-permission android:name=\"com.oculus.permission.USE_SCENE\" />\n";
 	}
 
