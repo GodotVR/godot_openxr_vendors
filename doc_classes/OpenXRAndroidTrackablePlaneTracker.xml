@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="OpenXRAndroidTrackablePlaneTracker" inherits="OpenXRAndroidTrackableTracker" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class name="OpenXRAndroidTrackablePlaneTracker" inherits="OpenXRAndroidTrackableTracker" api_type="extension" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		A tracker for a plane (from [code]XR_ANDROID_trackables[/code]).
 	</brief_description>
