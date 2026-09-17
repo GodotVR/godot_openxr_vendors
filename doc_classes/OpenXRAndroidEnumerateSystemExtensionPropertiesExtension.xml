@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="OpenXRAndroidEnumerateSystemExtensionPropertiesExtension" inherits="OpenXRExtensionWrapper" api_type="extension" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		Wraps the [code]XR_ANDROID_enumerate_system_extension_properties[/code] extension.
+	</brief_description>
+	<description>
+		Wraps the [code]XR_ANDROID_enumerate_system_extension_properties[/code] extension.
+		This extension allows querying which OpenXR extensions are actually supported by the current system, as opposed to the extensions supported by the runtime in general. The set of supported extensions can change during the session, in which case [signal openxr_android_supported_extensions_changed] is emitted.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="get_supported_extensions" qualifiers="const">
+			<return type="PackedStringArray" />
+			<description>
+				Returns the names of the OpenXR extensions supported by the current system.
+				This will be empty until the OpenXR session has been created.
+			</description>
+		</method>
+		<method name="is_enabled" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] if the extension is enabled; otherwise [code]false[/code].
+			</description>
+		</method>
+	</methods>
+	<signals>
+		<signal name="openxr_android_supported_extensions_changed">
+			<description>
+				Emitted when the set of extensions supported by the current system has been updated. Use [method get_supported_extensions] to get the new set.
+			</description>
+		</signal>
+	</signals>
+</class>

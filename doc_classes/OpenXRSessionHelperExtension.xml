@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="OpenXRSessionHelperExtension" inherits="OpenXRExtensionWrapper" api_type="extension" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		Performs internal session management tasks that don't belong to any specific OpenXR extension.
+	</brief_description>
+	<description>
+		Performs internal session management tasks that don't belong to any specific OpenXR extension.
+	</description>
+	<tutorials>
+	</tutorials>
+</class>
