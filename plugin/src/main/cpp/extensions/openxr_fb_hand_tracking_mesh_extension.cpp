@@ -356,7 +356,7 @@ void OpenXRFbHandTrackingMeshExtension::reset_skeleton_pose(Hand p_hand, Skeleto
 		int parent_index = r_skeleton->get_bone_parent(i);
 
 		// rotation adjustment to conform with SKELETON_RIG_HUMANOID
-		const Quaternion rot_adjustment(0.0, -Math_SQRT12, Math_SQRT12, 0.0);
+		const Quaternion rot_adjustment(0.0, -Math::SQRT12, Math::SQRT12, 0.0);
 
 		XrQuaternionf rot = bone_data[p_hand].joint_poses[i].orientation;
 		XrVector3f pos = bone_data[p_hand].joint_poses[i].position;

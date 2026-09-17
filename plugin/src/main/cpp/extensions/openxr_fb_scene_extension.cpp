@@ -123,7 +123,7 @@ PackedStringArray OpenXRFbSceneExtension::get_semantic_labels(const XrSpace p_sp
 
 	// Second call
 	CharString label_data;
-	label_data.resize(labels.bufferCountOutput + 1);
+	label_data.resize_uninitialized(labels.bufferCountOutput + 1);
 	labels.bufferCapacityInput = labels.bufferCountOutput;
 	labels.buffer = label_data.ptrw();
 	xrGetSpaceSemanticLabelsFB(SESSION, p_space, &labels);
@@ -133,7 +133,7 @@ PackedStringArray OpenXRFbSceneExtension::get_semantic_labels(const XrSpace p_sp
 	// We decided to deal with semantic labels in lower-case to make it easier to use them as part of
 	// property names on Godot objects, since Godot automatically converts property names to lower case
 	// when saving.
-	return String(label_data).to_lower().split(",");
+	return String(label_data.ptr()).to_lower().split(",");
 }
 
 bool OpenXRFbSceneExtension::get_room_layout(const XrSpace p_space, RoomLayout &r_room_layout) {

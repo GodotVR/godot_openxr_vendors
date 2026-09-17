@@ -173,7 +173,7 @@ void OpenXRAndroidPerformanceMetricsExtension::populate_performance_metrics_coun
 		}
 
 		CharString string_buffer;
-		string_buffer.resize(buffer_size);
+		string_buffer.resize_uninitialized(buffer_size);
 		result = xrPathToString(xr_instance, xr_path, buffer_size, &buffer_size, string_buffer.ptrw());
 		if (XR_FAILED(result)) {
 			UtilityFunctions::print_verbose(vformat("Failed to get XrPath string [%s]", get_openxr_api()->get_error_string(result)));
@@ -182,7 +182,7 @@ void OpenXRAndroidPerformanceMetricsExtension::populate_performance_metrics_coun
 			return;
 		}
 
-		performance_metrics_counter_paths[i++] = String::utf8(string_buffer);
+		performance_metrics_counter_paths[i++] = String::utf8(string_buffer.ptr());
 	}
 
 	counter_paths_populated = true;
