@@ -63,7 +63,8 @@
 #include <godot_cpp/classes/window.hpp>
 #include <godot_cpp/core/error_macros.hpp>
 #include <godot_cpp/core/memory.hpp>
-#include <godot_cpp/templates/hash_map.hpp>
+#include <godot_cpp/templates/pair.hpp>
+#include <godot_cpp/templates/vector.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
 
 static const char *XR_MAIN_SCENE_PATH = "res://xr_main.tscn";
@@ -199,40 +200,37 @@ public:
 
 class ExportSettingRecommendation : public Recommendation {
 public:
+	struct ExportPreset {
+		String platform;
+		Vector<Pair<String, Variant>> options;
+	};
+
 	bool is_recommendation_applied() override {
 		Ref<ConfigFile> config;
 		config.instantiate();
 		config->load("res://export_presets.cfg");
 		PackedStringArray sections = config->get_sections();
 
-		for (const HashMap<String, Variant> &export_preset_values : export_preset_value_sets) {
-			if (!export_preset_values.has("platform")) {
-				continue;
-			}
-
+		for (const ExportPreset &export_preset : export_presets) {
 			for (const String &section : sections) {
 				if (!config->has_section_key(section, "platform")) {
 					continue;
 				}
 
-				if (config->get_value(section, "platform") == export_preset_values["platform"]) {
+				if (config->get_value(section, "platform") == export_preset.platform) {
 					String options_section = section + String(".options");
 					if (!sections.has(options_section)) {
 						continue;
 					}
 
 					bool all_values_set = true;
-					for (const KeyValue<String, Variant> &entry : export_preset_values) {
-						if (entry.key == "platform") {
-							continue;
-						}
-
-						if (!config->has_section_key(options_section, entry.key)) {
+					for (const Pair<String, Variant> &option : export_preset.options) {
+						if (!config->has_section_key(options_section, option.first)) {
 							all_values_set = false;
 							break;
 						}
 
-						if (config->get_value(options_section, entry.key) != entry.value) {
+						if (config->get_value(options_section, option.first) != option.second) {
 							all_values_set = false;
 							break;
 						}
@@ -257,10 +255,10 @@ public:
 		editor_plugin->open_export_dialog();
 	}
 
-	Vector<HashMap<String, Variant>> export_preset_value_sets;
+	LocalVector<ExportPreset> export_presets;
 
-	ExportSettingRecommendation(String p_title, String p_description, String p_button_text, AlertType p_alert_type, ProjectType p_project_type, VendorType p_vendor_type, bool p_requires_restart, Vector<HashMap<String, Variant>> p_export_preset_value_sets) :
-			Recommendation(p_title, p_description, p_button_text, p_alert_type, p_project_type, p_vendor_type, p_requires_restart), export_preset_value_sets(p_export_preset_value_sets) {}
+	ExportSettingRecommendation(String p_title, String p_description, String p_button_text, AlertType p_alert_type, ProjectType p_project_type, VendorType p_vendor_type, bool p_requires_restart, const LocalVector<ExportPreset> &p_export_presets) :
+			Recommendation(p_title, p_description, p_button_text, p_alert_type, p_project_type, p_vendor_type, p_requires_restart), export_presets(p_export_presets) {}
 };
 
 class SdkPathRecommendation : public Recommendation {
@@ -413,22 +411,22 @@ void XrProjectSetupDialog::_notification(uint32_t p_what) {
 			recommendations.push_back(memnew(MetaToolkitInstalledRecommendation("Meta Toolkit Installed", "Please install the Godot Meta Toolkit", "Open", ALERT_TYPE_ERROR, PROJECT_TYPE_ANY, VENDOR_TYPE_META, false)));
 
 			// Meta export preset error.
-			HashMap<String, Variant> meta_export_preset_values;
-			meta_export_preset_values["platform"] = "Android";
-			meta_export_preset_values["meta_toolkit/enable_meta_toolkit"] = true;
+			ExportSettingRecommendation::ExportPreset meta_export_preset;
+			meta_export_preset.platform = "Android";
+			meta_export_preset.options.push_back({ "meta_toolkit/enable_meta_toolkit", true });
 
 			String meta_export_preset_description =
 					"Please create a valid export preset for Meta:"
 					"\n   - Android"
 					"\n       - Meta Toolkit enabled";
-			recommendations.push_back(memnew(ExportSettingRecommendation("Meta Export", meta_export_preset_description, "Open", ALERT_TYPE_ERROR, PROJECT_TYPE_ANY, VENDOR_TYPE_META, false, { meta_export_preset_values })));
+			recommendations.push_back(memnew(ExportSettingRecommendation("Meta Export", meta_export_preset_description, "Open", ALERT_TYPE_ERROR, PROJECT_TYPE_ANY, VENDOR_TYPE_META, false, { meta_export_preset })));
 
 			// HTC export preset error.
-			HashMap<String, Variant> htc_export_preset_values;
-			htc_export_preset_values["platform"] = "Android";
-			htc_export_preset_values["xr_features/xr_mode"] = 1;
-			htc_export_preset_values["xr_features/enable_khronos_plugin"] = true;
-			htc_export_preset_values["gradle_build/use_gradle_build"] = true;
+			ExportSettingRecommendation::ExportPreset htc_export_preset;
+			htc_export_preset.platform = "Android";
+			htc_export_preset.options.push_back({ "xr_features/xr_mode", 1 });
+			htc_export_preset.options.push_back({ "xr_features/enable_khronos_plugin", true });
+			htc_export_preset.options.push_back({ "gradle_build/use_gradle_build", true });
 
 			String htc_export_preset_description =
 					"Please create a valid export preset for HTC:"
@@ -437,14 +435,14 @@ void XrProjectSetupDialog::_notification(uint32_t p_what) {
 					"\n       - Khronos plugin enabled"
 					"\n       - Gradle build enabled";
 
-			recommendations.push_back(memnew(ExportSettingRecommendation("HTC Export", htc_export_preset_description, "Open", ALERT_TYPE_ERROR, PROJECT_TYPE_ANY, VENDOR_TYPE_HTC, false, { htc_export_preset_values })));
+			recommendations.push_back(memnew(ExportSettingRecommendation("HTC Export", htc_export_preset_description, "Open", ALERT_TYPE_ERROR, PROJECT_TYPE_ANY, VENDOR_TYPE_HTC, false, { htc_export_preset })));
 
 			// Pico export preset error.
-			HashMap<String, Variant> pico_export_preset_values;
-			pico_export_preset_values["platform"] = "Android";
-			pico_export_preset_values["xr_features/xr_mode"] = 1;
-			pico_export_preset_values["xr_features/enable_pico_plugin"] = true;
-			pico_export_preset_values["gradle_build/use_gradle_build"] = true;
+			ExportSettingRecommendation::ExportPreset pico_export_preset;
+			pico_export_preset.platform = "Android";
+			pico_export_preset.options.push_back({ "xr_features/xr_mode", 1 });
+			pico_export_preset.options.push_back({ "xr_features/enable_pico_plugin", true });
+			pico_export_preset.options.push_back({ "gradle_build/use_gradle_build", true });
 
 			String pico_export_preset_description =
 					"Please create a valid export preset for Pico:"
@@ -453,14 +451,14 @@ void XrProjectSetupDialog::_notification(uint32_t p_what) {
 					"\n       - Pico plugin enabled"
 					"\n       - Gradle build enabled";
 
-			recommendations.push_back(memnew(ExportSettingRecommendation("Pico Export", pico_export_preset_description, "Open", ALERT_TYPE_ERROR, PROJECT_TYPE_ANY, VENDOR_TYPE_PICO, false, { pico_export_preset_values })));
+			recommendations.push_back(memnew(ExportSettingRecommendation("Pico Export", pico_export_preset_description, "Open", ALERT_TYPE_ERROR, PROJECT_TYPE_ANY, VENDOR_TYPE_PICO, false, { pico_export_preset })));
 
 			// Lynx export preset error.
-			HashMap<String, Variant> lynx_export_preset_values;
-			lynx_export_preset_values["platform"] = "Android";
-			lynx_export_preset_values["xr_features/xr_mode"] = 1;
-			lynx_export_preset_values["xr_features/enable_lynx_plugin"] = true;
-			lynx_export_preset_values["gradle_build/use_gradle_build"] = true;
+			ExportSettingRecommendation::ExportPreset lynx_export_preset;
+			lynx_export_preset.platform = "Android";
+			lynx_export_preset.options.push_back({ "xr_features/xr_mode", 1 });
+			lynx_export_preset.options.push_back({ "xr_features/enable_lynx_plugin", true });
+			lynx_export_preset.options.push_back({ "gradle_build/use_gradle_build", true });
 
 			String lynx_export_preset_description =
 					"Please create a valid export preset for Lynx:"
@@ -469,14 +467,14 @@ void XrProjectSetupDialog::_notification(uint32_t p_what) {
 					"\n       - Lynx plugin enabled"
 					"\n       - Gradle build enabled";
 
-			recommendations.push_back(memnew(ExportSettingRecommendation("Lynx Export", lynx_export_preset_description, "Open", ALERT_TYPE_ERROR, PROJECT_TYPE_ANY, VENDOR_TYPE_LYNX, false, { lynx_export_preset_values })));
+			recommendations.push_back(memnew(ExportSettingRecommendation("Lynx Export", lynx_export_preset_description, "Open", ALERT_TYPE_ERROR, PROJECT_TYPE_ANY, VENDOR_TYPE_LYNX, false, { lynx_export_preset })));
 
 			// Magic Leap export preset error.
-			HashMap<String, Variant> magic_leap_export_preset_values;
-			magic_leap_export_preset_values["platform"] = "Android";
-			magic_leap_export_preset_values["xr_features/xr_mode"] = 1;
-			magic_leap_export_preset_values["xr_features/enable_magicleap_plugin"] = true;
-			magic_leap_export_preset_values["gradle_build/use_gradle_build"] = true;
+			ExportSettingRecommendation::ExportPreset magic_leap_export_preset;
+			magic_leap_export_preset.platform = "Android";
+			magic_leap_export_preset.options.push_back({ "xr_features/xr_mode", 1 });
+			magic_leap_export_preset.options.push_back({ "xr_features/enable_magicleap_plugin", true });
+			magic_leap_export_preset.options.push_back({ "gradle_build/use_gradle_build", true });
 
 			String magic_leap_export_preset_description =
 					"Please create a valid export preset for Magic Leap:"
@@ -485,14 +483,14 @@ void XrProjectSetupDialog::_notification(uint32_t p_what) {
 					"\n       - Magic Leap plugin enabled"
 					"\n       - Gradle build enabled";
 
-			recommendations.push_back(memnew(ExportSettingRecommendation("Magic Leap Export", magic_leap_export_preset_description, "Open", ALERT_TYPE_ERROR, PROJECT_TYPE_ANY, VENDOR_TYPE_MAGIC_LEAP, false, { magic_leap_export_preset_values })));
+			recommendations.push_back(memnew(ExportSettingRecommendation("Magic Leap Export", magic_leap_export_preset_description, "Open", ALERT_TYPE_ERROR, PROJECT_TYPE_ANY, VENDOR_TYPE_MAGIC_LEAP, false, { magic_leap_export_preset })));
 
 			// Android XR export preset error.
-			HashMap<String, Variant> androidxr_export_preset_values;
-			androidxr_export_preset_values["platform"] = "Android";
-			androidxr_export_preset_values["xr_features/xr_mode"] = 1;
-			androidxr_export_preset_values["xr_features/enable_androidxr_plugin"] = true;
-			androidxr_export_preset_values["gradle_build/use_gradle_build"] = true;
+			ExportSettingRecommendation::ExportPreset androidxr_export_preset;
+			androidxr_export_preset.platform = "Android";
+			androidxr_export_preset.options.push_back({ "xr_features/xr_mode", 1 });
+			androidxr_export_preset.options.push_back({ "xr_features/enable_androidxr_plugin", true });
+			androidxr_export_preset.options.push_back({ "gradle_build/use_gradle_build", true });
 
 			String andoirdxr_export_preset_description =
 					"Please create a valid export preset for Andoird XR:"
@@ -501,18 +499,18 @@ void XrProjectSetupDialog::_notification(uint32_t p_what) {
 					"\n       - Android XR plugin enabled"
 					"\n       - Gradle build enabled";
 
-			recommendations.push_back(memnew(ExportSettingRecommendation("Android XR Export", andoirdxr_export_preset_description, "Open", ALERT_TYPE_ERROR, PROJECT_TYPE_ANY, VENDOR_TYPE_ANDROID_XR, false, { androidxr_export_preset_values })));
+			recommendations.push_back(memnew(ExportSettingRecommendation("Android XR Export", andoirdxr_export_preset_description, "Open", ALERT_TYPE_ERROR, PROJECT_TYPE_ANY, VENDOR_TYPE_ANDROID_XR, false, { androidxr_export_preset })));
 
 			// Valve export preset error.
-			HashMap<String, Variant> valve_android_export_preset_values;
-			valve_android_export_preset_values["platform"] = "Android";
-			valve_android_export_preset_values["xr_features/xr_mode"] = 1;
-			valve_android_export_preset_values["xr_features/enable_khronos_plugin"] = true;
-			valve_android_export_preset_values["gradle_build/use_gradle_build"] = true;
+			ExportSettingRecommendation::ExportPreset valve_android_export_preset;
+			valve_android_export_preset.platform = "Android";
+			valve_android_export_preset.options.push_back({ "xr_features/xr_mode", 1 });
+			valve_android_export_preset.options.push_back({ "xr_features/enable_khronos_plugin", true });
+			valve_android_export_preset.options.push_back({ "gradle_build/use_gradle_build", true });
 
-			HashMap<String, Variant> valve_linux_export_preset_values;
-			valve_linux_export_preset_values["platform"] = "Linux";
-			valve_linux_export_preset_values["binary_format/architecture"] = "arm64";
+			ExportSettingRecommendation::ExportPreset valve_linux_export_preset;
+			valve_linux_export_preset.platform = "Linux";
+			valve_linux_export_preset.options.push_back({ "binary_format/architecture", "arm64" });
 
 			String valve_export_preset_description =
 					"Please create one of the following valid export presets for Valve:"
@@ -523,7 +521,7 @@ void XrProjectSetupDialog::_notification(uint32_t p_what) {
 					"\n   - Linux"
 					"\n       - ARM64 architecture";
 
-			recommendations.push_back(memnew(ExportSettingRecommendation("Vavle Export", valve_export_preset_description, "Open", ALERT_TYPE_ERROR, PROJECT_TYPE_ANY, VENDOR_TYPE_VALVE, false, { valve_android_export_preset_values, valve_linux_export_preset_values })));
+			recommendations.push_back(memnew(ExportSettingRecommendation("Valve Export", valve_export_preset_description, "Open", ALERT_TYPE_ERROR, PROJECT_TYPE_ANY, VENDOR_TYPE_VALVE, false, { valve_android_export_preset, valve_linux_export_preset })));
 
 			// Recommend use of Mobile renderer if using Godot 4.7 or later.
 			if (godot::gdextension_interface::godot_version.major >= 4 && godot::gdextension_interface::godot_version.minor >= 7) {

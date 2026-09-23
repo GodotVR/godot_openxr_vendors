@@ -3,7 +3,7 @@ from glob import glob
 from pathlib import Path
 import os
 
-env = SConscript("thirdparty/godot-cpp/SConstruct")
+env = SConscript("thirdparty/godot-cpp/SConstruct", {"api_version": "4.6"})
 opts = Variables('custom.py', ARGUMENTS)
 opts.Add(PathVariable("meta_headers", "Path to the directory containing Meta OpenXR preview headers", None))
 opts.Update(env)

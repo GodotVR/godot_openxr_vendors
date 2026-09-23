@@ -203,7 +203,7 @@ String OpenXRMlMarkerUnderstandingExtension::get_marker_string(XrMarkerDetectorM
 		return ""; // No need to get 0 length string
 
 	CharString characters;
-	characters.resize(string_length);
+	characters.resize_uninitialized(string_length);
 	uint32_t output_count = 0;
 	result = xrGetMarkerStringML(p_marker_detector, p_marker, string_length, &output_count, characters.ptrw()); // xrGetMarkerStringML will include the NULL terminator in the output_count and in the buffer
 	if (XR_FAILED(result)) {
@@ -214,7 +214,7 @@ String OpenXRMlMarkerUnderstandingExtension::get_marker_string(XrMarkerDetectorM
 		UtilityFunctions::printerr(vformat("xrGetMarkerStringML did not return the number of characters it said it has. Expected: %d Received: %d", string_length, output_count));
 		return "";
 	}
-	return String::utf8(characters, output_count - 1); // 1 byte less because of the NULL terminator being included in the output_count
+	return String::utf8(characters.ptr(), output_count - 1); // 1 byte less because of the NULL terminator being included in the output_count
 }
 
 XrSpace OpenXRMlMarkerUnderstandingExtension::create_marker_space(XrMarkerDetectorML p_marker_detector, XrMarkerML p_marker) {

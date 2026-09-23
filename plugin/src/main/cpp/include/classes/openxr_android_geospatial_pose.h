@@ -29,7 +29,7 @@
 
 #pragma once
 
-#include <godot_cpp/classes/ref_counted.hpp>
+#include <godot_cpp/classes/ref.hpp>
 #include <godot_cpp/variant/quaternion.hpp>
 
 using namespace godot;
