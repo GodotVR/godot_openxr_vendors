@@ -1,6 +1,6 @@
 ext {
     versions = [
-            gradlePluginVersion     : '8.6.1',
+            gradlePluginVersion     : '8.13.2',
             compileSdk              : 36,
             minSdk                  : 24,
             targetSdk               : 36,
@@ -10,9 +10,6 @@ ext {
             kotlinVersion           : '2.1.21',
             // Update the NDK version in the github workflows when this is updated.
             ndkVersion              : '29.0.14206865',
-            // Note that 'plugin/src/main/AndroidManifest.xml' should be updated with content
-            // from the Khronos OpenXR loader manifest.
-            openxrVersion           : '1.1.53',
             fragmentVersion         : '1.8.6',
             splashscreenVersion     : '1.0.1',
     ]
@@ -23,7 +20,7 @@ ext {
 
     // Parse the release version from the gradle project properties (e.g: -Prelease_version=<version>)
     getReleaseVersion = { ->
-        final String defaultVersion = "5.1.0-stable" // Also update 'plugin/src/main/cpp/include/export/export_plugin.h#PLUGIN_VERSION'
+        final String defaultVersion = "5.2.0-dev" // Also update 'plugin/src/main/cpp/include/export/export_plugin.h#PLUGIN_VERSION'
 
         String releaseVersion = project.hasProperty("release_version") ? project.property("release_version") : defaultVersion
         if (releaseVersion == null || releaseVersion.isEmpty()) {
