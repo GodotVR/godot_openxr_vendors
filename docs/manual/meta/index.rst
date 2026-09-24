@@ -12,6 +12,7 @@ Meta
     composition_layers
     dynamic_resolution
     environment_depth
+    environment_raycast
     hand_tracking
     passthrough
     scene_manager

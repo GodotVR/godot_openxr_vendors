@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="OpenXRMetaEnvironmentRaycastExtension" inherits="OpenXRExtensionWrapper" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		Wraps the [code]XR_META_environment_raycast[/code] extension.
+	</brief_description>
+	<description>
+		Wraps the [code]XR_META_environment_raycast[/code] extension, which casts rays against the live depth data of the physical environment on supported Meta Quest devices.
+		The raycaster handle is created automatically when the OpenXR session starts and destroyed when it ends. Wait for [signal raycaster_ready] (or check [method is_raycaster_ready]) before calling [method raycast].
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="create_raycaster">
+			<return type="bool" />
+			<description>
+				Requests creation of the environment raycaster handle if it is not already created or being created. Creation is asynchronous; [signal raycaster_ready] is emitted once the handle is available.
+				Returns [code]false[/code] if environment raycasting is not supported or the request could not be started.
+			</description>
+		</method>
+		<method name="destroy_raycaster">
+			<return type="void" />
+			<description>
+				Destroys the environment raycaster handle (or cancels its pending creation) and releases the underlying resources.
+			</description>
+		</method>
+		<method name="is_environment_raycast_supported" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] if environment raycasting is supported on the current device and runtime; otherwise [code]false[/code].
+			</description>
+		</method>
+		<method name="is_raycaster_ready" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] if the environment raycaster handle has been created and [method raycast] can be used.
+			</description>
+		</method>
+		<method name="raycast">
+			<return type="Dictionary" />
+			<param index="0" name="origin" type="Vector3" />
+			<param index="1" name="direction" type="Vector3" />
+			<param index="2" name="max_distance" type="float" default="0.0" />
+			<description>
+				Performs a raycast against the physical environment from [param origin] in direction [param direction].
+				[param origin], [param direction] and the returned transform are expressed in the OpenXR play space. Play space coordinates are relative to the [XROrigin3D] node, so they only match world coordinates while [XROrigin3D] is at the world origin and the view has not been recentered. Otherwise, convert with [code]xr_origin.global_transform * XRServer.get_reference_frame()[/code] (world from play space) and its inverse.
+				A [param max_distance] of [code]0.0[/code] or less disables the distance filter, so the runtime's maximum range is used.
+				If the raycaster is not ready or the call fails (an error is printed in that case), the returned dictionary reports [constant HIT_STATUS_NO_HIT].
+				Returns a [Dictionary] containing:
+				- [code]"status"[/code] ([int]): The hit status ([enum HitStatus]). Only [constant HIT_STATUS_HIT] comes with a usable pose.
+				- [code]"transform"[/code] ([Transform3D]): The pose of the hit point, with its Z axis pointing along the surface normal. Only valid when [code]"status"[/code] is [constant HIT_STATUS_HIT].
+			</description>
+		</method>
+	</methods>
+	<signals>
+		<signal name="raycaster_ready">
+			<description>
+				Emitted when the environment raycaster handle has been created and [method raycast] can be used.
+			</description>
+		</signal>
+		<signal name="raycaster_error">
+			<param index="0" name="error_code" type="int" />
+			<description>
+				Emitted when creating the environment raycaster fails. [param error_code] is the [code]XrResult[/code] reported by the runtime.
+			</description>
+		</signal>
+	</signals>
+	<constants>
+		<constant name="HIT_STATUS_HIT" value="1" enum="HitStatus">
+			The ray intersected a physical surface. This is the only status for which [method raycast] reports a hit.
+		</constant>
+		<constant name="HIT_STATUS_NO_HIT" value="2" enum="HitStatus">
+			The ray did not intersect any surface within range.
+		</constant>
+		<constant name="HIT_STATUS_HIT_POINT_OCCLUDED" value="3" enum="HitStatus">
+			The hit point is occluded from the headset's point of view.
+		</constant>
+		<constant name="HIT_STATUS_HIT_POINT_OUTSIDE_OF_FOV" value="4" enum="HitStatus">
+			The hit point is outside the field of view of the depth sensor.
+		</constant>
+		<constant name="HIT_STATUS_RAY_OCCLUDED" value="5" enum="HitStatus">
+			The ray is occluded before reaching a surface.
+		</constant>
+		<constant name="HIT_STATUS_HIT_INVALID_ORIENTATION" value="6" enum="HitStatus">
+			A surface was hit, but its orientation could not be determined.
+		</constant>
+	</constants>
+</class>
