@@ -65,7 +65,7 @@ class GodotOpenXRHybridAppInternal(godot: Godot?) : GodotPlugin(godot) {
 				return HybridMode.PANEL
 			}
 
-			return HybridMode.IMMERSIVE
+			return HybridMode.SPATIAL
 		}
 	}
 
@@ -88,7 +88,7 @@ class GodotOpenXRHybridAppInternal(godot: Godot?) : GodotPlugin(godot) {
 
 		if (!isNativeXRDevice(context)) return false
 
-		val hybridCategory = if (mode == HybridMode.IMMERSIVE) HYBRID_APP_IMMERSIVE_CATEGORY else HYBRID_APP_PANEL_CATEGORY
+		val hybridCategory = if (mode == HybridMode.SPATIAL) HYBRID_APP_SPATIAL_CATEGORY else HYBRID_APP_PANEL_CATEGORY
 		val hybridLaunchIntent = Intent().apply {
 			addCategory(hybridCategory)
 			setPackage(context.packageName)

@@ -48,7 +48,7 @@ protected:
 public:
 	enum HybridMode {
 		HYBRID_MODE_NONE = -1,
-		HYBRID_MODE_IMMERSIVE = 0,
+		HYBRID_MODE_SPATIAL = 0,
 		HYBRID_MODE_PANEL = 1,
 	};
 
