@@ -336,7 +336,7 @@ PackedStringArray OpenXRVendorsEditorPlugin::_run_scene(const String &p_scene, c
 		} else {
 			OpenXRHybridApp::HybridMode hybrid_mode = (OpenXRHybridApp::HybridMode)(int)ProjectSettings::get_singleton()->get_setting_with_override("xr/hybrid_app/launch_mode");
 
-			if (hybrid_mode == OpenXRHybridApp::HYBRID_MODE_IMMERSIVE) {
+			if (hybrid_mode == OpenXRHybridApp::HYBRID_MODE_SPATIAL) {
 				new_args.push_back("--xr-mode");
 				new_args.push_back("on");
 				new_args.push_back("--xr_mode_openxr");

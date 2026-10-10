@@ -49,6 +49,7 @@ void OpenXRHybridApp::_bind_methods() {
 
 	BIND_ENUM_CONSTANT(HYBRID_MODE_NONE);
 	BIND_ENUM_CONSTANT(HYBRID_MODE_IMMERSIVE);
+	BIND_ENUM_CONSTANT(HYBRID_MODE_SPATIAL);
 	BIND_ENUM_CONSTANT(HYBRID_MODE_PANEL);
 }
 
@@ -75,10 +76,10 @@ OpenXRHybridApp::HybridMode OpenXRHybridApp::get_mode() const {
 		return HYBRID_MODE_PANEL;
 	}
 
-	return HYBRID_MODE_IMMERSIVE;
+	return HYBRID_MODE_SPATIAL;
 #else
 	Ref<OpenXRInterface> xr_interface = XRServer::get_singleton()->find_interface("OpenXR");
-	return xr_interface->is_initialized() ? HYBRID_MODE_IMMERSIVE : HYBRID_MODE_PANEL;
+	return xr_interface->is_initialized() ? HYBRID_MODE_SPATIAL : HYBRID_MODE_PANEL;
 #endif
 }
 
@@ -102,7 +103,7 @@ bool OpenXRHybridApp::switch_mode(HybridMode p_mode, const String &p_data) {
 	PackedStringArray old_args = os->get_cmdline_args();
 
 	PackedStringArray mode_args;
-	if (p_mode == HYBRID_MODE_IMMERSIVE) {
+	if (p_mode == HYBRID_MODE_SPATIAL) {
 		mode_args.push_back("--xr-mode");
 		mode_args.push_back("on");
 		mode_args.push_back("--xr_mode_openxr");

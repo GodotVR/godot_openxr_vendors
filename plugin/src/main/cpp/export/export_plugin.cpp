@@ -122,7 +122,7 @@ String OpenXRVendorsEditorExportPlugin::_get_common_activity_intent_filter_conte
 
 	if (_is_hybrid_app_enabled()) {
 		contents += R"(
-						<category android:name="org.godotengine.xr.hybrid.IMMERSIVE" />
+						<category android:name="org.godotengine.xr.hybrid.SPATIAL" />
 )";
 	}
 	return contents;

@@ -48,7 +48,9 @@ protected:
 public:
 	enum HybridMode {
 		HYBRID_MODE_NONE = -1,
-		HYBRID_MODE_IMMERSIVE = 0,
+		// TODO: Remove for version 6.x - https://github.com/GodotVR/godot_openxr_vendors/issues/544
+		HYBRID_MODE_IMMERSIVE = 0, // deprecated
+		HYBRID_MODE_SPATIAL = 0,
 		HYBRID_MODE_PANEL = 1,
 	};
 
