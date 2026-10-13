@@ -179,7 +179,15 @@ void OpenXRVendorsEditorPlugin::open_asset_library(const String &p_search_string
 		return;
 	}
 
-	Button *asset_lib_button = Object::cast_to<Button>(root->find_child("AssetLib", true, false));
+	String asset_lib_button_name = "AssetLib";
+
+	const auto &version = gdextension_interface::godot_version;
+
+	if (version.major > 4 || (version.major == 4 && version.minor >= 7)) {
+		asset_lib_button_name = "Asset Store";
+	}
+
+	Button *asset_lib_button = Object::cast_to<Button>(root->find_child(asset_lib_button_name, true, false));
 	if (asset_lib_button == nullptr) {
 		return;
 	}
