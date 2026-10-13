@@ -645,16 +645,16 @@ void add_plugin_project_settings() {
 
 		String hybrid_app_launch_mode_setting = "xr/hybrid_app/launch_mode";
 		if (!project_settings->has_setting(hybrid_app_launch_mode_setting)) {
-			project_settings->set_setting(hybrid_app_launch_mode_setting, OpenXRHybridApp::HYBRID_MODE_IMMERSIVE);
+			project_settings->set_setting(hybrid_app_launch_mode_setting, OpenXRHybridApp::HYBRID_MODE_SPATIAL);
 		}
 
-		project_settings->set_initial_value(hybrid_app_launch_mode_setting, OpenXRHybridApp::HYBRID_MODE_IMMERSIVE);
+		project_settings->set_initial_value(hybrid_app_launch_mode_setting, OpenXRHybridApp::HYBRID_MODE_SPATIAL);
 		project_settings->set_as_basic(hybrid_app_launch_mode_setting, true);
 		Dictionary hybrid_app_launch_mode_property_info;
 		hybrid_app_launch_mode_property_info["name"] = hybrid_app_launch_mode_setting;
 		hybrid_app_launch_mode_property_info["type"] = Variant::Type::INT;
 		hybrid_app_launch_mode_property_info["hint"] = PROPERTY_HINT_ENUM;
-		hybrid_app_launch_mode_property_info["hint_string"] = "Start As Immersive:0,Start As Panel:1";
+		hybrid_app_launch_mode_property_info["hint_string"] = "Start As Spatial:0,Start As Panel:1";
 		project_settings->add_property_info(hybrid_app_launch_mode_property_info);
 	}
 

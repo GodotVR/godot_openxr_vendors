@@ -46,7 +46,7 @@ private const val TAG = "HybridAppUtils"
  */
 enum class HybridMode(private val nativeValue: Int) {
 	NONE( -1),
-	IMMERSIVE(0),
+	SPATIAL(0),
 	PANEL(1);
 
 	companion object {
@@ -67,7 +67,7 @@ const val HYBRID_DATA_ARG = "--openxr-hybrid-data"
 const val HYBRID_APP_FEATURE = "godot_openxr_hybrid_app"
 const val HYBRID_APP_PANEL_FEATURE = "godot_openxr_panel_app"
 const val HYBRID_APP_PANEL_CATEGORY = "org.godotengine.xr.hybrid.PANEL"
-const val HYBRID_APP_IMMERSIVE_CATEGORY = "org.godotengine.xr.hybrid.IMMERSIVE"
+const val HYBRID_APP_SPATIAL_CATEGORY = "org.godotengine.xr.hybrid.SPATIAL"
 
 fun isHybridAppEnabled() = GodotLib.getGlobal("xr/hybrid_app/enabled").toBoolean()
 
