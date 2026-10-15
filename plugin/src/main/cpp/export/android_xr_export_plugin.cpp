@@ -98,6 +98,7 @@ AndroidXREditorExportPlugin::AndroidXREditorExportPlugin() {
 	// Note: There's no setting for XR_ANDROID_enumerate_system_extension_properties (it needs v3).
 	spatial_api_requirements.push_back({ "xr/openxr/extensions/frame_synthesis", 3 });
 	spatial_api_requirements.push_back({ "xr/openxr/extensions/user_presence", 3 });
+	spatial_api_requirements.push_back({ "xr/openxr/extensions/spatial_container/enabled", 4 });
 	// @todo We don't yet support these extensions, but here are the required versions:
 	//  - XR_ANDROID_body_tracking - v2
 	//  - XR_ANDROID_face_tracking_data_source - v3
