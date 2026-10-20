@@ -30,7 +30,7 @@ jobs:
           link-to-sdk: true
       - name: Install scons
         run: |
-          python -m pip install scons==4.0.0
+          python -m pip install scons==4.4.0
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:

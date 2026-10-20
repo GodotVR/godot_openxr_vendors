@@ -178,7 +178,7 @@ jobs:
         if: ${{ matrix.preview-headers == 'true' }}
       - name: Install scons
         run: |
-          python -m pip install scons==4.0.0
+          python -m pip install scons==4.4.0
       - name: Apply godot-cpp patches
         run: |
           cd aar/thirdparty/godot-cpp
