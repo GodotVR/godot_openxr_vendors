@@ -54,6 +54,12 @@ public:
 		HYBRID_MODE_PANEL = 1,
 	};
 
+	enum HybridLaunchMode {
+		HYBRID_LAUNCH_MODE_AUTO = -1,
+		HYBRID_LAUNCH_MODE_SPATIAL = 0,
+		HYBRID_LAUNCH_MODE_PANEL = 1,
+	};
+
 	static OpenXRHybridApp *get_singleton();
 
 	bool is_hybrid_app() const;

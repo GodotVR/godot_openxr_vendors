@@ -63,9 +63,7 @@ class GodotPanelApp : GodotActivity() {
 
 	override fun getCommandLine(): MutableList<String> {
 		val oldCmdline = super.getCommandLine()
-		return updateCommandLineForHybridLaunch(
-			HybridMode.PANEL, oldCmdline
-		)
+		return updateCommandLineForHybridLaunch(HybridLaunchMode.PANEL, oldCmdline)
 	}
 
 	override fun supportsFeature(featureTag: String): Boolean {

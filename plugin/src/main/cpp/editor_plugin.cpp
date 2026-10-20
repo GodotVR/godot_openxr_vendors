@@ -342,13 +342,13 @@ PackedStringArray OpenXRVendorsEditorPlugin::_run_scene(const String &p_scene, c
 			new_args.append_array(override_arguments);
 			debugger_plugin->clear_override_arguments();
 		} else {
-			OpenXRHybridApp::HybridMode hybrid_mode = (OpenXRHybridApp::HybridMode)(int)ProjectSettings::get_singleton()->get_setting_with_override("xr/hybrid_app/launch_mode");
+			OpenXRHybridApp::HybridLaunchMode hybrid_launch_mode = (OpenXRHybridApp::HybridLaunchMode)(int)ProjectSettings::get_singleton()->get_setting_with_override("xr/hybrid_app/launch_mode");
 
-			if (hybrid_mode == OpenXRHybridApp::HYBRID_MODE_SPATIAL) {
+			if (hybrid_launch_mode == OpenXRHybridApp::HYBRID_LAUNCH_MODE_SPATIAL) {
 				new_args.push_back("--xr-mode");
 				new_args.push_back("on");
 				new_args.push_back("--xr_mode_openxr");
-			} else if (hybrid_mode == OpenXRHybridApp::HYBRID_MODE_PANEL) {
+			} else if (hybrid_launch_mode == OpenXRHybridApp::HYBRID_LAUNCH_MODE_AUTO || hybrid_launch_mode == OpenXRHybridApp::HYBRID_LAUNCH_MODE_PANEL) {
 				new_args.push_back("--xr-mode");
 				new_args.push_back("off");
 				new_args.push_back("--xr_mode_regular");

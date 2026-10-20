@@ -274,8 +274,9 @@ String AndroidXREditorExportPlugin::_get_android_manifest_application_element_co
 		return contents;
 	}
 
+	OpenXRHybridApp::HybridLaunchMode hybrid_launch_mode = _get_hybrid_app_launch_mode();
 	// Android XR required
-	bool android_xr_required = _get_hybrid_app_launch_mode() != OpenXRHybridApp::HYBRID_MODE_PANEL;
+	bool android_xr_required = !_is_hybrid_app_enabled() || hybrid_launch_mode == OpenXRHybridApp::HYBRID_LAUNCH_MODE_SPATIAL;
 	contents += vformat("    <uses-native-library android:name=\"libopenxr.google.so\" android:required=\"%s\" />\n", _bool_to_string(android_xr_required));
 
 	int recommended_boundary_type_option = _get_int_option("android_xr_features/recommended_boundary_type", RECOMMENDED_BOUNDARY_TYPE_NONE_VALUE);
@@ -295,8 +296,7 @@ String AndroidXREditorExportPlugin::_get_android_manifest_application_element_co
 		contents += "    <meta-data android:name=\"com.android.extensions.xr.uses_experimental_openxr_feature\" android:value=\"true\" />\n";
 	}
 
-	OpenXRHybridApp::HybridMode hybrid_launch_mode = _get_hybrid_app_launch_mode();
-	if (hybrid_launch_mode != OpenXRHybridApp::HYBRID_MODE_NONE) {
+	if (_is_hybrid_app_enabled()) {
 		Ref<EditorExportPreset> export_preset = get_export_preset();
 
 		contents += vformat(
@@ -323,7 +323,7 @@ String AndroidXREditorExportPlugin::_get_android_manifest_application_element_co
 				_get_android_orientation_label((DisplayServer::ScreenOrientation)(int)export_preset->get_project_setting("display/window/handheld/orientation")),
 				_bool_to_string(export_preset->get_project_setting("display/window/size/resizable")));
 
-		if (hybrid_launch_mode == OpenXRHybridApp::HYBRID_MODE_PANEL) {
+		if (hybrid_launch_mode == OpenXRHybridApp::HYBRID_LAUNCH_MODE_PANEL || hybrid_launch_mode == OpenXRHybridApp::HYBRID_LAUNCH_MODE_AUTO) {
 			contents += R"(
 		<activity-alias
 			android:name="org.godotengine.openxr.vendors.GodotPanelAppLauncher"
@@ -350,7 +350,7 @@ String AndroidXREditorExportPlugin::_get_android_manifest_element_contents(const
 	}
 
 	// Android XR required
-	bool android_xr_required = _get_hybrid_app_launch_mode() != OpenXRHybridApp::HYBRID_MODE_PANEL;
+	bool android_xr_required = !_is_hybrid_app_enabled() || _get_hybrid_app_launch_mode() == OpenXRHybridApp::HYBRID_LAUNCH_MODE_SPATIAL;
 	contents += vformat("    <uses-feature android:name=\"android.software.xr.api.openxr\" android:required=\"%s\" />\n", _bool_to_string(android_xr_required));
 
 	int spatial_api_version = _get_int_option("android_xr_features/spatial_api_version", 0);

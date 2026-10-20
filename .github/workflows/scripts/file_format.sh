@@ -39,8 +39,10 @@ while IFS= read -rd '' f; do
     # Remove trailing space characters and ensures that files end
     # with newline characters. -l option handles newlines conveniently.
     perl -i -ple 's/\s*$//g' "$f"
-    # Remove the character sequence "== true" if it has a leading space.
-    perl -i -pe 's/\x20== true//g' "$f"
+    # Remove the character sequence "== true" if it has a leading space, except for kotlin files.
+    if [[ "$f" != *"kt" ]]; then
+      perl -i -pe 's/\x20== true//g' "$f"
+    fi
     # We don't want to change lines around braces in godot/tscn/tres/import files.
     if [[ "$f" == *"godot" ]]; then
         continue
