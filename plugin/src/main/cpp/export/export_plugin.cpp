@@ -99,11 +99,8 @@ bool OpenXRVendorsEditorExportPlugin::_is_hybrid_app_enabled() const {
 	return get_export_preset()->get_project_setting("xr/hybrid_app/enabled");
 }
 
-OpenXRHybridApp::HybridMode OpenXRVendorsEditorExportPlugin::_get_hybrid_app_launch_mode() const {
-	if (!_is_hybrid_app_enabled()) {
-		return OpenXRHybridApp::HYBRID_MODE_NONE;
-	}
-	return (OpenXRHybridApp::HybridMode)(int)get_export_preset()->get_project_setting("xr/hybrid_app/launch_mode");
+OpenXRHybridApp::HybridLaunchMode OpenXRVendorsEditorExportPlugin::_get_hybrid_app_launch_mode() const {
+	return (OpenXRHybridApp::HybridLaunchMode)(int)get_export_preset()->get_project_setting("xr/hybrid_app/launch_mode");
 }
 
 String OpenXRVendorsEditorExportPlugin::_get_common_activity_intent_filter_contents() const {
@@ -218,11 +215,11 @@ Dictionary OpenXRVendorsEditorExportPlugin::_get_export_options_overrides(const 
 		return overrides;
 	}
 
-	OpenXRHybridApp::HybridMode hybrid_launch_mode = _get_hybrid_app_launch_mode();
-	if (hybrid_launch_mode != OpenXRHybridApp::HYBRID_MODE_NONE) {
-		// Unless this is a hybrid app that launches as a panel, then we want to force this option on.
+	if (_is_hybrid_app_enabled()) {
+		// Force this option on if this is a hybrid app that launches in spatial mode.
 		// Otherwise, it needs to be off, so that the panel activity can be the one that's launched by default.
-		overrides["package/show_in_app_library"] = (hybrid_launch_mode != OpenXRHybridApp::HYBRID_MODE_PANEL);
+		OpenXRHybridApp::HybridLaunchMode hybrid_launch_mode = _get_hybrid_app_launch_mode();
+		overrides["package/show_in_app_library"] = (hybrid_launch_mode == OpenXRHybridApp::HYBRID_LAUNCH_MODE_SPATIAL);
 	}
 
 	return overrides;

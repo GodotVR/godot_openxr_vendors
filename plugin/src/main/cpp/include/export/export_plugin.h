@@ -117,7 +117,7 @@ protected:
 	Dictionary _get_vendor_toggle_option(const String &vendor_name) const;
 
 	bool _is_hybrid_app_enabled() const;
-	OpenXRHybridApp::HybridMode _get_hybrid_app_launch_mode() const;
+	OpenXRHybridApp::HybridLaunchMode _get_hybrid_app_launch_mode() const;
 
 	String _get_common_activity_intent_filter_contents() const;
 

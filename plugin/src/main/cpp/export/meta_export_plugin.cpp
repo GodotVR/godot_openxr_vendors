@@ -523,8 +523,7 @@ String MetaEditorExportPlugin::_get_android_manifest_application_element_content
 		contents += "        <meta-data android:name=\"com.oculus.ossplash.background\" android:value=\"passthrough-contextual\" />\n";
 	}
 
-	OpenXRHybridApp::HybridMode hybrid_launch_mode = _get_hybrid_app_launch_mode();
-	if (hybrid_launch_mode != OpenXRHybridApp::HYBRID_MODE_NONE) {
+	if (_is_hybrid_app_enabled()) {
 		contents += vformat(
 				R"(
 		<activity android:name="org.godotengine.openxr.vendors.GodotPanelApp"
@@ -550,7 +549,8 @@ String MetaEditorExportPlugin::_get_android_manifest_application_element_content
 				_get_android_orientation_label((DisplayServer::ScreenOrientation)(int)export_preset->get_project_setting("display/window/handheld/orientation")),
 				_bool_to_string(export_preset->get_project_setting("display/window/size/resizable")));
 
-		if (hybrid_launch_mode == OpenXRHybridApp::HYBRID_MODE_PANEL) {
+		OpenXRHybridApp::HybridLaunchMode hybrid_launch_mode = _get_hybrid_app_launch_mode();
+		if (hybrid_launch_mode == OpenXRHybridApp::HYBRID_LAUNCH_MODE_PANEL || hybrid_launch_mode == OpenXRHybridApp::HYBRID_LAUNCH_MODE_AUTO) {
 			contents += R"(
 		<activity-alias
 			android:name="org.godotengine.openxr.vendors.GodotPanelAppLauncher"

@@ -42,7 +42,7 @@ import org.godotengine.godot.GodotLib
 private const val TAG = "HybridAppUtils"
 
 /**
- * Should match OpenXRHybridApp#HybridMode.
+ * Must match OpenXRHybridApp#HybridMode.
  */
 enum class HybridMode(private val nativeValue: Int) {
 	NONE( -1),
@@ -61,44 +61,62 @@ enum class HybridMode(private val nativeValue: Int) {
 	}
 }
 
+/**
+ * Must match OpenXRHybridApp#HybridLaunchMode.
+ */
+enum class HybridLaunchMode(internal val nativeValue: Int) {
+	AUTO(-1),
+	SPATIAL(0),
+	PANEL(1);
+
+	companion object {
+		fun fromNative(nativeValue: Int): HybridLaunchMode {
+			for (launchMode in HybridLaunchMode.entries) {
+				if (launchMode.nativeValue == nativeValue) {
+					return launchMode
+				}
+			}
+			return AUTO
+		}
+	}
+}
+
 internal val EXTRA_COMMAND_LINE_PARAMS = "command_line_params"
 const val HYBRID_DATA_ARG = "--openxr-hybrid-data"
+const val EXPLICIT_HYBRID_SWITCH_ARG = "--explicit-hybrid-switch"
 
 const val HYBRID_APP_FEATURE = "godot_openxr_hybrid_app"
 const val HYBRID_APP_PANEL_FEATURE = "godot_openxr_panel_app"
+const val HYBRID_APP_SPATIAL_FEATURE = "godot_openxr_spatial_app"
 const val HYBRID_APP_PANEL_CATEGORY = "org.godotengine.xr.hybrid.PANEL"
 const val HYBRID_APP_SPATIAL_CATEGORY = "org.godotengine.xr.hybrid.SPATIAL"
+@Deprecated("Deprecated in version 5.2", ReplaceWith("HYBRID_APP_SPATIAL_CATEGORY"))
+const val HYBRID_APP_IMMERSIVE_CATEGORY = "org.godotengine.xr.hybrid.IMMERSIVE"
 
 fun isHybridAppEnabled() = GodotLib.getGlobal("xr/hybrid_app/enabled").toBoolean()
 
-fun getHybridAppLaunchMode(): HybridMode {
-	if (!isHybridAppEnabled()) {
-		return HybridMode.NONE
-	}
-
+fun getHybridAppLaunchMode(): HybridLaunchMode {
 	try {
 		val launchModeValue = GodotLib.getGlobal("xr/hybrid_app/launch_mode").toInt()
-		return HybridMode.fromNative(launchModeValue)
+		return HybridLaunchMode.fromNative(launchModeValue)
 	} catch (e: Exception) {
 		Log.w(TAG, "Unable to retrieve 'xr/hybrid_app/launch_mode' project setting", e)
-		return HybridMode.NONE
+		return HybridLaunchMode.PANEL
 	}
 }
 
 /**
- * Update the given command line for an hybrid launch:
+ * Update the given command line for a hybrid launch:
  *  - remove any arguments that may conflict
  *  - set up the xr mode based on the hybrid launch mode
  */
 internal fun updateCommandLineForHybridLaunch(
-	launchMode: HybridMode,
+	launchMode: HybridLaunchMode,
 	originalCommandLine: List<String> = emptyList(),
 	hybridData: String = "",
+	explicitHybridSwitch: Boolean = false
 ): MutableList<String> {
 	val newCmdline = mutableListOf<String>()
-	if (launchMode == HybridMode.NONE) {
-		return newCmdline
-	}
 
 	// Remove the following command-line arguments:
 	// - XR mode arguments
@@ -111,7 +129,7 @@ internal fun updateCommandLineForHybridLaunch(
 		}
 
 		when (arg) {
-			"--xr_mode_regular", "--xr_mode_openxr" -> continue
+			"--xr_mode_regular", "--xr_mode_openxr", EXPLICIT_HYBRID_SWITCH_ARG -> continue
 			"--xr-mode", HYBRID_DATA_ARG -> {
 				skipNext = true
 				continue
@@ -120,7 +138,7 @@ internal fun updateCommandLineForHybridLaunch(
 		}
 	}
 
-	if (launchMode == HybridMode.PANEL) {
+	if (launchMode == HybridLaunchMode.PANEL || launchMode == HybridLaunchMode.AUTO) {
 		// Add new arguments to force XR to be turned off.
 		newCmdline.addAll(listOf("--xr_mode_regular", "--xr-mode", "off"))
 	} else {
@@ -130,6 +148,10 @@ internal fun updateCommandLineForHybridLaunch(
 
 	if (hybridData.isNotBlank()) {
 		newCmdline.addAll(listOf(HYBRID_DATA_ARG, Base64.encodeToString(hybridData.encodeToByteArray(), Base64.DEFAULT)))
+	}
+
+	if (explicitHybridSwitch) {
+		newCmdline.add(EXPLICIT_HYBRID_SWITCH_ARG)
 	}
 
 	return newCmdline
@@ -147,4 +169,9 @@ internal fun retrieveHybridData(launchIntent: Intent?): String {
 	}
 
 	return ""
+}
+
+internal fun hasExplicitHybridSwitchFlag(launchIntent: Intent?): Boolean {
+	val cmdLineParams = launchIntent?.getStringArrayExtra(EXTRA_COMMAND_LINE_PARAMS) ?: return false
+	return cmdLineParams.contains(EXPLICIT_HYBRID_SWITCH_ARG)
 }
