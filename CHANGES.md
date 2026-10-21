@@ -1,5 +1,32 @@
 # Change history for the Godot OpenXR loaders asset
 
+## 5.2.0
+
+- Add support for launching hybrid apps in `AUTO` mode (#547)
+- Rename hybrid app `immersive` mode to `spatial` (#543)
+- Fix XR setup wizard asset store button (#542)
+- Update to godot-cpp v10.0-stable (#537)
+- Add support for exporting spatial container applications on Android XR (#536)
+- Switch to the OpenXR developer API layers provided by Khronos (#532)
+- Update OpenXR to version 1.1.63 (#533)
+- Recommend mobile renderer in setup wizard for Godot v4.7+ (#523)
+- Add support for `XR_ANDROID_geospatial` (#528)
+- Copy XrUuid <-> String conversions from Godot Core (#521)
+- Implement `XR_ANDROID_viewport_feathering` (#530)
+- Allow configuring Android XR's spatial API version (#529)
+- Implement `XR_ANDROID_global_passthrough_dimming` (#531)
+- Use 4.6 version of Godot Android Library and match its Android dependencies (#526)
+- Update permission checks for AndroidXR Trackables (#514)
+- Add permission check for XR_ANDROID_light_estimation (#512)
+- Improve AndroidXR extension initialization (#510)
+- Use system property structure to determine passthrough camera support (#511)
+- Warn users that frame synthesis requires "Flip Y" on Android XR (#508)
+- Fix reported security alerts (#507)
+- Improve dynamic resolution sample (#506)
+- Add API to check if `OpenXRAndroidPassthroughCameraStateExtension` is enabled (#505)
+- `XR_ANDROID_enumerate_system_extension_properties` (#503)
+- Handle runtime changes to app permissions in face and eye tracking extensions (#501)
+
 ## 5.1.0
 
 - Add manual page for Android XR Trackables (#499)
