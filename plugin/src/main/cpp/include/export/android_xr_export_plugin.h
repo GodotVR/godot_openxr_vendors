@@ -79,6 +79,7 @@ protected:
 	mutable bool _should_update_options = false;
 
 	struct SpatialAPIRequirement {
+		String project_setting_label;
 		StringName project_setting;
 		uint32_t spatial_api_version;
 	};
