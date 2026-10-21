@@ -57,11 +57,21 @@ jobs:
             artifact_name: build-files-linux-arm64
             artifact_path: aar/demo/addons/godotopenxrvendors/.bin/linux/*/*/*.so
             cache-name: linux-arm64
-          - name: 🏁 Windows (x86_64, MSVC)
-            os: windows-latest
+          - name: 🏁 Windows (x86_64, MinGW)
+            os: ubuntu-24.04
             platform: windows
             preview-headers: true
+            flags: arch=x86_64 use_mingw=yes
             artifact_name: build-files-windows
+            artifact_path: aar/demo/addons/godotopenxrvendors/.bin/windows/*/*/*.dll
+            cache-name: windows-x86_64-mingw
+          # The MSVC build is just a CI check - the MingW build is used for releases.
+          - name: 🏁 Windows (x86_64, MSVC)
+            # Use older Windows image so we can test with an older MSVC.
+            os: windows-2022
+            platform: windows
+            preview-headers: true
+            artifact_name: build-files-windows-msvc
             artifact_path: aar/demo/addons/godotopenxrvendors/.bin/windows/*/*/*.dll
             cache-name: windows-x86_64-msvc
           - name: 🍎 MacOS (universal)
@@ -108,11 +118,20 @@ jobs:
             artifact_name: build-files-linux-arm64-nopreview
             artifact_path: aar/demo/addons/godotopenxrvendors/.bin/linux/*/*/*.so
             cache-name: linux-arm64-nopreview
-          - name: 🏁 Windows (x86_64, MSVC, No preview)
-            os: windows-latest
+          - name: 🏁 Windows (x86_64, MinGW, No preview)
+            os: ubuntu-24.04
             platform: windows
             preview-headers: false
+            flags: arch=x86_64 use_mingw=yes
             artifact_name: build-files-windows-nopreview
+            artifact_path: aar/demo/addons/godotopenxrvendors/.bin/windows/*/*/*.dll
+            cache-name: windows-x86_64-mingw-nopreview
+          - name: 🏁 Windows (x86_64, MSVC, No preview)
+            # Use older Windows image so we can test with an older MSVC.
+            os: windows-2022
+            platform: windows
+            preview-headers: false
+            artifact_name: build-files-windows-msvc-nopreview
             artifact_path: aar/demo/addons/godotopenxrvendors/.bin/windows/*/*/*.dll
             cache-name: windows-x86_64-msvc-nopreview
           - name: 🍎 MacOS (universal, No preview)
@@ -165,16 +184,20 @@ jobs:
           ndk-version: r28b
           link-to-sdk: true
         if: matrix.platform == 'android'
+      - name: Install MinGW
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y mingw-w64
+          sudo update-alternatives --set x86_64-w64-mingw32-gcc /usr/bin/x86_64-w64-mingw32-gcc-posix
+          sudo update-alternatives --set x86_64-w64-mingw32-g++ /usr/bin/x86_64-w64-mingw32-g++-posix
+        if: matrix.platform == 'windows' && runner.os == 'Linux'
       - name: Download Meta OpenXR Preview headers
         run: |
-          # PowerShell (ick!) works on all GitHub platforms. I don't like it, but it works.
-          Invoke-WebRequest -Uri "${{ env.META_OPENXR_HEADERS_URL }}" -OutFile "meta-openxr-sdk.zip"
-          Expand-Archive -Path "meta-openxr-sdk.zip" -DestinationPath "meta-openxr-sdk"
-
-          # These variables should carry over into bash as well.
-          echo "SCONS_EXTRA=meta_headers=${{ github.workspace }}/meta-openxr-sdk/OpenXR/meta_openxr_preview/" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-          echo "GRADLE_EXTRA=-Pmeta_headers=${{ github.workspace }}/meta-openxr-sdk/OpenXR/meta_openxr_preview/" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-        shell: pwsh
+          curl -sSL -o meta-openxr-sdk.zip "${{ env.META_OPENXR_HEADERS_URL }}"
+          python -m zipfile -e meta-openxr-sdk.zip meta-openxr-sdk
+          echo "SCONS_EXTRA=meta_headers=${{ github.workspace }}/meta-openxr-sdk/OpenXR/meta_openxr_preview/" >> $GITHUB_ENV
+          echo "GRADLE_EXTRA=-Pmeta_headers=${{ github.workspace }}/meta-openxr-sdk/OpenXR/meta_openxr_preview/" >> $GITHUB_ENV
+        shell: bash
         if: ${{ matrix.preview-headers == 'true' }}
       - name: Install scons
         run: |
@@ -188,12 +211,12 @@ jobs:
             fi
           done
           cd ../..
-        if: matrix.platform != 'windows'
+        if: runner.os != 'Windows'
       - name: Create extension library
         run: |
           cd aar
-          scons platform=${{ matrix.platform }} target=template_debug ${{ matrix.flags }} custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json build_profile=thirdparty/godot_cpp_build_profile/build_profile.json ndk_version="28.1.13356709" $SCONS_EXTRA
-          scons platform=${{ matrix.platform }} target=template_release ${{ matrix.flags }} custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json build_profile=thirdparty/godot_cpp_build_profile/build_profile.json ndk_version="28.1.13356709" $SCONS_EXTRA
+          scons platform=${{ matrix.platform }} target=template_debug ${{ matrix.flags }} custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json build_profile=thirdparty/godot_cpp_build_profile/build_profile.json ndk_version="29.0.14206865" production=yes $SCONS_EXTRA
+          scons platform=${{ matrix.platform }} target=template_release ${{ matrix.flags }} custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json build_profile=thirdparty/godot_cpp_build_profile/build_profile.json ndk_version="29.0.14206865" production=yes $SCONS_EXTRA
           cd ..
       - name: Save Godot build cache
         uses: ./aar/thirdparty/godot-cpp/.github/actions/godot-cache-save
@@ -234,14 +257,10 @@ jobs:
           cp -r build-files-android-x86_64/* aar/plugin/src/main/libs/
       - name: Download Meta OpenXR Preview headers
         run: |
-          # PowerShell (ick!) works on all GitHub platforms. I don't like it, but it works.
-          Invoke-WebRequest -Uri "${{ env.META_OPENXR_HEADERS_URL }}" -OutFile "meta-openxr-sdk.zip"
-          Expand-Archive -Path "meta-openxr-sdk.zip" -DestinationPath "meta-openxr-sdk"
-
-          # These variables should carry over into bash as well.
-          echo "SCONS_EXTRA=meta_headers=${{ github.workspace }}/meta-openxr-sdk/OpenXR/meta_openxr_preview/" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-          echo "GRADLE_EXTRA=-Pmeta_headers=${{ github.workspace }}/meta-openxr-sdk/OpenXR/meta_openxr_preview/" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-        shell: pwsh
+          curl -sSL -o meta-openxr-sdk.zip "${{ env.META_OPENXR_HEADERS_URL }}"
+          unzip -q meta-openxr-sdk.zip -d meta-openxr-sdk
+          echo "SCONS_EXTRA=meta_headers=${{ github.workspace }}/meta-openxr-sdk/OpenXR/meta_openxr_preview/" >> $GITHUB_ENV
+          echo "GRADLE_EXTRA=-Pmeta_headers=${{ github.workspace }}/meta-openxr-sdk/OpenXR/meta_openxr_preview/" >> $GITHUB_ENV
       - name: Create Godot OpenXR Vendors AARs
         run: |
           cd aar
