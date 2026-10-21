@@ -40,24 +40,20 @@ jobs:
         uses: gradle/actions/wrapper-validation@v3
       - name: Download Meta OpenXR Preview headers
         run: |
-          # PowerShell (ick!) works on all GitHub platforms. I don't like it, but it works.
-          Invoke-WebRequest -Uri "${{ env.META_OPENXR_HEADERS_URL }}" -OutFile "meta-openxr-sdk.zip"
-          Expand-Archive -Path "meta-openxr-sdk.zip" -DestinationPath "meta-openxr-sdk"
-
-          # These variables should carry over into bash as well.
-          echo "SCONS_EXTRA=meta_headers=${{ github.workspace }}/meta-openxr-sdk/OpenXR/meta_openxr_preview/" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-          echo "GRADLE_EXTRA=-Pmeta_headers=${{ github.workspace }}/meta-openxr-sdk/OpenXR/meta_openxr_preview/" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-        shell: pwsh
+          curl -sSL -o meta-openxr-sdk.zip "${{ env.META_OPENXR_HEADERS_URL }}"
+          unzip -q meta-openxr-sdk.zip -d meta-openxr-sdk
+          echo "SCONS_EXTRA=meta_headers=${{ github.workspace }}/meta-openxr-sdk/OpenXR/meta_openxr_preview/" >> $GITHUB_ENV
+          echo "GRADLE_EXTRA=-Pmeta_headers=${{ github.workspace }}/meta-openxr-sdk/OpenXR/meta_openxr_preview/" >> $GITHUB_ENV
 
         # Builds the release artifacts of the library
       - name: Release build
         run: |
           # We build with debug symbols which will be stripped by Gradle.
           SCONS_EXTRA="$SCONS_EXTRA debug_symbols=yes"
-          scons platform=android target=template_debug arch=arm64 custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json build_profile=thirdparty/godot_cpp_build_profile/build_profile.json ndk_version="28.1.13356709" $SCONS_EXTRA
-          scons platform=android target=template_release arch=arm64 custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json build_profile=thirdparty/godot_cpp_build_profile/build_profile.json ndk_version="28.1.13356709" $SCONS_EXTRA
-          scons platform=android target=template_debug arch=x86_64 custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json build_profile=thirdparty/godot_cpp_build_profile/build_profile.json ndk_version="28.1.13356709" $SCONS_EXTRA
-          scons platform=android target=template_release arch=x86_64 custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json build_profile=thirdparty/godot_cpp_build_profile/build_profile.json ndk_version="28.1.13356709" $SCONS_EXTRA
+          scons platform=android target=template_debug arch=arm64 custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json build_profile=thirdparty/godot_cpp_build_profile/build_profile.json ndk_version="29.0.14206865" production=yes $SCONS_EXTRA
+          scons platform=android target=template_release arch=arm64 custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json build_profile=thirdparty/godot_cpp_build_profile/build_profile.json ndk_version="29.0.14206865" production=yes $SCONS_EXTRA
+          scons platform=android target=template_debug arch=x86_64 custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json build_profile=thirdparty/godot_cpp_build_profile/build_profile.json ndk_version="29.0.14206865" production=yes $SCONS_EXTRA
+          scons platform=android target=template_release arch=x86_64 custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json build_profile=thirdparty/godot_cpp_build_profile/build_profile.json ndk_version="29.0.14206865" production=yes $SCONS_EXTRA
           ./gradlew -Prelease_version=${{ github.ref_name }} build $GRADLE_EXTRA
 
           # Put the unstripped .so files into ZIPs to use for their debug symbols.
