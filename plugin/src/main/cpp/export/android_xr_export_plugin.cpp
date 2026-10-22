@@ -96,9 +96,9 @@ AndroidXREditorExportPlugin::AndroidXREditorExportPlugin() {
 
 	// Build table of extensions that require Spatial API version 2 or newer.
 	// Note: There's no setting for XR_ANDROID_enumerate_system_extension_properties (it needs v3).
-	spatial_api_requirements.push_back({ "xr/openxr/extensions/frame_synthesis", 3 });
-	spatial_api_requirements.push_back({ "xr/openxr/extensions/user_presence", 3 });
-	spatial_api_requirements.push_back({ "xr/openxr/extensions/spatial_container/enabled", 4 });
+	spatial_api_requirements.push_back({ "Frame Synthesis", "xr/openxr/extensions/frame_synthesis", 3 });
+	spatial_api_requirements.push_back({ "User Presence", "xr/openxr/extensions/user_presence", 3 });
+	spatial_api_requirements.push_back({ "Spatial Container", "xr/openxr/extensions/spatial_container/enabled", 4 });
 	// @todo We don't yet support these extensions, but here are the required versions:
 	//  - XR_ANDROID_body_tracking - v2
 	//  - XR_ANDROID_face_tracking_data_source - v3
@@ -174,9 +174,7 @@ String AndroidXREditorExportPlugin::_get_export_option_warning(const Ref<EditorE
 		PackedStringArray messages;
 		for (const SpatialAPIRequirement &req : spatial_api_requirements) {
 			if ((bool)export_preset->get_project_setting(req.project_setting) && spatial_api_version < req.spatial_api_version) {
-				PackedStringArray name_parts = String(req.project_setting).split("/");
-				String name = name_parts[name_parts.size() - 1].capitalize();
-				messages.push_back(vformat("\"%s\" needs Spatial API Version %d or later; if it's required, set your Spatial API Version to at least %d.", name, req.spatial_api_version, req.spatial_api_version));
+				messages.push_back(vformat("\"%s\" needs Spatial API Version %d or later; if it's required, set your Spatial API Version to at least %d.", req.project_setting_label, req.spatial_api_version, req.spatial_api_version));
 			}
 		}
 		if (messages.size() > 0) {
@@ -417,11 +415,6 @@ String AndroidXREditorExportPlugin::_get_android_manifest_element_contents(const
 			(bool)export_preset->get_project_setting("xr/openxr/extensions/androidxr/light_estimation") ||
 			(bool)export_preset->get_project_setting("xr/openxr/extensions/androidxr/trackables")) {
 		contents += "    <uses-permission android:name=\"android.permission.SCENE_UNDERSTANDING_COARSE\" />\n";
-	}
-
-	// Check for spatial container.
-	if (_is_spatial_container_enabled()) {
-		contents += "    <uses-permission android:name=\"android.permission.HEAD_TRACKING\" />\n";
 	}
 
 	return contents;
