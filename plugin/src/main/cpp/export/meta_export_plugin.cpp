@@ -338,8 +338,11 @@ String MetaEditorExportPlugin::_get_android_manifest_element_contents(const Ref<
 
 	Ref<EditorExportPreset> export_preset = get_export_preset();
 
+	bool eye_gaze_interaction_enabled = export_preset->get_project_setting("xr/openxr/extensions/eye_gaze_interaction");
+	bool eye_tracked_foveation_enabled = export_preset->get_project_setting("xr/openxr/foveation_eye_tracked");
+
 	// Check for eye tracking
-	if ((bool)export_preset->get_project_setting("xr/openxr/extensions/eye_gaze_interaction")) {
+	if (eye_gaze_interaction_enabled || eye_tracked_foveation_enabled) {
 		contents += "    <uses-permission android:name=\"com.oculus.permission.EYE_TRACKING\" />\n";
 
 		int eye_tracking_value = _get_int_option("meta_xr_features/eye_tracking", EYE_TRACKING_OPTIONAL_VALUE);

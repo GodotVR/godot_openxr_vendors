@@ -368,8 +368,9 @@ String AndroidXREditorExportPlugin::_get_android_manifest_element_contents(const
 	// Check for eye tracking
 	bool eye_gaze_interaction_enabled = export_preset->get_project_setting("xr/openxr/extensions/eye_gaze_interaction");
 	bool eye_tracking_enabled = export_preset->get_project_setting("xr/openxr/extensions/androidxr/eye_tracking");
+	bool eye_tracked_foveation_enabled = export_preset->get_project_setting("xr/openxr/foveation_eye_tracked");
 
-	if (eye_gaze_interaction_enabled) {
+	if (eye_gaze_interaction_enabled || eye_tracked_foveation_enabled) {
 		// XR_EXT_eye_gaze_interaction always requires EYE_TRACKING_FINE.
 		contents += "    <uses-permission android:name=\"android.permission.EYE_TRACKING_FINE\" />\n";
 	}
@@ -380,7 +381,7 @@ String AndroidXREditorExportPlugin::_get_android_manifest_element_contents(const
 		contents += "    <uses-permission android:name=\"android.permission.EYE_TRACKING_COARSE\" />\n";
 	}
 
-	if (eye_gaze_interaction_enabled || eye_tracking_enabled) {
+	if (eye_gaze_interaction_enabled || eye_tracking_enabled || eye_tracked_foveation_enabled) {
 		if (EYE_TRACKING_REQUIRED_VALUE == _get_int_option("android_xr_features/eye_tracking", EYE_TRACKING_OPTIONAL_VALUE)) {
 			contents += "    <uses-feature android:name=\"android.hardware.xr.input.eye_tracking\" android:required=\"true\" />\n";
 		} else {
