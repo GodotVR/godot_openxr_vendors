@@ -31,10 +31,14 @@ package org.godotengine.openxr.vendors
 
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.enableEdgeToEdge
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import org.godotengine.godot.GodotActivity
 import org.godotengine.godot.BuildConfig
-import org.godotengine.openxr.vendors.utils.*
+import org.godotengine.godot.GodotActivity
+import org.godotengine.openxr.vendors.utils.HYBRID_APP_PANEL_FEATURE
+import org.godotengine.openxr.vendors.utils.HybridLaunchMode
+import org.godotengine.openxr.vendors.utils.updateCommandLineForHybridLaunch
+
 
 /**
  * Activity for the Panel app mode in a hybrid app.
@@ -56,9 +60,28 @@ class GodotPanelApp : GodotActivity() {
 		}
 	}
 
+	private val updateWindowAppearance = Runnable {
+		godot?.apply {
+			enableImmersiveMode(isInImmersiveMode(), true)
+			enableEdgeToEdge(isInEdgeToEdgeMode(), true)
+			setSystemBarsAppearance()
+		}
+	}
+
 	override fun onCreate(savedInstanceState: Bundle?) {
 		installSplashScreen()
+		enableEdgeToEdge()
 		super.onCreate(savedInstanceState)
+	}
+
+	override fun onResume() {
+		super.onResume()
+		updateWindowAppearance.run()
+	}
+
+	override fun onGodotMainLoopStarted() {
+		super.onGodotMainLoopStarted()
+		runOnUiThread(updateWindowAppearance)
 	}
 
 	override fun getCommandLine(): MutableList<String> {
