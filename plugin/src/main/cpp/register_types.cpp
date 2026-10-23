@@ -97,6 +97,7 @@
 #include "extensions/openxr_meta_boundary_visibility_extension.h"
 #include "extensions/openxr_meta_colocation_discovery_extension.h"
 #include "extensions/openxr_meta_environment_depth_extension.h"
+#include "extensions/openxr_meta_environment_raycast_extension.h"
 #include "extensions/openxr_meta_headset_id_extension.h"
 #include "extensions/openxr_meta_performance_metrics_extension.h"
 #include "extensions/openxr_meta_recommended_layer_resolution_extension.h"
@@ -246,6 +247,7 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			GDREGISTER_CLASS(OpenXRMlMarkerUnderstandingExtension);
 			GDREGISTER_CLASS(OpenXRFbSpaceWarpExtension);
 			GDREGISTER_CLASS(OpenXRMetaEnvironmentDepthExtension);
+			GDREGISTER_CLASS(OpenXRMetaEnvironmentRaycastExtension);
 			GDREGISTER_CLASS(OpenXRAndroidEnvironmentDepthExtension);
 			GDREGISTER_CLASS(OpenXRAndroidGeospatialExtension);
 			GDREGISTER_CLASS(OpenXRAndroidGoogleCloudAuthExtension);
@@ -368,6 +370,10 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 				_register_extension_with_openxr(OpenXRMetaEnvironmentDepthExtension::get_singleton());
 			}
 
+			if (_get_bool_project_setting("xr/openxr/extensions/meta/environment_raycast")) {
+				_register_extension_with_openxr(OpenXRMetaEnvironmentRaycastExtension::get_singleton());
+			}
+
 			if (_get_bool_project_setting("xr/openxr/extensions/htc/face_tracking")) {
 				_register_extension_with_openxr(OpenXRHtcFacialTrackingExtension::get_singleton());
 			}
@@ -488,6 +494,7 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			_register_extension_as_singleton(OpenXRAndroidSceneMeshingExtension::get_singleton());
 			_register_extension_as_singleton(OpenXRFbSpaceWarpExtension::get_singleton());
 			_register_extension_as_singleton(OpenXRMetaEnvironmentDepthExtension::get_singleton());
+			_register_extension_as_singleton(OpenXRMetaEnvironmentRaycastExtension::get_singleton());
 			_register_extension_as_singleton(OpenXRAndroidEnvironmentDepthExtension::get_singleton());
 			_register_extension_as_singleton(OpenXRAndroidUnboundedReferenceSpaceExtension::get_singleton());
 			_register_extension_as_singleton(OpenXRAndroidGeospatialExtension::get_singleton());
@@ -682,6 +689,7 @@ void add_plugin_project_settings() {
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/colocation_discovery", false);
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/application_space_warp", false);
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/environment_depth", false);
+	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/environment_raycast", false);
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/meta/boundary_visibility", false);
 
 	_add_bool_project_setting(project_settings, "xr/openxr/extensions/magic_leap/marker_understanding", false);
