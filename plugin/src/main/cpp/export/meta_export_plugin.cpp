@@ -537,7 +537,9 @@ String MetaEditorExportPlugin::_get_android_manifest_application_element_content
 			android:excludeFromRecents="%s"
 			android:screenOrientation="%s"
 			android:resizeableActivity="%s"
-			android:configChanges="orientation|keyboardHidden|screenSize|smallestScreenSize|density|keyboard|navigation|screenLayout|uiMode"
+			android:configChanges="layoutDirection|locale|orientation|keyboardHidden|screenSize|smallestScreenSize|density|keyboard|navigation|screenLayout|uiMode|fontScale|fontWeightAdjustment"
+			android:windowSoftInputMode="adjustResize"
+			android:supportsPictureInPicture="true"
 			tools:ignore="UnusedAttribute">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />

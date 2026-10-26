@@ -307,7 +307,9 @@ String AndroidXREditorExportPlugin::_get_android_manifest_application_element_co
 			android:excludeFromRecents="%s"
 			android:screenOrientation="%s"
 			android:resizeableActivity="%s"
-			android:configChanges="orientation|keyboardHidden|screenSize|smallestScreenSize|density|keyboard|navigation|screenLayout|uiMode"
+			android:configChanges="layoutDirection|locale|orientation|keyboardHidden|screenSize|smallestScreenSize|density|keyboard|navigation|screenLayout|uiMode|fontScale|fontWeightAdjustment"
+			android:windowSoftInputMode="adjustResize"
+			android:supportsPictureInPicture="true"
 			tools:ignore="UnusedAttribute">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
@@ -353,7 +355,7 @@ String AndroidXREditorExportPlugin::_get_android_manifest_element_contents(const
 
 	int spatial_api_version = _get_int_option("android_xr_features/spatial_api_version", 0);
 	if (spatial_api_version > 0) {
-		contents += vformat("    <uses-feature android:name=\"android.software.xr.api.spatial\" android:version=\"%s\" android:required=\"true\" />\n", spatial_api_version);
+		contents += vformat("    <uses-feature android:name=\"android.software.xr.api.spatial\" android:version=\"%s\" android:required=\"%s\" />\n", spatial_api_version, _bool_to_string(android_xr_required));
 	}
 
 	int tracked_controllers_option = _get_int_option("android_xr_features/tracked_controllers", TRACKED_CONTROLLERS_NONE_VALUE);
