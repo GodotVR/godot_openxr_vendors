@@ -36,6 +36,8 @@
 #include <godot_cpp/classes/shader_material.hpp>
 #include <godot_cpp/templates/hash_map.hpp>
 #include <godot_cpp/templates/local_vector.hpp>
+#include <godot_cpp/variant/packed_byte_array.hpp>
+#include <godot_cpp/variant/vector2i.hpp>
 
 #include "util.h"
 
@@ -163,14 +165,25 @@ private:
 		GRAPHICS_API_UNSUPPORTED,
 	};
 
+	struct DepthMapReadbackRequest {
+		Array callback_data;
+		LocalVector<Callable> callbacks;
+		Size2i image_size;
+		uint32_t pending_layers = 2;
+		bool completed_layers[2] = { false, false };
+	};
+
 	struct {
 		XrEnvironmentDepthProviderMETA depth_provider = XR_NULL_HANDLE;
 		XrEnvironmentDepthSwapchainMETA depth_swapchain = XR_NULL_HANDLE;
 		bool depth_provider_started = false;
 		GraphicsAPI graphics_api = GRAPHICS_API_UNKNOWN;
+		Size2i depth_swapchain_size;
 		Vector2 depth_swapchain_texel_size;
 		LocalVector<RID> depth_swapchain_textures;
 		LocalVector<Callable> depth_map_callbacks;
+		HashMap<int64_t, DepthMapReadbackRequest> depth_map_readback_requests;
+		int64_t next_depth_map_readback_request_id = 1;
 	} render_state;
 
 	bool depth_provider_started = false;
@@ -193,6 +206,9 @@ private:
 	void _stop_environment_depth_rt();
 	void _set_hand_removal_enabled_rt(bool p_enable);
 	void _add_depth_map_callback_rt(const Callable &p_callback);
+	void _request_depth_map_readback_rt(const RID &p_texture, const Array &p_callback_data);
+	void _on_depth_map_data_received(const PackedByteArray &p_data, int64_t p_request_id, int32_t p_layer);
+	void _dispatch_depth_map_callbacks(const LocalVector<Callable> &p_callbacks, const Array &p_callback_data);
 
 	bool _create_depth_provider_rt();
 	void _destroy_depth_provider_rt();
