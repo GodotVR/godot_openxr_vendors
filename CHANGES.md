@@ -2,6 +2,8 @@
 
 ## 5.2.0
 
+- Update `GodotPanelApp` implementation and manifest declaration to match version 4.6 of `GodotApp` (#552)
+- Request eye-tracking permission when eye-tracked foveated rendering is enabled (#551)
 - Add support for launching hybrid apps in `AUTO` mode (#547)
 - Rename hybrid app `immersive` mode to `spatial` (#543)
 - Fix XR setup wizard asset store button (#542)
