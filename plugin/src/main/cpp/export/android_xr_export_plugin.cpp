@@ -412,7 +412,9 @@ String AndroidXREditorExportPlugin::_get_android_manifest_element_contents(const
 	// When SCENE_UNDERSTANDING_FINE is requested, SCENE_UNDERSTANDING_COARSE is not needed.
 	// Spatial entity and most of scene understanding features only require
 	// SCENE_UNDERSTANDING_COARSE.
-	if ((bool)export_preset->get_project_setting("xr/openxr/extensions/androidxr/environment_depth") || (bool)export_preset->get_project_setting("xr/openxr/extensions/androidxr/scene_meshing")) {
+	if ((bool)export_preset->get_project_setting("xr/openxr/extensions/androidxr/environment_depth") ||
+			(bool)export_preset->get_project_setting("xr/openxr/extensions/androidxr/scene_meshing") ||
+			(bool)export_preset->get_project_setting("xr/openxr/extensions/spatial_entity/mesh_tracking/enable")) {
 		contents += "    <uses-permission android:name=\"android.permission.SCENE_UNDERSTANDING_FINE\" />\n";
 	} else if ((bool)export_preset->get_project_setting("xr/openxr/extensions/spatial_entity/enabled") ||
 			(bool)export_preset->get_project_setting("xr/openxr/extensions/androidxr/light_estimation") ||
