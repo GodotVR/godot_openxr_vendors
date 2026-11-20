@@ -7,7 +7,6 @@ env:
   # Only used for the cache key. Increment version to force clean build.
   GODOT_BASE_BRANCH: master
   SCONS_CACHE: ${{ github.workspace }}/.scons-cache/
-  META_OPENXR_HEADERS_URL: 'https://github.com/meta-quest/Meta-OpenXR-SDK/releases/download/v85/meta-openxr-sdk.zip'
 
 jobs:
   release-guard:
@@ -44,7 +43,6 @@ jobs:
           - name: 🐧 Linux (x86_64, GCC)
             os: ubuntu-22.04
             platform: linux
-            preview-headers: true
             flags: arch=x86_64
             artifact_name: build-files-linux-x86_64
             artifact_path: aar/demo/addons/godotopenxrvendors/.bin/linux/*/*/*.so
@@ -52,7 +50,6 @@ jobs:
           - name: 🐧 Linux (arm64, GCC)
             os: ubuntu-22.04-arm
             platform: linux
-            preview-headers: true
             flags: arch=arm64
             artifact_name: build-files-linux-arm64
             artifact_path: aar/demo/addons/godotopenxrvendors/.bin/linux/*/*/*.so
@@ -60,7 +57,6 @@ jobs:
           - name: 🏁 Windows (x86_64, MinGW)
             os: ubuntu-24.04
             platform: windows
-            preview-headers: true
             flags: arch=x86_64 use_mingw=yes
             artifact_name: build-files-windows
             artifact_path: aar/demo/addons/godotopenxrvendors/.bin/windows/*/*/*.dll
@@ -70,14 +66,12 @@ jobs:
             # Use older Windows image so we can test with an older MSVC.
             os: windows-2022
             platform: windows
-            preview-headers: true
             artifact_name: build-files-windows-msvc
             artifact_path: aar/demo/addons/godotopenxrvendors/.bin/windows/*/*/*.dll
             cache-name: windows-x86_64-msvc
           - name: 🍎 MacOS (universal)
             os: macos-latest
             platform: macos
-            preview-headers: true
             flags: arch=universal
             artifact_name: build-files-macos
             artifact_path: aar/demo/addons/godotopenxrvendors/.bin/macos/*/*.framework
@@ -85,7 +79,6 @@ jobs:
           - name: 🤖 Android (arm64)
             os: ubuntu-22.04
             platform: android
-            preview-headers: true
             flags: arch=arm64
             artifact_name: build-files-android-arm64
             artifact_path: |
@@ -94,72 +87,11 @@ jobs:
           - name: 🤖 Android (x86_64)
             os: ubuntu-22.04
             platform: android
-            preview-headers: true
             flags: arch=x86_64
             artifact_name: build-files-android-x86_64
             artifact_path: |
               aar/plugin/src/main/libs/*/*/*/*.so
             cache-name: android-x86_64
-
-          # Without the preview headers.
-          - name: 🐧 Linux (x86_64, GCC, No preview)
-            os: ubuntu-22.04
-            platform: linux
-            preview-headers: false
-            flags: arch=x86_64
-            artifact_name: build-files-linux-x86_64-nopreview
-            artifact_path: aar/demo/addons/godotopenxrvendors/.bin/linux/*/*/*.so
-            cache-name: linux-x86_64-nopreview
-          - name: 🐧 Linux (arm64, GCC, No preview)
-            os: ubuntu-22.04-arm
-            platform: linux
-            preview-headers: false
-            flags: arch=arm64
-            artifact_name: build-files-linux-arm64-nopreview
-            artifact_path: aar/demo/addons/godotopenxrvendors/.bin/linux/*/*/*.so
-            cache-name: linux-arm64-nopreview
-          - name: 🏁 Windows (x86_64, MinGW, No preview)
-            os: ubuntu-24.04
-            platform: windows
-            preview-headers: false
-            flags: arch=x86_64 use_mingw=yes
-            artifact_name: build-files-windows-nopreview
-            artifact_path: aar/demo/addons/godotopenxrvendors/.bin/windows/*/*/*.dll
-            cache-name: windows-x86_64-mingw-nopreview
-          - name: 🏁 Windows (x86_64, MSVC, No preview)
-            # Use older Windows image so we can test with an older MSVC.
-            os: windows-2022
-            platform: windows
-            preview-headers: false
-            artifact_name: build-files-windows-msvc-nopreview
-            artifact_path: aar/demo/addons/godotopenxrvendors/.bin/windows/*/*/*.dll
-            cache-name: windows-x86_64-msvc-nopreview
-          - name: 🍎 MacOS (universal, No preview)
-            os: macos-latest
-            platform: macos
-            preview-headers: false
-            cache-name: macos-universal
-            flags: arch=universal
-            artifact_name: build-files-macos-nopreview
-            artifact_path: aar/demo/addons/godotopenxrvendors/.bin/macos/*/*.framework
-          - name: 🤖 Android (arm64, No Preview)
-            os: ubuntu-22.04
-            platform: android
-            preview-headers: false
-            flags: arch=arm64
-            artifact_name: build-files-android-arm64-nopreview
-            artifact_path: |
-              aar/plugin/src/main/libs/*/*/*/*.so
-            cache-name: android-arm64-nopreview
-          - name: 🤖 Android (x86_64, No preview)
-            os: ubuntu-22.04
-            platform: android
-            preview-headers: false
-            flags: arch=x86_64
-            artifact_name: build-files-android-x86_64-nopreview
-            artifact_path: |
-              aar/plugin/src/main/libs/*/*/*/*.so
-            cache-name: android-x86_64-nopreview
 
     # Note, to satisfy the asset library we need to make sure our zip files have a root folder
     # this is why we checkout into aar and build into asset
@@ -191,14 +123,6 @@ jobs:
           sudo update-alternatives --set x86_64-w64-mingw32-gcc /usr/bin/x86_64-w64-mingw32-gcc-posix
           sudo update-alternatives --set x86_64-w64-mingw32-g++ /usr/bin/x86_64-w64-mingw32-g++-posix
         if: matrix.platform == 'windows' && runner.os == 'Linux'
-      - name: Download Meta OpenXR Preview headers
-        run: |
-          curl -sSL -o meta-openxr-sdk.zip "${{ env.META_OPENXR_HEADERS_URL }}"
-          python -m zipfile -e meta-openxr-sdk.zip meta-openxr-sdk
-          echo "SCONS_EXTRA=meta_headers=${{ github.workspace }}/meta-openxr-sdk/OpenXR/meta_openxr_preview/" >> $GITHUB_ENV
-          echo "GRADLE_EXTRA=-Pmeta_headers=${{ github.workspace }}/meta-openxr-sdk/OpenXR/meta_openxr_preview/" >> $GITHUB_ENV
-        shell: bash
-        if: ${{ matrix.preview-headers == 'true' }}
       - name: Install scons
         run: |
           python -m pip install scons==4.4.0
@@ -215,8 +139,8 @@ jobs:
       - name: Create extension library
         run: |
           cd aar
-          scons platform=${{ matrix.platform }} target=template_debug ${{ matrix.flags }} custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json build_profile=thirdparty/godot_cpp_build_profile/build_profile.json ndk_version="29.0.14206865" production=yes $SCONS_EXTRA
-          scons platform=${{ matrix.platform }} target=template_release ${{ matrix.flags }} custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json build_profile=thirdparty/godot_cpp_build_profile/build_profile.json ndk_version="29.0.14206865" production=yes $SCONS_EXTRA
+          scons platform=${{ matrix.platform }} target=template_debug ${{ matrix.flags }} custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json build_profile=thirdparty/godot_cpp_build_profile/build_profile.json ndk_version="29.0.14206865" production=yes
+          scons platform=${{ matrix.platform }} target=template_release ${{ matrix.flags }} custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json build_profile=thirdparty/godot_cpp_build_profile/build_profile.json ndk_version="29.0.14206865" production=yes
           cd ..
       - name: Save Godot build cache
         uses: ./aar/thirdparty/godot-cpp/.github/actions/godot-cache-save
@@ -255,16 +179,10 @@ jobs:
           mkdir aar/plugin/src/main/libs
           cp -r build-files-android-arm64/* aar/plugin/src/main/libs/
           cp -r build-files-android-x86_64/* aar/plugin/src/main/libs/
-      - name: Download Meta OpenXR Preview headers
-        run: |
-          curl -sSL -o meta-openxr-sdk.zip "${{ env.META_OPENXR_HEADERS_URL }}"
-          unzip -q meta-openxr-sdk.zip -d meta-openxr-sdk
-          echo "SCONS_EXTRA=meta_headers=${{ github.workspace }}/meta-openxr-sdk/OpenXR/meta_openxr_preview/" >> $GITHUB_ENV
-          echo "GRADLE_EXTRA=-Pmeta_headers=${{ github.workspace }}/meta-openxr-sdk/OpenXR/meta_openxr_preview/" >> $GITHUB_ENV
       - name: Create Godot OpenXR Vendors AARs
         run: |
           cd aar
-          ./gradlew build $GRADLE_EXTRA
+          ./gradlew build
           cd ..
       - name: Create Godot OpenXR Vendors Addon
         run: |
@@ -278,7 +196,6 @@ jobs:
           cp aar/thirdparty/khronos_openxr_sdk/LICENSE asset/addons/godotopenxrvendors/androidxr/LICENSE
 
           mkdir -p asset/addons/godotopenxrvendors/meta/
-          cp meta-openxr-sdk/LICENSE.txt asset/addons/godotopenxrvendors/meta/LICENSE-SDK
           cp aar/thirdparty/khronos_openxr_sdk/LICENSE asset/addons/godotopenxrvendors/meta/LICENSE-LOADER
 
           mkdir -p asset/addons/godotopenxrvendors/pico/

@@ -97,11 +97,6 @@ def createSconsTasks(File sconsExecutableFile, boolean clean) {
         sconsExtraArgs = project.property("scons_extra_args").trim().split(/\s+/) as List
     }
 
-    String meta_headers = project.hasProperty("meta_headers") ? project.property("meta_headers") : ""
-    if (meta_headers != null && !meta_headers.isEmpty()) {
-        defaultArgs << "meta_headers=${meta_headers}"
-    }
-
     if (clean) {
         defaultArgs << "-c"
     }

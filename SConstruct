@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 from glob import glob
 from pathlib import Path
-import os
 
 env = SConscript("thirdparty/godot-cpp/SConstruct", {"api_version": "4.6"})
-opts = Variables('custom.py', ARGUMENTS)
-opts.Add(PathVariable("meta_headers", "Path to the directory containing Meta OpenXR preview headers", None))
+
+opts = Variables('custom.py')
 opts.Update(env)
 
 # Add common includes
@@ -14,15 +13,6 @@ env.Append(CPPPATH=[
     "#thirdparty/openxr/include/",
     "#thirdparty/androidxr/include/",
     ])
-
-# Include Meta OpenXR preview headers if provided
-meta_headers = env.get("meta_headers")
-if meta_headers:
-    meta_headers = os.path.normpath(meta_headers)
-    if os.path.basename(meta_headers) == "meta_openxr_preview":
-        meta_headers = os.path.dirname(meta_headers)
-    env.Append(CPPDEFINES=["META_HEADERS_ENABLED"])
-    env.Append(CPPPATH=[meta_headers])
 
 sources = []
 sources += Glob("#plugin/src/main/cpp/*.cpp")
