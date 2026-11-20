@@ -7,9 +7,6 @@ on:
     types: [published]
   workflow_dispatch: {}
 
-env:
-  META_OPENXR_HEADERS_URL: 'https://github.com/meta-quest/Meta-OpenXR-SDK/releases/download/v85/meta-openxr-sdk.zip'
-
 jobs:
   publish:
     name: Release build and publish
@@ -38,23 +35,17 @@ jobs:
           java-version: 17
       - name: Validate Gradle wrapper
         uses: gradle/actions/wrapper-validation@v3
-      - name: Download Meta OpenXR Preview headers
-        run: |
-          curl -sSL -o meta-openxr-sdk.zip "${{ env.META_OPENXR_HEADERS_URL }}"
-          unzip -q meta-openxr-sdk.zip -d meta-openxr-sdk
-          echo "SCONS_EXTRA=meta_headers=${{ github.workspace }}/meta-openxr-sdk/OpenXR/meta_openxr_preview/" >> $GITHUB_ENV
-          echo "GRADLE_EXTRA=-Pmeta_headers=${{ github.workspace }}/meta-openxr-sdk/OpenXR/meta_openxr_preview/" >> $GITHUB_ENV
 
         # Builds the release artifacts of the library
       - name: Release build
         run: |
           # We build with debug symbols which will be stripped by Gradle.
-          SCONS_EXTRA="$SCONS_EXTRA debug_symbols=yes"
+          SCONS_EXTRA="debug_symbols=yes"
           scons platform=android target=template_debug arch=arm64 custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json build_profile=thirdparty/godot_cpp_build_profile/build_profile.json ndk_version="29.0.14206865" production=yes $SCONS_EXTRA
           scons platform=android target=template_release arch=arm64 custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json build_profile=thirdparty/godot_cpp_build_profile/build_profile.json ndk_version="29.0.14206865" production=yes $SCONS_EXTRA
           scons platform=android target=template_debug arch=x86_64 custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json build_profile=thirdparty/godot_cpp_build_profile/build_profile.json ndk_version="29.0.14206865" production=yes $SCONS_EXTRA
           scons platform=android target=template_release arch=x86_64 custom_api_file=thirdparty/godot_cpp_gdextension_api/extension_api.json build_profile=thirdparty/godot_cpp_build_profile/build_profile.json ndk_version="29.0.14206865" production=yes $SCONS_EXTRA
-          ./gradlew -Prelease_version=${{ github.ref_name }} build $GRADLE_EXTRA
+          ./gradlew -Prelease_version=${{ github.ref_name }} build
 
           # Put the unstripped .so files into ZIPs to use for their debug symbols.
           mkdir -p native-symbols/debug native-symbols/release
@@ -88,7 +79,7 @@ jobs:
 
         # Runs upload, and then closes & releases the repository
       - name: Publish to MavenCentral
-        run: ./gradlew -Prelease_version=${{ github.ref_name }} publishAllPublicationToSonatypeRepository --max-workers 1 closeAndReleaseSonatypeStagingRepository $GRADLE_EXTRA
+        run: ./gradlew -Prelease_version=${{ github.ref_name }} publishAllPublicationToSonatypeRepository --max-workers 1 closeAndReleaseSonatypeStagingRepository
         env:
           OSSRH_GROUP_ID: ${{ secrets.OSSRH_GROUP_ID }}
           OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}

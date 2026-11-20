@@ -104,7 +104,6 @@
 #include "extensions/openxr_meta_spatial_entity_mesh_extension.h"
 #include "extensions/openxr_ml_marker_understanding_extension.h"
 #include "extensions/openxr_session_helper_extension.h"
-#include "extensions/openxr_stationary_reference_space_extension.h"
 
 #include "classes/openxr_android_anchor_tracker.h"
 #include "classes/openxr_android_environment_depth.h"
@@ -250,12 +249,6 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			GDREGISTER_CLASS(OpenXRAndroidGeospatialExtension);
 			GDREGISTER_CLASS(OpenXRAndroidGoogleCloudAuthExtension);
 
-#ifdef META_HEADERS_ENABLED
-			// XR_EXT_stationary_reference space is now part of the spec!
-			// But since it's an EXT, we should probably implement it in Godot.
-			GDREGISTER_CLASS(OpenXRStationaryReferenceSpaceExtension);
-#endif // META_HEADERS_ENABLED
-
 			_register_extension_with_openxr(OpenXRSessionHelperExtension::get_singleton());
 			_register_extension_with_openxr(OpenXRAndroidEnumerateSystemExtensionPropertiesExtension::get_singleton());
 
@@ -347,14 +340,6 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 			if (_get_bool_project_setting("xr/openxr/extensions/meta/boundary_visibility")) {
 				_register_extension_with_openxr(OpenXRMetaBoundaryVisibilityExtension::get_singleton());
 			}
-
-#ifdef META_HEADERS_ENABLED
-			// XR_EXT_stationary_reference space is now part of the spec!
-			// But since it's an EXT, we should probably implement it in Godot.
-			if (_get_bool_project_setting("xr/openxr/extensions/stationary_reference_space")) {
-				_register_extension_with_openxr(OpenXRStationaryReferenceSpaceExtension::get_singleton());
-			}
-#endif // META_HEADERS_ENABLED
 
 			if (_get_bool_project_setting("xr/openxr/extensions/meta/colocation_discovery")) {
 				_register_extension_with_openxr(OpenXRMetaColocationDiscoveryExtension::get_singleton());
@@ -508,12 +493,6 @@ void initialize_plugin_module(ModuleInitializationLevel p_level) {
 				_register_extension_as_singleton(OpenXRFbCompositionLayerAlphaBlendExtension::get_singleton());
 				_register_extension_as_singleton(OpenXRFbCompositionLayerSettingsExtension::get_singleton());
 			}
-
-#ifdef META_HEADERS_ENABLED
-			// XR_EXT_stationary_reference space is now part of the spec!
-			// But since it's an EXT, we should probably implement it in Godot.
-			_register_extension_as_singleton(OpenXRStationaryReferenceSpaceExtension::get_singleton());
-#endif // META_HEADERS_ENABLED
 
 			GDREGISTER_CLASS(OpenXRAndroidGeospatialPose);
 			GDREGISTER_CLASS(OpenXRAndroidLightEstimation);
@@ -708,13 +687,6 @@ void add_plugin_project_settings() {
 	if (godot::gdextension_interface::godot_version.minor >= 7) {
 		_add_bool_project_setting(project_settings, "xr/openxr/extensions/androidxr/mouse_interaction", false, true);
 	}
-
-#ifdef META_HEADERS_ENABLED
-	// XR_EXT_stationary_reference space is now part of the spec!
-	// But since it's an EXT, we should probably implement it in Godot.
-	_add_bool_project_setting(project_settings, "xr/openxr/extensions/stationary_reference_space", false);
-	_add_bool_project_setting(project_settings, "xr/openxr/extensions/stationary_reference_space/enable_on_startup", false);
-#endif // META_HEADERS_ENABLED
 
 	{
 		String collision_shape_2d_thickness = "xr/openxr/extensions/meta/scene_api/collision_shape_2d_thickness";
